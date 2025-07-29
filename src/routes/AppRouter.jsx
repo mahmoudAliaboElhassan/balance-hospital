@@ -1,0 +1,56 @@
+import { Suspense } from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import RootLayout from "../pages/rootLayout";
+import ErrorPage from "../pages/error";
+import Loader from "../components/Loader";
+import Home from "../pages/home";
+import Login from "../pages/auth/login";
+import SignUp from "../pages/auth/signup";
+import TwoStep from "../pages/auth/twoStep";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <RootLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        element: (
+          <Suspense fallback={<Loader />}>
+            <Home />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/login",
+        element: (
+          <Suspense fallback={<Loader />}>
+            <Login />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/signup",
+        element: (
+          <Suspense fallback={<Loader />}>
+            <SignUp />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/two-step",
+        element: (
+          <Suspense fallback={<Loader />}>
+            <TwoStep />
+          </Suspense>
+        ),
+      },
+    ],
+  },
+]);
+
+const AppRouter = () => {
+  return <RouterProvider router={router} />;
+};
+export default AppRouter;
