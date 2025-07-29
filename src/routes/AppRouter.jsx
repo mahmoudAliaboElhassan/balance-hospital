@@ -6,7 +6,8 @@ import Loader from "../components/Loader";
 import Home from "../pages/home";
 import Login from "../pages/auth/login";
 import SignUp from "../pages/auth/signup";
-import TwoStep from "../pages/auth/twoStep";
+import ForgetPassword from "../pages/auth/forgetPassword";
+import ResetPassword from "../pages/auth/resetPassword";
 
 const router = createBrowserRouter([
   {
@@ -39,10 +40,18 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/two-step",
+        path: "/forget-password",
         element: (
           <Suspense fallback={<Loader />}>
-            <TwoStep />
+            <ForgetPassword />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/reset-password",
+        element: (
+          <Suspense fallback={<Loader />}>
+            <ResetPassword />
           </Suspense>
         ),
       },

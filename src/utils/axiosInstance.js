@@ -3,7 +3,7 @@ import axios from "axios";
 // Create an Axios instance
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL, // ✅ Use VITE_ prefix with Vite
-  //   withCredentials: true,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },

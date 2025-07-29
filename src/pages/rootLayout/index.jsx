@@ -384,7 +384,7 @@ function RootLayout() {
         </main>
 
         {/* Footer with theme-aware styling */}
-        <footer
+        {/* <footer
           style={{
             backgroundColor: currentTheme.footerBg,
             borderTop: `1px solid ${currentTheme.border}`,
@@ -392,7 +392,7 @@ function RootLayout() {
           }}
         >
           <Footer />
-        </footer>
+        </footer> */}
       </div>
 
       {/* Theme indicator (optional - can be removed) */}

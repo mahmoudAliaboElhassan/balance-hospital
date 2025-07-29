@@ -143,7 +143,7 @@ const Login = () => {
               <UserIcon />
             </div>
             <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-              Create account
+              Login to Your Account
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Enter your details to get started
@@ -235,15 +235,12 @@ const Login = () => {
 
           {}
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Do not have an account?{" "}
-              <Link
-                to="/signup"
-                className="text-gray-900 dark:text-gray-100 font-medium hover:underline"
-              >
-                Sign Up
-              </Link>
-            </p>
+            <Link
+              to="/forget-password"
+              className="text-gray-900 dark:text-gray-100 font-medium hover:underline"
+            >
+              Forget Password
+            </Link>
           </div>
         </div>
       </div>
