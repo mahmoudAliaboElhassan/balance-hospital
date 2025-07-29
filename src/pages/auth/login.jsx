@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { logIn } from "../../state/act/actAuth";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 const UserIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -85,47 +86,12 @@ const EyeOffIcon = () => (
     <line x1="1" y1="1" x2="23" y2="23"></line>
   </svg>
 );
-const TwitterIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-  >
-    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-  </svg>
-);
-const LinkedInIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-  >
-    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-  </svg>
-);
-const CheckIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="12"
-    height="12"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="3"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <polyline points="20,6 9,17 4,12"></polyline>
-  </svg>
-);
+
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { t } = useTranslation();
   const [fullName, setFullName] = useState("");
   const [isChecked, setIsChecked] = useState(false);
   const dispatch = useDispatch();
@@ -135,54 +101,51 @@ const Login = () => {
   return (
     <div className="flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
-        {}
         <div className="signin-card bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg shadow-sm p-6">
-          {}
           <div className="text-center mb-6">
             <div className="inline-flex items-center justify-center w-12 h-12 bg-gray-100 dark:bg-gray-900 rounded-full mb-4">
               <UserIcon />
             </div>
             <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-              Login to Your Account
+              {t("login.title")}
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Enter your details to get started
+              {t("login.subtitle")}
             </p>
           </div>
 
           <form className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                Email
+                {t("login.email")}
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 dark:text-gray-500">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 dark:text-gray-500 pointer-events-none">
                   <MailIcon />
                 </div>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@example.com"
+                  placeholder={t("login.emailPlaceholder")}
                   className="signin-input w-full pl-9 pr-3 py-2 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-md text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent transition-all duration-200"
                 />
               </div>
             </div>
 
-            {}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                Password
+                {t("login.password")}
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 dark:text-gray-500">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 dark:text-gray-500 pointer-events-none">
                   <LockIcon />
                 </div>
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Create a password"
+                  placeholder={t("login.passwordPlaceholder")}
                   className="signin-input w-full pl-9 pr-10 py-2 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-md text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent transition-all duration-200"
                 />
                 <button
@@ -195,7 +158,6 @@ const Login = () => {
               </div>
             </div>
 
-            {}
             <button
               type="button"
               onClick={() =>
@@ -203,43 +165,18 @@ const Login = () => {
                   logIn({ emailOrMobile: email, password, rememberMe: true })
                 )
               }
-              className="signin-button w-full bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 py-2 px-4 rounded-md text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-black transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
             >
-              Login
+              {t("login.button")}
             </button>
           </form>
 
-          {/* {}
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200 dark:border-gray-800"></div>
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white dark:bg-black px-2 text-gray-500 dark:text-gray-400">
-                Or continue with
-              </span>
-            </div>
-          </div>
-
-          {}
-          <div className="grid grid-cols-2 gap-3">
-            <button className="flex items-center justify-center py-2 px-3 border border-gray-200 dark:border-gray-800 bg-white dark:bg-black text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 transition-all duration-200 text-sm font-medium rounded-md">
-              <TwitterIcon />
-              <span className="ml-2">Twitter</span>
-            </button>
-            <button className="flex items-center justify-center py-2 px-3 border border-gray-200 dark:border-gray-800 bg-white dark:bg-black text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 transition-all duration-200 text-sm font-medium rounded-md">
-              <LinkedInIcon />
-              <span className="ml-2">LinkedIn</span>
-            </button>
-          </div> */}
-
-          {}
           <div className="mt-6 text-center">
             <Link
               to="/forget-password"
               className="text-gray-900 dark:text-gray-100 font-medium hover:underline"
             >
-              Forget Password
+              {t("login.forgetPassword")}
             </Link>
           </div>
         </div>
@@ -247,35 +184,5 @@ const Login = () => {
     </div>
   );
 };
+
 export default Login;
-const styles = `
-  .signin-input:focus {
-    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
-  }
-
-  .dark .signin-input:focus {
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
-  }
-
-  .signin-button:hover {
-    transform: translateY(-1px);
-  }
-
-  .signin-checkbox:checked + label .checkbox-icon {
-    background-color: currentColor;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .signin-card {
-    animation: fadeIn 0.3s ease-out;
-  }
-`;
-if (typeof document !== "undefined") {
-  const styleSheet = document.createElement("style");
-  styleSheet.textContent = styles;
-  document.head.appendChild(styleSheet);
-}

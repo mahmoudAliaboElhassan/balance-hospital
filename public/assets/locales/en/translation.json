@@ -1,1 +1,62 @@
-{ "home": "Home" }
+{
+  "login": {
+    "title": "Login to Your Account",
+    "subtitle": "Enter your details to get started",
+    "email": "Email",
+    "emailPlaceholder": "name@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "Create a password",
+    "button": "Login",
+    "forgetPassword": "Forget Password"
+  },
+
+  "reset_password": "Reset Password",
+  "choose_method": "Choose how you'd like to reset your password",
+  "reset_method": "Reset Method",
+  "email": "Email",
+  "phone": "Phone",
+  "id": "User ID",
+  "email_placeholder": "email@example.com",
+  "phone_placeholder": "01234567890",
+  "id_placeholder": "12345678901234",
+  "email_label": "Email Address",
+  "phone_label": "Phone Number (11 digits)",
+  "id_label": "User ID (14 digits)",
+  "submit": "Send Reset Instructions",
+  "back_to_login": "Back to Login",
+  "errors": {
+    "email_required": "Email address is required",
+    "email_format": "Please enter a valid email address (e.g., email@example.com)",
+    "phone_required": "Phone number is required",
+    "phone_format": "Phone number must be exactly 11 digits",
+    "id_required": "User ID is required",
+    "id_format": "User ID must be exactly 14 digits"
+  },
+
+  "reset_title": "Reset Your Password",
+  "reset_description": "We've sent a 6-digit code to {{identifier}}",
+  "reset_code_label": "Enter verification code",
+  "new_password": "New Password",
+  "confirm_password": "Confirm New Password",
+  "new_password_placeholder": "Enter your new password",
+  "confirm_password_placeholder": "Confirm your new password",
+  "submit-reset": "Reset Password",
+  "resend_code": "Resend code",
+  "resend_info": "Didn't receive a code?",
+  "code_required": "Code is required",
+  "code_invalid": "Code must be 6 numeric digits",
+  "password_required": "New password is required",
+  "password_min": "Password must be at least 8 characters",
+  "password_lower": "Must include lowercase letter",
+  "password_upper": "Must include uppercase letter",
+  "password_number": "Must include a number",
+  "confirm_required": "Please confirm your password",
+  "password_match": "Passwords must match",
+  "success_message": "Password reset successfully!",
+  "get-started": "Get Started",
+  "switchTo": "Switch to {{lang}}",
+  "language": {
+    "en": "EN",
+    "ar": "AR"
+  }
+}

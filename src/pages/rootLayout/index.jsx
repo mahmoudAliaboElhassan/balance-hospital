@@ -1,7 +1,5 @@
-import React from "react";
 import { Outlet } from "react-router-dom";
 import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import { useSelector } from "react-redux";
 
 function RootLayout() {
@@ -377,7 +375,6 @@ function RootLayout() {
           style={{
             flex: 1,
             backgroundColor: currentTheme.primary,
-            padding: "20px 0",
           }}
         >
           <Outlet />
@@ -396,7 +393,7 @@ function RootLayout() {
       </div>
 
       {/* Theme indicator (optional - can be removed) */}
-      <div
+      {/* <div
         style={{
           position: "fixed",
           bottom: "20px",
@@ -412,7 +409,7 @@ function RootLayout() {
         }}
       >
         {mymode === "dark" ? "🌙" : "☀️"} {mymode} mode
-      </div>
+      </div> */}
     </div>
   );
 }

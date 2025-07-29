@@ -1,50 +1,43 @@
-"use client";
-
 import { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function ResetPassword() {
+  const { t } = useTranslation();
   const [token, setToken] = useState(new Array(6).fill(""));
   const [focusedIndex, setFocusedIndex] = useState(0);
   const [identifier] = useState("user@example.com"); // Simulating localStorage
   const inputRefs = useRef([]);
 
-  // Form state
   const [formData, setFormData] = useState({
     newPassword: "",
     confirmNewPassword: "",
   });
 
-  // Form errors
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
 
-  // Validation functions
   const validateToken = (tokenString) => {
-    if (!tokenString) return "Token is required";
-    if (tokenString.length !== 6) return "Token must be 6 digits";
-    if (!/^\d{6}$/.test(tokenString)) return "Token must contain only numbers";
+    if (!tokenString) return t("code_required");
+    if (tokenString.length !== 6 || !/^\d{6}$/.test(tokenString))
+      return t("code_invalid");
     return "";
   };
 
   const validatePassword = (password) => {
-    if (!password) return "New password is required";
-    if (password.length < 8) return "Password must be at least 8 characters";
-    if (!/(?=.*[a-z])/.test(password))
-      return "Password must contain at least one lowercase letter";
-    if (!/(?=.*[A-Z])/.test(password))
-      return "Password must contain at least one uppercase letter";
-    if (!/(?=.*\d)/.test(password))
-      return "Password must contain at least one number";
+    if (!password) return t("password_required");
+    if (password.length < 8) return t("password_min");
+    if (!/(?=.*[a-z])/.test(password)) return t("password_lower");
+    if (!/(?=.*[A-Z])/.test(password)) return t("password_upper");
+    if (!/(?=.*\d)/.test(password)) return t("password_number");
     return "";
   };
 
   const validateConfirmPassword = (confirmPassword, password) => {
-    if (!confirmPassword) return "Please confirm your password";
-    if (confirmPassword !== password) return "Passwords must match";
+    if (!confirmPassword) return t("confirm_required");
+    if (confirmPassword !== password) return t("password_match");
     return "";
   };
 
-  // Validate form
   const validateForm = () => {
     const tokenString = token.join("");
     const newErrors = {
@@ -60,7 +53,6 @@ export default function ResetPassword() {
     return !Object.values(newErrors).some((error) => error);
   };
 
-  // Token input handlers
   const handleTokenChange = (element, index) => {
     if (isNaN(Number(element.value)) || element.value === " ") {
       element.value = "";
@@ -70,7 +62,6 @@ export default function ResetPassword() {
     newToken[index] = element.value;
     setToken(newToken);
 
-    // Clear token error when user starts typing
     if (errors.token) {
       setErrors((prev) => ({ ...prev, token: "" }));
     }
@@ -103,7 +94,6 @@ export default function ResetPassword() {
     }
     setToken(newToken);
 
-    // Clear token error
     if (errors.token) {
       setErrors((prev) => ({ ...prev, token: "" }));
     }
@@ -117,12 +107,9 @@ export default function ResetPassword() {
     }
   };
 
-  // Regular input handlers
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -132,7 +119,6 @@ export default function ResetPassword() {
     const { name } = e.target;
     setTouched((prev) => ({ ...prev, [name]: true }));
 
-    // Validate field on blur
     let error = "";
     if (name === "newPassword") {
       error = validatePassword(formData.newPassword);
@@ -153,7 +139,6 @@ export default function ResetPassword() {
     setErrors((prev) => ({ ...prev, token: error }));
   };
 
-  // Submit handler
   const handleSubmit = () => {
     setTouched({ token: true, newPassword: true, confirmNewPassword: true });
 
@@ -165,11 +150,10 @@ export default function ResetPassword() {
         confirmNewPassword: formData.confirmNewPassword,
         identifier,
       });
-      alert("Password reset successfully!");
+      alert(t("success_message"));
     }
   };
 
-  // Check if form is valid
   const isFormValid = () => {
     const tokenString = token.join("");
     return (
@@ -193,8 +177,8 @@ export default function ResetPassword() {
   }, []);
 
   return (
-    <div className="flex items-center justify-center min-h-screen font-sans p-4 bg-gray-50 dark:bg-gray-900">
-      <div className="bg-white dark:bg-[#161B22] border border-gray-200 dark:border-gray-800 p-6 sm:p-8 rounded-2xl shadow-2xl shadow-black/10 dark:shadow-black/20 max-w-md w-full text-gray-900 dark:text-white">
+    <div className="flex items-center justify-center py-4">
+      <div className="bg-white dark:bg-[#161B22] border border-gray-200 dark:border-gray-800 p-6 sm:p-8 rounded-2xl shadow-xl max-w-md w-full text-gray-900 dark:text-white">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <div className="w-20 h-20 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
@@ -213,18 +197,18 @@ export default function ResetPassword() {
               </svg>
             </div>
           </div>
-          <h1 className="text-2xl font-bold mb-2">Reset Your Password</h1>
+          <h1 className="text-2xl font-bold mb-2">{t("reset_title")}</h1>
           <p className="text-gray-600 dark:text-gray-400 text-sm">
-            We've sent a 6-digit code to{" "}
-            {identifier.replace(/(.{3}).*(@.*)/, "$1***$2")}
+            {t("reset_description", {
+              identifier: identifier.replace(/(.{3}).*(@.*)/, "$1***$2"),
+            })}
           </p>
         </div>
 
         <div className="space-y-6">
-          {/* Token Input */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-              Enter verification code
+              {t("reset_code_label")}
             </label>
             <div
               className="flex justify-center gap-2 mb-2"
@@ -266,54 +250,50 @@ export default function ResetPassword() {
             )}
           </div>
 
-          {/* New Password */}
           <div>
             <label
               htmlFor="newPassword"
               className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
             >
-              New Password
+              {t("new_password")}
             </label>
             <input
               type="password"
-              id="newPassword"
               name="newPassword"
               value={formData.newPassword}
               onChange={handleInputChange}
               onBlur={handleInputBlur}
-              className={`w-full px-3 py-3 border rounded-lg bg-gray-50 dark:bg-[#0D1117] text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+              placeholder={t("new_password_placeholder")}
+              className={`w-full px-3 py-3 border rounded-lg bg-gray-50 dark:bg-[#0D1117] text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 touched.newPassword && errors.newPassword
                   ? "border-red-500"
                   : "border-gray-300 dark:border-gray-700"
               }`}
-              placeholder="Enter your new password"
             />
             {touched.newPassword && errors.newPassword && (
               <p className="text-red-500 text-sm mt-1">{errors.newPassword}</p>
             )}
           </div>
 
-          {/* Confirm New Password */}
           <div>
             <label
               htmlFor="confirmNewPassword"
               className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
             >
-              Confirm New Password
+              {t("confirm_password")}
             </label>
             <input
               type="password"
-              id="confirmNewPassword"
               name="confirmNewPassword"
               value={formData.confirmNewPassword}
               onChange={handleInputChange}
               onBlur={handleInputBlur}
-              className={`w-full px-3 py-3 border rounded-lg bg-gray-50 dark:bg-[#0D1117] text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+              placeholder={t("confirm_password_placeholder")}
+              className={`w-full px-3 py-3 border rounded-lg bg-gray-50 dark:bg-[#0D1117] text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 touched.confirmNewPassword && errors.confirmNewPassword
                   ? "border-red-500"
                   : "border-gray-300 dark:border-gray-700"
               }`}
-              placeholder="Confirm your new password"
             />
             {touched.confirmNewPassword && errors.confirmNewPassword && (
               <p className="text-red-500 text-sm mt-1">
@@ -322,30 +302,28 @@ export default function ResetPassword() {
             )}
           </div>
 
-          {/* Submit Button */}
           <button
             type="button"
-            disabled={!isFormValid()}
+            // disabled={!isFormValid()}
             onClick={handleSubmit}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
           >
-            Reset Password
+            {t("submit-reset")}
           </button>
 
-          {/* Resend Code */}
           <div className="text-center">
             <p className="text-gray-500 dark:text-gray-500 text-sm">
-              Didn't receive a code?{" "}
+              {t("resend_info")}{" "}
               <button
                 type="button"
-                className="text-blue-600 dark:text-blue-500 hover:text-blue-500 dark:hover:text-blue-400 font-semibold focus:outline-none focus:underline"
                 onClick={() => {
                   setToken(new Array(6).fill(""));
                   setErrors((prev) => ({ ...prev, token: "" }));
-                  alert("Verification code resent!");
+                  alert("Code resent");
                 }}
+                className="text-blue-600 dark:text-blue-500 hover:underline font-semibold"
               >
-                Resend code
+                {t("resend_code")}
               </button>
             </p>
           </div>

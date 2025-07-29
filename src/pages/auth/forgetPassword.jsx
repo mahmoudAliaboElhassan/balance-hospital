@@ -1,9 +1,8 @@
-"use client";
-
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useTranslation } from "react-i18next";
 
 const MailIcon = () => (
   <svg
@@ -91,104 +90,81 @@ const ArrowLeftIcon = () => (
 const ForgetPassword = () => {
   const [resetMethod, setResetMethod] = useState("email");
   const navigate = useNavigate();
-  // Create validation schema based on reset method
+  const { t } = useTranslation();
+
   const getValidationSchema = () => {
     switch (resetMethod) {
       case "email":
         return Yup.object({
           inputValue: Yup.string()
-            .email(
-              "Please enter a valid email address (e.g., email@example.com)"
-            )
+            .email(t("errors.email_format"))
             .matches(
               /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-              "Please enter a valid email format (email@example.com)"
+              t("errors.email_format")
             )
-            .required("Email address is required"),
+            .required(t("errors.email_required")),
         });
       case "phone":
         return Yup.object({
           inputValue: Yup.string()
-            .matches(/^\d{11}$/, "Phone number must be exactly 11 digits")
-            .required("Phone number is required"),
+            .matches(/^\d{11}$/, t("errors.phone_format"))
+            .required(t("errors.phone_required")),
         });
       case "id":
         return Yup.object({
           inputValue: Yup.string()
-            .matches(/^\d{14}$/, "User ID must be exactly 14 digits")
-            .required("User ID is required"),
+            .matches(/^\d{14}$/, t("errors.id_format"))
+            .required(t("errors.id_required")),
         });
       default:
         return Yup.object({
-          inputValue: Yup.string().required("This field is required"),
+          inputValue: Yup.string().required(t("errors.email_required")),
         });
     }
   };
 
   const formik = useFormik({
-    initialValues: {
-      inputValue: "",
-    },
+    initialValues: { inputValue: "" },
     validationSchema: getValidationSchema(),
-    enableReinitialize: true, // This allows the schema to update when resetMethod changes
-    onSubmit: (values) => {
-      console.log(`Reset password via ${resetMethod}:`, values.inputValue);
-      localStorage.setItem("identifier", values.inputValue);
-      navigate("/reset-password");
+    enableReinitialize: true,
+    onSubmit: async (values, { setSubmitting, setErrors }) => {
+      try {
+        localStorage.setItem("identifier", values.inputValue);
+        navigate("/reset-password");
+      } catch (error) {
+        console.error("Reset error:", error);
+        if (error.response?.data?.message) {
+          setErrors({ inputValue: error.response.data.message });
+        } else {
+          setErrors({
+            inputValue: t("errors.general_error") || "Unexpected error",
+          });
+        }
+      } finally {
+        setSubmitting(false);
+      }
     },
   });
 
-  const getIcon = () => {
-    switch (resetMethod) {
-      case "email":
-        return <MailIcon />;
-      case "phone":
-        return <PhoneIcon />;
-      case "id":
-        return <UserIcon />;
-      default:
-        return <MailIcon />;
-    }
-  };
+  const getIcon = () =>
+    resetMethod === "email" ? (
+      <MailIcon />
+    ) : resetMethod === "phone" ? (
+      <PhoneIcon />
+    ) : resetMethod === "id" ? (
+      <UserIcon />
+    ) : (
+      <MailIcon />
+    );
 
-  const getPlaceholder = () => {
-    switch (resetMethod) {
-      case "email":
-        return "email@example.com";
-      case "phone":
-        return "01234567890";
-      case "id":
-        return "12345678901234";
-      default:
-        return "email@example.com";
-    }
-  };
-
-  const getLabel = () => {
-    switch (resetMethod) {
-      case "email":
-        return "Email Address";
-      case "phone":
-        return "Phone Number (11 digits)";
-      case "id":
-        return "User ID (14 digits)";
-      default:
-        return "Email Address";
-    }
-  };
-
-  const getInputType = () => {
-    switch (resetMethod) {
-      case "email":
-        return "email";
-      case "phone":
-        return "tel";
-      case "id":
-        return "text";
-      default:
-        return "email";
-    }
-  };
+  const getPlaceholder = () => t(`${resetMethod}_placeholder`);
+  const getLabel = () => t(`${resetMethod}_label`);
+  const getInputType = () =>
+    resetMethod === "email"
+      ? "email"
+      : resetMethod === "phone"
+      ? "tel"
+      : "text";
 
   const handleMethodChange = (method) => {
     setResetMethod(method);
@@ -201,66 +177,48 @@ const ForgetPassword = () => {
     <div className="flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
         <div className="signin-card bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg shadow-sm p-6">
-          {/* Header */}
           <div className="text-center mb-6">
             <div className="inline-flex items-center justify-center w-12 h-12 bg-gray-100 dark:bg-gray-900 rounded-full mb-4">
               <KeyIcon />
             </div>
             <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-              Reset Password
+              {t("reset_password")}
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Choose how you'd like to reset your password
+              {t("choose_method")}
             </p>
           </div>
 
           <form onSubmit={formik.handleSubmit} className="space-y-4">
-            {/* Reset Method Selection */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                Reset Method
+                {t("reset_method")}
               </label>
               <div className="grid grid-cols-3 gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleMethodChange("email")}
-                  className={`flex items-center justify-center p-2 text-xs font-medium rounded-md transition-all duration-200 ${
-                    resetMethod === "email"
-                      ? "bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900"
-                      : "bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800"
-                  }`}
-                >
-                  <MailIcon />
-                  <span className="ml-1">Email</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleMethodChange("phone")}
-                  className={`flex items-center justify-center p-2 text-xs font-medium rounded-md transition-all duration-200 ${
-                    resetMethod === "phone"
-                      ? "bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900"
-                      : "bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800"
-                  }`}
-                >
-                  <PhoneIcon />
-                  <span className="ml-1">Phone</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleMethodChange("id")}
-                  className={`flex items-center justify-center p-2 text-xs font-medium rounded-md transition-all duration-200 ${
-                    resetMethod === "id"
-                      ? "bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900"
-                      : "bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800"
-                  }`}
-                >
-                  <UserIcon />
-                  <span className="ml-1">ID</span>
-                </button>
+                {["email", "phone", "id"].map((method) => (
+                  <button
+                    key={method}
+                    type="button"
+                    onClick={() => handleMethodChange(method)}
+                    className={`flex items-center justify-center p-2 text-xs font-medium rounded-md transition-all duration-200 ${
+                      resetMethod === method
+                        ? "bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900"
+                        : "bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800"
+                    }`}
+                  >
+                    {method === "email" ? (
+                      <MailIcon />
+                    ) : method === "phone" ? (
+                      <PhoneIcon />
+                    ) : (
+                      <UserIcon />
+                    )}
+                    <span className="ml-1">{t(method)}</span>
+                  </button>
+                ))}
               </div>
             </div>
 
-            {/* Input Field */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-900 dark:text-gray-100">
                 {getLabel()}
@@ -290,24 +248,21 @@ const ForgetPassword = () => {
               )}
             </div>
 
-            {/* Reset Button */}
             <button
               type="submit"
-              //   disabled={!formik.isValid || !formik.values.inputValue}
-              className="signin-button w-full bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 py-2 px-4 rounded-md text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-black transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
             >
-              Send Reset Instructions
+              {t("submit")}
             </button>
           </form>
 
-          {/* Back to Login */}
           <div className="mt-6 text-center">
             <Link
               to="/login"
               className="inline-flex items-center text-gray-900 dark:text-gray-100 font-medium hover:underline"
             >
               <ArrowLeftIcon />
-              <span className="ml-2">Back to Login</span>
+              <span className="ml-2">{t("back_to_login")}</span>
             </Link>
           </div>
         </div>
@@ -317,36 +272,3 @@ const ForgetPassword = () => {
 };
 
 export default ForgetPassword;
-
-const styles = `
-  .signin-input:focus {
-    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
-  }
-
-  .dark .signin-input:focus {
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
-  }
-
-  .signin-button:hover:not(:disabled) {
-    transform: translateY(-1px);
-  }
-
-  .signin-checkbox:checked + label .checkbox-icon {
-    background-color: currentColor;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .signin-card {
-    animation: fadeIn 0.3s ease-out;
-  }
-`;
-
-if (typeof document !== "undefined") {
-  const styleSheet = document.createElement("style");
-  styleSheet.textContent = styles;
-  document.head.appendChild(styleSheet);
-}

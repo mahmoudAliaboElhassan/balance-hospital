@@ -1,16 +1,25 @@
-import i18next from "i18next";
-import React from "react";
-import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
+import axios from "axios";
 
-function Home() {
-  const { t } = useTranslation();
-  return (
-    <div>
-      Home <div>{t("home")}</div>
-      <button onClick={() => i18next.changeLanguage("en")}>en</button>
-      <button onClick={() => i18next.changeLanguage("ar")}>ar</button>
-    </div>
-  );
-}
+const Home = () => {
+  useEffect(() => {
+    axios
+      .get("http://balancev1.runasp.net/api/v1/Category/Categories-types", {
+        withCredentials: true, // include cookies if your API uses them
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        // assuming your API returns { success: true, data: CategoryType[] }
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log("Error fetching category types:", err);
+      });
+  }, []);
+
+  return <div>hello</div>;
+};
 
 export default Home;

@@ -296,10 +296,9 @@ const LanguageToggle = ({
         className={`w-full text-left text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white block px-3 py-2 rounded-md text-base font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 dark:focus:ring-blue-400 ${
           isTransitioning ? "opacity-75 cursor-wait" : "cursor-pointer"
         } ${className}`}
-        aria-label={
-          t?.ariaLabel ||
-          `Switch to ${language === "en" ? "Arabic" : "English"}`
-        }
+        aria-label={t("switchTo", {
+          lang: language === "en" ? "العربية" : "English",
+        })}
         role="button"
         tabIndex={0}
       >
@@ -311,8 +310,9 @@ const LanguageToggle = ({
           <span className="transition-opacity duration-300">
             {isTransitioning
               ? "Switching..."
-              : t?.switchTo ||
-                `Switch to ${language === "en" ? "العربية" : "English"}`}
+              : t("switchTo", {
+                  lang: language === "en" ? "العربية" : "English",
+                })}
           </span>
         </div>
       </button>
