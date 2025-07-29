@@ -255,10 +255,15 @@ const FloatingLabelInput = ({
   ...props
 }) => {
   const [isFocused, setIsFocused] = useState(false);
+  const isRTL = dir === "rtl";
 
   return (
     <div className="relative group">
-      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground transition-colors group-focus-within:text-foreground">
+      <div
+        className={`absolute inset-y-0 ${
+          isRTL ? "right-0 pr-3" : "left-0 pl-3"
+        } flex items-center pointer-events-none text-muted-foreground transition-colors group-focus-within:text-foreground`}
+      >
         {icon}
       </div>
       <input
@@ -271,15 +276,17 @@ const FloatingLabelInput = ({
         dir={dir}
         className={`flex h-10 w-full rounded-md border ${
           error ? "border-red-500" : "border-input"
-        } bg-background pl-10 ${
-          rightIcon ? "pr-10" : "pr-3"
+        } bg-background ${isRTL ? "pr-12 pl-3" : "pl-12 pr-3"} ${
+          rightIcon ? (isRTL ? "pl-10" : "pr-10") : ""
         } py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 peer placeholder-transparent`}
         placeholder={placeholder}
         {...props}
       />
       <label
         htmlFor={id}
-        className={`absolute left-10 transition-all duration-200 pointer-events-none text-sm font-medium ${
+        className={`absolute ${
+          isRTL ? "right-12" : "left-12"
+        } transition-all duration-200 pointer-events-none text-sm font-medium ${
           isFocused || value
             ? "-top-2 text-xs bg-white dark:bg-black px-2 text-foreground rounded-sm"
             : "top-2.5 text-muted-foreground"
@@ -291,7 +298,9 @@ const FloatingLabelInput = ({
         <button
           type="button"
           onClick={onRightIconClick}
-          className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:text-foreground"
+          className={`absolute inset-y-0 ${
+            isRTL ? "left-0 pl-3" : "right-0 pr-3"
+          } flex items-center text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:text-foreground`}
         >
           {rightIcon}
         </button>
@@ -309,15 +318,13 @@ const FloatingLabelSelect = ({
   icon,
   options,
   error,
+  dir = "rtl", // Default is LTR
   ...props
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <div className="relative group">
-      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground transition-colors group-focus-within:text-foreground z-10">
-        {icon}
-      </div>
+    <div className="relative group" dir={dir}>
       <select
         id={id}
         value={value}
@@ -326,7 +333,9 @@ const FloatingLabelSelect = ({
         onBlur={() => setIsFocused(false)}
         className={`flex h-10 w-full rounded-md border ${
           error ? "border-red-500" : "border-input"
-        } bg-background pl-10 pr-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200`}
+        } bg-background pl-10 pr-10 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ${
+          dir === "rtl" ? "text-right" : "text-left"
+        }`}
         {...props}
       >
         <option value="">{placeholder}</option>
@@ -336,9 +345,12 @@ const FloatingLabelSelect = ({
           </option>
         ))}
       </select>
+
       <label
         htmlFor={id}
-        className={`absolute left-10 transition-all duration-200 pointer-events-none text-sm font-medium ${
+        className={`absolute ${
+          dir === "rtl" ? "right-10" : "left-10"
+        } transition-all duration-200 pointer-events-none text-sm font-medium ${
           isFocused || value
             ? "-top-2 text-xs bg-white dark:bg-black px-2 text-foreground rounded-sm"
             : "top-2.5 text-muted-foreground"
@@ -346,9 +358,19 @@ const FloatingLabelSelect = ({
       >
         {placeholder}
       </label>
+
+      <div
+        className={`absolute inset-y-0 ${
+          dir === "rtl" ? "right-0 pr-3" : "left-0 pl-3"
+        } flex items-center pointer-events-none text-muted-foreground transition-colors group-focus-within:text-foreground z-10`}
+      >
+        {icon}
+      </div>
     </div>
   );
 };
+
+// Toggle Button Component - REMOVED (no longer needed)
 
 // File Upload Component
 const FileUpload = ({ value, onChange, placeholder }) => {
@@ -410,6 +432,7 @@ const SignUp = () => {
   const { mymode } = useSelector((state) => state.mode);
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [contactMethod, setContactMethod] = useState("email"); // "email" or "phone"
   const [formData, setFormData] = useState({
     nameArabic: "",
     nameEnglish: "",
@@ -438,7 +461,7 @@ const SignUp = () => {
   ];
 
   const contractingTypeOptions = [
-    { value: "full-time", label: "Full Time" },
+    { value: "full-time", label: "بدوام كامل" },
     { value: "part-time", label: "Part Time" },
     { value: "contract", label: "Contract" },
     { value: "freelance", label: "Freelance" },
@@ -467,16 +490,19 @@ const SignUp = () => {
       newErrors.nameEnglish = "Please enter a valid English name";
     }
 
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!validateEmail(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
-    }
-
-    if (!formData.mobile.trim()) {
-      newErrors.mobile = "Mobile number is required";
-    } else if (!validateMobile(formData.mobile)) {
-      newErrors.mobile = "Please enter a valid mobile number";
+    // Validate based on selected contact method
+    if (contactMethod === "email") {
+      if (!formData.email.trim()) {
+        newErrors.email = "Email is required";
+      } else if (!validateEmail(formData.email)) {
+        newErrors.email = "Please enter a valid email address";
+      }
+    } else {
+      if (!formData.mobile.trim()) {
+        newErrors.mobile = "Mobile number is required";
+      } else if (!validateMobile(formData.mobile)) {
+        newErrors.mobile = "Please enter a valid mobile number";
+      }
     }
 
     if (!formData.category) {
@@ -527,6 +553,23 @@ const SignUp = () => {
     }
   };
 
+  const handleContactMethodChange = (method) => {
+    setContactMethod(method);
+    // Clear errors for the contact fields when switching
+    setErrors((prev) => ({
+      ...prev,
+      email: "",
+      mobile: "",
+    }));
+
+    // Clear the non-selected field value
+    if (method === "email") {
+      handleInputChange("mobile", "");
+    } else {
+      handleInputChange("email", "");
+    }
+  };
+
   const handleSubmit = async () => {
     if (!validateForm()) {
       return;
@@ -537,7 +580,16 @@ const SignUp = () => {
     try {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log("Form submitted:", formData);
+
+      // Prepare form data with the selected contact method
+      const submissionData = {
+        ...formData,
+        contactMethod,
+        primaryContact:
+          contactMethod === "email" ? formData.email : formData.mobile,
+      };
+
+      console.log("Form submitted:", submissionData);
       alert("Account created successfully!");
     } catch (error) {
       console.error("Error creating account:", error);
@@ -595,33 +647,70 @@ const SignUp = () => {
               </div>
             </div>
 
-            {/* Email and Mobile */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <FloatingLabelInput
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange("email", e.target.value)}
-                  placeholder="Email"
-                  icon={<MailIcon />}
-                  error={errors.email}
-                />
-                <ErrorMessage error={errors.email} />
+            {/* Contact Method Selection */}
+            <div className="space-y-3">
+              <label className="text-sm font-medium text-foreground">
+                Choose your contact method
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => handleContactMethodChange("email")}
+                  className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition-all duration-200 ${
+                    contactMethod === "email"
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground"
+                  }`}
+                >
+                  <MailIcon />
+                  <span className="font-medium">Email</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleContactMethodChange("phone")}
+                  className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition-all duration-200 ${
+                    contactMethod === "phone"
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground"
+                  }`}
+                >
+                  <PhoneIcon />
+                  <span className="font-medium">Phone</span>
+                </button>
               </div>
+            </div>
 
-              <div className="space-y-2">
-                <FloatingLabelInput
-                  id="mobile"
-                  type="tel"
-                  value={formData.mobile}
-                  onChange={(e) => handleInputChange("mobile", e.target.value)}
-                  placeholder="Mobile Number"
-                  icon={<PhoneIcon />}
-                  error={errors.mobile}
-                />
-                <ErrorMessage error={errors.mobile} />
-              </div>
+            {/* Dynamic Contact Field */}
+            <div className="space-y-2">
+              {contactMethod === "email" ? (
+                <>
+                  <FloatingLabelInput
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => handleInputChange("email", e.target.value)}
+                    placeholder="Email Address"
+                    icon={<MailIcon />}
+                    error={errors.email}
+                  />
+                  <ErrorMessage error={errors.email} />
+                </>
+              ) : (
+                <>
+                  <FloatingLabelInput
+                    id="mobile"
+                    type="tel"
+                    value={formData.mobile}
+                    onChange={(e) =>
+                      handleInputChange("mobile", e.target.value)
+                    }
+                    placeholder="Mobile Number"
+                    icon={<PhoneIcon />}
+                    error={errors.mobile}
+                  />
+                  <ErrorMessage error={errors.mobile} />
+                </>
+              )}
             </div>
 
             {/* Category and National ID */}
