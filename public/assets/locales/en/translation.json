@@ -7,21 +7,41 @@
     "password": "Password",
     "passwordPlaceholder": "Create a password",
     "button": "Login",
-    "forgetPassword": "Forget Password"
+    "forgetPassword": "Forget Password",
+    "success": "Logged in successfully!",
+    "rememberMe": "Remember me",
+    "loading": "Logging in...",
+    "error": {
+      "title": "Login failed",
+      "message": "An error occurred during login."
+    }
+  },
+  "common": {
+    "ok": "OK"
   },
 
+  "validationLogin": {
+    "email": {
+      "invalid": "Please enter a valid email address.",
+      "required": "Email is required."
+    },
+    "password": {
+      "minLength": "Password must be at least 6 characters.",
+      "required": "Password is required."
+    }
+  },
   "reset_password": "Reset Password",
   "choose_method": "Choose how you'd like to reset your password",
   "reset_method": "Reset Method",
   "email": "Email",
-  "phone": "Phone",
-  "id": "User ID",
+  "mobile": "Phone",
+  "nationalId": "User ID",
   "email_placeholder": "email@example.com",
-  "phone_placeholder": "01234567890",
-  "id_placeholder": "12345678901234",
+  "mobile_placeholder": "01234567890",
+  "nationalId_placeholder": "12345678901234",
   "email_label": "Email Address",
-  "phone_label": "Phone Number (11 digits)",
-  "id_label": "User ID (14 digits)",
+  "mobile_label": "Phone Number (11 digits)",
+  "nationalId_label": "User ID (14 digits)",
   "submit": "Send Reset Instructions",
   "back_to_login": "Back to Login",
   "errors": {
@@ -58,5 +78,32 @@
   "language": {
     "en": "EN",
     "ar": "AR"
+  },
+
+  "forgetPassword": {
+    "success": "Check your email for reset instructions!",
+    "error": {
+      "title": "Reset Failed",
+      "message": "Unable to initiate password reset."
+    },
+    "loading": "Sending reset request…",
+    "button": "Send Reset Link"
+  },
+
+  "resetPassword": {
+    "code_invalid": "Code must be exactly 6 digits.",
+    "code_required": "Verification code is required.",
+    "password_min": "Password must be at least 8 characters.",
+    "password_lower": "Password must include at least one lowercase letter.",
+    "password_upper": "Password must include at least one uppercase letter.",
+    "password_number": "Password must include at least one number.",
+    "password_required": "New password is required.",
+    "password_match": "Passwords must match.",
+    "confirm_required": "Please confirm your new password.",
+    "success": "Your password has been reset!",
+    "error": {
+      "title": "Reset Failed",
+      "message": "Unable to reset your password."
+    }
   }
 }

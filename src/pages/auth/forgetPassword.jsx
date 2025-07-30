@@ -3,6 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { forgetPassword } from "../../state/act/actAuth";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
+import i18next from "i18next";
+import UseInitialValues from "../../hooks/use-initial-values";
 
 const MailIcon = () => (
   <svg
@@ -91,7 +97,9 @@ const ForgetPassword = () => {
   const [resetMethod, setResetMethod] = useState("email");
   const navigate = useNavigate();
   const { t } = useTranslation();
-
+  const { loadingAuth } = useSelector((state) => state.auth);
+  const { mymode } = useSelector((state) => state.mode);
+  const curerentLanguage = i18next.language;
   const getValidationSchema = () => {
     switch (resetMethod) {
       case "email":
@@ -104,13 +112,13 @@ const ForgetPassword = () => {
             )
             .required(t("errors.email_required")),
         });
-      case "phone":
+      case "mobile":
         return Yup.object({
           inputValue: Yup.string()
             .matches(/^\d{11}$/, t("errors.phone_format"))
             .required(t("errors.phone_required")),
         });
-      case "id":
+      case "nationalId":
         return Yup.object({
           inputValue: Yup.string()
             .matches(/^\d{14}$/, t("errors.id_format"))
@@ -123,35 +131,54 @@ const ForgetPassword = () => {
     }
   };
 
+  const { INITIAL_VALUES_FORGET_PASSWORD } = UseInitialValues();
+  const dispatch = useDispatch();
   const formik = useFormik({
-    initialValues: { inputValue: "" },
+    initialValues: INITIAL_VALUES_FORGET_PASSWORD,
     validationSchema: getValidationSchema(),
     enableReinitialize: true,
-    onSubmit: async (values, { setSubmitting, setErrors }) => {
-      try {
-        localStorage.setItem("identifier", values.inputValue);
-        navigate("/reset-password");
-      } catch (error) {
-        console.error("Reset error:", error);
-        if (error.response?.data?.message) {
-          setErrors({ inputValue: error.response.data.message });
-        } else {
-          setErrors({
-            inputValue: t("errors.general_error") || "Unexpected error",
+    onSubmit: async (values) => {
+      localStorage.setItem("identifier", values.inputValue);
+      dispatch(forgetPassword({ [resetMethod]: values.inputValue }))
+        .unwrap()
+        .then(() => {
+          toast.success(t("forgetPassword.success"), {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
           });
-        }
-      } finally {
-        setSubmitting(false);
-      }
+          // 2) navigate after toast (you can also delay if you like)
+          navigate("/reset-password");
+        })
+        .catch((error) => {
+          console.log("Reset error:", error); // show SweetAlert error
+          Swal.fire({
+            title: t("forgetPassword.error.title"),
+            text:
+              curerentLanguage === "ar"
+                ? error?.response?.data?.messageAr ||
+                  t("forgetPassword.error.message")
+                : error?.response?.data?.messageEn ||
+                  t("forgetPassword.error.message"),
+            icon: "error",
+            confirmButtonText: t("common.ok"),
+            confirmButtonColor: "#ef4444",
+            background: mymode === "dark" ? "#1f2937" : "#ffffff",
+            color: mymode === "dark" ? "#f9fafb" : "#111827",
+          });
+        });
     },
   });
 
   const getIcon = () =>
     resetMethod === "email" ? (
       <MailIcon />
-    ) : resetMethod === "phone" ? (
+    ) : resetMethod === "mobile" ? (
       <PhoneIcon />
-    ) : resetMethod === "id" ? (
+    ) : resetMethod === "nationalId" ? (
       <UserIcon />
     ) : (
       <MailIcon />
@@ -162,7 +189,7 @@ const ForgetPassword = () => {
   const getInputType = () =>
     resetMethod === "email"
       ? "email"
-      : resetMethod === "phone"
+      : resetMethod === "mobile"
       ? "tel"
       : "text";
 
@@ -195,7 +222,7 @@ const ForgetPassword = () => {
                 {t("reset_method")}
               </label>
               <div className="grid grid-cols-3 gap-2">
-                {["email", "phone", "id"].map((method) => (
+                {["email", "mobile", "nationalId"].map((method) => (
                   <button
                     key={method}
                     type="button"
@@ -208,7 +235,7 @@ const ForgetPassword = () => {
                   >
                     {method === "email" ? (
                       <MailIcon />
-                    ) : method === "phone" ? (
+                    ) : method === "mobile" ? (
                       <PhoneIcon />
                     ) : (
                       <UserIcon />
@@ -247,12 +274,19 @@ const ForgetPassword = () => {
                 </p>
               )}
             </div>
-
             <button
               type="submit"
+              disabled={loadingAuth}
               className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
             >
-              {t("submit")}
+              {loadingAuth ? (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  {t("forgetPassword.loading")}
+                </div>
+              ) : (
+                t("forgetPassword.button")
+              )}
             </button>
           </form>
 

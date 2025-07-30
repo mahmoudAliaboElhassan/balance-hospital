@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Header from "../../components/Header";
 import { useSelector } from "react-redux";
+import { ToastContainer } from "react-toastify";
 
 function RootLayout() {
   const { mymode } = useSelector((state) => state.mode);
@@ -369,6 +370,7 @@ function RootLayout() {
         >
           <Header />
         </header>
+        <ToastContainer />
 
         {/* Main content area */}
         <main

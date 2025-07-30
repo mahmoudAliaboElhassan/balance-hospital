@@ -1,71 +1,106 @@
 import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { useDispatch, useSelector } from "react-redux";
+import { resetPassword } from "../../state/act/actAuth";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
+import i18next from "i18next";
+import { useNavigate } from "react-router-dom";
+import UseInitialValues from "../../hooks/use-initial-values";
+import UseFormValidation from "../../hooks/use-form-validation";
 
 export default function ResetPassword() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const currentLang = i18next.language;
+  const { loadingAuth } = useSelector((state) => state.auth);
+  const { mymode } = useSelector((state) => state.mode);
+
   const [token, setToken] = useState(new Array(6).fill(""));
   const [focusedIndex, setFocusedIndex] = useState(0);
-  const [identifier] = useState("user@example.com"); // Simulating localStorage
+  const [identifier] = useState(
+    localStorage.getItem("identifier") || "user@example.com"
+  );
   const inputRefs = useRef([]);
 
-  const [formData, setFormData] = useState({
-    newPassword: "",
-    confirmNewPassword: "",
+  // Yup validation schema
+  const { VALIDATION_SCHEMA_RESET_PASSWORD } = UseFormValidation();
+  const { INITIAL_VALUES_RESET_PASSWORD } = UseInitialValues();
+  const formik = useFormik({
+    initialValues: INITIAL_VALUES_RESET_PASSWORD,
+    validationSchema: VALIDATION_SCHEMA_RESET_PASSWORD,
+    onSubmit: async (values) => {
+      dispatch(
+        resetPassword({
+          token: values.token,
+          newPassword: values.newPassword,
+          confirmPassword: values.confirmNewPassword,
+          identifier: localStorage.getItem("identifier"),
+        })
+      )
+        .unwrap()
+        .then(() => {
+          toast.success(t("resetPassword.success"), {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
+
+          // Navigate to login after success
+          setTimeout(() => {
+            navigate("/login");
+          }, 1500);
+        })
+
+        .catch((error) => {
+          console.log("Reset error:", error);
+
+          // Error handling with SweetAlert
+          Swal.fire({
+            title: t("resetPassword.error.title"),
+            text:
+              currentLang === "ar"
+                ? error?.response?.data?.messageAr ||
+                  t("resetPassword.error.message")
+                : error?.response?.data?.messageEn ||
+                  t("resetPassword.error.message"),
+            icon: "error",
+            confirmButtonText: t("common.ok"),
+            confirmButtonColor: "#ef4444",
+            background: mymode === "dark" ? "#1f2937" : "#ffffff",
+            color: mymode === "dark" ? "#f9fafb" : "#111827",
+          });
+        });
+    },
   });
 
-  const [errors, setErrors] = useState({});
-  const [touched, setTouched] = useState({});
-
-  const validateToken = (tokenString) => {
-    if (!tokenString) return t("code_required");
-    if (tokenString.length !== 6 || !/^\d{6}$/.test(tokenString))
-      return t("code_invalid");
-    return "";
-  };
-
-  const validatePassword = (password) => {
-    if (!password) return t("password_required");
-    if (password.length < 8) return t("password_min");
-    if (!/(?=.*[a-z])/.test(password)) return t("password_lower");
-    if (!/(?=.*[A-Z])/.test(password)) return t("password_upper");
-    if (!/(?=.*\d)/.test(password)) return t("password_number");
-    return "";
-  };
-
-  const validateConfirmPassword = (confirmPassword, password) => {
-    if (!confirmPassword) return t("confirm_required");
-    if (confirmPassword !== password) return t("password_match");
-    return "";
-  };
-
-  const validateForm = () => {
-    const tokenString = token.join("");
-    const newErrors = {
-      token: validateToken(tokenString),
-      newPassword: validatePassword(formData.newPassword),
-      confirmNewPassword: validateConfirmPassword(
-        formData.confirmNewPassword,
-        formData.newPassword
-      ),
-    };
-
-    setErrors(newErrors);
-    return !Object.values(newErrors).some((error) => error);
-  };
-
+  // Token handling functions
   const handleTokenChange = (element, index) => {
     if (isNaN(Number(element.value)) || element.value === " ") {
       element.value = "";
       return;
     }
+
     const newToken = [...token];
     newToken[index] = element.value;
     setToken(newToken);
 
-    if (errors.token) {
-      setErrors((prev) => ({ ...prev, token: "" }));
+    // Update formik token value
+    const tokenString = newToken.join("");
+    formik.setFieldValue("token", tokenString);
+
+    // Clear token error if exists
+    if (formik.errors.token) {
+      formik.setFieldError("token", "");
     }
 
+    // Move to next input
     if (element.value && index < 5) {
       const nextInput = inputRefs.current[index + 1];
       if (nextInput) {
@@ -94,8 +129,13 @@ export default function ResetPassword() {
     }
     setToken(newToken);
 
-    if (errors.token) {
-      setErrors((prev) => ({ ...prev, token: "" }));
+    // Update formik token value
+    const tokenString = newToken.join("");
+    formik.setFieldValue("token", tokenString);
+
+    // Clear token error if exists
+    if (formik.errors.token) {
+      formik.setFieldError("token", "");
     }
 
     const lastFullInput = Math.min(pasteData.length - 1, 5);
@@ -107,68 +147,35 @@ export default function ResetPassword() {
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
-    }
-  };
-
-  const handleInputBlur = (e) => {
-    const { name } = e.target;
-    setTouched((prev) => ({ ...prev, [name]: true }));
-
-    let error = "";
-    if (name === "newPassword") {
-      error = validatePassword(formData.newPassword);
-    } else if (name === "confirmNewPassword") {
-      error = validateConfirmPassword(
-        formData.confirmNewPassword,
-        formData.newPassword
-      );
-    }
-
-    setErrors((prev) => ({ ...prev, [name]: error }));
-  };
-
   const handleTokenBlur = () => {
-    setTouched((prev) => ({ ...prev, token: true }));
+    formik.setFieldTouched("token", true);
     const tokenString = token.join("");
-    const error = validateToken(tokenString);
-    setErrors((prev) => ({ ...prev, token: error }));
+    formik.setFieldValue("token", tokenString);
   };
 
-  const handleSubmit = () => {
-    setTouched({ token: true, newPassword: true, confirmNewPassword: true });
+  const handleResendCode = async () => {
+    try {
+      // Reset token
+      setToken(new Array(6).fill(""));
+      formik.setFieldValue("token", "");
+      formik.setFieldError("token", "");
 
-    if (validateForm()) {
-      const tokenString = token.join("");
-      console.log("Form submitted with values:", {
-        token: tokenString,
-        newPassword: formData.newPassword,
-        confirmNewPassword: formData.confirmNewPassword,
-        identifier,
+      // You can dispatch a resend action here if available
+      // await dispatch(resendResetCode({ identifier })).unwrap();
+
+      toast.success(t("resetPassword.resend_success"), {
+        position: "top-right",
+        autoClose: 3000,
       });
-      alert(t("success_message"));
+    } catch (error) {
+      toast.error(t("resetPassword.resend_error"), {
+        position: "top-right",
+        autoClose: 3000,
+      });
     }
   };
 
-  const isFormValid = () => {
-    const tokenString = token.join("");
-    return (
-      tokenString.length === 6 &&
-      formData.newPassword &&
-      formData.confirmNewPassword &&
-      !validateToken(tokenString) &&
-      !validatePassword(formData.newPassword) &&
-      !validateConfirmPassword(
-        formData.confirmNewPassword,
-        formData.newPassword
-      )
-    );
-  };
-
+  // Focus first input on mount
   useEffect(() => {
     const firstInput = inputRefs.current[0];
     if (firstInput) {
@@ -205,7 +212,8 @@ export default function ResetPassword() {
           </p>
         </div>
 
-        <div className="space-y-6">
+        <form onSubmit={formik.handleSubmit} className="space-y-6">
+          {/* Token Input */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
               {t("reset_code_label")}
@@ -238,18 +246,19 @@ export default function ResetPassword() {
                     ${
                       focusedIndex === index
                         ? "border-2 border-blue-500"
-                        : touched.token && errors.token
+                        : formik.touched.token && formik.errors.token
                         ? "border-2 border-red-500"
                         : "border border-dashed border-gray-300 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-600"
                     }`}
                 />
               ))}
             </div>
-            {touched.token && errors.token && (
-              <p className="text-red-500 text-sm mt-1">{errors.token}</p>
+            {formik.touched.token && formik.errors.token && (
+              <p className="text-red-500 text-sm mt-1">{formik.errors.token}</p>
             )}
           </div>
 
+          {/* New Password */}
           <div>
             <label
               htmlFor="newPassword"
@@ -260,21 +269,24 @@ export default function ResetPassword() {
             <input
               type="password"
               name="newPassword"
-              value={formData.newPassword}
-              onChange={handleInputChange}
-              onBlur={handleInputBlur}
+              value={formik.values.newPassword}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               placeholder={t("new_password_placeholder")}
-              className={`w-full px-3 py-3 border rounded-lg bg-gray-50 dark:bg-[#0D1117] text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                touched.newPassword && errors.newPassword
-                  ? "border-red-500"
+              className={`w-full px-3 py-3 border rounded-lg bg-gray-50 dark:bg-[#0D1117] text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 ${
+                formik.touched.newPassword && formik.errors.newPassword
+                  ? "border-red-500 focus:ring-red-500"
                   : "border-gray-300 dark:border-gray-700"
               }`}
             />
-            {touched.newPassword && errors.newPassword && (
-              <p className="text-red-500 text-sm mt-1">{errors.newPassword}</p>
+            {formik.touched.newPassword && formik.errors.newPassword && (
+              <p className="text-red-500 text-sm mt-1">
+                {formik.errors.newPassword}
+              </p>
             )}
           </div>
 
+          {/* Confirm Password */}
           <div>
             <label
               htmlFor="confirmNewPassword"
@@ -285,49 +297,56 @@ export default function ResetPassword() {
             <input
               type="password"
               name="confirmNewPassword"
-              value={formData.confirmNewPassword}
-              onChange={handleInputChange}
-              onBlur={handleInputBlur}
+              value={formik.values.confirmNewPassword}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               placeholder={t("confirm_password_placeholder")}
-              className={`w-full px-3 py-3 border rounded-lg bg-gray-50 dark:bg-[#0D1117] text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                touched.confirmNewPassword && errors.confirmNewPassword
-                  ? "border-red-500"
+              className={`w-full px-3 py-3 border rounded-lg bg-gray-50 dark:bg-[#0D1117] text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 ${
+                formik.touched.confirmNewPassword &&
+                formik.errors.confirmNewPassword
+                  ? "border-red-500 focus:ring-red-500"
                   : "border-gray-300 dark:border-gray-700"
               }`}
             />
-            {touched.confirmNewPassword && errors.confirmNewPassword && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.confirmNewPassword}
-              </p>
-            )}
+            {formik.touched.confirmNewPassword &&
+              formik.errors.confirmNewPassword && (
+                <p className="text-red-500 text-sm mt-1">
+                  {formik.errors.confirmNewPassword}
+                </p>
+              )}
           </div>
 
+          {/* Submit Button */}
           <button
-            type="button"
-            // disabled={!isFormValid()}
-            onClick={handleSubmit}
+            type="submit"
+            disabled={loadingAuth || formik.isSubmitting || !formik.isValid}
             className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
           >
-            {t("submit-reset")}
+            {loadingAuth || formik.isSubmitting ? (
+              <div className="flex items-center justify-center">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                {t("resetPassword.loading")}
+              </div>
+            ) : (
+              t("submit-reset")
+            )}
           </button>
 
+          {/* Resend Code */}
           <div className="text-center">
             <p className="text-gray-500 dark:text-gray-500 text-sm">
               {t("resend_info")}{" "}
               <button
                 type="button"
-                onClick={() => {
-                  setToken(new Array(6).fill(""));
-                  setErrors((prev) => ({ ...prev, token: "" }));
-                  alert("Code resent");
-                }}
-                className="text-blue-600 dark:text-blue-500 hover:underline font-semibold"
+                onClick={handleResendCode}
+                disabled={loadingAuth}
+                className="text-blue-600 dark:text-blue-500 hover:underline font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {t("resend_code")}
               </button>
             </p>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

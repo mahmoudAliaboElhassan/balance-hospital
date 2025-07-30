@@ -5,7 +5,10 @@ function UseInitialStates() {
   const initialStateMode = {
     mymode: localStorage.getItem("mymode") || "light",
   };
-  return { initialStateMode };
+  const initialStateAuth = {
+    token: localStorage.getItem("token") || "",
+  };
+  return { initialStateMode, initialStateAuth };
 }
 
 export default UseInitialStates;
