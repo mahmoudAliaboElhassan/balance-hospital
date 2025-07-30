@@ -20,7 +20,10 @@ export const authSlice = createSlice({
       })
       .addCase(logIn.fulfilled, (state, action) => {
         state.loadingAuth = false;
-        console.log("action.payload", action.payload);
+        localStorage.setItem("token", action.payload.data.accessToken);
+        state.token = action.payload.data.accessToken;
+        localStorage.setItem("role", action.payload.data.user.role);
+        state.role = action.payload.data.user.role;
       })
       .addCase(logIn.rejected, (state, action) => {
         state.loadingAuth = false;

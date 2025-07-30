@@ -99,9 +99,124 @@
     "password_match": "كلمتا المرور غير متطابقتين.",
     "confirm_required": "من فضلك أكّد كلمة المرور الجديدة.",
     "success": "تم إعادة تعيين كلمة المرور!",
+    "loading": "جاري إعادة تعيين كلمة المرور…",
     "error": {
       "title": "فشل الإعادة",
       "message": "لم نتمكن من إعادة تعيين كلمة المرور."
     }
+  },
+  "adminPanel": {
+    "categories": "الفئات",
+    "departments": "الأقسام",
+    "subDepartments": "الأقسام الفرعية",
+    "managementRoles": "أدوار الإدارة",
+    "scientificDegrees": "الدرجات العلمية",
+    "contractTypes": "أنواع العقود",
+    "shiftHours": "ساعات العمل"
+  },
+  "categories": {
+    "title": "الفئات",
+    "loading": "جاري التحميل...",
+    "noData": "لا توجد فئات متاحة",
+    "search": {
+      "placeholder": "البحث في الفئات..."
+    },
+    "filters": {
+      "title": "الفلاتر",
+      "status": "الحالة",
+      "all": "الكل",
+      "orderBy": "ترتيب حسب",
+      "orderDirection": "اتجاه الترتيب",
+      "ascending": "تصاعدي",
+      "descending": "تنازلي",
+      "sortBy": {
+        "createdAt": "تاريخ الإنشاء",
+        "nameArabic": "الاسم بالعربية",
+        "nameEnglish": "الاسم بالإنجليزية",
+        "code": "الكود"
+      }
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط"
+    },
+    "table": {
+      "code": "الكود",
+      "name": "الاسم",
+      "nameArabic": "الاسم بالعربية",
+      "nameEnglish": "الاسم بالإنجليزية",
+      "description": "الوصف",
+      "status": "الحالة",
+      "departments": "الأقسام",
+      "users": "المستخدمين",
+      "createdAt": "تاريخ الإنشاء",
+      "actions": "الإجراءات"
+    },
+    "actions": {
+      "add": "إضافة",
+      "addNew": "إضافة فئة جديدة",
+      "view": "عرض",
+      "edit": "تعديل",
+      "delete": "حذف"
+    },
+    "pagination": {
+      "showing": "عرض {{start}} - {{end}} من {{total}} عنصر",
+      "itemsPerPage": "عنصر لكل صفحة",
+      "previous": "السابق",
+      "next": "التالي"
+    }
+  },
+  "categoryForm": {
+    "title": "إنشاء فئة جديدة",
+    "fields": {
+      "nameArabic": "الاسم العربي",
+      "nameEnglish": "الاسم الإنجليزي",
+      "code": "ال كود",
+      "description": "الوصف",
+      "isActive": "الفئة نشطة"
+    },
+    "placeholders": {
+      "nameArabic": "أدخل الاسم العربي للفئة",
+      "nameEnglish": "أدخل الاسم الإنجليزي للفئة",
+      "code": "CATEGORY_CODE",
+      "description": "أدخل وصف الفئة (اختياري)"
+    },
+    "hints": {
+      "code": "يجب أن يحتوي على أحرف إنجليزية كبيرة وأرقام وشرطة سفلية فقط"
+    },
+    "validation": {
+      "nameArabic": {
+        "required": "الاسم العربي مطلوب",
+        "min": "الاسم العربي يجب أن يكون على الأقل حرفين",
+        "max": "الاسم العربي يجب أن يكون أقل من 100 حرف"
+      },
+      "nameEnglish": {
+        "required": "الاسم الإنجليزي مطلوب",
+        "min": "الاسم الإنجليزي يجب أن يكون على الأقل حرفين",
+        "max": "الاسم الإنجليزي يجب أن يكون أقل من 100 حرف"
+      },
+      "code": {
+        "required": "الكود مطلوب",
+        "pattern": "الكود يجب أن يحتوي على أحرف إنجليزية كبيرة وأرقام وشرطة سفلية فقط",
+        "min": "الكود يجب أن يكون على الأقل حرفين",
+        "max": "الكود يجب أن يكون أقل من 50 حرف"
+      },
+      "description": {
+        "max": "الوصف يجب أن يكون أقل من 500 حرف"
+      }
+    },
+    "success": {
+      "created": "تم إنشاء الفئة بنجاح!"
+    },
+    "error": {
+      "title": "خطأ في إنشاء الفئة",
+      "message": "حدث خطأ أثناء إنشاء الفئة. يرجى المحاولة مرة أخرى."
+    },
+    "buttons": {
+      "create": "إنشاء الفئة",
+      "creating": "جاري الإنشاء...",
+      "cancel": "إلغاء"
+    },
+    "charactersCount": "حرف"
   }
 }

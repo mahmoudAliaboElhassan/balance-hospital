@@ -1,5 +1,6 @@
 function UseDirection() {
   const dir = document.documentElement.dir || "ltr";
+  console.log("dir", dir);
   const left = dir === "ltr" ? "left" : "right";
   const right = dir === "ltr" ? "right" : "left";
 

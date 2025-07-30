@@ -266,12 +266,14 @@ const LanguageToggle = ({
   // Apply language settings on mount and when language changes
   useEffect(() => {
     applyLanguageChanges(language);
+    document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
   }, [language, applyLanguageChanges]);
 
   const handleLanguageToggle = useCallback(() => {
     if (isTransitioning) return; // Prevent multiple rapid clicks
 
     const newLanguage = language === "en" ? "ar" : "en";
+    document.documentElement.dir = newLanguage === "ar" ? "rtl" : "ltr";
     setLanguage(newLanguage);
   }, [language, isTransitioning]);
 

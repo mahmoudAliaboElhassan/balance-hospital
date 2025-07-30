@@ -101,9 +101,127 @@
     "password_match": "Passwords must match.",
     "confirm_required": "Please confirm your new password.",
     "success": "Your password has been reset!",
+    "loading": "Resetting password…",
     "error": {
       "title": "Reset Failed",
       "message": "Unable to reset your password."
     }
+  },
+
+  "adminPanel": {
+    "categories": "Categories",
+    "departments": "Departments",
+    "subDepartments": "Sub Departments",
+    "managementRoles": "Management Roles",
+    "scientificDegrees": "Scientific Degrees",
+    "contractTypes": "Contract Types",
+    "shiftHours": "Shift Hours"
+  },
+
+  "categories": {
+    "title": "Categories",
+    "loading": "Loading...",
+    "noData": "No categories available",
+    "search": {
+      "placeholder": "Search categories..."
+    },
+    "filters": {
+      "title": "Filters",
+      "status": "Status",
+      "all": "All",
+      "orderBy": "Sort By",
+      "orderDirection": "Sort Direction",
+      "ascending": "Ascending",
+      "descending": "Descending",
+      "sortBy": {
+        "createdAt": "Creation Date",
+        "nameArabic": "Arabic Name",
+        "nameEnglish": "English Name",
+        "code": "Code"
+      }
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "table": {
+      "code": "Code",
+      "name": "Name",
+      "nameArabic": "Arabic Name",
+      "nameEnglish": "English Name",
+      "description": "Description",
+      "status": "Status",
+      "departments": "Departments",
+      "users": "Users",
+      "createdAt": "Created At",
+      "actions": "Actions"
+    },
+    "actions": {
+      "add": "Add",
+      "addNew": "Add New Category",
+      "view": "View",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "pagination": {
+      "showing": "Showing {{start}} - {{end}} of {{total}} items",
+      "itemsPerPage": "items per page",
+      "previous": "Previous",
+      "next": "Next"
+    }
+  },
+
+  "categoryForm": {
+    "title": "Create New Category",
+    "fields": {
+      "nameArabic": "Arabic Name",
+      "nameEnglish": "English Name",
+      "code": "Code",
+      "description": "Description",
+      "isActive": "Category is active"
+    },
+    "placeholders": {
+      "nameArabic": "Enter Arabic category name",
+      "nameEnglish": "Enter English category name",
+      "code": "CATEGORY_CODE",
+      "description": "Enter category description (optional)"
+    },
+    "hints": {
+      "code": "Must contain only uppercase English letters, numbers, and underscores"
+    },
+    "validation": {
+      "nameArabic": {
+        "required": "Arabic name is required",
+        "min": "Arabic name must be at least 2 characters",
+        "max": "Arabic name must be less than 100 characters"
+      },
+      "nameEnglish": {
+        "required": "English name is required",
+        "min": "English name must be at least 2 characters",
+        "max": "English name must be less than 100 characters"
+      },
+      "code": {
+        "required": "Code is required",
+        "pattern": "Code must contain only uppercase English letters, numbers, and underscores",
+        "min": "Code must be at least 2 characters",
+        "max": "Code must be less than 50 characters"
+      },
+      "description": {
+        "max": "Description must be less than 500 characters"
+      }
+    },
+    "success": {
+      "created": "Category created successfully!"
+    },
+    "error": {
+      "title": "Error Creating Category",
+      "message": "An error occurred while creating the category. Please try again."
+    },
+    "buttons": {
+      "create": "Create Category",
+      "creating": "Creating...",
+      "cancel": "Cancel"
+    },
+    "charactersCount": "characters"
   }
 }
