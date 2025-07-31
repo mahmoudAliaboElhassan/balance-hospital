@@ -1,5 +1,3 @@
-import React from "react";
-
 function UseInitialStates() {
   const initialStateMode = {
     mymode: localStorage.getItem("mymode") || "light",
@@ -13,44 +11,48 @@ function UseInitialStates() {
   };
 
   const initialStateCategories = {
-    // Loading states
-    loadingGetCategories: false,
-
-    // Data
+    // Existing properties...
     categories: [],
-
-    // Pagination info
-    pagination: {
-      totalCount: 0,
-      page: 1,
-      pageSize: 10,
-      totalPages: 0,
-      hasNextPage: false,
-      hasPreviousPage: false,
-    },
-
-    // Filters state
-    filters: {
-      search: "",
-      isActive: true, // null = all, true = active only, false = inactive only
-      orderBy: "createdAt", // createdAt, nameArabic, nameEnglish, code
-      orderDesc: true,
-      page: 1,
-      pageSize: 10,
-      includeDepartments: true,
-      includeStatistics: true,
-      includeChief: false,
-    },
-
-    // API response metadata
+    pagination: null,
+    error: null,
     message: "",
     timestamp: null,
 
-    // Error handling
-    error: null,
+    // Loading states
+    loadingGetCategories: false,
+    loadingCreateCategory: false,
+    loadingGetSingleCategory: false,
+    loadingUpdateCategory: false,
+    loadingDeleteCategory: false, // New loading state for delete
+
+    // Create category states
     createSuccess: false,
     createMessage: "",
     createError: null,
+
+    // Update category states
+    updateSuccess: false,
+    updateMessage: "",
+    updateError: null,
+
+    // Delete category states (New)
+    deleteSuccess: false,
+    deleteMessage: "",
+    deleteError: null,
+
+    // Single category states
+    selectedCategory: null,
+    singleCategoryError: null,
+
+    // Filters
+    filters: {
+      search: "",
+      isActive: true,
+      orderBy: "createdAt",
+      orderDesc: true,
+      page: 1,
+      pageSize: 10,
+    },
   };
 
   return {

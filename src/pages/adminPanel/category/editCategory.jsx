@@ -1,39 +1,74 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
-import { createCategory } from "../../../state/act/actCategory";
-import { useNavigate } from "react-router-dom";
-import UseInitialValues from "../../../hooks/use-initial-values";
+import {
+  updateCategory,
+  getCategoryById,
+} from "../../../state/act/actCategory";
+import { useNavigate, useParams } from "react-router-dom";
 import UseFormValidation from "../../../hooks/use-form-validation";
+import LoadingGetData from "../../../components/LoadingGetData";
 
-function CreateCategory() {
+function EditCategory() {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { catId: id } = useParams();
   const currentLang = i18n.language;
   const isRTL = currentLang === "ar";
 
-  const { loadingCreateCategory, createError, createSuccess, createMessage } =
-    useSelector((state) => state.category);
+  const {
+    loadingUpdateCategory,
+    updateError,
+    updateSuccess,
+    updateMessage,
+    selectedCategory,
+    loadingGetSingleCategory,
+    singleCategoryError,
+  } = useSelector((state) => state.category);
 
   // Validation schema with translations
-  const { VALIDATION_SCHEMA_ADD_CATEGORY } = UseFormValidation();
-  const navigate = useNavigate();
-  // Initial form values
-  const { INITIAL_VALUES_ADD_CATEGORY } = UseInitialValues();
-  const handleSubmit = async (
-    values,
-    { setSubmitting, resetForm, setFieldError }
-  ) => {
-    dispatch(createCategory(values))
+  const { VALIDATION_SCHEMA_EDIT_CATEGORY } = UseFormValidation();
+
+  // Fetch category data on component mount
+  useEffect(() => {
+    if (id) {
+      dispatch(getCategoryById({ categoryId: id }));
+    }
+  }, [dispatch, id]);
+
+  // Initial form values based on selected category
+  const getInitialValues = () => {
+    if (selectedCategory) {
+      return {
+        id: selectedCategory.id,
+        nameArabic: selectedCategory.nameArabic || "",
+        nameEnglish: selectedCategory.nameEnglish || "",
+        code: selectedCategory.code || "",
+        description: selectedCategory.description || "",
+        isActive: selectedCategory.isActive || false,
+      };
+    }
+    return {
+      id: parseInt(id),
+      nameArabic: "",
+      nameEnglish: "",
+      code: "",
+      description: "",
+      isActive: true,
+    };
+  };
+
+  const handleSubmit = async (values, { setSubmitting, setFieldError }) => {
+    dispatch(updateCategory({ categoryId: id, categoryData: values }))
       .unwrap()
       .then(() => {
         // Success handling
-        resetForm();
-        toast.success(t("categoryForm.success.created"), {
+        toast.success(t("categoryForm.success.updated"), {
           position: "top-right",
           autoClose: 3000,
           hideProgressBar: false,
@@ -44,7 +79,7 @@ function CreateCategory() {
         navigate("/admin-panel/categories");
       })
       .catch((error) => {
-        console.error("Category creation error:", error);
+        console.error("Category update error:", error);
 
         Swal.fire({
           title: t("categoryForm.error.title"),
@@ -60,8 +95,48 @@ function CreateCategory() {
           background: "#ffffff",
           color: "#111827",
         });
+      })
+      .finally(() => {
+        setSubmitting(false);
       });
   };
+
+  // Show loading state while fetching category
+  if (loadingGetSingleCategory) {
+    return <LoadingGetData />;
+  }
+
+  // Show error state if category not found
+  if (singleCategoryError) {
+    return (
+      <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
+        <div className="text-center py-12">
+          <div className="text-red-500 text-lg mb-4">
+            {currentLang === "ar"
+              ? singleCategoryError.message
+              : "Category not found"}
+          </div>
+          <button
+            onClick={() => navigate("/admin-panel/categories")}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          >
+            {t("common.goBack")}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render form until category data is loaded
+  if (!selectedCategory) {
+    return (
+      <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
+        <div className="flex justify-center items-center py-12">
+          <div className="text-gray-600">{t("common.noData")}</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
@@ -70,12 +145,12 @@ function CreateCategory() {
           isRTL ? "font-arabic" : ""
         }`}
       >
-        {t("categoryForm.title")}
+        {t("categoryForm.editTitle")}
       </h2>
 
       <Formik
-        initialValues={INITIAL_VALUES_ADD_CATEGORY}
-        validationSchema={VALIDATION_SCHEMA_ADD_CATEGORY}
+        initialValues={getInitialValues()}
+        validationSchema={VALIDATION_SCHEMA_EDIT_CATEGORY}
         onSubmit={handleSubmit}
         enableReinitialize
       >
@@ -232,22 +307,22 @@ function CreateCategory() {
                 type="button"
                 className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 onClick={() => {
-                  window.history.back();
+                  navigate("/admin-panel/categories");
                 }}
               >
                 {t("categoryForm.buttons.cancel")}
               </button>
-              
+
               <button
                 type="submit"
-                disabled={isSubmitting || loadingCreateCategory}
+                disabled={isSubmitting || loadingUpdateCategory}
                 className={`px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-                  isSubmitting || loadingCreateCategory
+                  isSubmitting || loadingUpdateCategory
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-blue-600 hover:bg-blue-700"
                 }`}
               >
-                {isSubmitting || loadingCreateCategory ? (
+                {isSubmitting || loadingUpdateCategory ? (
                   <div className="flex items-center">
                     <svg
                       className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
@@ -269,10 +344,10 @@ function CreateCategory() {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                    {t("categoryForm.buttons.creating")}
+                    {t("categoryForm.buttons.editing")}
                   </div>
                 ) : (
-                  t("categoryForm.buttons.create")
+                  t("categoryForm.buttons.edit")
                 )}
               </button>
             </div>
@@ -283,4 +358,4 @@ function CreateCategory() {
   );
 }
 
-export default CreateCategory;
+export default EditCategory;

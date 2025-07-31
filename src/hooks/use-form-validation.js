@@ -50,11 +50,36 @@ function UseFormValidation() {
 
     isActive: Yup.boolean(),
   });
+  const VALIDATION_SCHEMA_EDIT_CATEGORY = Yup.object({
+    nameArabic: Yup.string()
+      .required(t("categoryForm.validation.nameArabic.required"))
+      .min(2, t("categoryForm.validation.nameArabic.min"))
+      .max(100, t("categoryForm.validation.nameArabic.max")),
+
+    nameEnglish: Yup.string()
+      .required(t("categoryForm.validation.nameEnglish.required"))
+      .min(2, t("categoryForm.validation.nameEnglish.min"))
+      .max(100, t("categoryForm.validation.nameEnglish.max")),
+
+    code: Yup.string()
+      .required(t("categoryForm.validation.code.required"))
+      .matches(/^[A-Z0-9_]+$/, t("categoryForm.validation.code.pattern"))
+      .min(2, t("categoryForm.validation.code.min"))
+      .max(50, t("categoryForm.validation.code.max")),
+
+    description: Yup.string().max(
+      500,
+      t("categoryForm.validation.description.max")
+    ),
+
+    isActive: Yup.boolean(),
+  });
 
   return {
     VALIDATION_SCHEMA_LOGIN,
     VALIDATION_SCHEMA_RESET_PASSWORD,
     VALIDATION_SCHEMA_ADD_CATEGORY,
+    VALIDATION_SCHEMA_EDIT_CATEGORY,
   };
 }
 

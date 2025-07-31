@@ -12,6 +12,8 @@ import AdminPanel from "../pages/adminPanel";
 import Category from "../pages/adminPanel/category";
 import Department from "../pages/adminPanel/department";
 import CreateCategory from "../pages/adminPanel/category/createCategory";
+import SpecificCategory from "../pages/adminPanel/category/specificCategory";
+import EditCategory from "../pages/adminPanel/category/editCategory";
 
 const router = createBrowserRouter([
   {
@@ -80,6 +82,22 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<Loader />}>
                 <CreateCategory />
+              </Suspense>
+            ),
+          },
+          {
+            path: "category/:catId",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <SpecificCategory />
+              </Suspense>
+            ),
+          },
+          {
+            path: "category/edit/:catId",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <EditCategory />
               </Suspense>
             ),
           },

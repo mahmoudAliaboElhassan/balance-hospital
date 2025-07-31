@@ -232,10 +232,10 @@ const LanguageToggle = ({
 
       // Store language preference
       localStorage.setItem("language", newLanguage);
-
+      localStorage.getItem("language");
       // Change language with i18next
       await i18next.changeLanguage(newLanguage);
-
+      console.log("i18next language changed to:", i18next.language);
       // Clean up after transition completes
       setTimeout(() => {
         setIsTransitioning(false);
@@ -270,10 +270,10 @@ const LanguageToggle = ({
   }, [language, applyLanguageChanges]);
 
   const handleLanguageToggle = useCallback(() => {
-    if (isTransitioning) return; // Prevent multiple rapid clicks
+    if (isTransitioning) return;
 
     const newLanguage = language === "en" ? "ar" : "en";
-    document.documentElement.dir = newLanguage === "ar" ? "rtl" : "ltr";
+    // document.documentElement.dir = newLanguage === "ar" ? "rtl" : "ltr";
     setLanguage(newLanguage);
   }, [language, isTransitioning]);
 

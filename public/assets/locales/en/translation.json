@@ -17,7 +17,10 @@
     }
   },
   "common": {
-    "ok": "OK"
+    "ok": "OK",
+    "cancel": "Cancel",
+    "goBack": "Go Back",
+    "noData": "No data available"
   },
 
   "validationLogin": {
@@ -30,6 +33,7 @@
       "required": "Password is required."
     }
   },
+
   "reset_password": "Reset Password",
   "choose_method": "Choose how you'd like to reset your password",
   "reset_method": "Reset Method",
@@ -44,6 +48,7 @@
   "nationalId_label": "User ID (14 digits)",
   "submit": "Send Reset Instructions",
   "back_to_login": "Back to Login",
+
   "errors": {
     "email_required": "Email address is required",
     "email_format": "Please enter a valid email address (e.g., email@example.com)",
@@ -122,6 +127,15 @@
     "title": "Categories",
     "loading": "Loading...",
     "noData": "No categories available",
+    "delete": {
+      "title": "Delete Category",
+      "confirmMessage": "Are you sure you want to delete this category?",
+      "reason": "Reason for deletion",
+      "reasonPlaceholder": "Enter a reason...",
+      "reasonRequired": "Please provide a reason for deletion.",
+      "confirm": "Delete"
+    },
+    "deleteSuccess": "Category “{{name}}” deleted successfully!",
     "search": {
       "placeholder": "Search categories..."
     },
@@ -211,17 +225,68 @@
       }
     },
     "success": {
-      "created": "Category created successfully!"
+      "created": "Category created successfully!",
+      "updated": "Category updated successfully!"
     },
     "error": {
       "title": "Error Creating Category",
       "message": "An error occurred while creating the category. Please try again."
     },
+    "editTitle": "Edit Category",
     "buttons": {
       "create": "Create Category",
       "creating": "Creating...",
+      "edit": "Save Changes",
+      "editing": "Saving...",
       "cancel": "Cancel"
     },
     "charactersCount": "characters"
-  }
+  },
+
+  "category": {
+    "error": {
+      "message": "An error occurred while updating the category."
+    }
+  },
+
+  "specificCategory": {
+    "error": {
+      "title": "An Error Occurred",
+      "backToCategories": "Back to Categories"
+    },
+    "notFound": {
+      "title": "Category Not Found",
+      "backToCategories": "Back to Categories"
+    },
+    "navigation": {
+      "backToCategories": "Back to Categories"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "sections": {
+      "description": {
+        "title": "Description",
+        "noDescription": "No description available"
+      },
+      "chief": {
+        "title": "Chief"
+      },
+      "statistics": {
+        "title": "Statistics",
+        "departmentsCount": "Departments Count",
+        "usersCount": "Users Count"
+      },
+      "metadata": {
+        "title": "Additional Information",
+        "createdAt": "Created Date",
+        "createdBy": "Created By",
+        "updatedAt": "Updated Date",
+        "updatedBy": "Updated By"
+      }
+    }
+  },
+
+  "loading": "loading..."
 }

@@ -50,6 +50,53 @@ export const getCategories = createAsyncThunk(
   }
 );
 
+export const getCategoryById = createAsyncThunk(
+  "categorySlice/getCategoryById",
+  async ({ categoryId }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+
+    try {
+      // Validate categoryId
+      if (!categoryId) {
+        return rejectWithValue({
+          message: "معرف الفئة مطلوب",
+          messageEn: "Category ID is required",
+        });
+      }
+
+      const res = await axiosInstance.get(`/api/v1/Category/${categoryId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      console.log("Category fetched successfully:", res);
+      return res.data;
+    } catch (error) {
+      console.log("Error fetching category:", error);
+
+      // Handle specific error cases
+      if (error.response?.status === 404) {
+        return rejectWithValue({
+          message: "الفئة غير موجودة",
+          messageEn: "Category not found",
+          status: 404,
+        });
+      }
+
+      if (error.response?.status === 403) {
+        return rejectWithValue({
+          message: "ليس لديك صلاحية للوصول لهذه الفئة",
+          messageEn: "You don't have permission to access this category",
+          status: 403,
+        });
+      }
+
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 export const createCategory = createAsyncThunk(
   "categorySlice/createCategory",
   async (categoryData, thunkAPI) => {
@@ -67,6 +114,117 @@ export const createCategory = createAsyncThunk(
       return res.data;
     } catch (error) {
       console.log("Error creating category:", error);
+
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const updateCategory = createAsyncThunk(
+  "categorySlice/updateCategory",
+  async ({ categoryId, categoryData }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+
+    try {
+      // Validate categoryId
+      if (!categoryId) {
+        return rejectWithValue({
+          message: "معرف الفئة مطلوب",
+          messageEn: "Category ID is required",
+        });
+      }
+
+      const res = await axiosInstance.put(
+        `/api/v1/Category/${categoryId}`,
+        categoryData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Category updated successfully:", res);
+      return res.data;
+    } catch (error) {
+      console.log("Error updating category:", error);
+
+      // Handle specific error cases
+      if (error.response?.status === 404) {
+        return rejectWithValue({
+          message: "الفئة غير موجودة",
+          messageEn: "Category not found",
+          status: 404,
+        });
+      }
+
+      if (error.response?.status === 403) {
+        return rejectWithValue({
+          message: "ليس لديك صلاحية لتحديث هذه الفئة",
+          messageEn: "You don't have permission to update this category",
+          status: 403,
+        });
+      }
+
+      if (error.response?.status === 400) {
+        return rejectWithValue({
+          message: "بيانات غير صحيحة أو عدم تطابق ID",
+          messageEn: "Invalid data or ID mismatch",
+          status: 400,
+          errors: error.response?.data?.errors || [],
+        });
+      }
+
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const deleteCategory = createAsyncThunk(
+  "categorySlice/deleteCategory",
+  async ({ categoryId, reason }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+
+    try {
+      const res = await axiosInstance.delete(`/api/v1/Category/${categoryId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+        data: { reason },
+      });
+
+      console.log("Category deleted successfully:", res);
+      return { ...res.data, deletedCategoryId: categoryId };
+    } catch (error) {
+      console.log("Error deleting category:", error);
+
+      // Handle specific error cases
+      if (error.response?.status === 404) {
+        return rejectWithValue({
+          message: "الفئة غير موجودة",
+          messageEn: "Category not found",
+          status: 404,
+        });
+      }
+
+      if (error.response?.status === 403) {
+        return rejectWithValue({
+          message: "ليس لديك صلاحية لحذف هذه الفئة",
+          messageEn: "You don't have permission to delete this category",
+          status: 403,
+        });
+      }
+
+      if (error.response?.status === 400) {
+        return rejectWithValue({
+          message: "بيانات غير صحيحة أو سبب الحذف مطلوب",
+          messageEn: "Invalid data or reason is required",
+          status: 400,
+          errors: error.response?.data?.errors || [],
+        });
+      }
 
       return rejectWithValue(error.response?.data || error.message);
     }

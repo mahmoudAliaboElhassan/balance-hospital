@@ -21,10 +21,13 @@ import {
   setPageSize,
 } from "../../../state/slices/category";
 import { Link } from "react-router-dom";
+import DeleteCategoryModal from "../../../components/DeleteCategoryModal";
 
 function Category() {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [toDelete, setToDelete] = useState({ id: null, name: "" });
   const { categories, pagination, filters, loadingGetCategories, error } =
     useSelector((state) => state.category);
   const { mymode } = useSelector((state) => state.mode);
@@ -40,7 +43,8 @@ function Category() {
   const isDark = mymode === "dark";
 
   // Check if current language is RTL
-  const isRTL = i18n.language === "ar";
+  const language = i18n.language;
+  const isRTL = language === "ar";
 
   // Fetch categories when filters change
   useEffect(() => {
@@ -237,6 +241,14 @@ function Category() {
         <button
           className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors"
           title={t("categories.actions.delete")}
+          onClick={() => {
+            setToDelete({
+              id: category.id,
+              name:
+                language == "en" ? category.nameEnglish : category.nameArabic,
+            });
+            setModalOpen(true);
+          }}
         >
           <Trash2 size={16} />
         </button>
@@ -249,6 +261,13 @@ function Category() {
       className={`min-h-screen ${isDark ? "bg-gray-900" : "bg-gray-50"}`}
       dir={isRTL ? "rtl" : "ltr"}
     >
+      <DeleteCategoryModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        categoryId={toDelete.id}
+        info={toDelete}
+        categoryName={toDelete.name}
+      />
       <div className="p-4 sm:p-6">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
@@ -704,20 +723,36 @@ function Category() {
                         </td>
                         <td className="p-4">
                           <div className="flex gap-2">
-                            <button
-                              className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors"
-                              title={t("categories.actions.view")}
+                            <Link to={`/admin-panel/category/${category.id}`}>
+                              <button
+                                className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors cursor-pointer"
+                                title={t("categories.actions.view")}
+                              >
+                                <Eye size={16} />
+                              </button>
+                            </Link>
+                            <Link
+                              to={`/admin-panel/category/edit/${category.id}`}
                             >
-                              <Eye size={16} />
-                            </button>
+                              <button
+                                className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors cursor-pointer"
+                                title={t("categories.actions.edit")}
+                              >
+                                <Edit size={16} />
+                              </button>
+                            </Link>
                             <button
-                              className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors"
-                              title={t("categories.actions.edit")}
-                            >
-                              <Edit size={16} />
-                            </button>
-                            <button
-                              className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors"
+                              onClick={() => {
+                                setToDelete({
+                                  id: category.id,
+                                  name:
+                                    language == "en"
+                                      ? category.nameEnglish
+                                      : category.nameArabic,
+                                });
+                                setModalOpen(true);
+                              }}
+                              className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors cursor-pointer"
                               title={t("categories.actions.delete")}
                             >
                               <Trash2 size={16} />
@@ -855,7 +890,19 @@ function Category() {
                             <button className="p-1 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded transition-colors">
                               <Edit size={14} />
                             </button>
-                            <button className="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded transition-colors">
+                            <button
+                              className="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded transition-colors"
+                              onClick={() => {
+                                setToDelete({
+                                  id: category.id,
+                                  name:
+                                    language == "en"
+                                      ? category.nameEnglish
+                                      : category.nameArabic,
+                                });
+                                setModalOpen(true);
+                              }}
+                            >
                               <Trash2 size={14} />
                             </button>
                           </div>

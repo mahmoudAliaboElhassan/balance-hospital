@@ -1,13 +1,16 @@
-function UseDirection() {
-  const dir = document.documentElement.dir || "ltr";
-  console.log("dir", dir);
-  const left = dir === "ltr" ? "left" : "right";
-  const right = dir === "ltr" ? "right" : "left";
+import i18next from "i18next";
 
+function useDirection() {
+  const lang = i18next.language;
+  const dir = lang === "ar" ? "rtl" : "ltr";
+  const isLtr = dir == "ltr";
+
+  const left = isLtr ? "left" : "right";
+  const right = isLtr ? "right" : "left";
   const direction = {
     direction: dir,
-    left: left,
-    right: right,
+    left,
+    right,
     marginLeft: `margin-${left}`,
     marginRight: `margin-${right}`,
     paddingLeft: `padding-${left}`,
@@ -18,4 +21,4 @@ function UseDirection() {
   return { direction };
 }
 
-export default UseDirection;
+export default useDirection;
