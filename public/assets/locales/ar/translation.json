@@ -109,6 +109,7 @@
   },
   "adminPanel": {
     "categories": "الفئات",
+    "pendingDoctorRequests": "طلبات الأطباء المعلقة",
     "departments": "الأقسام",
     "subDepartments": "الأقسام الفرعية",
     "managementRoles": "أدوار الإدارة",
@@ -118,6 +119,7 @@
   },
   "categories": {
     "title": "الفئات",
+    "fetchError": "حدث خطأ أثناء جلب الفئات.",
     "loading": "جاري التحميل...",
     "noData": "لا توجد فئات",
     "delete": {
@@ -277,5 +279,90 @@
       }
     }
   },
-  "loading": "جاري التحميل..."
+  "loading": "جاري التحميل...",
+
+  "pendingDoctorRequests": {
+    "title": "طلبات الأطباء المعلقة",
+    "subtitle": "طلبات انضمام الأطباء لهذه الفئة",
+    "backButton": "العودة",
+    "loading": {
+      "categories": "جاري تحميل بيانات الفئات...",
+      "requests": "جاري تحميل الطلبات...",
+      "pleaseWait": "يرجى الانتظار"
+    },
+    "errors": {
+      "categoryTypesError": "خطأ في تحميل أنواع الفئات",
+      "dataLoadError": "خطأ في تحميل البيانات",
+      "retryButton": "إعادة المحاولة",
+      "closeButton": "إغلاق",
+      "dismissButton": "إغلاق"
+    },
+    "categorySelector": {
+      "title": "اختر الفئة لعرض الطلبات",
+      "refreshCategories": "تحديث الفئات",
+      "selectPrompt": "اختر فئة لعرض الطلبات",
+      "selectDescription": "يرجى اختيار فئة من القائمة أعلاه لعرض طلبات انضمام الأطباء الخاصة بها"
+    },
+    "selectedCategory": {
+      "refreshButton": "تحديث"
+    },
+    "filters": {
+      "filterByStatus": "تصفية حسب الحالة:",
+      "statusOptions": {
+        "all": "الكل",
+        "pending": "معلق",
+        "approved": "مقبول",
+        "rejected": "مرفوض"
+      }
+    },
+    "emptyStates": {
+      "noRequests": "لا توجد طلبات لهذه الفئة",
+      "noRequestsWithFilter": "لم يتم العثور على طلبات بحالة \"{status}\" لهذه الفئة",
+      "noRequestsDefault": "لم يتم تقديم أي طلبات انضمام لهذه الفئة بعد",
+      "showAllRequests": "عرض جميع الطلبات"
+    },
+    "pagination": {
+      "showing": "عرض {start} إلى {end} من {total} طلب",
+      "resultsCount": "عرض {start} إلى {end} من {total} نتيجة",
+      "category": "الفئة: {categoryName}",
+      "perPage": "{count} لكل صفحة",
+      "previous": "السابق",
+      "next": "التالي"
+    },
+    "requestCard": {
+      "nameNotSpecified": "اسم غير محدد",
+      "processedOn": "تم المعالجة في: {date}",
+      "processedBy": "بواسطة: {name}",
+      "note": "ملاحظة: {note}",
+      "actions": {
+        "approve": "قبول",
+        "reject": "رفض",
+        "view": "عرض"
+      }
+    },
+    "status": {
+      "pending": "معلق",
+      "approved": "مقبول",
+      "rejected": "مرفوض"
+    },
+    "fields": {
+      "email": "البريد الإلكتروني",
+      "mobile": "الهاتف المحمول",
+      "scientificDegree": "الدرجة العلمية",
+      "requestedAt": "تاريخ الطلب",
+      "notes": "الملاحظات",
+      "notSpecified": "غير محدد",
+      "invalidDate": "تاريخ غير صحيح"
+    },
+    "dateFormat": {
+      "options": {
+        "year": "numeric",
+        "month": "long",
+        "day": "numeric",
+        "hour": "2-digit",
+        "minute": "2-digit"
+      },
+      "locale": "ar-EG"
+    }
+  }
 }

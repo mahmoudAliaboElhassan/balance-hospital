@@ -14,6 +14,7 @@ import Department from "../pages/adminPanel/department";
 import CreateCategory from "../pages/adminPanel/category/createCategory";
 import SpecificCategory from "../pages/adminPanel/category/specificCategory";
 import EditCategory from "../pages/adminPanel/category/editCategory";
+import PendingDoctorRequests from "../pages/adminPanel/category/pendingDoctors";
 
 const router = createBrowserRouter([
   {
@@ -98,6 +99,14 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<Loader />}>
                 <EditCategory />
+              </Suspense>
+            ),
+          },
+          {
+            path: "category/doctors/pendig-doctors",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <PendingDoctorRequests />
               </Suspense>
             ),
           },

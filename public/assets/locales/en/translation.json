@@ -115,6 +115,7 @@
 
   "adminPanel": {
     "categories": "Categories",
+    "pendingDoctorRequests": "Pending Doctor Requests",
     "departments": "Departments",
     "subDepartments": "Sub Departments",
     "managementRoles": "Management Roles",
@@ -126,6 +127,7 @@
   "categories": {
     "title": "Categories",
     "loading": "Loading...",
+    "fetchError": "An error occurred while fetching categories.",
     "noData": "No categories available",
     "delete": {
       "title": "Delete Category",
@@ -288,5 +290,90 @@
     }
   },
 
-  "loading": "loading..."
+  "loading": "loading...",
+
+  "pendingDoctorRequests": {
+    "title": "Pending Doctor Requests",
+    "subtitle": "Doctor enrollment requests for this category",
+    "backButton": "Back",
+    "loading": {
+      "categories": "Loading category data...",
+      "requests": "Loading requests...",
+      "pleaseWait": "Please wait"
+    },
+    "errors": {
+      "categoryTypesError": "Error loading category types",
+      "dataLoadError": "Error loading data",
+      "retryButton": "Retry",
+      "closeButton": "Close",
+      "dismissButton": "Dismiss"
+    },
+    "categorySelector": {
+      "title": "Select Category to View Requests",
+      "refreshCategories": "Refresh Categories",
+      "selectPrompt": "Select a category to view requests",
+      "selectDescription": "Please select a category from the list above to view its doctor enrollment requests"
+    },
+    "selectedCategory": {
+      "refreshButton": "Refresh"
+    },
+    "filters": {
+      "filterByStatus": "Filter by status:",
+      "statusOptions": {
+        "all": "All",
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      }
+    },
+    "emptyStates": {
+      "noRequests": "No requests for this category",
+      "noRequestsWithFilter": "No requests found with status \"{status}\" for this category",
+      "noRequestsDefault": "No enrollment requests have been submitted for this category yet",
+      "showAllRequests": "Show all requests"
+    },
+    "pagination": {
+      "showing": "Showing {start} to {end} of {total} requests",
+      "resultsCount": "Showing {start} to {end} of {total} results",
+      "category": "Category: {categoryName}",
+      "perPage": "{count} per page",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "requestCard": {
+      "nameNotSpecified": "Name not specified",
+      "processedOn": "Processed on: {date}",
+      "processedBy": "By: {name}",
+      "note": "Note: {note}",
+      "actions": {
+        "approve": "Approve",
+        "reject": "Reject",
+        "view": "View"
+      }
+    },
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "fields": {
+      "email": "Email",
+      "mobile": "Mobile",
+      "scientificDegree": "Scientific Degree",
+      "requestedAt": "Requested At",
+      "notes": "Notes",
+      "notSpecified": "Not specified",
+      "invalidDate": "Invalid date"
+    },
+    "dateFormat": {
+      "options": {
+        "year": "numeric",
+        "month": "long",
+        "day": "numeric",
+        "hour": "2-digit",
+        "minute": "2-digit"
+      },
+      "locale": "en-US"
+    }
+  }
 }

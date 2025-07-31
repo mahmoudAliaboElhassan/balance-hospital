@@ -230,3 +230,130 @@ export const deleteCategory = createAsyncThunk(
     }
   }
 );
+
+export const approveDoctorRequest = createAsyncThunk(
+  "categorySlice/approveDoctorRequest",
+  async ({ userId, isApproved }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+
+    try {
+      // Validate userId
+      if (!userId) {
+        return rejectWithValue({
+          message: "معرف المستخدم مطلوب",
+          messageEn: "User ID is required",
+        });
+      }
+
+      const requestBody = {
+        userId: userId,
+        isApproved: isApproved,
+      };
+
+      const res = await axiosInstance.post(
+        "/api/v1/Category/approve-doctor-request",
+        requestBody,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Doctor request processed successfully:", res);
+      return { ...res.data, userId, isApproved };
+    } catch (error) {
+      console.log("Error processing doctor request:", error);
+
+      // Handle specific error cases
+      if (error.response?.status === 400) {
+        return rejectWithValue({
+          message: "معرف الطلب غير صحيح أو الطلب تم معالجته مسبقاً",
+          messageEn: "Invalid request ID or request already processed",
+          status: 400,
+        });
+      }
+
+      if (error.response?.status === 403) {
+        return rejectWithValue({
+          message: "لا توجد صلاحية لمعالجة هذا الطلب",
+          messageEn: "You don't have permission to process this request",
+          status: 403,
+        });
+      }
+
+      if (error.response?.status === 404) {
+        return rejectWithValue({
+          message: "الطلب غير موجود",
+          messageEn: "Request not found",
+          status: 404,
+        });
+      }
+
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const getCategoryTypes = createAsyncThunk(
+  "category/getCategoryTypes",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(
+        "/api/v1/Category/categories-types"
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue({
+        message:
+          error.response?.data?.messageAr ||
+          error.response?.data?.messageEn ||
+          "حدث خطأ في جلب أنواع الفئات",
+        errors: error.response?.data?.errors || [],
+        status: error.response?.status,
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
+);
+
+// Get Pending Doctor Requests for Specific Category
+export const getCategoryPendingRequests = createAsyncThunk(
+  "category/getCategoryPendingRequests",
+  async ({ categoryId, filters = {} }, { rejectWithValue }) => {
+    try {
+      const params = new URLSearchParams();
+      console.log(
+        "Fetching pending doctor requests for category from act :",
+        categoryId
+      );
+      if (filters.status) params.append("status", filters.status);
+      if (filters.page) params.append("page", filters.page);
+      if (filters.pageSize) params.append("pageSize", filters.pageSize);
+
+      const queryString = params.toString();
+      const url = `/api/v1/Category/${categoryId}/pending-doctor-requests${
+        queryString ? `?${queryString}` : ""
+      }`;
+      console.log("→ fetching pending requests from URL:", url);
+
+      const response = await axiosInstance.get(url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      return { ...response.data, categoryId };
+    } catch (error) {
+      return rejectWithValue({
+        message:
+          error.response?.data?.messageAr ||
+          error.response?.data?.messageEn ||
+          "حدث خطأ في جلب طلبات الفئة",
+        errors: error.response?.data?.errors || [],
+        status: error.response?.status,
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
+);

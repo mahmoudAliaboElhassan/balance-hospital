@@ -1,4 +1,5 @@
 // hooks/use-admin-panel.js
+import { UserCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 function UseAdminPanel() {
@@ -13,36 +14,42 @@ function UseAdminPanel() {
     },
     {
       id: 2,
+      name: t("adminPanel.pendingDoctorRequests"),
+      icon: "👨‍⚕️", // ← swapped in Lucide icon
+      path: "/admin-panel/category/doctors/pendig-doctors",
+    },
+    {
+      id: 3,
       name: t("adminPanel.departments"),
       icon: "🏢",
       path: "/admin-panel/departments",
     },
     {
-      id: 3,
+      id: 4,
       name: t("adminPanel.subDepartments"),
       icon: "🏗️",
       path: "/admin-panel/sub-departments",
     },
     {
-      id: 4,
+      id: 5,
       name: t("adminPanel.managementRoles"),
       icon: "👥",
       path: "/admin-panel/management-roles",
     },
     {
-      id: 5,
+      id: 6,
       name: t("adminPanel.scientificDegrees"),
       icon: "🎓",
       path: "/admin-panel/scientific-degrees",
     },
     {
-      id: 6,
+      id: 7,
       name: t("adminPanel.contractTypes"),
       icon: "📋",
       path: "/admin-panel/contract-types",
     },
     {
-      id: 7,
+      id: 8,
       name: t("adminPanel.shiftHours"),
       icon: "⏰",
       path: "/admin-panel/shift-hours",

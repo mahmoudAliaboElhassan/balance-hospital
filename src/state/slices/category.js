@@ -6,7 +6,10 @@ import {
   getCategoryById,
   updateCategory,
   deleteCategory,
+  getCategoryTypes,
+  getCategoryPendingRequests,
 } from "../act/actCategory";
+import i18next from "i18next";
 
 const { initialStateCategories } = UseInitialStates();
 
@@ -14,11 +17,10 @@ export const categorySlice = createSlice({
   name: "categorySlice",
   initialState: initialStateCategories,
   reducers: {
-    // Set filters
+    // Category filters
     setFilters: (state, action) => {
       state.filters = { ...state.filters, ...action.payload };
     },
-    // Clear filters
     clearFilters: (state) => {
       state.filters = {
         search: "",
@@ -29,71 +31,158 @@ export const categorySlice = createSlice({
         pageSize: 10,
       };
     },
-    // Set current page
     setCurrentPage: (state, action) => {
       state.filters.page = action.payload;
     },
-    // Set page size
     setPageSize: (state, action) => {
       state.filters.pageSize = action.payload;
-      state.filters.page = 1; // Reset to first page when changing page size
+      state.filters.page = 1;
     },
-    // Clear categories data
+
+    // Category data actions
     clearCategories: (state) => {
       state.categories = [];
       state.pagination = null;
       state.error = null;
     },
-    // Clear error
     clearError: (state) => {
       state.error = null;
     },
+
+    // Category Types actions
+    clearCategoryTypes: (state) => {
+      state.categoryTypes = [];
+      state.categoryTypesError = null;
+    },
+    clearCategoryTypesError: (state) => {
+      state.categoryTypesError = null;
+    },
+
+    // Category success/error clearing actions
     clearCreateSuccess: (state) => {
       state.createSuccess = false;
       state.createMessage = "";
     },
-    // Clear update success
     clearUpdateSuccess: (state) => {
       state.updateSuccess = false;
       state.updateMessage = "";
     },
-    // Clear delete success
     clearDeleteSuccess: (state) => {
       state.deleteSuccess = false;
       state.deleteMessage = "";
     },
-    // Reset create form
+
+    // Category form reset actions
     resetCreateForm: (state) => {
       state.loadingCreateCategory = false;
       state.createError = null;
       state.createSuccess = false;
       state.createMessage = "";
     },
-    // Reset update form
     resetUpdateForm: (state) => {
       state.loadingUpdateCategory = false;
       state.updateError = null;
       state.updateSuccess = false;
       state.updateMessage = "";
     },
-    // Reset delete form
     resetDeleteForm: (state) => {
       state.loadingDeleteCategory = false;
       state.deleteError = null;
       state.deleteSuccess = false;
       state.deleteMessage = "";
     },
+
+    // Single category actions
     clearSingleCategory: (state) => {
       state.selectedCategory = null;
       state.singleCategoryError = null;
     },
-    // Clear single category error
     clearSingleCategoryError: (state) => {
       state.singleCategoryError = null;
+    },
+
+    // Global Pending Doctor Requests filters
+    setPendingRequestsFilters: (state, action) => {
+      state.pendingRequestsFilters = {
+        ...state.pendingRequestsFilters,
+        ...action.payload,
+      };
+    },
+    clearPendingRequestsFilters: (state) => {
+      state.pendingRequestsFilters = {
+        status: "",
+        page: 1,
+        pageSize: 10,
+      };
+    },
+    setPendingRequestsCurrentPage: (state, action) => {
+      state.pendingRequestsFilters.page = action.payload;
+    },
+    setPendingRequestsPageSize: (state, action) => {
+      state.pendingRequestsFilters.pageSize = action.payload;
+      state.pendingRequestsFilters.page = 1;
+    },
+    setPendingRequestsStatusFilter: (state, action) => {
+      state.pendingRequestsFilters.status = action.payload;
+      state.pendingRequestsFilters.page = 1;
+    },
+
+    // Global Pending Doctor Requests data actions
+    clearPendingDoctorRequests: (state) => {
+      state.pendingDoctorRequests = [];
+      state.pendingDoctorRequestsPagination = null;
+      state.pendingDoctorRequestsError = null;
+    },
+    clearPendingDoctorRequestsError: (state) => {
+      state.pendingDoctorRequestsError = null;
+    },
+    clearSelectedRequest: (state) => {
+      state.selectedRequest = null;
+    },
+
+    // Category-specific Pending Requests filters
+    setCategoryPendingRequestsFilters: (state, action) => {
+      state.categoryPendingRequestsFilters = {
+        ...state.categoryPendingRequestsFilters,
+        ...action.payload,
+      };
+    },
+    clearCategoryPendingRequestsFilters: (state) => {
+      state.categoryPendingRequestsFilters = {
+        status: "",
+        page: 1,
+        pageSize: 10,
+      };
+    },
+    setCategoryPendingRequestsCurrentPage: (state, action) => {
+      state.categoryPendingRequestsFilters.page = action.payload;
+    },
+    setCategoryPendingRequestsPageSize: (state, action) => {
+      state.categoryPendingRequestsFilters.pageSize = action.payload;
+      state.categoryPendingRequestsFilters.page = 1;
+    },
+    setCategoryPendingRequestsStatusFilter: (state, action) => {
+      state.categoryPendingRequestsFilters.status = action.payload;
+      state.categoryPendingRequestsFilters.page = 1;
+    },
+
+    // Category-specific Pending Requests data actions
+    clearCategoryPendingRequests: (state) => {
+      state.categoryPendingRequests = [];
+      state.categoryPendingRequestsPagination = null;
+      state.categoryPendingRequestsError = null;
+      state.selectedCategoryId = null;
+    },
+    clearCategoryPendingRequestsError: (state) => {
+      state.categoryPendingRequestsError = null;
+    },
+    setSelectedCategoryId: (state, action) => {
+      state.selectedCategoryId = action.payload;
     },
   },
   extraReducers: (builder) => {
     builder
+      // Get Categories
       .addCase(getCategories.pending, (state) => {
         state.loadingGetCategories = true;
         state.error = null;
@@ -103,8 +192,6 @@ export const categorySlice = createSlice({
         state.error = null;
 
         const response = action.payload;
-        console.log("Categories fetched successfully:", response);
-
         if (response.success) {
           state.categories = response.data.items;
           state.pagination = {
@@ -123,14 +210,42 @@ export const categorySlice = createSlice({
         state.loadingGetCategories = false;
         state.categories = [];
         state.pagination = null;
-
-        // Handle error
         state.error = {
-          message: action.payload?.message || "حدث خطأ في جلب الفئات",
+          message:
+            action.payload?.message || i18next.t("categories.fetchError"),
           errors: action.payload?.errors || [],
           timestamp: new Date().toISOString(),
         };
       })
+
+      // Get Category Types (Public)
+      .addCase(getCategoryTypes.pending, (state) => {
+        state.loadingGetCategoryTypes = true;
+        state.categoryTypesError = null;
+      })
+      .addCase(getCategoryTypes.fulfilled, (state, action) => {
+        state.loadingGetCategoryTypes = false;
+        state.categoryTypesError = null;
+
+        const response = action.payload;
+        if (response.success) {
+          state.categoryTypes = response.data;
+          state.message = response.messageAr || response.messageEn;
+          state.timestamp = response.timestamp;
+        }
+      })
+      .addCase(getCategoryTypes.rejected, (state, action) => {
+        state.loadingGetCategoryTypes = false;
+        state.categoryTypes = [];
+        state.categoryTypesError = {
+          message: action.payload?.message || "حدث خطأ في جلب أنواع الفئات",
+          errors: action.payload?.errors || [],
+          status: action.payload?.status,
+          timestamp: new Date().toISOString(),
+        };
+      })
+
+      // Create Category
       .addCase(createCategory.pending, (state) => {
         state.loadingCreateCategory = true;
         state.createError = null;
@@ -141,17 +256,12 @@ export const categorySlice = createSlice({
         state.createError = null;
 
         const response = action.payload;
-        console.log("Category created successfully:", response);
-
         if (response.success) {
           state.createSuccess = true;
           state.createMessage = response.message;
 
-          // Add new category to the beginning of the list if we're on the first page
           if (state.filters.page === 1) {
             state.categories.unshift(response.data);
-
-            // Update pagination if needed
             if (state.pagination) {
               state.pagination.totalCount += 1;
               state.pagination.totalPages = Math.ceil(
@@ -164,14 +274,14 @@ export const categorySlice = createSlice({
       .addCase(createCategory.rejected, (state, action) => {
         state.loadingCreateCategory = false;
         state.createSuccess = false;
-
-        // Handle error
         state.createError = {
           message: action.payload?.message || "حدث خطأ في إنشاء الفئة",
           errors: action.payload?.errors || [],
           timestamp: new Date().toISOString(),
         };
       })
+
+      // Get Single Category
       .addCase(getCategoryById.pending, (state) => {
         state.loadingGetSingleCategory = true;
         state.singleCategoryError = null;
@@ -181,8 +291,6 @@ export const categorySlice = createSlice({
         state.singleCategoryError = null;
 
         const response = action.payload;
-        console.log("Single category fetched successfully:", response);
-
         if (response.success) {
           state.selectedCategory = response.data;
           state.message = response.messageAr || response.message;
@@ -193,7 +301,6 @@ export const categorySlice = createSlice({
         state.loadingGetSingleCategory = false;
         state.selectedCategory = null;
 
-        // Handle error with specific messages
         const payload = action.payload;
         let errorMessage = "حدث خطأ في جلب الفئة";
 
@@ -212,7 +319,8 @@ export const categorySlice = createSlice({
           timestamp: new Date().toISOString(),
         };
       })
-      // Update category reducers
+
+      // Update Category
       .addCase(updateCategory.pending, (state) => {
         state.loadingUpdateCategory = true;
         state.updateError = null;
@@ -223,16 +331,11 @@ export const categorySlice = createSlice({
         state.updateError = null;
 
         const response = action.payload;
-        console.log("Category updated successfully:", response);
-
         if (response.success) {
           state.updateSuccess = true;
           state.updateMessage = response.messageAr || response.message;
-
-          // Update the selected category
           state.selectedCategory = response.data;
 
-          // Update the category in the categories list if it exists
           const categoryIndex = state.categories.findIndex(
             (cat) => cat.id === response.data.id
           );
@@ -245,7 +348,6 @@ export const categorySlice = createSlice({
         state.loadingUpdateCategory = false;
         state.updateSuccess = false;
 
-        // Handle error with specific messages
         const payload = action.payload;
         let errorMessage = "حدث خطأ في تحديث الفئة";
 
@@ -266,7 +368,8 @@ export const categorySlice = createSlice({
           timestamp: new Date().toISOString(),
         };
       })
-      // Delete category reducers
+
+      // Delete Category
       .addCase(deleteCategory.pending, (state) => {
         state.loadingDeleteCategory = true;
         state.deleteError = null;
@@ -277,18 +380,14 @@ export const categorySlice = createSlice({
         state.deleteError = null;
 
         const response = action.payload;
-        console.log("Category deleted successfully:", response);
-
         if (response.success) {
           state.deleteSuccess = true;
           state.deleteMessage = response.messageAr || response.message;
 
-          // Remove the category from the list
           state.categories = state.categories.filter(
             (cat) => cat.id !== response.deletedCategoryId
           );
 
-          // Update pagination
           if (state.pagination) {
             state.pagination.totalCount -= 1;
             state.pagination.totalPages = Math.ceil(
@@ -296,7 +395,6 @@ export const categorySlice = createSlice({
             );
           }
 
-          // Clear selected category if it was the deleted one
           if (state.selectedCategory?.id === response.deletedCategoryId) {
             state.selectedCategory = null;
           }
@@ -306,7 +404,6 @@ export const categorySlice = createSlice({
         state.loadingDeleteCategory = false;
         state.deleteSuccess = false;
 
-        // Handle error with specific messages
         const payload = action.payload;
         let errorMessage = "حدث خطأ في حذف الفئة";
 
@@ -327,32 +424,123 @@ export const categorySlice = createSlice({
           status: payload?.status,
           timestamp: new Date().toISOString(),
         };
+      })
+
+      // Get Category-specific Pending Doctor Requests
+      .addCase(getCategoryPendingRequests.pending, (state) => {
+        state.loadingGetCategoryPendingRequests = true;
+        state.categoryPendingRequestsError = null;
+      })
+      .addCase(getCategoryPendingRequests.fulfilled, (state, action) => {
+        state.loadingGetCategoryPendingRequests = false;
+        state.categoryPendingRequestsError = null;
+
+        const response = action.payload;
+        if (response.success) {
+          state.categoryPendingRequests = response.data.items;
+          state.categoryPendingRequestsPagination = {
+            page: response.data.page,
+            pageSize: response.data.pageSize,
+            totalCount: response.data.totalCount,
+            totalPages: response.data.totalPages,
+            hasPrevious: response.data.hasPrevious,
+            hasNext: response.data.hasNext,
+            startIndex: response.data.startIndex,
+            endIndex: response.data.endIndex,
+          };
+          state.selectedCategoryId = response.categoryId;
+          state.message = response.messageAr || response.messageEn;
+          state.timestamp = response.timestamp;
+        }
+      })
+      .addCase(getCategoryPendingRequests.rejected, (state, action) => {
+        state.loadingGetCategoryPendingRequests = false;
+        state.categoryPendingRequests = [];
+        state.categoryPendingRequestsPagination = null;
+
+        const payload = action.payload;
+        let errorMessage = "حدث خطأ في جلب طلبات الفئة";
+
+        if (payload?.status === 404) {
+          errorMessage = payload.message || "الفئة غير موجودة";
+        } else if (payload?.status === 403) {
+          errorMessage =
+            payload.message || "ليس لديك صلاحية للوصول لهذه البيانات";
+        } else if (payload?.status === 401) {
+          errorMessage = payload.message || "يجب تسجيل الدخول أولاً";
+        } else if (payload?.message) {
+          errorMessage = payload.message;
+        }
+
+        state.categoryPendingRequestsError = {
+          message: errorMessage,
+          errors: payload?.errors || [],
+          status: payload?.status,
+          timestamp: new Date().toISOString(),
+        };
       });
   },
 });
 
 export const {
+  // Category filters
   setFilters,
   clearFilters,
   setCurrentPage,
   setPageSize,
+
+  // Category data
   clearCategories,
   clearError,
+
+  // Category Types
+  clearCategoryTypes,
+  clearCategoryTypesError,
+
+  // Category success/error clearing
   clearCreateSuccess,
   clearUpdateSuccess,
   clearDeleteSuccess,
+
+  // Category form resets
   resetCreateForm,
   resetUpdateForm,
   resetDeleteForm,
+
+  // Single category
   clearSingleCategory,
   clearSingleCategoryError,
+
+  // Global Pending Doctor Requests
+  setPendingRequestsFilters,
+  clearPendingRequestsFilters,
+  setPendingRequestsCurrentPage,
+  setPendingRequestsPageSize,
+  setPendingRequestsStatusFilter,
+  clearPendingDoctorRequests,
+  clearPendingDoctorRequestsError,
+  clearSelectedRequest,
+
+  // Category-specific Pending Requests
+  setCategoryPendingRequestsFilters,
+  clearCategoryPendingRequestsFilters,
+  setCategoryPendingRequestsCurrentPage,
+  setCategoryPendingRequestsPageSize,
+  setCategoryPendingRequestsStatusFilter,
+  clearCategoryPendingRequests,
+  clearCategoryPendingRequestsError,
+  setSelectedCategoryId,
 } = categorySlice.actions;
 
 export default categorySlice.reducer;
+
+// Export async thunks
 export {
   getCategories,
   createCategory,
   getCategoryById,
   updateCategory,
   deleteCategory,
+  getCategoryTypes,
+  getCategoryPendingRequests,
 };
