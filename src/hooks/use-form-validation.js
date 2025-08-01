@@ -183,6 +183,61 @@ function UseFormValidation() {
     includeCategory: Yup.boolean(),
   });
 
+  const VALIDATION_SCHEMA_ADD_SUBDEPARTMENT = Yup.object().shape({
+    nameArabic: Yup.string()
+      .required(t("subDepartment.form.validation.nameArabicRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(100, t("validation.maxLength", { count: 100 }))
+      .matches(
+        /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$/,
+        t("validation.arabicOnly")
+      ),
+    nameEnglish: Yup.string()
+      .required(t("subDepartment.form.validation.nameEnglishRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(100, t("validation.maxLength", { count: 100 }))
+      .matches(/^[a-zA-Z\s]+$/, t("validation.englishOnly")),
+    departmentId: Yup.number()
+      .required(t("subDepartment.form.validation.departmentRequired"))
+      .positive(t("validation.positiveNumber"))
+      .integer(t("validation.integerOnly")),
+    location: Yup.string()
+      .required(t("subDepartment.form.validation.locationRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(200, t("validation.maxLength", { count: 200 })),
+    isActive: Yup.boolean(),
+  });
+
+  // SubDepartment Edit Validation Schema
+  const VALIDATION_SCHEMA_EDIT_SUBDEPARTMENT = Yup.object().shape({
+    id: Yup.number()
+      .required(t("validation.required"))
+      .positive(t("validation.positiveNumber"))
+      .integer(t("validation.integerOnly")),
+    nameArabic: Yup.string()
+      .required(t("subDepartment.form.validation.nameArabicRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(100, t("validation.maxLength", { count: 100 }))
+      .matches(
+        /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$/,
+        t("validation.arabicOnly")
+      ),
+    nameEnglish: Yup.string()
+      .required(t("subDepartment.form.validation.nameEnglishRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(100, t("validation.maxLength", { count: 100 }))
+      .matches(/^[a-zA-Z\s]+$/, t("validation.englishOnly")),
+    departmentId: Yup.number()
+      .required(t("subDepartment.form.validation.departmentRequired"))
+      .positive(t("validation.positiveNumber"))
+      .integer(t("validation.integerOnly")),
+    location: Yup.string()
+      .required(t("subDepartment.form.validation.locationRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(200, t("validation.maxLength", { count: 200 })),
+    isActive: Yup.boolean(),
+  });
+
   return {
     VALIDATION_SCHEMA_LOGIN,
     VALIDATION_SCHEMA_RESET_PASSWORD,
@@ -192,6 +247,8 @@ function UseFormValidation() {
     departmentFiltersValidationSchema,
     VALIDATION_SCHEMA_EDIT_DEPARTMENT,
     deleteDepartmentValidationSchema,
+    VALIDATION_SCHEMA_ADD_SUBDEPARTMENT,
+    VALIDATION_SCHEMA_EDIT_SUBDEPARTMENT,
   };
 }
 

@@ -92,6 +92,12 @@ function UseInitialStates() {
       page: 1,
       pageSize: 10,
     },
+
+    // Doctor Request Approval states - ADDED THESE
+    loadingApproveRequest: false,
+    approvalError: null,
+    approvalSuccess: false,
+    approvalMessage: "",
   };
 
   const initialStateDepartments = {
@@ -145,11 +151,58 @@ function UseInitialStates() {
     deleteMessage: "",
   };
 
+  const initialStateSubDepartments = {
+    subDepartments: [],
+    pagination: null,
+    filters: {
+      search: "",
+      departmentId: "",
+      categoryId: "",
+      isActive: "",
+      createdFrom: "",
+      createdTo: "",
+      includeDepartment: true,
+      includeStatistics: true,
+      orderBy: "nameArabic",
+      orderDesc: true,
+      page: 1,
+      pageSize: 10,
+    },
+    loadingGetSubDepartments: false,
+    error: null,
+    message: "",
+    timestamp: null,
+
+    // Single subDepartment
+    selectedSubDepartment: null,
+    loadingGetSingleSubDepartment: false,
+    singleSubDepartmentError: null,
+
+    // Create subDepartment
+    loadingCreateSubDepartment: false,
+    createError: null,
+    createSuccess: false,
+    createMessage: "",
+
+    // Update subDepartment
+    loadingUpdateSubDepartment: false,
+    updateError: null,
+    updateSuccess: false,
+    updateMessage: "",
+
+    // Delete subDepartment
+    loadingDeleteSubDepartment: false,
+    deleteError: null,
+    deleteSuccess: false,
+    deleteMessage: "",
+  };
+
   return {
     initialStateMode,
     initialStateAuth,
     initialStateCategories,
     initialStateDepartments,
+    initialStateSubDepartments,
   };
 }
 

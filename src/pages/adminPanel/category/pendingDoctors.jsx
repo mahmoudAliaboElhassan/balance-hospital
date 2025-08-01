@@ -31,6 +31,9 @@ import {
   clearCategoryPendingRequestsError,
   clearCategoryPendingRequests,
   setSelectedCategoryId,
+  approveDoctorRequest, // Import the approve action
+  clearApprovalSuccess,
+  clearApprovalError,
 } from "../../../state/slices/category";
 import { useTranslation } from "react-i18next";
 
@@ -49,6 +52,11 @@ const PendingDoctorRequests = () => {
     loadingGetCategoryPendingRequests: loading,
     categoryPendingRequestsFilters: filters,
     selectedCategoryId,
+    // Add approval-related state
+    loadingApproveRequest,
+    approvalError,
+    approvalSuccess,
+    approvalMessage,
   } = useSelector((state) => state.category);
 
   const [localFilters, setLocalFilters] = useState({
@@ -84,10 +92,27 @@ const PendingDoctorRequests = () => {
     }
   }, [dispatch, selectedCategoryId, filters]);
 
+  // Handle approval success
+  useEffect(() => {
+    if (approvalSuccess) {
+      // Optionally show a success message or toast
+      console.log(approvalMessage || "Request processed successfully");
+
+      // Clear the success state after a delay
+      const timer = setTimeout(() => {
+        dispatch(clearApprovalSuccess());
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [approvalSuccess, approvalMessage, dispatch]);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       dispatch(clearCategoryPendingRequests());
+      dispatch(clearApprovalSuccess());
+      dispatch(clearApprovalError());
     };
   }, [dispatch]);
 
@@ -128,6 +153,11 @@ const PendingDoctorRequests = () => {
     dispatch(clearCategoryPendingRequestsError());
   }, [dispatch]);
 
+  // Handle approval error dismissal
+  const handleDismissApprovalError = useCallback(() => {
+    dispatch(clearApprovalError());
+  }, [dispatch]);
+
   // Handle refresh
   const handleRefresh = useCallback(() => {
     if (selectedCategoryId && !isNaN(selectedCategoryId)) {
@@ -144,6 +174,25 @@ const PendingDoctorRequests = () => {
   const handleGoBack = useCallback(() => {
     navigate(-1);
   }, [navigate]);
+
+  // Updated request handlers
+  const handleApproveRequest = useCallback(
+    (userId) => {
+      dispatch(approveDoctorRequest({ userId, isApproved: true }));
+    },
+    [dispatch]
+  );
+
+  const handleRejectRequest = useCallback(
+    (userId) => {
+      dispatch(approveDoctorRequest({ userId, isApproved: false }));
+    },
+    [dispatch]
+  );
+
+  const handleViewRequest = useCallback((requestId) => {
+    console.log("View request:", requestId);
+  }, []);
 
   // Get status configuration
   const getStatusConfig = (status) => {
@@ -231,18 +280,46 @@ const PendingDoctorRequests = () => {
     },
   ];
 
-  // Handle request actions (placeholder for future implementation)
-  const handleApproveRequest = useCallback((requestId) => {
-    console.log("Approve request:", requestId);
-  }, []);
+  // Render action buttons based on status
+  const renderActionButtons = (request) => {
+    const isProcessing = loadingApproveRequest;
 
-  const handleRejectRequest = useCallback((requestId) => {
-    console.log("Reject request:", requestId);
-  }, []);
+    return (
+      <div className="flex gap-2">
+        {/* Show Approve button for Pending and Rejected status */}
+        {(request.status === "Pending" || request.status === "Rejected") && (
+          <button
+            onClick={() => handleApproveRequest(request.userId)}
+            disabled={isProcessing}
+            className="flex-1 inline-flex items-center justify-center gap-1 bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {isProcessing ? (
+              <RefreshCw className="w-4 h-4 animate-spin" />
+            ) : (
+              <Check className="w-4 h-4" />
+            )}
+            {t("pendingDoctorRequests.requestCard.actions.approve")}
+          </button>
+        )}
 
-  const handleViewRequest = useCallback((requestId) => {
-    console.log("View request:", requestId);
-  }, []);
+        {/* Show Reject button for Pending and Approved status */}
+        {(request.status === "Pending" || request.status === "Approved") && (
+          <button
+            onClick={() => handleRejectRequest(request.userId)}
+            disabled={isProcessing}
+            className="flex-1 inline-flex items-center justify-center gap-1 bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {isProcessing ? (
+              <RefreshCw className="w-4 h-4 animate-spin" />
+            ) : (
+              <X className="w-4 h-4" />
+            )}
+            {t("pendingDoctorRequests.requestCard.actions.reject")}
+          </button>
+        )}
+      </div>
+    );
+  };
 
   // Loading category types
   if (loadingGetCategoryTypes) {
@@ -401,6 +478,62 @@ const PendingDoctorRequests = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
+        {/* Approval Error Alert */}
+        {approvalError && (
+          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="flex items-start">
+              <AlertCircle className="w-5 h-5 text-red-600 ml-2 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <h4 className="text-red-800 font-medium">
+                  {t(
+                    "pendingDoctorRequests.errors.approvalError",
+                    "Processing Error"
+                  )}
+                </h4>
+                <p className="text-red-700 text-sm mt-1">
+                  {approvalError.message}
+                </p>
+              </div>
+              <button
+                onClick={handleDismissApprovalError}
+                className="text-red-600 hover:text-red-800 ml-2"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Success Alert */}
+        {approvalSuccess && (
+          <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
+            <div className="flex items-start">
+              <Check className="w-5 h-5 text-green-600 ml-2 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <h4 className="text-green-800 font-medium">
+                  {t(
+                    "pendingDoctorRequests.success.processed",
+                    "Request Processed"
+                  )}
+                </h4>
+                <p className="text-green-700 text-sm mt-1">
+                  {approvalMessage ||
+                    t(
+                      "pendingDoctorRequests.success.default",
+                      "Request has been processed successfully"
+                    )}
+                </p>
+              </div>
+              <button
+                onClick={() => dispatch(clearApprovalSuccess())}
+                className="text-green-600 hover:text-green-800 ml-2"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="mb-8">
           <button
@@ -727,47 +860,9 @@ const PendingDoctorRequests = () => {
                           )}
                       </div>
 
-                      {/* Actions */}
+                      {/* Actions - Updated with dynamic buttons */}
                       <div className="mt-6 pt-4 border-t border-gray-100">
-                        <div className="flex gap-2">
-                          {request.status === "Pending" && (
-                            <>
-                              <button
-                                onClick={() =>
-                                  handleApproveRequest(request.userId)
-                                }
-                                className="flex-1 inline-flex items-center justify-center gap-1 bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"
-                              >
-                                <Check className="w-4 h-4" />
-                                {t(
-                                  "pendingDoctorRequests.requestCard.actions.approve"
-                                )}
-                              </button>
-                              <button
-                                onClick={() =>
-                                  handleRejectRequest(request.userId)
-                                }
-                                className="flex-1 inline-flex items-center justify-center gap-1 bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors"
-                              >
-                                <X className="w-4 h-4" />
-                                {t(
-                                  "pendingDoctorRequests.requestCard.actions.reject"
-                                )}
-                              </button>
-                            </>
-                          )}
-                          <button
-                            onClick={() => handleViewRequest(request.userId)}
-                            className={`${
-                              request.status === "Pending" ? "px-3" : "flex-1"
-                            } inline-flex items-center justify-center gap-1 text-gray-600 border border-gray-300 rounded-lg py-2 text-sm font-medium hover:bg-gray-50 transition-colors`}
-                          >
-                            <Eye className="w-4 h-4" />
-                            {t(
-                              "pendingDoctorRequests.requestCard.actions.view"
-                            )}
-                          </button>
-                        </div>
+                        {renderActionButtons(request)}
                       </div>
                     </div>
                   ))}

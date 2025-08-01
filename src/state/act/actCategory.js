@@ -233,7 +233,7 @@ export const deleteCategory = createAsyncThunk(
 
 export const approveDoctorRequest = createAsyncThunk(
   "categorySlice/approveDoctorRequest",
-  async ({ userId, isApproved }, thunkAPI) => {
+  async ({ userId }, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
 
     try {
@@ -245,14 +245,8 @@ export const approveDoctorRequest = createAsyncThunk(
         });
       }
 
-      const requestBody = {
-        userId: userId,
-        isApproved: isApproved,
-      };
-
       const res = await axiosInstance.post(
-        "/api/v1/Category/approve-doctor-request",
-        requestBody,
+        `/api/v1/Category/approve-doctor-request?userId=${userId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -265,6 +259,65 @@ export const approveDoctorRequest = createAsyncThunk(
       return { ...res.data, userId, isApproved };
     } catch (error) {
       console.log("Error processing doctor request:", error);
+
+      // Handle specific error cases
+      if (error.response?.status === 400) {
+        return rejectWithValue({
+          message: "معرف الطلب غير صحيح أو الطلب تم معالجته مسبقاً",
+          messageEn: "Invalid request ID or request already processed",
+          status: 400,
+        });
+      }
+
+      if (error.response?.status === 403) {
+        return rejectWithValue({
+          message: "لا توجد صلاحية لمعالجة هذا الطلب",
+          messageEn: "You don't have permission to process this request",
+          status: 403,
+        });
+      }
+
+      if (error.response?.status === 404) {
+        return rejectWithValue({
+          message: "الطلب غير موجود",
+          messageEn: "Request not found",
+          status: 404,
+        });
+      }
+
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+export const rejectDoctorRequest = createAsyncThunk(
+  "categorySlice/rejectDoctorRequest", // Different action type
+  async ({ userId }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+
+    try {
+      // Validate userId
+      if (!userId) {
+        return rejectWithValue({
+          message: "معرف المستخدم مطلوب",
+          messageEn: "User ID is required",
+        });
+      }
+
+      const res = await axiosInstance.post(
+        `/api/v1/Category/reject-doctor-request?userId=${userId}`,
+        {}, // Empty body
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Doctor request rejected successfully:", res);
+      return { ...res.data, userId, isApproved: false }; // Added isApproved: false
+    } catch (error) {
+      console.log("Error rejecting doctor request:", error);
 
       // Handle specific error cases
       if (error.response?.status === 400) {

@@ -534,5 +534,219 @@
     "success": "نجاح",
     "warning": "تحذير",
     "info": "معلومة"
+  },
+
+  "subDepartment": {
+    "title": "إدارة الأقسام الفرعية",
+    "addNew": "إضافة قسم فرعي جديد",
+    "add": "إضافة",
+    "loading": "جاري التحميل...",
+    "noData": "لا توجد أقسام فرعية",
+    "fetchError": "خطأ في جلب الأقسام الفرعية",
+
+    "search": {
+      "placeholder": "البحث في الأقسام الفرعية بالاسم أو الموقع..."
+    },
+
+    "filters": {
+      "title": "فلاتر",
+      "department": "القسم",
+      "allDepartments": "جميع الأقسام",
+      "category": "الفئة",
+      "allCategories": "جميع الفئات",
+      "status": "الحالة",
+      "allStatuses": "جميع الحالات",
+      "orderBy": "الترتيب حسب",
+      "orderDirection": "اتجاه الترتيب",
+      "ascending": "تصاعدي",
+      "descending": "تنازلي",
+      "sortBy": {
+        "nameArabic": "الاسم العربي",
+        "nameEnglish": "الاسم الإنجليزي",
+        "createdAt": "تاريخ الإنشاء",
+        "location": "الموقع"
+      }
+    },
+
+    "table": {
+      "nameArabic": "الاسم العربي",
+      "nameEnglish": "الاسم الإنجليزي",
+      "name": "الاسم",
+      "department": "القسم",
+      "location": "الموقع",
+      "status": "الحالة",
+      "doctors": "الأطباء",
+      "pendingRequests": "الطلبات المعلقة",
+      "createdAt": "تاريخ الإنشاء",
+      "actions": "الإجراءات"
+    },
+
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط"
+    },
+
+    "actions": {
+      "view": "عرض التفاصيل",
+      "edit": "تعديل",
+      "delete": "حذف"
+    },
+
+    "pagination": {
+      "showing": "عرض",
+      "of": "من",
+      "items": "عنصر",
+      "itemsPerPage": "عنصر لكل صفحة"
+    },
+
+    "form": {
+      "create": {
+        "title": "إنشاء قسم فرعي جديد",
+        "submit": "إنشاء القسم الفرعي"
+      },
+      "edit": {
+        "title": "تعديل القسم الفرعي",
+        "submit": "تحديث القسم الفرعي"
+      },
+      "fields": {
+        "nameArabic": {
+          "label": "الاسم العربي",
+          "placeholder": "أدخل الاسم العربي"
+        },
+        "nameEnglish": {
+          "label": "الاسم الإنجليزي",
+          "placeholder": "أدخل الاسم الإنجليزي"
+        },
+        "department": {
+          "label": "القسم",
+          "placeholder": "اختر القسم"
+        },
+        "location": {
+          "label": "الموقع",
+          "placeholder": "أدخل الموقع"
+        },
+        "description": {
+          "label": "الوصف",
+          "placeholder": "أدخل الوصف (اختياري)"
+        },
+        "isActive": {
+          "label": "الحالة",
+          "active": "نشط",
+          "inactive": "غير نشط"
+        }
+      },
+      "validation": {
+        "nameArabicRequired": "الاسم العربي مطلوب",
+        "nameEnglishRequired": "الاسم الإنجليزي مطلوب",
+        "departmentRequired": "القسم مطلوب",
+        "locationRequired": "الموقع مطلوب"
+      }
+    },
+
+    "messages": {
+      "createSuccess": "تم إنشاء القسم الفرعي بنجاح",
+      "updateSuccess": "تم تحديث القسم الفرعي بنجاح",
+      "deleteSuccess": "تم حذف القسم الفرعي بنجاح",
+      "createError": "خطأ في إنشاء القسم الفرعي",
+      "updateError": "خطأ في تحديث القسم الفرعي",
+      "deleteError": "خطأ في حذف القسم الفرعي"
+    },
+
+    "delete": {
+      "title": "حذف القسم الفرعي",
+      "message": "هل أنت متأكد من حذف هذا القسم الفرعي؟",
+      "subDepartmentName": "اسم القسم الفرعي",
+      "reason": {
+        "label": "سبب الحذف",
+        "placeholder": "أدخل سبب الحذف",
+        "required": "سبب الحذف مطلوب"
+      },
+      "confirm": "حذف",
+      "cancel": "إلغاء"
+    },
+
+    "details": {
+      "title": "تفاصيل القسم الفرعي",
+      "information": "المعلومات الأساسية",
+      "statistics": "الإحصائيات",
+      "basicInfo": "المعلومات الأساسية",
+      "doctorsCount": "عدد الأطباء",
+      "pendingRequestsCount": "الطلبات المعلقة",
+      "createdAt": "تاريخ الإنشاء",
+      "updatedAt": "تاريخ التحديث",
+      "createdBy": "أنشأ بواسطة",
+      "updatedBy": "آخر تحديث بواسطة",
+      "backToSubDepartments": "العودة للأقسام الفرعية",
+      "noDepartmentInfo": "لا توجد معلومات عن القسم"
+    },
+
+    "statistics": {
+      "totalEmployees": "إجمالي الموظفين",
+      "activeEmployees": "الموظفون النشطون",
+      "pendingRequests": "الطلبات المعلقة"
+    },
+
+    "error": {
+      "title": "خطأ",
+      "message": "حدث خطأ أثناء معالجة بيانات القسم الفرعي",
+      "notFound": "القسم الفرعي غير موجود",
+      "noPermission": "ليس لديك صلاحية للوصول لهذا القسم الفرعي",
+      "fetchError": "فشل في جلب الأقسام الفرعية"
+    },
+
+    "empty": {
+      "title": "لا توجد أقسام فرعية",
+      "message": "لا توجد أقسام فرعية تطابق معايير البحث الحالية",
+      "suggestion": "حاول تعديل معايير البحث أو إضافة قسم فرعي جديد"
+    }
+  },
+
+  "subDepartments": {
+    "fetchError": "خطأ في جلب الأقسام الفرعية"
+  },
+
+  "subDepartmentForm": {
+    "title": "إنشاء قسم فرعي جديد",
+    "editTitle": "تعديل القسم الفرعي",
+    "fields": {
+      "nameArabic": "الاسم العربي",
+      "nameEnglish": "الاسم الإنجليزي",
+      "department": "القسم",
+      "location": "الموقع",
+      "description": "الوصف",
+      "isActive": "حالة النشاط"
+    },
+    "placeholders": {
+      "nameArabic": "أدخل اسم القسم الفرعي بالعربية",
+      "nameEnglish": "أدخل اسم القسم الفرعي بالإنجليزية",
+      "department": "اختر قسماً",
+      "location": "أدخل موقع القسم الفرعي (مثال: غرفة 101 - الطابق الثاني)",
+      "description": "أدخل وصف القسم الفرعي (اختياري)"
+    },
+    "hints": {
+      "location": "حدد الموقع الفعلي للقسم الفرعي داخل المنشأة",
+      "description": "وصف مختصر لخدمات ومسؤوليات القسم الفرعي"
+    },
+    "charactersCount": "حرف",
+    "buttons": {
+      "create": "إنشاء القسم الفرعي",
+      "edit": "تحديث القسم الفرعي",
+      "creating": "جاري الإنشاء...",
+      "editing": "جاري التحديث...",
+      "cancel": "إلغاء",
+      "back": "رجوع"
+    },
+    "success": {
+      "created": "تم إنشاء القسم الفرعي بنجاح!",
+      "updated": "تم تحديث القسم الفرعي بنجاح!",
+      "deleted": "تم حذف القسم الفرعي بنجاح!"
+    },
+    "error": {
+      "title": "خطأ",
+      "createFailed": "فشل في إنشاء القسم الفرعي",
+      "updateFailed": "فشل في تحديث القسم الفرعي",
+      "deleteFailed": "فشل في حذف القسم الفرعي",
+      "loadFailed": "فشل في تحميل بيانات القسم الفرعي"
+    }
   }
 }

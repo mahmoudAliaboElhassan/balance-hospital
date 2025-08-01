@@ -24,6 +24,7 @@ function UseAdminPanel() {
       icon: "🏢",
       path: "/admin-panel/departments",
     },
+
     {
       id: 4,
       name: t("adminPanel.subDepartments"),

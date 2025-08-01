@@ -123,7 +123,7 @@
       "reasonRequired": "Please provide a reason for deletion.",
       "confirm": "Delete"
     },
-    "deleteSuccess": "Category “{{name}}” deleted successfully!",
+    "deleteSuccess": "Category \"{{name}}\" deleted successfully!",
     "search": {
       "placeholder": "Search categories..."
     },
@@ -401,7 +401,6 @@
       "loadFailed": "Failed to load department data"
     }
   },
-
   "department": {
     "title": "Departments",
     "addNew": "Add New Department",
@@ -413,7 +412,6 @@
     },
     "filters": {
       "title": "Filters",
-
       "all": "All Departments",
       "active": "Active Only",
       "inactive": "Inactive Only",
@@ -513,6 +511,204 @@
       "itemsPerPage": "items per page"
     }
   },
+  "subDepartment": {
+    "title": "Sub Departments Management",
+    "addNew": "Add New Sub Department",
+    "add": "Add",
+    "loading": "Loading...",
+    "noData": "No sub departments found",
+    "fetchError": "Error fetching sub departments",
+    "search": {
+      "placeholder": "Search sub departments by name or location..."
+    },
+    "filters": {
+      "title": "Filters",
+      "department": "Department",
+      "allDepartments": "All Departments",
+      "category": "Category",
+      "allCategories": "All Categories",
+      "status": "Status",
+      "allStatuses": "All Statuses",
+      "orderBy": "Sort By",
+      "orderDirection": "Sort Direction",
+      "ascending": "Ascending",
+      "descending": "Descending",
+      "sortBy": {
+        "nameArabic": "Arabic Name",
+        "nameEnglish": "English Name",
+        "createdAt": "Creation Date",
+        "location": "Location"
+      }
+    },
+    "table": {
+      "nameArabic": "Arabic Name",
+      "nameEnglish": "English Name",
+      "name": "Name",
+      "department": "Department",
+      "location": "Location",
+      "status": "Status",
+      "doctors": "Doctors",
+      "pendingRequests": "Pending Requests",
+      "createdAt": "Created At",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "actions": {
+      "view": "View Details",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "pagination": {
+      "showing": "Showing",
+      "of": "of",
+      "items": "items",
+      "itemsPerPage": "items per page"
+    },
+    "form": {
+      "create": {
+        "title": "Create New Sub Department",
+        "submit": "Create Sub Department"
+      },
+      "edit": {
+        "title": "Edit Sub Department",
+        "submit": "Update Sub Department"
+      },
+      "fields": {
+        "nameArabic": {
+          "label": "Arabic Name",
+          "placeholder": "Enter Arabic name"
+        },
+        "nameEnglish": {
+          "label": "English Name",
+          "placeholder": "Enter English name"
+        },
+        "department": {
+          "label": "Department",
+          "placeholder": "Select department"
+        },
+        "location": {
+          "label": "Location",
+          "placeholder": "Enter location"
+        },
+        "description": {
+          "label": "Description",
+          "placeholder": "Enter description (optional)"
+        },
+        "isActive": {
+          "label": "Status",
+          "active": "Active",
+          "inactive": "Inactive"
+        }
+      },
+      "validation": {
+        "nameArabicRequired": "Arabic name is required",
+        "nameEnglishRequired": "English name is required",
+        "departmentRequired": "Department is required",
+        "locationRequired": "Location is required"
+      }
+    },
+    "messages": {
+      "createSuccess": "Sub department created successfully",
+      "updateSuccess": "Sub department updated successfully",
+      "deleteSuccess": "Sub department deleted successfully",
+      "createError": "Error creating sub department",
+      "updateError": "Error updating sub department",
+      "deleteError": "Error deleting sub department"
+    },
+    "delete": {
+      "title": "Delete Sub Department",
+      "message": "Are you sure you want to delete this sub department?",
+      "subDepartmentName": "Sub Department Name",
+      "reason": {
+        "label": "Deletion Reason",
+        "placeholder": "Enter reason for deletion",
+        "required": "Deletion reason is required"
+      },
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    },
+    "details": {
+      "title": "Sub Department Details",
+      "information": "Basic Information",
+      "statistics": "Statistics",
+      "basicInfo": "Basic Information",
+      "doctorsCount": "Number of Doctors",
+      "pendingRequestsCount": "Pending Requests",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "createdBy": "Created By",
+      "updatedBy": "Last Updated By",
+      "backToSubDepartments": "Back to Sub Departments",
+      "noDepartmentInfo": "No department information available"
+    },
+    "statistics": {
+      "totalEmployees": "Total Employees",
+      "activeEmployees": "Active Employees",
+      "pendingRequests": "Pending Requests"
+    },
+    "error": {
+      "title": "Error",
+      "message": "An error occurred while processing sub department data",
+      "notFound": "Sub department not found",
+      "noPermission": "You don't have permission to access this sub department",
+      "fetchError": "Failed to fetch sub departments"
+    },
+    "empty": {
+      "title": "No Sub Departments Found",
+      "message": "No sub departments match your current filters",
+      "suggestion": "Try adjusting your search criteria or add a new sub department"
+    }
+  },
+  "subDepartments": {
+    "fetchError": "Error fetching sub departments"
+  },
+  "subDepartmentForm": {
+    "title": "Create New Sub Department",
+    "editTitle": "Edit Sub Department",
+    "fields": {
+      "nameArabic": "Arabic Name",
+      "nameEnglish": "English Name",
+      "department": "Department",
+      "location": "Location",
+      "description": "Description",
+      "isActive": "Active Status"
+    },
+    "placeholders": {
+      "nameArabic": "Enter sub department name in Arabic",
+      "nameEnglish": "Enter sub department name in English",
+      "department": "Select a department",
+      "location": "Enter sub department location (e.g., Room 101 - Second Floor)",
+      "description": "Enter sub department description (optional)"
+    },
+    "hints": {
+      "location": "Specify the physical location of the sub department within the facility",
+      "description": "Brief description of the sub department's services and responsibilities"
+    },
+    "charactersCount": "characters",
+    "buttons": {
+      "create": "Create Sub Department",
+      "edit": "Update Sub Department",
+      "creating": "Creating...",
+      "editing": "Updating...",
+      "cancel": "Cancel",
+      "back": "Back"
+    },
+    "success": {
+      "created": "Sub department created successfully!",
+      "updated": "Sub department updated successfully!",
+      "deleted": "Sub department deleted successfully!"
+    },
+    "error": {
+      "title": "Error",
+      "createFailed": "Failed to create sub department",
+      "updateFailed": "Failed to update sub department",
+      "deleteFailed": "Failed to delete sub department",
+      "loadFailed": "Failed to load sub department data"
+    }
+  },
   "validation": {
     "required": "This field is required",
     "minLength": "Must be at least {{count}} characters",
@@ -546,6 +742,7 @@
     "error": "Error",
     "success": "Success",
     "warning": "Warning",
-    "info": "Information"
+    "info": "Information",
+    "goBack": "Go Back"
   }
 }

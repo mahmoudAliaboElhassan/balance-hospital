@@ -57,6 +57,23 @@ function UseInitialValues() {
     pageSize: 10,
   };
 
+  // SubDepartment Form Initial Values
+  const INITIAL_VALUES_ADD_SUBDEPARTMENT = {
+    nameArabic: "",
+    nameEnglish: "",
+    departmentId: "",
+    location: "",
+    isActive: true,
+  };
+
+  const INITIAL_VALUES_EDIT_SUBDEPARTMENT = {
+    id: "",
+    nameArabic: "",
+    nameEnglish: "",
+    departmentId: "",
+    location: "",
+    isActive: true,
+  };
   return {
     INITIAL_VALUES_LOGIN,
     INITIAL_VALUES_FORGET_PASSWORD,
@@ -65,6 +82,8 @@ function UseInitialValues() {
     INITIAL_VALUES_ADD_DEPARTMENT,
     INITIAL_VALUES_EDIT_DEPARTMENT,
     INITIAL_VALUES_DEPARTMENT_FILTERS,
+    INITIAL_VALUES_ADD_SUBDEPARTMENT,
+    INITIAL_VALUES_EDIT_SUBDEPARTMENT,
   };
 }
 

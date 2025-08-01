@@ -14,10 +14,14 @@ import Department from "../pages/adminPanel/department";
 import CreateCategory from "../pages/adminPanel/category/createCategory";
 import SpecificCategory from "../pages/adminPanel/category/specificCategory";
 import EditCategory from "../pages/adminPanel/category/editCategory";
-import PendingDoctorRequests from "../pages/adminPanel/category/pendingDoctors";
 import CreateDepartment from "../pages/adminPanel/department/createDepartment";
 import EditDepartment from "../pages/adminPanel/department/editDepartment";
 import SpecificDepartment from "../pages/adminPanel/department/specificDepartment";
+import SubDepartment from "../pages/adminPanel/subDepartment";
+import CreateSubDepartment from "../pages/adminPanel/subDepartment/createSubDepartment";
+import EditSubDepartment from "../pages/adminPanel/subDepartment/editSubDepartment";
+import SpecificSubDepartment from "../pages/adminPanel/subDepartment/specificSubDepartment";
+import PendingDoctorRequests from "../pages/adminPanel/category/pendingDoctors";
 
 const router = createBrowserRouter([
   {
@@ -137,6 +141,38 @@ const router = createBrowserRouter([
               </Suspense>
             ),
           },
+          {
+            path: "sub-departments",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <SubDepartment />
+              </Suspense>
+            ),
+          },
+          {
+            path: "sub-departments/create",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <CreateSubDepartment />
+              </Suspense>
+            ),
+          },
+          {
+            path: "sub-departments/edit/:id",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <EditSubDepartment />
+              </Suspense>
+            ),
+          },
+          {
+            path: "sub-departments/:id",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <SpecificSubDepartment />
+              </Suspense>
+            ),
+          },
         ],
       },
     ],
@@ -146,4 +182,5 @@ const router = createBrowserRouter([
 const AppRouter = () => {
   return <RouterProvider router={router} />;
 };
+
 export default AppRouter;
