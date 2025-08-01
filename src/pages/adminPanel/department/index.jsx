@@ -12,24 +12,32 @@ import {
   Plus,
   Menu,
   X,
+  MapPin,
+  Building,
+  Users,
+  UserCheck,
+  Calendar,
 } from "lucide-react";
+import { getDepartments } from "../../../state/act/actDepartment";
 import { getCategories } from "../../../state/act/actCategory";
 import {
   clearError,
   setCurrentPage,
   setFilters,
   setPageSize,
-} from "../../../state/slices/category";
+  setCategoryFilter,
+} from "../../../state/slices/department";
 import { Link } from "react-router-dom";
-import DeleteCategoryModal from "../../../components/DeleteCategoryModal";
+import DeleteDepartmentModal from "../../../components/DeleteDepartmentModal";
 
-function Category() {
+function Department() {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const [modalOpen, setModalOpen] = useState(false);
   const [toDelete, setToDelete] = useState({ id: null, name: "" });
-  const { categories, pagination, filters, loadingGetCategories, error } =
-    useSelector((state) => state.category);
+  const { departments, pagination, filters, loadingGetDepartments, error } =
+    useSelector((state) => state.department);
+  const { categories } = useSelector((state) => state.category);
   const { mymode } = useSelector((state) => state.mode);
 
   const [searchInput, setSearchInput] = useState(filters.search);
@@ -46,12 +54,16 @@ function Category() {
   const language = i18n.language;
   const isRTL = language === "ar";
 
-  // Fetch categories when filters change
+  // Fetch departments when filters change
   useEffect(() => {
-    dispatch(getCategories(filters));
+    dispatch(getDepartments(filters));
   }, [dispatch, filters]);
 
-  // Handle search with debounce
+  // Fetch categories for filter dropdown
+  useEffect(() => {
+    dispatch(getCategories({ pageSize: 100, isActive: true }));
+  }, [dispatch]);
+
   const handleSearchChange = useCallback(
     (value) => {
       setSearchInput(value);
@@ -117,8 +129,8 @@ function Category() {
     return pages;
   };
 
-  // Mobile card component for each category
-  const CategoryCard = ({ category }) => (
+  // Mobile card component for each department
+  const DepartmentCard = ({ department }) => (
     <div
       className={`p-4 rounded-lg border mb-3 ${
         isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
@@ -131,125 +143,133 @@ function Category() {
               isDark ? "text-white" : "text-gray-900"
             }`}
           >
-            {category.nameArabic}
+            {department.nameArabic}
           </h3>
           <p
             className={`text-sm ${isDark ? "text-gray-300" : "text-gray-600"}`}
           >
-            {category.nameEnglish}
+            {department.nameEnglish}
           </p>
+          {department.categoryNameArabic && (
+            <p
+              className={`text-xs mt-1 px-2 py-1 rounded-full inline-block ${
+                isDark
+                  ? "bg-blue-900 text-blue-300"
+                  : "bg-blue-100 text-blue-800"
+              }`}
+            >
+              {department.categoryNameArabic}
+            </p>
+          )}
         </div>
         <span
           className={`px-2 py-1 rounded-full text-xs font-medium ${
-            category.isActive
+            department.isActive
               ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
               : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
           }`}
         >
-          {category.isActive
-            ? t("categories.status.active")
-            : t("categories.status.inactive")}
+          {department.isActive
+            ? t("department.status.active")
+            : t("department.status.inactive")}
         </span>
       </div>
 
+      {department.location && (
+        <div className="flex items-center gap-2 mb-2">
+          <MapPin size={14} className="text-gray-500" />
+          <span
+            className={`text-sm ${isDark ? "text-gray-300" : "text-gray-600"}`}
+          >
+            {department.location}
+          </span>
+        </div>
+      )}
+
       <div className="grid grid-cols-2 gap-2 text-sm mb-3">
-        <div>
+        <div className="flex items-center gap-2">
+          <Building size={14} className="text-gray-500" />
           <span
             className={`font-medium ${
               isDark ? "text-gray-300" : "text-gray-700"
             }`}
           >
-            {t("categories.table.code")}:
+            {t("department.table.subDepartments")}:
           </span>
-          <span
-            className={`mr-2 font-mono ${
-              isDark ? "text-white" : "text-gray-900"
-            }`}
-          >
-            {category.code}
+          <span className={`${isDark ? "text-gray-200" : "text-gray-800"}`}>
+            {department.subDepartmentsCount || 0}
           </span>
         </div>
-        <div>
+        <div className="flex items-center gap-2">
+          <Users size={14} className="text-gray-500" />
           <span
             className={`font-medium ${
               isDark ? "text-gray-300" : "text-gray-700"
             }`}
           >
-            {t("categories.table.departments")}:
+            {t("department.table.doctors")}:
           </span>
-          <span
-            className={`mr-2 ${isDark ? "text-gray-200" : "text-gray-800"}`}
-          >
-            {category.departmentsCount}
+          <span className={`${isDark ? "text-gray-200" : "text-gray-800"}`}>
+            {department.doctorsCount || 0}
           </span>
         </div>
-        <div>
+        <div className="flex items-center gap-2">
+          <UserCheck size={14} className="text-gray-500" />
           <span
             className={`font-medium ${
               isDark ? "text-gray-300" : "text-gray-700"
             }`}
           >
-            {t("categories.table.users")}:
+            {t("department.table.pendingRequests")}:
           </span>
-          <span
-            className={`mr-2 ${isDark ? "text-gray-200" : "text-gray-800"}`}
-          >
-            {category.usersCount}
+          <span className={`${isDark ? "text-gray-200" : "text-gray-800"}`}>
+            {department.pendingRequestsCount || 0}
           </span>
         </div>
-        <div>
+        <div className="flex items-center gap-2">
+          <Calendar size={14} className="text-gray-500" />
           <span
             className={`font-medium ${
               isDark ? "text-gray-300" : "text-gray-700"
             }`}
           >
-            {t("categories.table.createdAt")}:
+            {t("department.table.createdAt")}:
           </span>
           <span
-            className={`mr-2 text-xs ${
-              isDark ? "text-gray-200" : "text-gray-800"
-            }`}
+            className={`text-xs ${isDark ? "text-gray-200" : "text-gray-800"}`}
           >
-            {formatDate(category.createdAt)}
+            {formatDate(department.createdAt)}
           </span>
         </div>
       </div>
 
-      {category.description && (
-        <p
-          className={`text-sm mb-3 ${
-            isDark ? "text-gray-300" : "text-gray-600"
-          }`}
-        >
-          {category.description}
-        </p>
-      )}
-
       <div className="flex gap-2 justify-end">
-        <Link to={`/admin-panel/category/${category.id}`}>
+        <Link to={`/admin-panel/department/${department.id}`}>
           <button
             className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors"
-            title={t("categories.actions.view")}
+            title={t("department.actions.view")}
           >
             <Eye size={16} />
           </button>
         </Link>
-        <Link to={`/admin-panel/category/edit/${category.id}`}>
+        <Link to={`/admin-panel/department/edit/${department.id}`}>
           <button
             className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors"
-            title={t("categories.actions.edit")}
+            title={t("department.actions.edit")}
           >
             <Edit size={16} />
           </button>
         </Link>
         <button
           className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors"
-          title={t("categories.actions.delete")}
+          title={t("department.actions.delete")}
           onClick={() => {
             setToDelete({
-              id: category.id,
+              id: department.id,
               name:
-                language == "en" ? category.nameEnglish : category.nameArabic,
+                language === "en"
+                  ? department.nameEnglish
+                  : department.nameArabic,
             });
             setModalOpen(true);
           }}
@@ -265,12 +285,12 @@ function Category() {
       className={`min-h-screen ${isDark ? "bg-gray-900" : "bg-gray-50"}`}
       dir={isRTL ? "rtl" : "ltr"}
     >
-      <DeleteCategoryModal
+      <DeleteDepartmentModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        categoryId={toDelete.id}
+        departmentId={toDelete.id}
         info={toDelete}
-        categoryName={toDelete.name}
+        departmentName={toDelete.name}
       />
       <div className="p-4 sm:p-6">
         <div className="max-w-7xl mx-auto">
@@ -282,18 +302,16 @@ function Category() {
                   isDark ? "text-white" : "text-gray-900"
                 }`}
               >
-                {t("categories.title")}
+                {t("department.title")}
               </h1>
               <div className="flex gap-2 w-full sm:w-auto">
-                <Link to="/admin-panel/category/create">
+                <Link to="/admin-panel/department/create">
                   <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors flex-1 sm:flex-none justify-center">
                     <Plus size={20} />
                     <span className="hidden sm:inline">
-                      {t("categories.actions.addNew")}
+                      {t("department.addNew")}
                     </span>
-                    <span className="sm:hidden">
-                      {t("categories.actions.add")}
-                    </span>
+                    <span className="sm:hidden">{t("department.add")}</span>
                   </button>
                 </Link>
                 {/* Mobile table toggle */}
@@ -349,7 +367,7 @@ function Category() {
                   />
                   <input
                     type="text"
-                    placeholder={t("categories.search.placeholder")}
+                    placeholder={t("department.search.placeholder")}
                     value={searchInput}
                     onChange={(e) => handleSearchChange(e.target.value)}
                     className={`w-full ${
@@ -374,14 +392,14 @@ function Category() {
                   }`}
                 >
                   <Filter size={20} />
-                  {t("categories.filters.title")}
+                  {t("department.filters.title")}
                 </button>
               </div>
 
               {/* Advanced Filters */}
               {showFilters && (
                 <div
-                  className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-4 border-t ${
+                  className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t ${
                     isDark ? "border-gray-600" : "border-gray-200"
                   }`}
                 >
@@ -391,7 +409,43 @@ function Category() {
                         isDark ? "text-gray-300" : "text-gray-700"
                       }`}
                     >
-                      {t("categories.filters.status")}
+                      {t("department.filters.category")}
+                    </label>
+                    <select
+                      value={filters.categoryId || 1}
+                      onChange={(e) => {
+                        const value =
+                          e.target.value === ""
+                            ? null
+                            : parseInt(e.target.value);
+                        handleFilterChange("categoryId", value);
+                      }}
+                      className={`w-full p-2 border rounded-lg ${
+                        isDark
+                          ? "border-gray-600 bg-gray-700 text-white"
+                          : "border-gray-300 bg-white text-gray-900"
+                      }`}
+                    >
+                      <option value="">
+                        {t("department.filters.allCategories")}
+                      </option>
+                      {categories.map((category) => (
+                        <option key={category.id} value={category.id}>
+                          {language === "ar"
+                            ? category.nameArabic
+                            : category.nameEnglish}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label
+                      className={`block text-sm font-medium mb-2 ${
+                        isDark ? "text-gray-300" : "text-gray-700"
+                      }`}
+                    >
+                      {t("department.filters.status")}
                     </label>
                     <select
                       value={
@@ -413,10 +467,10 @@ function Category() {
                       }`}
                     >
                       <option value="true">
-                        {t("categories.status.active")}
+                        {t("department.status.active")}
                       </option>
                       <option value="false">
-                        {t("categories.status.inactive")}
+                        {t("department.status.inactive")}
                       </option>
                     </select>
                   </div>
@@ -427,7 +481,7 @@ function Category() {
                         isDark ? "text-gray-300" : "text-gray-700"
                       }`}
                     >
-                      {t("categories.filters.orderBy")}
+                      {t("department.filters.orderBy")}
                     </label>
                     <select
                       value={filters.orderBy}
@@ -440,28 +494,28 @@ function Category() {
                           : "border-gray-300 bg-white text-gray-900"
                       }`}
                     >
-                      <option value="createdAt">
-                        {t("categories.filters.sortBy.createdAt")}
-                      </option>
                       <option value="nameArabic">
-                        {t("categories.filters.sortBy.nameArabic")}
+                        {t("department.filters.sortBy.nameArabic")}
                       </option>
                       <option value="nameEnglish">
-                        {t("categories.filters.sortBy.nameEnglish")}
+                        {t("department.filters.sortBy.nameEnglish")}
                       </option>
-                      <option value="code">
-                        {t("categories.filters.sortBy.code")}
+                      <option value="createdAt">
+                        {t("department.filters.sortBy.createdAt")}
+                      </option>
+                      <option value="location">
+                        {t("department.filters.sortBy.location")}
                       </option>
                     </select>
                   </div>
 
-                  <div className="sm:col-span-2 lg:col-span-1">
+                  <div>
                     <label
                       className={`block text-sm font-medium mb-2 ${
                         isDark ? "text-gray-300" : "text-gray-700"
                       }`}
                     >
-                      {t("categories.filters.orderDirection")}
+                      {t("department.filters.orderDirection")}
                     </label>
                     <select
                       value={filters.orderDesc.toString()}
@@ -478,10 +532,10 @@ function Category() {
                       }`}
                     >
                       <option value="true">
-                        {t("categories.filters.descending")}
+                        {t("department.filters.descending")}
                       </option>
                       <option value="false">
-                        {t("categories.filters.ascending")}
+                        {t("department.filters.ascending")}
                       </option>
                     </select>
                   </div>
@@ -492,7 +546,7 @@ function Category() {
 
           {/* Mobile Cards View */}
           <div className={`md:hidden ${showMobileTable ? "hidden" : "block"}`}>
-            {loadingGetCategories ? (
+            {loadingGetDepartments ? (
               <div className="text-center p-8">
                 <div className="flex items-center justify-center">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -501,21 +555,21 @@ function Category() {
                       isDark ? "text-gray-400" : "text-gray-600"
                     }`}
                   >
-                    {t("categories.loading")}
+                    {t("department.loading")}
                   </span>
                 </div>
               </div>
-            ) : categories.length === 0 ? (
+            ) : departments.length === 0 ? (
               <div
                 className={`text-center p-8 ${
                   isDark ? "text-gray-400" : "text-gray-500"
                 }`}
               >
-                {t("categories.noData")}
+                {t("department.noData")}
               </div>
             ) : (
-              categories.map((category) => (
-                <CategoryCard key={category.id} category={category} />
+              departments.map((department) => (
+                <DepartmentCard key={department.id} department={department} />
               ))
             )}
           </div>
@@ -545,7 +599,7 @@ function Category() {
                         isDark ? "text-white" : "text-gray-900"
                       }`}
                     >
-                      {t("categories.table.code")}
+                      {t("department.table.nameArabic")}
                     </th>
                     <th
                       className={`${
@@ -554,7 +608,7 @@ function Category() {
                         isDark ? "text-white" : "text-gray-900"
                       }`}
                     >
-                      {t("categories.table.nameArabic")}
+                      {t("department.table.nameEnglish")}
                     </th>
                     <th
                       className={`${
@@ -563,7 +617,7 @@ function Category() {
                         isDark ? "text-white" : "text-gray-900"
                       }`}
                     >
-                      {t("categories.table.nameEnglish")}
+                      {t("department.table.category")}
                     </th>
                     <th
                       className={`${
@@ -572,7 +626,7 @@ function Category() {
                         isDark ? "text-white" : "text-gray-900"
                       }`}
                     >
-                      {t("categories.table.description")}
+                      {t("department.table.location")}
                     </th>
                     <th
                       className={`${
@@ -581,7 +635,7 @@ function Category() {
                         isDark ? "text-white" : "text-gray-900"
                       }`}
                     >
-                      {t("categories.table.status")}
+                      {t("department.table.status")}
                     </th>
                     <th
                       className={`${
@@ -590,7 +644,7 @@ function Category() {
                         isDark ? "text-white" : "text-gray-900"
                       }`}
                     >
-                      {t("categories.table.departments")}
+                      {t("department.table.subDepartments")}
                     </th>
                     <th
                       className={`${
@@ -599,7 +653,7 @@ function Category() {
                         isDark ? "text-white" : "text-gray-900"
                       }`}
                     >
-                      {t("categories.table.users")}
+                      {t("department.table.doctors")}
                     </th>
                     <th
                       className={`${
@@ -608,7 +662,7 @@ function Category() {
                         isDark ? "text-white" : "text-gray-900"
                       }`}
                     >
-                      {t("categories.table.createdAt")}
+                      {t("department.table.pendingRequests")}
                     </th>
                     <th
                       className={`${
@@ -617,14 +671,23 @@ function Category() {
                         isDark ? "text-white" : "text-gray-900"
                       }`}
                     >
-                      {t("categories.table.actions")}
+                      {t("department.table.createdAt")}
+                    </th>
+                    <th
+                      className={`${
+                        isRTL ? "text-right" : "text-left"
+                      } p-4 font-semibold ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
+                    >
+                      {t("department.table.actions")}
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {loadingGetCategories ? (
+                  {loadingGetDepartments ? (
                     <tr>
-                      <td colSpan="9" className="text-center p-8">
+                      <td colSpan="10" className="text-center p-8">
                         <div className="flex items-center justify-center">
                           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                           <span
@@ -632,26 +695,26 @@ function Category() {
                               isDark ? "text-gray-400" : "text-gray-600"
                             }`}
                           >
-                            {t("categories.loading")}
+                            {t("department.loading")}
                           </span>
                         </div>
                       </td>
                     </tr>
-                  ) : categories.length === 0 ? (
+                  ) : departments.length === 0 ? (
                     <tr>
                       <td
-                        colSpan="9"
+                        colSpan="10"
                         className={`text-center p-8 ${
                           isDark ? "text-gray-400" : "text-gray-500"
                         }`}
                       >
-                        {t("categories.noData")}
+                        {t("department.noData")}
                       </td>
                     </tr>
                   ) : (
-                    categories.map((category) => (
+                    departments.map((department) => (
                       <tr
-                        key={category.id}
+                        key={department.id}
                         className={`border-b transition-colors ${
                           isDark
                             ? "border-gray-700 hover:bg-gray-750"
@@ -659,25 +722,33 @@ function Category() {
                         }`}
                       >
                         <td
-                          className={`p-4 font-mono ${
-                            isDark ? "text-white" : "text-gray-900"
-                          }`}
-                        >
-                          {category.code}
-                        </td>
-                        <td
                           className={`p-4 font-semibold ${
                             isDark ? "text-white" : "text-gray-900"
                           }`}
                         >
-                          {category.nameArabic}
+                          {department.nameArabic}
                         </td>
                         <td
                           className={`p-4 ${
                             isDark ? "text-gray-300" : "text-gray-600"
                           }`}
                         >
-                          {category.nameEnglish}
+                          {department.nameEnglish}
+                        </td>
+                        <td className="p-4">
+                          {department.categoryNameArabic && (
+                            <span
+                              className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                isDark
+                                  ? "bg-blue-900 text-blue-300"
+                                  : "bg-blue-100 text-blue-800"
+                              }`}
+                            >
+                              {language === "ar"
+                                ? department.categoryNameArabic
+                                : department.categoryNameEnglish}
+                            </span>
+                          )}
                         </td>
                         <td
                           className={`p-4 ${
@@ -685,23 +756,27 @@ function Category() {
                           }`}
                         >
                           <div
-                            className="max-w-xs truncate"
-                            title={category.description}
+                            className="max-w-xs truncate flex items-center gap-1"
+                            title={department.location}
                           >
-                            {category.description}
+                            <MapPin
+                              size={14}
+                              className="text-gray-500 flex-shrink-0"
+                            />
+                            {department.location || "-"}
                           </div>
                         </td>
                         <td className="p-4">
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              category.isActive
+                              department.isActive
                                 ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
                                 : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
                             }`}
                           >
-                            {category.isActive
-                              ? t("categories.status.active")
-                              : t("categories.status.inactive")}
+                            {department.isActive
+                              ? t("department.status.active")
+                              : t("department.status.inactive")}
                           </span>
                         </td>
                         <td
@@ -709,38 +784,56 @@ function Category() {
                             isDark ? "text-gray-300" : "text-gray-600"
                           }`}
                         >
-                          {category.departmentsCount}
+                          <div className="flex items-center gap-1">
+                            <Building size={14} className="text-gray-500" />
+                            {department.subDepartmentsCount || 0}
+                          </div>
                         </td>
                         <td
                           className={`p-4 ${
                             isDark ? "text-gray-300" : "text-gray-600"
                           }`}
                         >
-                          {category.usersCount}
+                          <div className="flex items-center gap-1">
+                            <Users size={14} className="text-gray-500" />
+                            {department.doctorsCount || 0}
+                          </div>
+                        </td>
+                        <td
+                          className={`p-4 ${
+                            isDark ? "text-gray-300" : "text-gray-600"
+                          }`}
+                        >
+                          <div className="flex items-center gap-1">
+                            <UserCheck size={14} className="text-gray-500" />
+                            {department.pendingRequestsCount || 0}
+                          </div>
                         </td>
                         <td
                           className={`p-4 text-sm ${
                             isDark ? "text-gray-300" : "text-gray-600"
                           }`}
                         >
-                          {formatDate(category.createdAt)}
+                          {formatDate(department.createdAt)}
                         </td>
                         <td className="p-4">
                           <div className="flex gap-2">
-                            <Link to={`/admin-panel/category/${category.id}`}>
+                            <Link
+                              to={`/admin-panel/department/${department.id}`}
+                            >
                               <button
-                                className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors cursor-pointer"
-                                title={t("categories.actions.view")}
+                                className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors"
+                                title={t("departments.actions.view")}
                               >
                                 <Eye size={16} />
                               </button>
                             </Link>
                             <Link
-                              to={`/admin-panel/category/edit/${category.id}`}
+                              to={`/admin-panel/department/edit/${department.id}`}
                             >
                               <button
-                                className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors cursor-pointer"
-                                title={t("categories.actions.edit")}
+                                className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors"
+                                title={t("department.actions.edit")}
                               >
                                 <Edit size={16} />
                               </button>
@@ -748,16 +841,16 @@ function Category() {
                             <button
                               onClick={() => {
                                 setToDelete({
-                                  id: category.id,
+                                  id: department.id,
                                   name:
-                                    language == "en"
-                                      ? category.nameEnglish
-                                      : category.nameArabic,
+                                    language === "en"
+                                      ? department.nameEnglish
+                                      : department.nameArabic,
                                 });
                                 setModalOpen(true);
                               }}
-                              className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors cursor-pointer"
-                              title={t("categories.actions.delete")}
+                              className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors"
+                              title={t("department.actions.delete")}
                             >
                               <Trash2 size={16} />
                             </button>
@@ -796,7 +889,7 @@ function Category() {
                         isDark ? "text-white" : "text-gray-900"
                       }`}
                     >
-                      {t("categories.table.name")}
+                      {t("department.table.name")}
                     </th>
                     <th
                       className={`${
@@ -805,7 +898,7 @@ function Category() {
                         isDark ? "text-white" : "text-gray-900"
                       }`}
                     >
-                      {t("categories.table.status")}
+                      {t("department.table.status")}
                     </th>
                     <th
                       className={`${
@@ -814,12 +907,12 @@ function Category() {
                         isDark ? "text-white" : "text-gray-900"
                       }`}
                     >
-                      {t("categories.table.actions")}
+                      {t("department.table.actions")}
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {loadingGetCategories ? (
+                  {loadingGetDepartments ? (
                     <tr>
                       <td colSpan="3" className="text-center p-8">
                         <div className="flex items-center justify-center">
@@ -829,12 +922,12 @@ function Category() {
                               isDark ? "text-gray-400" : "text-gray-600"
                             }`}
                           >
-                            {t("categories.loading")}
+                            {t("department.loading")}
                           </span>
                         </div>
                       </td>
                     </tr>
-                  ) : categories.length === 0 ? (
+                  ) : departments.length === 0 ? (
                     <tr>
                       <td
                         colSpan="3"
@@ -842,13 +935,13 @@ function Category() {
                           isDark ? "text-gray-400" : "text-gray-500"
                         }`}
                       >
-                        {t("categories.noData")}
+                        {t("department.noData")}
                       </td>
                     </tr>
                   ) : (
-                    categories.map((category) => (
+                    departments.map((department) => (
                       <tr
-                        key={category.id}
+                        key={department.id}
                         className={`border-b transition-colors ${
                           isDark
                             ? "border-gray-700 hover:bg-gray-750"
@@ -862,39 +955,41 @@ function Category() {
                                 isDark ? "text-white" : "text-gray-900"
                               }`}
                             >
-                              {category.nameArabic}
+                              {department.nameArabic}
                             </div>
                             <div
                               className={`text-xs ${
                                 isDark ? "text-gray-400" : "text-gray-500"
                               }`}
                             >
-                              {category.code}
+                              {department.categoryNameArabic || "بدون فئة"}
                             </div>
                           </div>
                         </td>
                         <td className="p-2">
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              category.isActive
+                              department.isActive
                                 ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
                                 : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
                             }`}
                           >
-                            {category.isActive
-                              ? t("categories.status.active")
-                              : t("categories.status.inactive")}
+                            {department.isActive
+                              ? t("department.status.active")
+                              : t("department.status.inactive")}
                           </span>
                         </td>
                         <td className="p-2">
                           <div className="flex gap-1">
-                            <Link to={`/admin-panel/category/${category.id}`}>
+                            <Link
+                              to={`/admin-panel/department/${department.id}`}
+                            >
                               <button className="p-1 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded transition-colors">
                                 <Eye size={14} />
                               </button>
                             </Link>
                             <Link
-                              to={`/admin-panel/category/edit/${category.id}`}
+                              to={`/admin-panel/department/edit/${department.id}`}
                             >
                               <button className="p-1 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded transition-colors">
                                 <Edit size={14} />
@@ -904,11 +999,11 @@ function Category() {
                               className="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded transition-colors"
                               onClick={() => {
                                 setToDelete({
-                                  id: category.id,
+                                  id: department.id,
                                   name:
-                                    language == "en"
-                                      ? category.nameEnglish
-                                      : category.nameArabic,
+                                    language === "en"
+                                      ? department.nameEnglish
+                                      : department.nameArabic,
                                 });
                                 setModalOpen(true);
                               }}
@@ -966,7 +1061,7 @@ function Category() {
                         isDark ? "text-gray-400" : "text-gray-600"
                       }`}
                     >
-                      {t("categories.pagination.itemsPerPage")}{" "}
+                      {t("department.pagination.itemsPerPage")}{" "}
                     </span>
                   </div>
                 </div>
@@ -1021,4 +1116,4 @@ function Category() {
   );
 }
 
-export default Category;
+export default Department;

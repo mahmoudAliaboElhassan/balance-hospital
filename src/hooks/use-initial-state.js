@@ -94,10 +94,62 @@ function UseInitialStates() {
     },
   };
 
+  const initialStateDepartments = {
+    // Department filters
+    filters: {
+      search: "",
+      categoryId: "",
+      isActive: true,
+      createdFrom: null,
+      createdTo: null,
+      includeSubDepartments: true,
+      includeStatistics: true,
+      includeCategory: true,
+      orderBy: "nameArabic",
+      orderDesc: true,
+      page: 1,
+      pageSize: 10,
+    },
+
+    // Department data
+    departments: [],
+    pagination: null,
+    error: null,
+    message: "",
+    timestamp: null,
+
+    // Loading states
+    loadingGetDepartments: false,
+    loadingGetSingleDepartment: false,
+    loadingCreateDepartment: false,
+    loadingUpdateDepartment: false,
+    loadingDeleteDepartment: false,
+
+    // Single department
+    selectedDepartment: null,
+    singleDepartmentError: null,
+
+    // Create department
+    createSuccess: false,
+    createError: null,
+    createMessage: "",
+
+    // Update department
+    updateSuccess: false,
+    updateError: null,
+    updateMessage: "",
+
+    // Delete department
+    deleteSuccess: false,
+    deleteError: null,
+    deleteMessage: "",
+  };
+
   return {
     initialStateMode,
     initialStateAuth,
     initialStateCategories,
+    initialStateDepartments,
   };
 }
 

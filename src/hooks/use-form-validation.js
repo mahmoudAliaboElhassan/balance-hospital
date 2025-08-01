@@ -75,11 +75,123 @@ function UseFormValidation() {
     isActive: Yup.boolean(),
   });
 
+  const VALIDATION_SCHEMA_ADD_DEPARTMENT = Yup.object({
+    nameArabic: Yup.string()
+      .required(t("validation.required"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(100, t("validation.maxLength", { count: 100 }))
+      .matches(/^[\u0600-\u06FF\s\u0660-\u0669]+$/, t("validation.arabicOnly")),
+
+    nameEnglish: Yup.string()
+      .required(t("validation.required"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(100, t("validation.maxLength", { count: 100 }))
+      .matches(/^[A-Za-z\s]+$/, t("validation.englishOnly")),
+
+    categoryId: Yup.number()
+      .required(t("validation.required"))
+      .positive(t("validation.selectCategory"))
+      .integer(t("validation.invalidCategory")),
+
+    location: Yup.string()
+      .required(t("validation.required"))
+
+      .max(200, t("validation.maxLength", { count: 200 }))
+      .nullable(),
+
+    isActive: Yup.boolean().required(t("validation.required")),
+  });
+  const VALIDATION_SCHEMA_EDIT_DEPARTMENT = Yup.object({
+    nameArabic: Yup.string()
+      .required(t("validation.required"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(100, t("validation.maxLength", { count: 100 }))
+      .matches(/^[\u0600-\u06FF\s\u0660-\u0669]+$/, t("validation.arabicOnly")),
+
+    nameEnglish: Yup.string()
+      .required(t("validation.required"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(100, t("validation.maxLength", { count: 100 }))
+      .matches(/^[A-Za-z\s]+$/, t("validation.englishOnly")),
+
+    categoryId: Yup.number()
+      .required(t("validation.required"))
+      .positive(t("validation.selectCategory"))
+      .integer(t("validation.invalidCategory")),
+
+    location: Yup.string()
+      .required(t("validation.required"))
+
+      .max(200, t("validation.maxLength", { count: 200 }))
+      .nullable(),
+
+    isActive: Yup.boolean().required(t("validation.required")),
+  });
+
+  const deleteDepartmentValidationSchema = Yup.object({
+    reason: Yup.string()
+      .required(t("validation.required"))
+      .min(10, t("validation.minLength", { count: 10 }))
+      .max(500, t("validation.maxLength", { count: 500 })),
+  });
+
+  const departmentFiltersValidationSchema = Yup.object({
+    search: Yup.string()
+      .max(100, t("validation.maxLength", { count: 100 }))
+      .nullable(),
+
+    categoryId: Yup.number()
+      .positive(t("validation.selectCategory"))
+      .integer(t("validation.invalidCategory"))
+      .nullable(),
+
+    isActive: Yup.boolean().nullable(),
+
+    createdFrom: Yup.date()
+      .nullable()
+      .max(new Date(), t("validation.dateNotFuture")),
+
+    createdTo: Yup.date()
+      .nullable()
+      .max(new Date(), t("validation.dateNotFuture"))
+      .when("createdFrom", (createdFrom, schema) => {
+        return createdFrom
+          ? schema.min(createdFrom, t("validation.endDateAfterStart"))
+          : schema;
+      }),
+
+    page: Yup.number()
+      .positive(t("validation.positiveNumber"))
+      .integer(t("validation.integerOnly"))
+      .min(1, t("validation.minValue", { count: 1 })),
+
+    pageSize: Yup.number()
+      .positive(t("validation.positiveNumber"))
+      .integer(t("validation.integerOnly"))
+      .min(1, t("validation.minValue", { count: 1 }))
+      .max(100, t("validation.maxValue", { count: 100 })),
+
+    orderBy: Yup.string().oneOf(
+      ["nameArabic", "nameEnglish", "createdAt", "updatedAt", "categoryName"],
+      t("validation.invalidOrderBy")
+    ),
+
+    orderDesc: Yup.boolean(),
+
+    includeSubDepartments: Yup.boolean(),
+    includeStatistics: Yup.boolean(),
+    includeCategory: Yup.boolean(),
+  });
+
   return {
     VALIDATION_SCHEMA_LOGIN,
     VALIDATION_SCHEMA_RESET_PASSWORD,
-    VALIDATION_SCHEMA_ADD_CATEGORY,
+    VALIDATION_SCHEMA_ADD_DEPARTMENT,
     VALIDATION_SCHEMA_EDIT_CATEGORY,
+    VALIDATION_SCHEMA_ADD_CATEGORY,
+    departmentFiltersValidationSchema,
+    VALIDATION_SCHEMA_EDIT_DEPARTMENT,
+    deleteDepartmentValidationSchema,
   };
 }
 

@@ -151,6 +151,7 @@ const ForgetPassword = () => {
             draggable: true,
           });
           // 2) navigate after toast (you can also delay if you like)
+          localStorage.setItem("email", values.inputValue);
           navigate("/reset-password");
         })
         .catch((error) => {

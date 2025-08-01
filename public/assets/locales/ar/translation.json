@@ -1,12 +1,12 @@
 {
   "login": {
     "title": "تسجيل الدخول إلى حسابك",
-    "subtitle": "أدخل بياناتك للمتابعة",
+    "subtitle": "أدخل بياناتك للبدء",
     "email": "البريد الإلكتروني",
     "emailPlaceholder": "name@example.com",
     "password": "كلمة المرور",
     "passwordPlaceholder": "أنشئ كلمة مرور",
-    "button": "دخول",
+    "button": "تسجيل الدخول",
     "forgetPassword": "نسيت كلمة المرور",
     "success": "تم تسجيل الدخول بنجاح!",
     "rememberMe": "تذكرني",
@@ -16,47 +16,40 @@
       "message": "حدث خطأ أثناء تسجيل الدخول."
     }
   },
-  "common": {
-    "ok": "موافق",
-    "cancel": "إلغاء",
-    "goBack": "رجوع",
-    "noData": "لا توجد بيانات"
-  },
   "validationLogin": {
     "email": {
       "invalid": "يرجى إدخال بريد إلكتروني صالح.",
-      "required": "حقل البريد الإلكتروني مطلوب."
+      "required": "البريد الإلكتروني مطلوب."
     },
     "password": {
       "minLength": "يجب أن تكون كلمة المرور 6 أحرف على الأقل.",
-      "required": "حقل كلمة المرور مطلوب."
+      "required": "كلمة المرور مطلوبة."
     }
   },
-
   "reset_password": "إعادة تعيين كلمة المرور",
-  "choose_method": "اختر طريقة إعادة تعيين كلمة المرور",
-  "reset_method": "طريقة الإعادة",
+  "choose_method": "اختر طريقة إعادة التعيين",
+  "reset_method": "طريقة إعادة التعيين",
   "email": "البريد الإلكتروني",
   "mobile": "الهاتف",
   "nationalId": "الرقم القومي",
   "email_placeholder": "email@example.com",
   "mobile_placeholder": "01234567890",
   "nationalId_placeholder": "12345678901234",
-  "email_label": "عنوان البريد الإلكتروني",
-  "mobile_label": "رقم الهاتف (11 رقمًا)",
-  "nationalId_label": "الرقم القومي (14 رقمًا)",
+  "email_label": "البريد الإلكتروني",
+  "mobile_label": "رقم الهاتف (11 رقم)",
+  "nationalId_label": "الرقم القومي (14 رقم)",
   "submit": "إرسال تعليمات إعادة التعيين",
   "back_to_login": "العودة إلى تسجيل الدخول",
   "errors": {
-    "email_required": "حقل البريد الإلكتروني مطلوب",
+    "email_required": "البريد الإلكتروني مطلوب",
     "email_format": "يرجى إدخال بريد إلكتروني صالح (مثال: email@example.com)",
-    "phone_required": "حقل رقم الهاتف مطلوب",
-    "phone_format": "يجب أن يكون رقم الهاتف مكونًا من 11 رقمًا",
-    "id_required": "حقل الرقم القومي مطلوب",
-    "id_format": "يجب أن يكون الرقم القومي مكونًا من 14 رقمًا"
+    "phone_required": "رقم الهاتف مطلوب",
+    "phone_format": "يجب أن يكون رقم الهاتف 11 رقمًا بالضبط",
+    "id_required": "الرقم القومي مطلوب",
+    "id_format": "يجب أن يكون الرقم القومي 14 رقمًا بالضبط"
   },
-  "reset_title": "إعادة تعيين كلمة المرور",
-  "reset_description": "أرسلنا رمز تحقق مكون من 6 أرقام إلى {{identifier}}",
+  "reset_title": "أعد تعيين كلمة المرور",
+  "reset_description": "لقد أرسلنا رمزًا مكونًا من 6 أرقام إلى {{identifier}}",
   "reset_code_label": "أدخل رمز التحقق",
   "new_password": "كلمة المرور الجديدة",
   "confirm_password": "تأكيد كلمة المرور الجديدة",
@@ -64,17 +57,17 @@
   "confirm_password_placeholder": "أكد كلمة المرور الجديدة",
   "submit-reset": "إعادة تعيين كلمة المرور",
   "resend_code": "إعادة إرسال الرمز",
-  "resend_info": "لم تستلم الرمز؟",
-  "code_required": "حقل الرمز مطلوب",
+  "resend_info": "لم يصلك رمز؟",
+  "code_required": "الرمز مطلوب",
   "code_invalid": "يجب أن يكون الرمز 6 أرقام",
-  "password_required": "حقل كلمة المرور الجديدة مطلوب",
+  "password_required": "كلمة المرور الجديدة مطلوبة",
   "password_min": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
-  "password_lower": "يجب أن تحتوي على حرف صغير واحد على الأقل",
-  "password_upper": "يجب أن تحتوي على حرف كبير واحد على الأقل",
-  "password_number": "يجب أن تحتوي على رقم واحد على الأقل",
+  "password_lower": "يجب أن تحتوي على حرف صغير",
+  "password_upper": "يجب أن تحتوي على حرف كبير",
+  "password_number": "يجب أن تحتوي على رقم",
   "confirm_required": "يرجى تأكيد كلمة المرور",
   "password_match": "يجب أن تتطابق كلمتا المرور",
-  "success_message": "تمت إعادة تعيين كلمة المرور بنجاح!",
+  "success_message": "تم إعادة تعيين كلمة المرور بنجاح!",
   "get-started": "ابدأ الآن",
   "switchTo": "التبديل إلى {{lang}}",
   "language": {
@@ -84,61 +77,61 @@
   "forgetPassword": {
     "success": "تحقق من بريدك الإلكتروني للحصول على تعليمات إعادة التعيين!",
     "error": {
-      "title": "فشل الإعادة",
-      "message": "تعذرت عملية إرسال طلب إعادة التعيين."
+      "title": "فشل الإجراء",
+      "message": "غير قادر على بدء إعادة التعيين."
     },
-    "loading": "جاري إرسال طلب الإعادة…",
-    "button": "إرسال رابط الإعادة"
+    "loading": "جاري إرسال الطلب…",
+    "button": "إرسال رابط إعادة التعيين"
   },
   "resetPassword": {
     "code_invalid": "يجب أن يكون الرمز 6 أرقام بالضبط.",
-    "code_required": "حقل رمز التحقق مطلوب.",
+    "code_required": "رمز التحقق مطلوب.",
     "password_min": "يجب أن تكون كلمة المرور 8 أحرف على الأقل.",
     "password_lower": "يجب أن تحتوي كلمة المرور على حرف صغير واحد على الأقل.",
     "password_upper": "يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل.",
     "password_number": "يجب أن تحتوي كلمة المرور على رقم واحد على الأقل.",
-    "password_required": "حقل كلمة المرور الجديدة مطلوب.",
+    "password_required": "كلمة المرور الجديدة مطلوبة.",
     "password_match": "يجب أن تتطابق كلمتا المرور.",
     "confirm_required": "يرجى تأكيد كلمة المرور الجديدة.",
-    "success": "تمت إعادة تعيين كلمة المرور بنجاح!",
+    "success": "تمت إعادة تعيين كلمة المرور!",
     "loading": "جاري إعادة التعيين…",
     "error": {
-      "title": "فشل الإعادة",
-      "message": "تعذرت إعادة تعيين كلمة المرور."
+      "title": "فشل الإجراء",
+      "message": "غير قادر على إعادة تعيين كلمة المرور."
     }
   },
   "adminPanel": {
-    "categories": "الفئات",
+    "categories": "التصنيفات",
     "pendingDoctorRequests": "طلبات الأطباء المعلقة",
     "departments": "الأقسام",
     "subDepartments": "الأقسام الفرعية",
     "managementRoles": "أدوار الإدارة",
-    "scientificDegrees": "المسميات العلمية",
+    "scientificDegrees": "الدرجات العلمية",
     "contractTypes": "أنواع العقود",
-    "shiftHours": "ساعات الورديات"
+    "shiftHours": "ساعات المناوبة"
   },
   "categories": {
-    "title": "الفئات",
-    "fetchError": "حدث خطأ أثناء جلب الفئات.",
-    "loading": "جاري التحميل...",
-    "noData": "لا توجد فئات",
+    "title": "التصنيفات",
+    "loading": "جاري التحميل…",
+    "fetchError": "حدث خطأ أثناء جلب التصنيفات.",
+    "noData": "لا توجد تصنيفات",
     "delete": {
-      "title": "حذف الفئة",
-      "confirmMessage": "هل أنت متأكد أنك تريد حذف هذه الفئة؟",
+      "title": "حذف التصنيف",
+      "confirmMessage": "هل أنت متأكد أنك تريد حذف هذا التصنيف؟",
       "reason": "سبب الحذف",
-      "reasonPlaceholder": "أدخل السبب...",
-      "reasonRequired": "يرجى تقديم سبب للحذف.",
+      "reasonPlaceholder": "أدخل السبب…",
+      "reasonRequired": "يرجى تقديم سبب الحذف.",
       "confirm": "حذف"
     },
-    "deleteSuccess": "تم حذف الفئة “{{name}}” بنجاح!",
+    "deleteSuccess": "تم حذف التصنيف “{{name}}” بنجاح!",
     "search": {
-      "placeholder": "ابحث في الفئات..."
+      "placeholder": "ابحث في التصنيفات…"
     },
     "filters": {
-      "title": "عوامل التصفية",
+      "title": "الفلاتر",
       "status": "الحالة",
       "all": "الكل",
-      "orderBy": "ترتيب حسب",
+      "orderBy": "الترتيب حسب",
       "orderDirection": "اتجاه الترتيب",
       "ascending": "تصاعدي",
       "descending": "تنازلي",
@@ -167,51 +160,51 @@
     },
     "actions": {
       "add": "إضافة",
-      "addNew": "إضافة فئة جديدة",
+      "addNew": "إضافة تصنيف جديد",
       "view": "عرض",
       "edit": "تعديل",
       "delete": "حذف"
     },
     "pagination": {
-      "showing": "عرض {{start}} - {{end}} من أصل {{total}} عنصر",
+      "showing": "عرض {{start}} - {{end}} من {{total}} عنصر",
       "itemsPerPage": "عنصر لكل صفحة",
       "previous": "السابق",
       "next": "التالي"
     }
   },
   "categoryForm": {
-    "title": "إنشاء فئة جديدة",
+    "title": "إنشاء تصنيف جديد",
     "fields": {
       "nameArabic": "الاسم بالعربية",
       "nameEnglish": "الاسم بالإنجليزية",
       "code": "الرمز",
       "description": "الوصف",
-      "isActive": "الفئة نشطة"
+      "isActive": "نشط"
     },
     "placeholders": {
       "nameArabic": "أدخل الاسم بالعربية",
       "nameEnglish": "أدخل الاسم بالإنجليزية",
-      "code": "رمز_الفئة",
+      "code": "CATEGORY_CODE",
       "description": "أدخل الوصف (اختياري)"
     },
     "hints": {
-      "code": "يجب أن يحتوي على أحرف إنجليزية كبيرة، أرقام، وشرطات سفلية فقط"
+      "code": "يجب أن يحتوي على أحرف إنجليزية كبيرة وأرقام وشرطات سفلية فقط"
     },
     "validation": {
       "nameArabic": {
-        "required": "حقل الاسم بالعربية مطلوب",
-        "min": "يجب أن يكون الاسم بالعربية حرفين على الأقل",
-        "max": "يجب أن يكون الاسم بالعربية أقل من 100 حرف"
+        "required": "الاسم بالعربية مطلوب",
+        "min": "يجب أن يكون الاسم 2 أحرف على الأقل",
+        "max": "يجب أن يكون الاسم أقل من 100 حرف"
       },
       "nameEnglish": {
-        "required": "حقل الاسم بالإنجليزية مطلوب",
-        "min": "يجب أن يكون الاسم بالإنجليزية حرفين على الأقل",
-        "max": "يجب أن يكون الاسم بالإنجليزية أقل من 100 حرف"
+        "required": "الاسم بالإنجليزية مطلوب",
+        "min": "يجب أن يكون الاسم 2 أحرف على الأقل",
+        "max": "يجب أن يكون الاسم أقل من 100 حرف"
       },
       "code": {
-        "required": "حقل الرمز مطلوب",
-        "pattern": "يجب أن يحتوي الرمز على أحرف إنجليزية كبيرة، أرقام، وشرطات سفلية فقط",
-        "min": "يجب أن يكون الرمز حرفين على الأقل",
+        "required": "الرمز مطلوب",
+        "pattern": "يجب أن يحتوي الرمز فقط على أحرف كبيرة وأرقام وشرطات سفلية",
+        "min": "يجب أن يكون الرمز 2 أحرف على الأقل",
         "max": "يجب أن يكون الرمز أقل من 50 حرف"
       },
       "description": {
@@ -219,39 +212,39 @@
       }
     },
     "success": {
-      "created": "تم إنشاء الفئة بنجاح!",
-      "updated": "تم تحديث الفئة بنجاح!"
+      "created": "تم إنشاء التصنيف بنجاح!",
+      "updated": "تم تحديث التصنيف بنجاح!"
     },
     "error": {
-      "title": "خطأ في إنشاء الفئة",
-      "message": "حدث خطأ أثناء إنشاء الفئة. الرجاء المحاولة مرة أخرى."
+      "title": "خطأ في الإنشاء",
+      "message": "حدث خطأ أثناء إنشاء التصنيف، يرجى المحاولة مرة أخرى."
     },
-    "editTitle": "تعديل الفئة",
+    "editTitle": "تعديل التصنيف",
     "buttons": {
-      "create": "إنشاء الفئة",
-      "creating": "جاري الإنشاء...",
-      "edit": "حفظ التغييرات",
-      "editing": "جارٍ الحفظ...",
+      "create": "إنشاء",
+      "creating": "جاري الإنشاء…",
+      "edit": "حفظ التعديلات",
+      "editing": "جاري الحفظ…",
       "cancel": "إلغاء"
     },
-    "charactersCount": "حرف"
+    "charactersCount": "حروف"
   },
   "category": {
     "error": {
-      "message": "حدث خطأ أثناء تحديث الفئة."
+      "message": "حدث خطأ أثناء تحديث التصنيف."
     }
   },
   "specificCategory": {
     "error": {
       "title": "حدث خطأ",
-      "backToCategories": "العودة إلى الفئات"
+      "backToCategories": "العودة للتصنيفات"
     },
     "notFound": {
-      "title": "الفئة غير موجودة",
-      "backToCategories": "العودة إلى الفئات"
+      "title": "التصنيف غير موجود",
+      "backToCategories": "العودة للتصنيفات"
     },
     "navigation": {
-      "backToCategories": "العودة إلى الفئات"
+      "backToCategories": "العودة للتصنيفات"
     },
     "status": {
       "active": "نشط",
@@ -263,7 +256,7 @@
         "noDescription": "لا يوجد وصف"
       },
       "chief": {
-        "title": "المسؤول"
+        "title": "الرئيس"
       },
       "statistics": {
         "title": "الإحصائيات",
@@ -273,35 +266,34 @@
       "metadata": {
         "title": "معلومات إضافية",
         "createdAt": "تاريخ الإنشاء",
-        "createdBy": "أنشأ بواسطة",
+        "createdBy": "أنشأها",
         "updatedAt": "تاريخ التحديث",
-        "updatedBy": "تم التحديث بواسطة"
+        "updatedBy": "آخر من قام بالتحديث"
       }
     }
   },
-  "loading": "جاري التحميل...",
-
+  "loading": "جاري التحميل…",
   "pendingDoctorRequests": {
     "title": "طلبات الأطباء المعلقة",
-    "subtitle": "طلبات انضمام الأطباء لهذه الفئة",
-    "backButton": "العودة",
+    "subtitle": "طلبات انضمام الأطباء لهذا التصنيف",
+    "backButton": "عودة",
     "loading": {
-      "categories": "جاري تحميل بيانات الفئات...",
-      "requests": "جاري تحميل الطلبات...",
+      "categories": "جاري تحميل بيانات التصنيف…",
+      "requests": "جاري تحميل الطلبات…",
       "pleaseWait": "يرجى الانتظار"
     },
     "errors": {
-      "categoryTypesError": "خطأ في تحميل أنواع الفئات",
+      "categoryTypesError": "خطأ في تحميل أنواع التصنّيف",
       "dataLoadError": "خطأ في تحميل البيانات",
       "retryButton": "إعادة المحاولة",
       "closeButton": "إغلاق",
-      "dismissButton": "إغلاق"
+      "dismissButton": "تجاهل"
     },
     "categorySelector": {
-      "title": "اختر الفئة لعرض الطلبات",
-      "refreshCategories": "تحديث الفئات",
-      "selectPrompt": "اختر فئة لعرض الطلبات",
-      "selectDescription": "يرجى اختيار فئة من القائمة أعلاه لعرض طلبات انضمام الأطباء الخاصة بها"
+      "title": "اختر تصنيفًا لعرض الطلبات",
+      "refreshCategories": "تحديث التصنيفات",
+      "selectPrompt": "اختر التصنيف لعرض الطلبات",
+      "selectDescription": "يرجى اختيار تصنيف من القائمة أعلاه لعرض طلبات انضمام الأطباء"
     },
     "selectedCategory": {
       "refreshButton": "تحديث"
@@ -316,22 +308,22 @@
       }
     },
     "emptyStates": {
-      "noRequests": "لا توجد طلبات لهذه الفئة",
-      "noRequestsWithFilter": "لم يتم العثور على طلبات بحالة \"{status}\" لهذه الفئة",
-      "noRequestsDefault": "لم يتم تقديم أي طلبات انضمام لهذه الفئة بعد",
-      "showAllRequests": "عرض جميع الطلبات"
+      "noRequests": "لا توجد طلبات لهذا التصنيف",
+      "noRequestsWithFilter": "لا توجد طلبات بحالة \"{status}\" لهذا التصنيف",
+      "noRequestsDefault": "لم يتم تقديم أي طلبات بعد",
+      "showAllRequests": "عرض كل الطلبات"
     },
     "pagination": {
       "showing": "عرض {start} إلى {end} من {total} طلب",
       "resultsCount": "عرض {start} إلى {end} من {total} نتيجة",
-      "category": "الفئة: {categoryName}",
+      "category": "التصنيف: {categoryName}",
       "perPage": "{count} لكل صفحة",
       "previous": "السابق",
       "next": "التالي"
     },
     "requestCard": {
-      "nameNotSpecified": "اسم غير محدد",
-      "processedOn": "تم المعالجة في: {date}",
+      "nameNotSpecified": "الاسم غير محدد",
+      "processedOn": "تمت المعالجة بتاريخ: {date}",
       "processedBy": "بواسطة: {name}",
       "note": "ملاحظة: {note}",
       "actions": {
@@ -347,12 +339,12 @@
     },
     "fields": {
       "email": "البريد الإلكتروني",
-      "mobile": "الهاتف المحمول",
+      "mobile": "الهاتف",
       "scientificDegree": "الدرجة العلمية",
       "requestedAt": "تاريخ الطلب",
-      "notes": "الملاحظات",
+      "notes": "ملاحظات",
       "notSpecified": "غير محدد",
-      "invalidDate": "تاريخ غير صحيح"
+      "invalidDate": "تاريخ غير صالح"
     },
     "dateFormat": {
       "options": {
@@ -364,5 +356,183 @@
       },
       "locale": "ar-EG"
     }
+  },
+  "departmentForm": {
+    "title": "إنشاء قسم جديد",
+    "editTitle": "تعديل القسم",
+    "fields": {
+      "nameArabic": "الاسم بالعربية",
+      "nameEnglish": "الاسم بالإنجليزية",
+      "category": "التصنيف",
+      "location": "الموقع",
+      "description": "الوصف",
+      "isActive": "نشط"
+    },
+    "placeholders": {
+      "nameArabic": "أدخل اسم القسم بالعربية",
+      "nameEnglish": "أدخل اسم القسم بالإنجليزية",
+      "category": "اختر تصنيفًا",
+      "location": "أدخل موقع القسم (مثل: الطابق الثالث – الجناح أ)",
+      "description": "أدخل وصفًا للقسم (اختياري)"
+    },
+    "hints": {
+      "location": "حدد الموقع الفعلي للقسم داخل المنشأة",
+      "description": "شرح موجز لخدمات القسم ومسؤولياته"
+    },
+    "charactersCount": "حروف",
+    "buttons": {
+      "create": "إنشاء قسم",
+      "edit": "تحديث القسم",
+      "creating": "جاري الإنشاء…",
+      "editing": "جاري التحديث…",
+      "cancel": "إلغاء",
+      "back": "رجوع"
+    },
+    "success": {
+      "created": "تم إنشاء القسم بنجاح!",
+      "updated": "تم تحديث القسم بنجاح!",
+      "deleted": "تم حذف القسم بنجاح!"
+    },
+    "error": {
+      "title": "خطأ",
+      "createFailed": "فشل في إنشاء القسم",
+      "updateFailed": "فشل في تحديث القسم",
+      "deleteFailed": "فشل في حذف القسم",
+      "loadFailed": "فشل في جلب بيانات القسم"
+    }
+  },
+  "department": {
+    "title": "الأقسام",
+    "addNew": "إضافة قسم جديد",
+    "noData": "لا توجد بيانات متاحه ",
+    "loading": "جاري تحميل الأقسام...",
+    "search": {
+      "placeholder": "ابحث في الأقسام…"
+    },
+    "deleteSuccess": "تم حذف القسم “{{name}}” بنجاح!",
+    "filters": {
+      "title": "الفلاتر",
+      "all": "جميع الأقسام",
+      "allCategories": "كل الأقسام",
+      "active": "الأقسام النشطة فقط",
+      "inactive": "الأقسام غير النشطة فقط",
+      "category": "تصفية حسب التصنيف",
+      "dateRange": "نطاق التاريخ",
+      "createdFrom": "أنشئ من",
+      "createdTo": "أنشئ إلى",
+      "clear": "مسح الفلاتر",
+      "apply": "تطبيق الفلاتر"
+    },
+    "table": {
+      "nameArabic": "الاسم بالعربية",
+      "nameEnglish": "الاسم بالإنجليزية",
+      "category": "التصنيف",
+      "location": "الموقع",
+      "subDepartments": "الأقسام الفرعية",
+      "doctors": "الأطباء",
+      "pendingRequests": "الطلبات المعلقة",
+      "status": "الحالة",
+      "createdAt": "تاريخ الإنشاء",
+      "actions": "الإجراءات"
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط"
+    },
+    "actions": {
+      "view": "عرض التفاصيل",
+      "edit": "تعديل",
+      "delete": "حذف",
+      "activate": "تفعيل",
+      "deactivate": "تعطيل"
+    },
+    "delete": {
+      "title": "حذف القسم",
+      "confirmMessage": "هل أنت متأكد أنك تريد حذف هذا القسم؟",
+      "reason": "سبب الحذف",
+      "reasonPlaceholder": "أدخل السبب…",
+      "reasonRequired": "يرجى تقديم سبب الحذف.",
+      "confirm": "حذف",
+      "cancel": "إلغاء",
+      "warning": "لا يمكن التراجع عن هذا الإجراء."
+    },
+    "details": {
+      "title": "تفاصيل القسم",
+      "information": "المعلومات الأساسية",
+      "statistics": "الإحصائيات",
+      "subDepartments": "الأقسام الفرعية",
+      "employees": "الموظفون",
+      "head": "رئيس القسم",
+      "createdBy": "أنشأ بواسطة",
+      "updatedBy": "آخر تحديث بواسطة",
+      "createdAt": "تاريخ الإنشاء",
+      "updatedAt": "تاريخ آخر تحديث",
+      "backToDepartments": "العودة للأقسام",
+      "noCategoryInfo": "لا توجد معلومات عن التصنيف"
+    },
+    "statistics": {
+      "totalEmployees": "إجمالي الموظفين",
+      "activeEmployees": "الموظفون النشطون",
+      "subDepartments": "الأقسام الفرعية",
+      "totalBudget": "إجمالي الميزانية"
+    },
+    "error": {
+      "title": "خطأ",
+      "message": "حدث خطأ أثناء معالجة بيانات الأقسام",
+      "notFound": "القسم غير موجود",
+      "noPermission": "ليس لديك إذن للوصول لهذا القسم",
+      "fetchError": "فشل في جلب الأقسام"
+    },
+    "empty": {
+      "title": "لا توجد أقسام",
+      "message": "لا توجد أقسام تطابق الفلاتر الحالية",
+      "suggestion": "حاول تعديل معايير البحث أو إضافة قسم جديد"
+    },
+    "pagination": {
+      "showing": "عرض",
+      "of": "من",
+      "results": "نتائج",
+      "page": "صفحة",
+      "previous": "السابق",
+      "next": "التالي",
+      "first": "الأولى",
+      "last": "الأخيرة",
+      "itemsPerPage": "عنصر لكل صفحة"
+    }
+  },
+  "validation": {
+    "required": "هذا الحقل مطلوب",
+    "minLength": "يجب ألا يقل عن {{count}} حرف",
+    "maxLength": "يجب ألا يتجاوز {{count}} حرف",
+    "arabicOnly": "يرجى إدخال نص بالعربية فقط",
+    "englishOnly": "يرجى إدخال نص بالإنجليزية فقط",
+    "selectCategory": "يرجى اختيار تصنيف",
+    "invalidCategory": "اختيار تصنيف غير صالح",
+    "positiveNumber": "يجب أن يكون رقمًا موجبًا",
+    "integerOnly": "يجب أن يكون عددًا صحيحًا",
+    "minValue": "يجب ألا يقل عن {{count}}",
+    "maxValue": "يجب ألا يتجاوز {{count}}",
+    "dateNotFuture": "لا يمكن أن يكون التاريخ في المستقبل",
+    "endDateAfterStart": "يجب أن يكون تاريخ الانتهاء بعد البدء",
+    "invalidOrderBy": "خيار ترتيب غير صالح"
+  },
+  "common": {
+    "ok": "حسنًا",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "save": "حفظ",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "view": "عرض",
+    "add": "إضافة",
+    "search": "بحث",
+    "filter": "تصفية",
+    "clear": "مسح",
+    "loading": "جاري التحميل...",
+    "noData": "لا توجد بيانات",
+    "error": "خطأ",
+    "success": "نجاح",
+    "warning": "تحذير",
+    "info": "معلومة"
   }
 }

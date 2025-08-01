@@ -15,6 +15,9 @@ import CreateCategory from "../pages/adminPanel/category/createCategory";
 import SpecificCategory from "../pages/adminPanel/category/specificCategory";
 import EditCategory from "../pages/adminPanel/category/editCategory";
 import PendingDoctorRequests from "../pages/adminPanel/category/pendingDoctors";
+import CreateDepartment from "../pages/adminPanel/department/createDepartment";
+import EditDepartment from "../pages/adminPanel/department/editDepartment";
+import SpecificDepartment from "../pages/adminPanel/department/specificDepartment";
 
 const router = createBrowserRouter([
   {
@@ -113,6 +116,26 @@ const router = createBrowserRouter([
           {
             path: "departments",
             element: <Department />,
+          },
+          {
+            path: "department/create",
+            element: <CreateDepartment />,
+          },
+          {
+            path: "department/edit/:depId",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <EditDepartment />
+              </Suspense>
+            ),
+          },
+          {
+            path: "department/:depId",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <SpecificDepartment />
+              </Suspense>
+            ),
           },
         ],
       },

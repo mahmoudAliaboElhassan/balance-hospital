@@ -8,6 +8,7 @@ import {
   deleteCategory,
   getCategoryTypes,
   getCategoryPendingRequests,
+  approveDoctorRequest, // Add the new action import
 } from "../act/actCategory";
 import i18next from "i18next";
 
@@ -178,6 +179,21 @@ export const categorySlice = createSlice({
     },
     setSelectedCategoryId: (state, action) => {
       state.selectedCategoryId = action.payload;
+    },
+
+    // Doctor Request Approval actions
+    clearApprovalSuccess: (state) => {
+      state.approvalSuccess = false;
+      state.approvalMessage = "";
+    },
+    clearApprovalError: (state) => {
+      state.approvalError = null;
+    },
+    resetApprovalForm: (state) => {
+      state.loadingApproveRequest = false;
+      state.approvalError = null;
+      state.approvalSuccess = false;
+      state.approvalMessage = "";
     },
   },
   extraReducers: (builder) => {
@@ -478,6 +494,86 @@ export const categorySlice = createSlice({
           status: payload?.status,
           timestamp: new Date().toISOString(),
         };
+      })
+
+      // Approve/Reject Doctor Request
+      .addCase(approveDoctorRequest.pending, (state) => {
+        state.loadingApproveRequest = true;
+        state.approvalError = null;
+        state.approvalSuccess = false;
+      })
+      .addCase(approveDoctorRequest.fulfilled, (state, action) => {
+        state.loadingApproveRequest = false;
+        state.approvalError = null;
+
+        const response = action.payload;
+        if (response.success) {
+          state.approvalSuccess = true;
+          state.approvalMessage = response.messageAr || response.message;
+
+          // Update the request status in the categoryPendingRequests array
+          const requestIndex = state.categoryPendingRequests.findIndex(
+            (request) => request.userId === response.userId
+          );
+
+          if (requestIndex !== -1) {
+            const updatedRequest = {
+              ...state.categoryPendingRequests[requestIndex],
+              status: response.isApproved ? "Approved" : "Rejected",
+              processedAt: new Date().toISOString(),
+              processedByName: response.processedByName || "System",
+              processedNotes: response.processedNotes || "",
+            };
+            state.categoryPendingRequests[requestIndex] = updatedRequest;
+          }
+
+          // Also update in global pending requests if they exist
+          if (
+            state.pendingDoctorRequests &&
+            state.pendingDoctorRequests.length > 0
+          ) {
+            const globalRequestIndex = state.pendingDoctorRequests.findIndex(
+              (request) => request.userId === response.userId
+            );
+
+            if (globalRequestIndex !== -1) {
+              const updatedGlobalRequest = {
+                ...state.pendingDoctorRequests[globalRequestIndex],
+                status: response.isApproved ? "Approved" : "Rejected",
+                processedAt: new Date().toISOString(),
+                processedByName: response.processedByName || "System",
+                processedNotes: response.processedNotes || "",
+              };
+              state.pendingDoctorRequests[globalRequestIndex] =
+                updatedGlobalRequest;
+            }
+          }
+        }
+      })
+      .addCase(approveDoctorRequest.rejected, (state, action) => {
+        state.loadingApproveRequest = false;
+        state.approvalSuccess = false;
+
+        const payload = action.payload;
+        let errorMessage = "حدث خطأ في معالجة الطلب";
+
+        if (payload?.status === 400) {
+          errorMessage =
+            payload.message || "معرف الطلب غير صحيح أو الطلب تم معالجته مسبقاً";
+        } else if (payload?.status === 403) {
+          errorMessage = payload.message || "لا توجد صلاحية لمعالجة هذا الطلب";
+        } else if (payload?.status === 404) {
+          errorMessage = payload.message || "الطلب غير موجود";
+        } else if (payload?.message) {
+          errorMessage = payload.message;
+        }
+
+        state.approvalError = {
+          message: errorMessage,
+          errors: payload?.errors || [],
+          status: payload?.status,
+          timestamp: new Date().toISOString(),
+        };
       });
   },
 });
@@ -530,6 +626,11 @@ export const {
   clearCategoryPendingRequests,
   clearCategoryPendingRequestsError,
   setSelectedCategoryId,
+
+  // Doctor Request Approval
+  clearApprovalSuccess,
+  clearApprovalError,
+  resetApprovalForm,
 } = categorySlice.actions;
 
 export default categorySlice.reducer;
@@ -543,4 +644,5 @@ export {
   deleteCategory,
   getCategoryTypes,
   getCategoryPendingRequests,
+  approveDoctorRequest,
 };

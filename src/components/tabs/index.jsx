@@ -1,10 +1,9 @@
-// components/tabs/TabsViewFancy.jsx
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 import UseAdminPanel from "../../hooks/use-admin-panel";
 
-export default function TabsViewFancy() {
+export default function TabsViewFancy({ isExpanded = false }) {
   const [activeTab, setActiveTab] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const { adminPanelRoutes } = UseAdminPanel();
@@ -34,20 +33,22 @@ export default function TabsViewFancy() {
 
   return (
     <div className="w-full max-w-2xl mx-auto">
-      <div className="flex flex-col gap-4 rounded-xl overflow-hidden">
+      <div className="flex flex-col gap-2 rounded-xl overflow-hidden">
         <div className="flex flex-col rounded-xl bg-black/5 dark:bg-white/5 backdrop-filter backdrop-blur-lg">
           {adminPanelRoutes.map((tab) => (
             <button
               key={tab.id}
               onClick={() => handleTabClick(tab)}
               className={`
-                relative group flex items-center w-full px-4 py-3 transition-all
+                relative group flex items-center w-full transition-all
+                ${isExpanded ? "px-4 py-3" : "px-2 py-3 justify-center"}
                 ${
                   activeTab === tab.id
                     ? "text-white dark:text-white"
                     : "text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-300"
                 }
               `}
+              title={!isExpanded ? tab.name : undefined}
             >
               {activeTab === tab.id && (
                 <motion.div
@@ -59,23 +60,46 @@ export default function TabsViewFancy() {
                 />
               )}
 
-              <div className="flex items-center gap-3 z-10 w-full">
-                <span className="text-xl">{tab.icon}</span>
-                <div className="flex flex-col items-start">
-                  <span className="font-medium text-md">{tab.name}</span>
-                </div>
+              <div
+                className={`flex items-center z-10 w-full ${
+                  isExpanded ? "gap-3" : "justify-center"
+                }`}
+              >
+                <span className={`${isExpanded ? "text-xl" : "text-2xl"}`}>
+                  {tab.icon}
+                </span>
+
+                <AnimatePresence>
+                  {isExpanded && (
+                    <motion.div
+                      className="flex flex-col items-start overflow-hidden"
+                      initial={{ width: 0, opacity: 0 }}
+                      animate={{ width: "auto", opacity: 1 }}
+                      exit={{ width: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                    >
+                      <span className="font-medium text-md whitespace-nowrap">
+                        {tab.name}
+                      </span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
-              {activeTab === tab.id ? (
-                <motion.div
-                  layoutId="activeDot"
-                  className="absolute right-3 w-2 h-2 rounded-full bg-white"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.1 }}
-                />
-              ) : (
-                <div className="absolute right-3 w-2 h-2 rounded-full bg-gray-400/0 group-hover:bg-gray-400/30 transition-colors" />
+              {isExpanded && (
+                <AnimatePresence>
+                  {activeTab === tab.id ? (
+                    <motion.div
+                      layoutId="activeDot"
+                      className="absolute right-3 w-2 h-2 rounded-full bg-white"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.1 }}
+                    />
+                  ) : (
+                    <div className="absolute right-3 w-2 h-2 rounded-full bg-gray-400/0 group-hover:bg-gray-400/30 transition-colors" />
+                  )}
+                </AnimatePresence>
               )}
             </button>
           ))}
