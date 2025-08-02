@@ -866,5 +866,120 @@
       "loadFailed": "Failed to load contracting type data",
       "dependencyError": "Cannot delete this contracting type as it has associated users"
     }
+  },
+
+  "scientificDegrees": {
+    "title": "Scientific Degrees",
+    "description": "Manage academic and scientific degree types",
+    "addNew": "Add New Scientific Degree",
+    "deleteSuccess": "Scientific Degree \"{{name}}\" deleted successfully!",
+    "add": "Add",
+    "backToList": "Back to Scientific Degrees",
+    "noData": "No scientific degrees found",
+    "noDataDescription": "Start by adding your first scientific degree to the system",
+    "loading": "Loading scientific degrees...",
+    "notFound": "Scientific degree not found",
+    "fetchError": "Error fetching scientific degrees",
+    "search": {
+      "placeholder": "Search scientific degrees by name or code..."
+    },
+    "filters": {
+      "title": "Filters",
+      "status": "Status",
+      "allStatuses": "All Statuses",
+      "orderBy": "Sort By",
+      "orderDirection": "Sort Direction",
+      "ascending": "Ascending",
+      "descending": "Descending",
+      "sortBy": {
+        "nameArabic": "Arabic Name",
+        "nameEnglish": "English Name",
+        "code": "Code",
+        "createdAt": "Creation Date"
+      }
+    },
+    "table": {
+      "name": "Name",
+      "nameArabic": "Arabic Name",
+      "nameEnglish": "English Name",
+      "code": "Code",
+      "users": "Users",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "actions": {
+      "view": "View Details",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "form": {
+      "nameArabic": "Arabic Name",
+      "nameArabicPlaceholder": "Enter Arabic name",
+      "nameEnglish": "English Name",
+      "nameEnglishPlaceholder": "Enter English name",
+      "code": "Degree Code",
+      "codePlaceholder": "Enter degree code (e.g., BSC, MSC, PHD)",
+      "codeHint": "Unique code using letters, numbers, and underscores only",
+      "isActive": "Active Status",
+      "isActiveHint": "Whether this scientific degree is available for selection",
+      "create": {
+        "title": "Create New Scientific Degree",
+        "description": "Add a new academic degree type to the system",
+        "submit": "Create Scientific Degree",
+        "creating": "Creating Scientific Degree..."
+      },
+      "edit": {
+        "title": "Edit Scientific Degree",
+        "description": "Update scientific degree information",
+        "submit": "Update Scientific Degree",
+        "editing": "Updating Scientific Degree..."
+      },
+      "validation": {
+        "nameArabicRequired": "Arabic name is required",
+        "nameEnglishRequired": "English name is required",
+        "codeRequired": "Degree code is required",
+        "codeFormat": "Code must contain only letters, numbers, and underscores"
+      }
+    },
+    "delete": {
+      "title": "Delete Scientific Degree",
+      "confirmMessage": "Are you sure you want to delete this scientific degree?",
+      "warning": "This action cannot be undone. Users assigned to this scientific degree may be affected.",
+      "reason": "Reason for deletion",
+      "reasonPlaceholder": "Enter a reason for deleting this scientific degree...",
+      "reasonRequired": "Please provide a reason for deletion",
+      "reasonTooShort": "Reason must be at least 3 characters long",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    },
+    "details": {
+      "basicInfo": "Basic Information",
+      "statistics": "Statistics",
+      "auditInfo": "Audit Information",
+      "associatedUsers": "Associated Users",
+      "code": "Degree Code",
+      "createdAt": "Created At",
+      "createdBy": "Created By",
+      "updatedAt": "Updated At",
+      "updatedBy": "Updated By",
+      "andMoreUsers": "and {{count}} more users"
+    },
+    "success": {
+      "created": "Scientific degree created successfully!",
+      "updated": "Scientific degree updated successfully!",
+      "deleted": "Scientific degree \"{{name}}\" deleted successfully!"
+    },
+    "error": {
+      "title": "Error",
+      "createFailed": "Failed to create scientific degree",
+      "updateFailed": "Failed to update scientific degree",
+      "deleteFailed": "Failed to delete scientific degree",
+      "loadFailed": "Failed to load scientific degree data",
+      "dependencyError": "Cannot delete this scientific degree as it has associated users"
+    }
   }
 }

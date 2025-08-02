@@ -307,6 +307,55 @@ function UseFormValidation() {
       .max(500, t("validation.maxLength", { count: 500 })),
   });
 
+  const VALIDATION_SCHEMA_ADD_SCIENTIFIC_DEGREE = Yup.object().shape({
+    nameArabic: Yup.string()
+      .required(t("scientificDegrees.form.validation.nameArabicRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(255, t("validation.maxLength", { count: 255 }))
+      .matches(
+        /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$/,
+        t("validation.arabicOnly")
+      ),
+    nameEnglish: Yup.string()
+      .required(t("scientificDegrees.form.validation.nameEnglishRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(255, t("validation.maxLength", { count: 255 }))
+      .matches(/^[a-zA-Z\s]+$/, t("validation.englishOnly")),
+    code: Yup.string()
+      .required(t("scientificDegrees.form.validation.codeRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(20, t("validation.maxLength", { count: 20 }))
+      .matches(
+        /^[a-zA-Z0-9_]+$/,
+        t("scientificDegrees.form.validation.codeFormat")
+      ),
+    isActive: Yup.boolean(),
+  });
+
+  const VALIDATION_SCHEMA_EDIT_SCIENTIFIC_DEGREE = Yup.object().shape({
+    nameArabic: Yup.string()
+      .required(t("scientificDegrees.form.validation.nameArabicRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(255, t("validation.maxLength", { count: 255 }))
+      .matches(
+        /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$/,
+        t("validation.arabicOnly")
+      ),
+    nameEnglish: Yup.string()
+      .required(t("scientificDegrees.form.validation.nameEnglishRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(255, t("validation.maxLength", { count: 255 }))
+      .matches(/^[a-zA-Z\s]+$/, t("validation.englishOnly")),
+    code: Yup.string()
+      .required(t("scientificDegrees.form.validation.codeRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(20, t("validation.maxLength", { count: 20 }))
+      .matches(
+        /^[a-zA-Z0-9_]+$/,
+        t("scientificDegrees.form.validation.codeFormat")
+      ),
+    isActive: Yup.boolean(),
+  });
   return {
     VALIDATION_SCHEMA_LOGIN,
     VALIDATION_SCHEMA_RESET_PASSWORD,
@@ -319,8 +368,10 @@ function UseFormValidation() {
     VALIDATION_SCHEMA_ADD_SUBDEPARTMENT,
     VALIDATION_SCHEMA_EDIT_SUBDEPARTMENT,
     VALIDATION_SCHEMA_ADD_CONTRACTINGTYPE,
-    VALIDATION_SCHEMA_EDIT_CONTRACTINGTYPE,
     deleteContractingTypeValidationSchema,
+    VALIDATION_SCHEMA_EDIT_CONTRACTINGTYPE,
+    VALIDATION_SCHEMA_EDIT_SCIENTIFIC_DEGREE,
+    VALIDATION_SCHEMA_ADD_SCIENTIFIC_DEGREE,
   };
 }
 

@@ -5,6 +5,7 @@ import categorySlice from "./slices/category";
 import departmentSlice from "./slices/department";
 import subDepartmentSlice from "./slices/subDepartment";
 import contractingTypeSlice from "./slices/contractingType";
+import scientificDegreeSlice from "./slices/scientificDegree";
 
 export const store = configureStore({
   reducer: {
@@ -14,5 +15,6 @@ export const store = configureStore({
     department: departmentSlice,
     subDepartment: subDepartmentSlice,
     contractingType: contractingTypeSlice,
+    scientificDegree: scientificDegreeSlice,
   },
 });

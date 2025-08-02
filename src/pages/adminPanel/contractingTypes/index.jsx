@@ -20,8 +20,8 @@ function ContractingTypes() {
   const [showMobileTable, setShowMobileTable] = useState(false);
 
   const {
-    contractingTypes,
-    activeContractingTypes,
+    allContractingTypes,
+    allActiveContractingTypes,
     loadingGetContractingTypes,
     loadingGetActiveContractingTypes,
     error,
@@ -38,7 +38,7 @@ function ContractingTypes() {
 
   // Get current data based on status filter
   const currentData =
-    statusFilter === "active" ? activeContractingTypes : contractingTypes;
+    statusFilter === "active" ? allActiveContractingTypes : allContractingTypes;
   const isLoading =
     statusFilter === "active"
       ? loadingGetActiveContractingTypes

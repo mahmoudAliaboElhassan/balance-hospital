@@ -26,6 +26,14 @@ import ContractingTypes from "../pages/adminPanel/contractingTypes";
 import CreateContractingType from "../pages/adminPanel/contractingTypes/createContractingType";
 import EditContractingType from "../pages/adminPanel/contractingTypes/editContractingType";
 import SpecificContractingType from "../pages/adminPanel/contractingTypes/specificContractingType";
+import ScientificDegrees from "../pages/adminPanel/scientificDegree";
+import CreateScientificDegree from "../pages/adminPanel/scientificDegree/createScientificDegree";
+import EditScientificDegree from "../pages/adminPanel/scientificDegree/editScientificDegree";
+import SpecificScientificDegree from "../pages/adminPanel/scientificDegree/specificScientificDegree";
+// import CreateScientificDegree from "../pages/adminPanel/scientificDegree/createScientificDegree";
+// import EditScientificDegree from "../pages/adminPanel/scientificDegree/editScientificDegree";
+// import SpecificScientificDegree from "../pages/adminPanel/scientificDegree/specificScientificDegree";
+// // Scientific Degree imports
 
 const router = createBrowserRouter([
   {
@@ -154,6 +162,31 @@ const router = createBrowserRouter([
             ),
           },
           {
+            path: "sub-departments/create",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <CreateSubDepartment />
+              </Suspense>
+            ),
+          },
+          {
+            path: "sub-departments/edit/:id",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <EditSubDepartment />
+              </Suspense>
+            ),
+          },
+          {
+            path: "sub-departments/:id",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <SpecificSubDepartment />
+              </Suspense>
+            ),
+          },
+
+          {
             path: "contracting-types",
             element: (
               <Suspense fallback={<Loader />}>
@@ -182,6 +215,39 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<Loader />}>
                 <SpecificContractingType />
+              </Suspense>
+            ),
+          },
+          // Scientific Degrees routes
+          {
+            path: "scientific-degrees",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <ScientificDegrees />
+              </Suspense>
+            ),
+          },
+          {
+            path: "scientific-degrees/create",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <CreateScientificDegree />
+              </Suspense>
+            ),
+          },
+          {
+            path: "scientific-degrees/edit/:id",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <EditScientificDegree />
+              </Suspense>
+            ),
+          },
+          {
+            path: "scientific-degrees/:id",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <SpecificScientificDegree />
               </Suspense>
             ),
           },

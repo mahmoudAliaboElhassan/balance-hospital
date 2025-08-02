@@ -198,27 +198,34 @@ function UseInitialStates() {
   };
 
   const initialStateContractingTypes = {
-    // ContractingType filters
+    allContractingTypes: [],
+    allActiveContractingTypes: [],
+    contractingTypesForSignup: [],
+    selectedContractingType: null,
+
+    // Paginated/filtered data for display
+    contractingTypes: [],
+    activeContractingTypes: [],
+
+    // Pagination state
+    pagination: {
+      page: 1,
+      pageSize: 10,
+      totalCount: 0,
+      totalPages: 0,
+      hasNextPage: false,
+      hasPreviousPage: false,
+      startIndex: 0,
+      endIndex: 0,
+    },
+
+    // Filter state
     filters: {
       search: "",
-      isActive: null,
-      createdFrom: null,
-      createdTo: null,
-      includeStatistics: true,
-      orderBy: "nameArabic",
-      orderDesc: true,
+      statusFilter: "all", // "all" or "active"
       page: 1,
       pageSize: 10,
     },
-
-    // ContractingType data
-    contractingTypes: [],
-    activeContractingTypes: [],
-    contractingTypesForSignup: [],
-    pagination: null,
-    error: null,
-    message: "",
-    timestamp: null,
 
     // Loading states
     loadingGetContractingTypes: false,
@@ -229,26 +236,87 @@ function UseInitialStates() {
     loadingUpdateContractingType: false,
     loadingDeleteContractingType: false,
 
-    // Single contracting type
-    selectedContractingType: null,
+    // Error states
+    error: null,
     singleContractingTypeError: null,
-
-    // Create contracting type
-    createSuccess: false,
     createError: null,
-    createMessage: "",
-
-    // Update contracting type
-    updateSuccess: false,
     updateError: null,
-    updateMessage: "",
-
-    // Delete contracting type
-    deleteSuccess: false,
     deleteError: null,
+
+    // Success states
+    createSuccess: false,
+    updateSuccess: false,
+    deleteSuccess: false,
+
+    // Messages
+    message: "",
+    createMessage: "",
+    updateMessage: "",
     deleteMessage: "",
+    timestamp: null,
   };
 
+  const initialStateScientificDegrees = {
+    // Scientific Degree filters
+    filters: {
+      search: "",
+      isActive: null,
+      createdFrom: null,
+      createdTo: null,
+      includeStatistics: true,
+      orderBy: "nameArabic",
+      orderDesc: true,
+      page: 1,
+      pageSize: 10,
+      statusFilter: "all", // "all" or "active"
+    },
+
+    // Scientific Degree data
+    allScientificDegrees: [],
+    allActiveScientificDegrees: [],
+    scientificDegrees: [],
+    activeScientificDegrees: [],
+    scientificDegreesForSignup: [],
+    selectedScientificDegree: null,
+    pagination: {
+      page: 1,
+      pageSize: 10,
+      totalItems: 0,
+      totalPages: 0,
+      hasNextPage: false,
+      hasPrevPage: false,
+    },
+
+    // Messages and timestamps
+    message: "",
+    timestamp: null,
+
+    // Loading states
+    loadingGetScientificDegrees: false,
+    loadingGetActiveScientificDegrees: false,
+    loadingGetScientificDegreesForSignup: false,
+    loadingGetSingleScientificDegree: false,
+    loadingCreateScientificDegree: false,
+    loadingUpdateScientificDegree: false,
+    loadingDeleteScientificDegree: false,
+
+    // Error states
+    error: null,
+    singleScientificDegreeError: null,
+    createError: null,
+    updateError: null,
+    deleteError: null,
+
+    // Success states
+    createSuccess: false,
+    updateSuccess: false,
+    deleteSuccess: false,
+
+    // Messages
+    createMessage: "",
+    updateMessage: "",
+    deleteMessage: "",
+  };
   return {
     initialStateMode,
     initialStateAuth,
@@ -256,6 +324,7 @@ function UseInitialStates() {
     initialStateDepartments,
     initialStateSubDepartments,
     initialStateContractingTypes,
+    initialStateScientificDegrees,
   };
 }
 

@@ -106,7 +106,12 @@ function UseInitialValues() {
     page: 1,
     pageSize: 10,
   };
-
+  const INITIAL_VALUES_ADD_SCIENTIFIC_DEGREE = {
+    nameArabic: "",
+    nameEnglish: "",
+    code: "",
+    isActive: true,
+  };
   return {
     INITIAL_VALUES_LOGIN,
     INITIAL_VALUES_FORGET_PASSWORD,
@@ -120,6 +125,7 @@ function UseInitialValues() {
     INITIAL_VALUES_ADD_CONTRACTINGTYPE,
     INITIAL_VALUES_EDIT_CONTRACTINGTYPE,
     INITIAL_VALUES_CONTRACTINGTYPE_FILTERS,
+    INITIAL_VALUES_ADD_SCIENTIFIC_DEGREE,
   };
 }
 
