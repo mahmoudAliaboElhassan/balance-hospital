@@ -112,6 +112,16 @@ function UseInitialValues() {
     code: "",
     isActive: true,
   };
+  const INITIAL_VALUES_ADD_SHIFT_HOUR_TYPE = {
+    nameArabic: "",
+    nameEnglish: "",
+    code: "",
+    period: "",
+    hoursCount: "",
+    startTime: "",
+    endTime: "",
+    isActive: true,
+  };
   return {
     INITIAL_VALUES_LOGIN,
     INITIAL_VALUES_FORGET_PASSWORD,
@@ -126,6 +136,7 @@ function UseInitialValues() {
     INITIAL_VALUES_EDIT_CONTRACTINGTYPE,
     INITIAL_VALUES_CONTRACTINGTYPE_FILTERS,
     INITIAL_VALUES_ADD_SCIENTIFIC_DEGREE,
+    INITIAL_VALUES_ADD_SHIFT_HOUR_TYPE,
   };
 }
 

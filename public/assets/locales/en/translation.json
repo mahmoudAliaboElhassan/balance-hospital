@@ -981,5 +981,127 @@
       "loadFailed": "Failed to load scientific degree data",
       "dependencyError": "Cannot delete this scientific degree as it has associated users"
     }
+  },
+
+  "shiftHoursTypes": {
+    "title": "Shift Hours Types",
+    "addNew": "Add New Shift Hours Type",
+    "add": "Add",
+    "loading": "Loading...",
+    "noData": "No data available",
+    "search": {
+      "placeholder": "Search..."
+    },
+    "filters": {
+      "title": "Filters",
+      "status": "Status",
+      "allStatuses": "All Statuses",
+      "period": "Period",
+      "allPeriods": "All Periods",
+      "orderBy": "Sort By",
+      "orderDirection": "Order Direction",
+      "sortBy": {
+        "nameArabic": "Name (Arabic)",
+        "nameEnglish": "Name (English)",
+        "hours": "Hours",
+        "createdAt": "Created At"
+      },
+      "descending": "Descending",
+      "ascending": "Ascending"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "periods": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly"
+    },
+    "table": {
+      "nameArabic": "Name (Arabic)",
+      "nameEnglish": "Name (English)",
+      "code": "Code",
+      "hours": "Hours",
+      "period": "Period",
+      "status": "Status",
+      "createdAt": "Created At",
+      "actions": "Actions"
+    },
+    "actions": {
+      "view": "View",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "pagination": {
+      "showing": "Showing",
+      "of": "of",
+      "items": "items",
+      "itemsPerPage": "items per page"
+    },
+    "backToList": "Back to Shift Hours Types",
+    "fetchError": "An error occurred while fetching this shift hours type.",
+    "notFound": "Shift hours type not found",
+    "details": {
+      "basicInfo": "Basic Information",
+      "timeInfo": "Time Information",
+      "timeline": "Timeline",
+      "quickStats": "Quick Stats",
+      "auditInfo": "Audit Information"
+    },
+    "form": {
+      "nameArabic": "Name (Arabic)",
+      "nameEnglish": "Name (English)",
+      "period": "Period",
+      "hoursCount": "Hours Count",
+      "startTime": "Start Time",
+      "endTime": "End Time"
+    },
+    "hours": "hours"
+  },
+
+  "shiftHourTypeForm": {
+    "editTitle": "Edit Shift Hour Type",
+    "periods": {
+      "morning": "Morning",
+      "day": "Day",
+      "evening": "Evening",
+      "night": "Night"
+    },
+    "fields": {
+      "nameArabic": "Name (Arabic)",
+      "nameEnglish": "Name (English)",
+      "code": "Code",
+      "period": "Period",
+      "hoursCount": "Hours Count",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "isActive": "Is Active"
+    },
+    "placeholders": {
+      "nameArabic": "Enter Arabic name",
+      "nameEnglish": "Enter English name",
+      "code": "Enter code",
+      "period": "Select period",
+      "hoursCount": "e.g. 8"
+    },
+    "hints": {
+      "code": "Uppercase letters and numbers only",
+      "hoursCount": "Between 1 and 24"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "update": "Update",
+      "updating": "Updating..."
+    },
+    "success": {
+      "updated": "Shift hour type updated successfully"
+    },
+    "error": {
+      "title": "Update Failed",
+      "loadFailed": "Failed to load shift hour type",
+      "notFound": "Shift hour type not found",
+      "notFoundMessage": "The requested shift hour type does not exist."
+    }
   }
 }

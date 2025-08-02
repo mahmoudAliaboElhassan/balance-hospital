@@ -34,14 +34,19 @@ function UseFormValidation() {
       .min(2, t("validation.minLength", { count: 2 }))
       .max(100, t("validation.maxLength", { count: 100 }))
       .matches(
-        /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$/,
-        t("validation.arabicOnly")
+        // Arabic script, digits, whitespace, and punctuation
+        /^[\p{Script=Arabic}0-9\s\p{P}]+$/u,
+        t("validation.arabicOnly") // you may want to update this message to "Arabic letters, numbers & punctuation only"
       ),
     nameEnglish: Yup.string()
       .required(t("category.form.validation.nameEnglishRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(100, t("validation.maxLength", { count: 100 }))
-      .matches(/^[a-zA-Z\s]+$/, t("validation.englishOnly")),
+      .matches(
+        // Latin letters, digits, whitespace, and punctuation
+        /^[A-Za-z0-9\s\p{P}]+$/u,
+        t("validation.englishOnly") // you may want to update this message to "English letters, numbers & punctuation only"
+      ),
     code: Yup.string()
       .required(t("category.form.validation.codeRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
@@ -61,14 +66,19 @@ function UseFormValidation() {
       .min(2, t("validation.minLength", { count: 2 }))
       .max(100, t("validation.maxLength", { count: 100 }))
       .matches(
-        /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$/,
-        t("validation.arabicOnly")
+        // Arabic script, digits, whitespace, and punctuation
+        /^[\p{Script=Arabic}0-9\s\p{P}]+$/u,
+        t("validation.arabicOnly") // you may want to update this message to "Arabic letters, numbers & punctuation only"
       ),
     nameEnglish: Yup.string()
       .required(t("category.form.validation.nameEnglishRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(100, t("validation.maxLength", { count: 100 }))
-      .matches(/^[a-zA-Z\s]+$/, t("validation.englishOnly")),
+      .matches(
+        // Latin letters, digits, whitespace, and punctuation
+        /^[A-Za-z0-9\s\p{P}]+$/u,
+        t("validation.englishOnly") // you may want to update this message to "English letters, numbers & punctuation only"
+      ),
     code: Yup.string()
       .required(t("category.form.validation.codeRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
@@ -88,14 +98,19 @@ function UseFormValidation() {
       .min(2, t("validation.minLength", { count: 2 }))
       .max(100, t("validation.maxLength", { count: 100 }))
       .matches(
-        /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$/,
-        t("validation.arabicOnly")
+        // Arabic script, digits, whitespace, and punctuation
+        /^[\p{Script=Arabic}0-9\s\p{P}]+$/u,
+        t("validation.arabicOnly") // you may want to update this message to "Arabic letters, numbers & punctuation only"
       ),
     nameEnglish: Yup.string()
       .required(t("department.form.validation.nameEnglishRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(100, t("validation.maxLength", { count: 100 }))
-      .matches(/^[a-zA-Z\s]+$/, t("validation.englishOnly")),
+      .matches(
+        // Latin letters, digits, whitespace, and punctuation
+        /^[A-Za-z0-9\s\p{P}]+$/u,
+        t("validation.englishOnly") // you may want to update this message to "English letters, numbers & punctuation only"
+      ),
     categoryId: Yup.number()
       .required(t("department.form.validation.categoryRequired"))
       .positive(t("validation.positiveNumber"))
@@ -118,14 +133,19 @@ function UseFormValidation() {
       .min(2, t("validation.minLength", { count: 2 }))
       .max(100, t("validation.maxLength", { count: 100 }))
       .matches(
-        /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$/,
-        t("validation.arabicOnly")
+        // Arabic script, digits, whitespace, and punctuation
+        /^[\p{Script=Arabic}0-9\s\p{P}]+$/u,
+        t("validation.arabicOnly") // you may want to update this message to "Arabic letters, numbers & punctuation only"
       ),
     nameEnglish: Yup.string()
       .required(t("department.form.validation.nameEnglishRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(100, t("validation.maxLength", { count: 100 }))
-      .matches(/^[a-zA-Z\s]+$/, t("validation.englishOnly")),
+      .matches(
+        // Latin letters, digits, whitespace, and punctuation
+        /^[A-Za-z0-9\s\p{P}]+$/u,
+        t("validation.englishOnly") // you may want to update this message to "English letters, numbers & punctuation only"
+      ),
     categoryId: Yup.number()
       .required(t("department.form.validation.categoryRequired"))
       .positive(t("validation.positiveNumber"))
@@ -190,14 +210,19 @@ function UseFormValidation() {
       .min(2, t("validation.minLength", { count: 2 }))
       .max(100, t("validation.maxLength", { count: 100 }))
       .matches(
-        /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$/,
-        t("validation.arabicOnly")
+        // Arabic script, digits, whitespace, and punctuation
+        /^[\p{Script=Arabic}0-9\s\p{P}]+$/u,
+        t("validation.arabicOnly") // you may want to update this message to "Arabic letters, numbers & punctuation only"
       ),
     nameEnglish: Yup.string()
       .required(t("subDepartment.form.validation.nameEnglishRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(100, t("validation.maxLength", { count: 100 }))
-      .matches(/^[a-zA-Z\s]+$/, t("validation.englishOnly")),
+      .matches(
+        // Latin letters, digits, whitespace, and punctuation
+        /^[A-Za-z0-9\s\p{P}]+$/u,
+        t("validation.englishOnly") // you may want to update this message to "English letters, numbers & punctuation only"
+      ),
     departmentId: Yup.number()
       .required(t("subDepartment.form.validation.departmentRequired"))
       .positive(t("validation.positiveNumber"))
@@ -220,14 +245,19 @@ function UseFormValidation() {
       .min(2, t("validation.minLength", { count: 2 }))
       .max(100, t("validation.maxLength", { count: 100 }))
       .matches(
-        /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$/,
-        t("validation.arabicOnly")
+        // Arabic script, digits, whitespace, and punctuation
+        /^[\p{Script=Arabic}0-9\s\p{P}]+$/u,
+        t("validation.arabicOnly") // you may want to update this message to "Arabic letters, numbers & punctuation only"
       ),
     nameEnglish: Yup.string()
       .required(t("subDepartment.form.validation.nameEnglishRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(100, t("validation.maxLength", { count: 100 }))
-      .matches(/^[a-zA-Z\s]+$/, t("validation.englishOnly")),
+      .matches(
+        // Latin letters, digits, whitespace, and punctuation
+        /^[A-Za-z0-9\s\p{P}]+$/u,
+        t("validation.englishOnly") // you may want to update this message to "English letters, numbers & punctuation only"
+      ),
     departmentId: Yup.number()
       .required(t("subDepartment.form.validation.departmentRequired"))
       .positive(t("validation.positiveNumber"))
@@ -250,12 +280,20 @@ function UseFormValidation() {
       .required(t("contractingTypes.form.validation.nameArabicRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(255, t("validation.maxLength", { count: 255 }))
-      .matches(arabicPattern, t("validation.arabicOnly")),
+      .matches(
+        // Arabic script, digits, whitespace, and punctuation
+        /^[\p{Script=Arabic}0-9\s\p{P}]+$/u,
+        t("validation.arabicOnly") // you may want to update this message to "Arabic letters, numbers & punctuation only"
+      ),
     nameEnglish: Yup.string()
       .required(t("contractingTypes.form.validation.nameEnglishRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(255, t("validation.maxLength", { count: 255 }))
-      .matches(englishPattern, t("validation.englishOnly")),
+      .matches(
+        // Latin letters, digits, whitespace, and punctuation
+        /^[A-Za-z0-9\s\p{P}]+$/u,
+        t("validation.englishOnly") // you may want to update this message to "English letters, numbers & punctuation only"
+      ),
     allowOvertimeHours: Yup.boolean(),
     maxHoursPerWeek: Yup.number()
       .min(1, t("contractingTypes.form.validation.maxHoursMin"))
@@ -276,15 +314,21 @@ function UseFormValidation() {
       .required(t("contractingTypes.form.validation.nameArabicRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(255, t("validation.maxLength", { count: 255 }))
-      .matches(arabicPattern, t("validation.arabicOnly")),
-
+      .matches(
+        // Arabic script, digits, whitespace, and punctuation
+        /^[\p{Script=Arabic}0-9\s\p{P}]+$/u,
+        t("validation.arabicOnly") // you may want to update this message to "Arabic letters, numbers & punctuation only"
+      ),
     nameEnglish: Yup.string()
       .trim()
       .required(t("contractingTypes.form.validation.nameEnglishRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(255, t("validation.maxLength", { count: 255 }))
-      .matches(englishPattern, t("validation.englishOnly")),
-
+      .matches(
+        // Latin letters, digits, whitespace, and punctuation
+        /^[A-Za-z0-9\s\p{P}]+$/u,
+        t("validation.englishOnly") // you may want to update this message to "English letters, numbers & punctuation only"
+      ),
     allowOvertimeHours: Yup.boolean().required(t("validation.required")),
 
     maxHoursPerWeek: Yup.number()
@@ -313,14 +357,19 @@ function UseFormValidation() {
       .min(2, t("validation.minLength", { count: 2 }))
       .max(255, t("validation.maxLength", { count: 255 }))
       .matches(
-        /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$/,
-        t("validation.arabicOnly")
+        // Arabic script, digits, whitespace, and punctuation
+        /^[\p{Script=Arabic}0-9\s\p{P}]+$/u,
+        t("validation.arabicOnly") // you may want to update this message to "Arabic letters, numbers & punctuation only"
       ),
     nameEnglish: Yup.string()
       .required(t("scientificDegrees.form.validation.nameEnglishRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(255, t("validation.maxLength", { count: 255 }))
-      .matches(/^[a-zA-Z\s]+$/, t("validation.englishOnly")),
+      .matches(
+        // Latin letters, digits, whitespace, and punctuation
+        /^[A-Za-z0-9\s\p{P}]+$/u,
+        t("validation.englishOnly") // you may want to update this message to "English letters, numbers & punctuation only"
+      ),
     code: Yup.string()
       .required(t("scientificDegrees.form.validation.codeRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
@@ -338,14 +387,19 @@ function UseFormValidation() {
       .min(2, t("validation.minLength", { count: 2 }))
       .max(255, t("validation.maxLength", { count: 255 }))
       .matches(
-        /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$/,
-        t("validation.arabicOnly")
+        // Arabic script, digits, whitespace, and punctuation
+        /^[\p{Script=Arabic}0-9\s\p{P}]+$/u,
+        t("validation.arabicOnly") // you may want to update this message to "Arabic letters, numbers & punctuation only"
       ),
     nameEnglish: Yup.string()
       .required(t("scientificDegrees.form.validation.nameEnglishRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(255, t("validation.maxLength", { count: 255 }))
-      .matches(/^[a-zA-Z\s]+$/, t("validation.englishOnly")),
+      .matches(
+        // Latin letters, digits, whitespace, and punctuation
+        /^[A-Za-z0-9\s\p{P}]+$/u,
+        t("validation.englishOnly") // you may want to update this message to "English letters, numbers & punctuation only"
+      ),
     code: Yup.string()
       .required(t("scientificDegrees.form.validation.codeRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
@@ -355,6 +409,53 @@ function UseFormValidation() {
         t("scientificDegrees.form.validation.codeFormat")
       ),
     isActive: Yup.boolean(),
+  });
+  const VALIDATION_SCHEMA_ADD_SHIFT_HOUR_TYPE = Yup.object().shape({
+    nameArabic: Yup.string()
+      .trim()
+      .required(t("shiftHourTypeForm.fields.nameArabic") + " is required")
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(255, t("validation.maxLength", { count: 255 }))
+      .matches(
+        // Arabic script, digits, whitespace, and punctuation
+        /^[\p{Script=Arabic}0-9\s\p{P}]+$/u,
+        t("validation.arabicOnly") // you may want to update this message to "Arabic letters, numbers & punctuation only"
+      ),
+
+    nameEnglish: Yup.string()
+      .trim()
+      .required(t("shiftHourTypeForm.fields.nameEnglish") + " is required")
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(255, t("validation.maxLength", { count: 255 }))
+      .matches(
+        // Latin letters, digits, whitespace, and punctuation
+        /^[A-Za-z0-9\s\p{P}]+$/u,
+        t("validation.englishOnly") // you may want to update this message to "English letters, numbers & punctuation only"
+      ),
+    code: Yup.string()
+      .trim()
+      .required(t("shiftHourTypeForm.fields.code") + " is required")
+      .matches(/^[A-Z0-9]+$/, t("shiftHourTypeForm.hints.code")),
+
+    period: Yup.string().required(
+      t("shiftHourTypeForm.fields.period") + " is required"
+    ),
+
+    hoursCount: Yup.number()
+      .required(t("shiftHourTypeForm.fields.hoursCount") + " is required")
+      .integer(t("validation.integerOnly"))
+      .min(1, t("shiftHourTypeForm.hints.hoursCount"))
+      .max(24, t("shiftHourTypeForm.hints.hoursCount")),
+
+    startTime: Yup.string().required(
+      t("shiftHourTypeForm.fields.startTime") + " is required"
+    ),
+
+    endTime: Yup.string().required(
+      t("shiftHourTypeForm.fields.endTime") + " is required"
+    ),
+
+    isActive: Yup.boolean().required(),
   });
   return {
     VALIDATION_SCHEMA_LOGIN,
@@ -372,6 +473,7 @@ function UseFormValidation() {
     VALIDATION_SCHEMA_EDIT_CONTRACTINGTYPE,
     VALIDATION_SCHEMA_EDIT_SCIENTIFIC_DEGREE,
     VALIDATION_SCHEMA_ADD_SCIENTIFIC_DEGREE,
+    VALIDATION_SCHEMA_ADD_SHIFT_HOUR_TYPE,
   };
 }
 

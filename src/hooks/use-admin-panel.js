@@ -53,7 +53,7 @@ function UseAdminPanel() {
       id: 8,
       name: t("adminPanel.shiftHours"),
       icon: "⏰",
-      path: "/admin-panel/shift-hours",
+      path: "/admin-panel/shift-hours-types",
     },
   ];
 

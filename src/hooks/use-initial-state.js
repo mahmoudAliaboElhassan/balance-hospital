@@ -317,6 +317,75 @@ function UseInitialStates() {
     updateMessage: "",
     deleteMessage: "",
   };
+
+  const initialStateShiftHoursTypes = {
+    // Data arrays
+    shiftHoursTypes: [],
+    allShiftHoursTypes: [],
+    activeShiftHoursTypes: [],
+    allActiveShiftHoursTypes: [],
+    selectedShiftHoursType: null,
+    shiftHoursTypesByPeriod: [],
+    pagedShiftHoursTypes: {},
+
+    // Loading states for GET operations
+    loadingGetShiftHoursTypes: false,
+    loadingGetActiveShiftHoursTypes: false,
+    loadingGetSingleShiftHoursType: false,
+    loadingGetShiftHoursTypesByPeriod: false,
+    loadingGetPagedShiftHoursTypes: false,
+
+    // Loading states for CUD operations
+    loadingCreateShiftHoursType: false,
+    loadingUpdateShiftHoursType: false,
+    loadingDeleteShiftHoursType: false,
+
+    // General error and success states
+    error: null,
+    message: "",
+    timestamp: null,
+
+    // Single shift hours type error
+    singleShiftHoursTypeError: null,
+
+    // Create operation states
+    createSuccess: false,
+    createError: null,
+    createMessage: "",
+
+    // Update operation states
+    updateSuccess: false,
+    updateError: null,
+    updateMessage: "",
+
+    // Delete operation states
+    deleteSuccess: false,
+    deleteError: null,
+    deleteMessage: "",
+
+    // Filters and pagination
+    filters: {
+      page: 1,
+      pageSize: 10,
+      search: "",
+      period: "all", // "all", "daily", "weekly", "monthly"
+      statusFilter: "all", // "all" or "active"
+      isActive: undefined,
+      sortBy: "",
+      sortDirection: "asc", // "asc" or "desc"
+    },
+
+    // Pagination info
+    pagination: {
+      page: 1,
+      pageSize: 10,
+      totalItems: 0,
+      totalPages: 0,
+      hasNextPage: false,
+      hasPrevPage: false,
+    },
+  };
+
   return {
     initialStateMode,
     initialStateAuth,
@@ -325,6 +394,7 @@ function UseInitialStates() {
     initialStateSubDepartments,
     initialStateContractingTypes,
     initialStateScientificDegrees,
+    initialStateShiftHoursTypes,
   };
 }
 

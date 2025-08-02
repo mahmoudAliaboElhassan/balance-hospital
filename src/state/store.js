@@ -3,6 +3,7 @@ import modeSlice from "./slices/mode";
 import authSlice from "./slices/auth";
 import categorySlice from "./slices/category";
 import departmentSlice from "./slices/department";
+import shiftHoursTypeSlice from "./slices/shiftHours";
 import subDepartmentSlice from "./slices/subDepartment";
 import contractingTypeSlice from "./slices/contractingType";
 import scientificDegreeSlice from "./slices/scientificDegree";
@@ -16,5 +17,6 @@ export const store = configureStore({
     subDepartment: subDepartmentSlice,
     contractingType: contractingTypeSlice,
     scientificDegree: scientificDegreeSlice,
+    shiftHour: shiftHoursTypeSlice,
   },
 });

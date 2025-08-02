@@ -30,6 +30,10 @@ import ScientificDegrees from "../pages/adminPanel/scientificDegree";
 import CreateScientificDegree from "../pages/adminPanel/scientificDegree/createScientificDegree";
 import EditScientificDegree from "../pages/adminPanel/scientificDegree/editScientificDegree";
 import SpecificScientificDegree from "../pages/adminPanel/scientificDegree/specificScientificDegree";
+import ShiftHours from "../pages/adminPanel/shiftHours";
+import CreateShiftHourType from "../pages/adminPanel/shiftHours/createShiftHours";
+import SpecificShiftHoursType from "../pages/adminPanel/shiftHours/specificShiftHours";
+import EditShiftHourType from "../pages/adminPanel/shiftHours/editShiftHours";
 // import CreateScientificDegree from "../pages/adminPanel/scientificDegree/createScientificDegree";
 // import EditScientificDegree from "../pages/adminPanel/scientificDegree/editScientificDegree";
 // import SpecificScientificDegree from "../pages/adminPanel/scientificDegree/specificScientificDegree";
@@ -248,6 +252,38 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<Loader />}>
                 <SpecificScientificDegree />
+              </Suspense>
+            ),
+          },
+          {
+            path: "shift-hours-types",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <ShiftHours />
+              </Suspense>
+            ),
+          },
+          {
+            path: "shift-hours-types/create",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <CreateShiftHourType />
+              </Suspense>
+            ),
+          },
+          {
+            path: "shift-hours-types/:id",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <SpecificShiftHoursType />
+              </Suspense>
+            ),
+          },
+          {
+            path: "shift-hours-types/edit/:id",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <EditShiftHourType />
               </Suspense>
             ),
           },

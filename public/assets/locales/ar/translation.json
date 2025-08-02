@@ -985,5 +985,127 @@
       "loadFailed": "فشل في تحميل بيانات الدرجة العلمية",
       "dependencyError": "لا يمكن حذف هذه الدرجة العلمية لوجود مستخدمين مرتبطين بها"
     }
+  },
+
+  "shiftHoursTypes": {
+    "title": "أنواع ساعات الدوام",
+    "addNew": "إضافة نوع ساعات دوام جديد",
+    "add": "إضافة",
+    "loading": "جارٍ التحميل...",
+    "noData": "لا توجد بيانات",
+    "search": {
+      "placeholder": "ابحث..."
+    },
+    "filters": {
+      "title": "الفلاتر",
+      "status": "الحالة",
+      "allStatuses": "كل الحالات",
+      "period": "الفترة",
+      "allPeriods": "كل الفترات",
+      "orderBy": "ترتيب حسب",
+      "orderDirection": "اتجاه الترتيب",
+      "sortBy": {
+        "nameArabic": "الاسم (عربي)",
+        "nameEnglish": "الاسم (إنجليزي)",
+        "hours": "الساعات",
+        "createdAt": "تاريخ الإنشاء"
+      },
+      "descending": "تنازلي",
+      "ascending": "تصاعدي"
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط"
+    },
+    "periods": {
+      "daily": "يومي",
+      "weekly": "أسبوعي",
+      "monthly": "شهري"
+    },
+    "table": {
+      "nameArabic": "الاسم (عربي)",
+      "nameEnglish": "الاسم (إنجليزي)",
+      "code": "الرمز",
+      "hours": "الساعات",
+      "period": "الفترة",
+      "status": "الحالة",
+      "createdAt": "تاريخ الإنشاء",
+      "actions": "الإجراءات"
+    },
+    "actions": {
+      "view": "عرض",
+      "edit": "تعديل",
+      "delete": "حذف"
+    },
+    "pagination": {
+      "showing": "يعرض",
+      "of": "من",
+      "items": "عنصر",
+      "itemsPerPage": "عنصر في كل صفحة"
+    },
+    "backToList": "العودة إلى أنواع ساعات الدوام",
+    "fetchError": "حدث خطأ أثناء جلب هذا النوع من ساعات الدوام.",
+    "notFound": "لم يتم العثور على نوع ساعات الدوام",
+    "details": {
+      "basicInfo": "المعلومات الأساسية",
+      "timeInfo": "معلومات الوقت",
+      "timeline": "الجدول الزمني",
+      "quickStats": "الإحصائيات السريعة",
+      "auditInfo": "معلومات التدقيق"
+    },
+    "form": {
+      "nameArabic": "الاسم (عربي)",
+      "nameEnglish": "الاسم (إنجليزي)",
+      "period": "الفترة",
+      "hoursCount": "عدد الساعات",
+      "startTime": "وقت البداية",
+      "endTime": "وقت النهاية"
+    },
+    "hours": "ساعة"
+  },
+
+  "shiftHourTypeForm": {
+    "editTitle": "تعديل نوع ساعات الدوام",
+    "periods": {
+      "morning": "صباحي",
+      "day": "نهاري",
+      "evening": "مسائي",
+      "night": "ليلي"
+    },
+    "fields": {
+      "nameArabic": "الاسم (بالعربية)",
+      "nameEnglish": "الاسم (بالإنجليزية)",
+      "code": "الكود",
+      "period": "الفترة",
+      "hoursCount": "عدد الساعات",
+      "startTime": "وقت البدء",
+      "endTime": "وقت الانتهاء",
+      "isActive": "نشط"
+    },
+    "placeholders": {
+      "nameArabic": "أدخل الاسم بالعربية",
+      "nameEnglish": "أدخل الاسم بالإنجليزية",
+      "code": "أدخل الكود",
+      "period": "اختر الفترة",
+      "hoursCount": "مثال 8"
+    },
+    "hints": {
+      "code": "أحرف كبيرة وأرقام فقط",
+      "hoursCount": "بين 1 و24"
+    },
+    "buttons": {
+      "cancel": "إلغاء",
+      "update": "تحديث",
+      "updating": "جاري التحديث..."
+    },
+    "success": {
+      "updated": "تم تحديث نوع ساعات الدوام بنجاح"
+    },
+    "error": {
+      "title": "فشل التحديث",
+      "loadFailed": "فشل في تحميل نوع ساعات الدوام",
+      "notFound": "لم يتم العثور على نوع ساعات الدوام",
+      "notFoundMessage": "نوع ساعات الدوام المطلوب غير موجود"
+    }
   }
 }
