@@ -336,7 +336,7 @@ function CreateContractingType() {
                       />
                     )}
                     {isSubmitting || loadingCreateContractingType
-                      ? t("common.saving")
+                      ? t("contractingTypes.form.create.creating")
                       : t("contractingTypes.form.create.submit")}
                   </button>
                 </div>

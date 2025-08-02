@@ -750,6 +750,8 @@
     "title": "Contracting Types",
     "description": "Manage employment contract types and their configurations",
     "addNew": "Add New Contracting Type",
+    "deleteSuccess": "Contracting Type \"{{name}}\" deleted successfully!",
+    "add": "Add",
     "backToList": "Back to Contracting Types",
     "noData": "No contracting types found",
     "loading": "Loading contracting types...",
@@ -811,12 +813,14 @@
       "create": {
         "title": "Create New Contracting Type",
         "description": "Add a new employment contract type to the system",
-        "submit": "Create Contracting Type"
+        "submit": "Create Contracting Type",
+        "creating": "Creating Contracting Type..."
       },
       "edit": {
         "title": "Edit Contracting Type",
         "description": "Update contracting type information",
-        "submit": "Update Contracting Type"
+        "submit": "Update Contracting Type",
+        "editing": "Updating Contracting Type..."
       },
       "validation": {
         "nameArabicRequired": "Arabic name is required",

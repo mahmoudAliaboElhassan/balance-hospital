@@ -240,20 +240,22 @@ function UseFormValidation() {
   });
 
   // ContractingType Add Validation Schema
+
+  const arabicPattern =
+    /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\u060C\u061B\u061F\u066A-\u066D\u06D4\u2000-\u206F\u200B-\u200D\u2060-\u2064\s0-9_\-\(\)\.,؟!،؛]+$/;
+  const englishPattern = /^[A-Za-z\u00C0-\u017F0-9\s_\-\(\)\.\'",!?:;]+$/;
+
   const VALIDATION_SCHEMA_ADD_CONTRACTINGTYPE = Yup.object().shape({
     nameArabic: Yup.string()
       .required(t("contractingTypes.form.validation.nameArabicRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(255, t("validation.maxLength", { count: 255 }))
-      .matches(
-        /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$/,
-        t("validation.arabicOnly")
-      ),
+      .matches(arabicPattern, t("validation.arabicOnly")),
     nameEnglish: Yup.string()
       .required(t("contractingTypes.form.validation.nameEnglishRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(255, t("validation.maxLength", { count: 255 }))
-      .matches(/^[a-zA-Z\s]+$/, t("validation.englishOnly")),
+      .matches(englishPattern, t("validation.englishOnly")),
     allowOvertimeHours: Yup.boolean(),
     maxHoursPerWeek: Yup.number()
       .min(1, t("contractingTypes.form.validation.maxHoursMin"))
@@ -263,32 +265,38 @@ function UseFormValidation() {
     isActive: Yup.boolean(),
   });
 
-  // ContractingType Edit Validation Schema
   const VALIDATION_SCHEMA_EDIT_CONTRACTINGTYPE = Yup.object().shape({
     id: Yup.number()
       .required(t("validation.required"))
       .positive(t("validation.positiveNumber"))
       .integer(t("validation.integerOnly")),
+
     nameArabic: Yup.string()
+      .trim()
       .required(t("contractingTypes.form.validation.nameArabicRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(255, t("validation.maxLength", { count: 255 }))
-      .matches(
-        /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$/,
-        t("validation.arabicOnly")
-      ),
+      .matches(arabicPattern, t("validation.arabicOnly")),
+
     nameEnglish: Yup.string()
+      .trim()
       .required(t("contractingTypes.form.validation.nameEnglishRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(255, t("validation.maxLength", { count: 255 }))
-      .matches(/^[a-zA-Z\s]+$/, t("validation.englishOnly")),
-    allowOvertimeHours: Yup.boolean().required(),
+      .matches(englishPattern, t("validation.englishOnly")),
+
+    allowOvertimeHours: Yup.boolean().required(t("validation.required")),
+
     maxHoursPerWeek: Yup.number()
+      .transform((value, originalValue) =>
+        originalValue === "" ? undefined : value
+      )
       .min(1, t("contractingTypes.form.validation.maxHoursMin"))
       .max(168, t("contractingTypes.form.validation.maxHoursMax"))
       .integer(t("validation.integerOnly"))
       .required(t("contractingTypes.form.validation.maxHoursRequired")),
-    isActive: Yup.boolean().required(),
+
+    isActive: Yup.boolean().required(t("validation.required")),
   });
 
   // Delete ContractingType Validation Schema

@@ -429,7 +429,7 @@ function EditContractingType() {
                       />
                     )}
                     {isSubmitting || loadingUpdateContractingType
-                      ? t("common.saving")
+                      ? t("contractingTypes.form.edit.editing")
                       : t("contractingTypes.form.edit.submit")}
                   </button>
                 </div>

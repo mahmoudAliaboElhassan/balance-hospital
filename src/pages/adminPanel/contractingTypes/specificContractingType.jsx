@@ -21,7 +21,9 @@ import {
   FileText,
   Mail,
   Phone,
-  Building,
+  Shield,
+  Hash,
+  Info,
 } from "lucide-react";
 
 function SpecificContractingType() {
@@ -106,6 +108,7 @@ function SpecificContractingType() {
     return (
       <div
         className={`min-h-screen p-6 ${isDark ? "bg-gray-900" : "bg-gray-50"}`}
+        dir={isRTL ? "rtl" : "ltr"}
       >
         <div className="max-w-4xl mx-auto">
           <div
@@ -117,11 +120,8 @@ function SpecificContractingType() {
           >
             <div className="text-center py-12">
               <div className="text-red-500 text-lg mb-4">
-                {currentLang === "ar"
-                  ? singleContractingTypeError?.messageAr ||
-                    "حدث خطأ أثناء تحميل بيانات نوع التعاقد"
-                  : singleContractingTypeError?.messageEn ||
-                    "Error loading contracting type data"}
+                {singleContractingTypeError?.message ||
+                  t("contractingTypes.fetchError")}
               </div>
               <Link
                 to="/admin-panel/contracting-types"
@@ -143,6 +143,7 @@ function SpecificContractingType() {
     return (
       <div
         className={`min-h-screen p-6 ${isDark ? "bg-gray-900" : "bg-gray-50"}`}
+        dir={isRTL ? "rtl" : "ltr"}
       >
         <div className="max-w-4xl mx-auto">
           <div
@@ -161,7 +162,7 @@ function SpecificContractingType() {
                 {t("contractingTypes.notFound")}
               </div>
               <Link
-                to="/admin-panel/contracting-types"
+                to="/admin-panel/contracting-type"
                 className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 {isRTL ? <ArrowRight size={16} /> : <ArrowLeft size={16} />}
@@ -179,8 +180,9 @@ function SpecificContractingType() {
   return (
     <div
       className={`min-h-screen p-6 ${isDark ? "bg-gray-900" : "bg-gray-50"}`}
+      dir={isRTL ? "rtl" : "ltr"}
     >
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
@@ -200,14 +202,15 @@ function SpecificContractingType() {
 
             <Link
               to={`/admin-panel/contracting-types/edit/${selectedContractingType.id}`}
-              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
-              <Edit size={16} className={`${isRTL ? "ml-2" : "mr-2"}`} />
-              {t("contractingTypes.actions.edit")}
+              <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors flex-1 sm:flex-none justify-center">
+                <Edit size={16} className={`${isRTL ? "ml-2" : "mr-2"}`} />
+                {t("contractingTypes.actions.edit")}
+              </button>
             </Link>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-4">
             <div
               className={`p-3 ${
                 isDark ? "bg-gray-700" : "bg-blue-100"
@@ -234,6 +237,24 @@ function SpecificContractingType() {
               >
                 {getContractingTypeSecondaryName()}
               </p>
+              {selectedContractingType.code && (
+                <div className="flex items-center mt-2">
+                  <Hash
+                    className={`h-4 w-4 ${
+                      isDark ? "text-gray-400" : "text-gray-500"
+                    } ${isRTL ? "ml-1" : "mr-1"}`}
+                  />
+                  <span
+                    className={`text-sm font-mono px-2 py-1 rounded ${
+                      isDark
+                        ? "bg-gray-700 text-gray-300"
+                        : "bg-gray-100 text-gray-700"
+                    }`}
+                  >
+                    {selectedContractingType.code}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -252,24 +273,29 @@ function SpecificContractingType() {
               <h2
                 className={`text-xl font-semibold ${
                   isDark ? "text-white" : "text-gray-900"
-                } mb-4`}
+                } mb-6 flex items-center`}
               >
+                <Info
+                  className={`h-5 w-5 ${isRTL ? "ml-2" : "mr-2"} ${
+                    isDark ? "text-blue-400" : "text-blue-600"
+                  }`}
+                />
                 {t("contractingTypes.details.basicInfo")}
               </h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label
                     className={`block text-sm font-medium ${
                       isDark ? "text-gray-300" : "text-gray-500"
-                    } mb-1`}
+                    } mb-2`}
                   >
                     {t("contractingTypes.form.nameArabic")}
                   </label>
                   <p
-                    className={`text-sm ${
+                    className={`text-base ${
                       isDark ? "text-white" : "text-gray-900"
-                    }`}
+                    } font-medium`}
                     dir="rtl"
                   >
                     {selectedContractingType.nameArabic}
@@ -280,14 +306,14 @@ function SpecificContractingType() {
                   <label
                     className={`block text-sm font-medium ${
                       isDark ? "text-gray-300" : "text-gray-500"
-                    } mb-1`}
+                    } mb-2`}
                   >
                     {t("contractingTypes.form.nameEnglish")}
                   </label>
                   <p
-                    className={`text-sm ${
+                    className={`text-base ${
                       isDark ? "text-white" : "text-gray-900"
-                    }`}
+                    } font-medium`}
                     dir="ltr"
                   >
                     {selectedContractingType.nameEnglish}
@@ -298,7 +324,7 @@ function SpecificContractingType() {
                   <label
                     className={`block text-sm font-medium ${
                       isDark ? "text-gray-300" : "text-gray-500"
-                    } mb-1`}
+                    } mb-2`}
                   >
                     {t("contractingTypes.form.maxHoursPerWeek")}
                   </label>
@@ -306,13 +332,13 @@ function SpecificContractingType() {
                     <Clock
                       className={`${
                         isDark ? "text-gray-400" : "text-gray-500"
-                      } mr-2`}
-                      size={16}
+                      } ${isRTL ? "ml-2" : "mr-2"}`}
+                      size={18}
                     />
                     <span
-                      className={`text-sm ${
+                      className={`text-base ${
                         isDark ? "text-white" : "text-gray-900"
-                      }`}
+                      } font-medium`}
                     >
                       {selectedContractingType.maxHoursPerWeek}{" "}
                       {t("contractingTypes.hoursPerWeek")}
@@ -324,20 +350,26 @@ function SpecificContractingType() {
                   <label
                     className={`block text-sm font-medium ${
                       isDark ? "text-gray-300" : "text-gray-500"
-                    } mb-1`}
+                    } mb-2`}
                   >
                     {t("contractingTypes.form.allowOvertimeHours")}
                   </label>
                   <div className="flex items-center">
                     {selectedContractingType.allowOvertimeHours ? (
-                      <CheckCircle className="text-green-500 mr-2" size={16} />
+                      <CheckCircle
+                        className={`text-green-500 ${isRTL ? "ml-2" : "mr-2"}`}
+                        size={18}
+                      />
                     ) : (
-                      <XCircle className="text-red-500 mr-2" size={16} />
+                      <XCircle
+                        className={`text-red-500 ${isRTL ? "ml-2" : "mr-2"}`}
+                        size={18}
+                      />
                     )}
                     <span
-                      className={`text-sm ${
+                      className={`text-base ${
                         isDark ? "text-white" : "text-gray-900"
-                      }`}
+                      } font-medium`}
                     >
                       {selectedContractingType.allowOvertimeHours
                         ? t("contractingTypes.overtime.allowed")
@@ -346,40 +378,32 @@ function SpecificContractingType() {
                   </div>
                 </div>
 
-                {selectedContractingType.code && (
-                  <div>
-                    <label
-                      className={`block text-sm font-medium ${
-                        isDark ? "text-gray-300" : "text-gray-500"
-                      } mb-1`}
-                    >
-                      {t("contractingTypes.details.code")}
-                    </label>
-                    <p
-                      className={`text-sm ${
-                        isDark ? "text-white" : "text-gray-900"
-                      } font-mono bg-gray-100 px-2 py-1 rounded`}
-                    >
-                      {selectedContractingType.code}
-                    </p>
-                  </div>
-                )}
-
-                <div>
+                <div className="md:col-span-2">
                   <label
                     className={`block text-sm font-medium ${
                       isDark ? "text-gray-300" : "text-gray-500"
-                    } mb-1`}
+                    } mb-2`}
                   >
                     {t("contractingTypes.table.status")}
                   </label>
                   <span
-                    className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                    className={`inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full ${
                       selectedContractingType.isActive
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
+                        ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+                        : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
                     }`}
                   >
+                    {selectedContractingType.isActive ? (
+                      <CheckCircle
+                        size={14}
+                        className={`${isRTL ? "ml-1" : "mr-1"}`}
+                      />
+                    ) : (
+                      <XCircle
+                        size={14}
+                        className={`${isRTL ? "ml-1" : "mr-1"}`}
+                      />
+                    )}
                     {selectedContractingType.isActive
                       ? t("contractingTypes.status.active")
                       : t("contractingTypes.status.inactive")}
@@ -401,75 +425,102 @@ function SpecificContractingType() {
                   <h2
                     className={`text-xl font-semibold ${
                       isDark ? "text-white" : "text-gray-900"
-                    } mb-4`}
+                    } mb-6 flex items-center`}
                   >
+                    <Users
+                      className={`h-5 w-5 ${isRTL ? "ml-2" : "mr-2"} ${
+                        isDark ? "text-blue-400" : "text-blue-600"
+                      }`}
+                    />
                     {t("contractingTypes.details.associatedUsers")}
+                    <span
+                      className={`${
+                        isRTL ? "mr-2" : "ml-2"
+                      } text-sm font-normal px-2 py-1 rounded-full ${
+                        isDark
+                          ? "bg-gray-700 text-gray-300"
+                          : "bg-gray-100 text-gray-600"
+                      }`}
+                    >
+                      {selectedContractingType.usersCount}
+                    </span>
                   </h2>
 
-                  <div className="space-y-3">
-                    {selectedContractingType.users.slice(0, 5).map((user) => (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {selectedContractingType.users.slice(0, 6).map((user) => (
                       <div
                         key={user.id}
-                        className={`flex items-center justify-between p-3 ${
+                        className={`flex items-center p-4 ${
                           isDark ? "bg-gray-700" : "bg-gray-50"
-                        } rounded-lg`}
+                        } rounded-lg border ${
+                          isDark ? "border-gray-600" : "border-gray-200"
+                        }`}
                       >
-                        <div className="flex items-center space-x-3">
-                          <div
-                            className={`p-2 ${
-                              isDark ? "bg-gray-600" : "bg-blue-100"
-                            } rounded-full`}
+                        <div
+                          className={`p-2 ${
+                            isDark ? "bg-gray-600" : "bg-blue-100"
+                          } rounded-full ${isRTL ? "ml-3" : "mr-3"}`}
+                        >
+                          <User
+                            className={`h-4 w-4 ${
+                              isDark ? "text-blue-400" : "text-blue-600"
+                            }`}
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p
+                            className={`text-sm font-medium ${
+                              isDark ? "text-white" : "text-gray-900"
+                            } truncate`}
                           >
-                            <User
-                              className={`h-4 w-4 ${
-                                isDark ? "text-blue-400" : "text-blue-600"
+                            {getUserName(user)}
+                          </p>
+                          <div className="flex items-center gap-3 text-xs text-gray-500 mt-1">
+                            <span className="flex items-center truncate">
+                              <Mail
+                                className={`h-3 w-3 ${isRTL ? "ml-1" : "mr-1"}`}
+                              />
+                              {user.email}
+                            </span>
+                            <span className="flex items-center">
+                              <Phone
+                                className={`h-3 w-3 ${isRTL ? "ml-1" : "mr-1"}`}
+                              />
+                              {user.mobile}
+                            </span>
+                          </div>
+                          <span
+                            className={`inline-block mt-2 text-xs px-2 py-1 rounded-full ${
+                              isDark
+                                ? "bg-gray-600 text-gray-300"
+                                : "bg-gray-200 text-gray-700"
+                            }`}
+                          >
+                            <Shield
+                              className={`h-3 w-3 inline ${
+                                isRTL ? "ml-1" : "mr-1"
                               }`}
                             />
-                          </div>
-                          <div>
-                            <p
-                              className={`text-sm font-medium ${
-                                isDark ? "text-white" : "text-gray-900"
-                              }`}
-                            >
-                              {getUserName(user)}
-                            </p>
-                            <div className="flex items-center space-x-4 text-xs text-gray-500">
-                              <span className="flex items-center">
-                                <Mail className="h-3 w-3 mr-1" />
-                                {user.email}
-                              </span>
-                              <span className="flex items-center">
-                                <Phone className="h-3 w-3 mr-1" />
-                                {user.mobile}
-                              </span>
-                            </div>
-                          </div>
+                            {user.role}
+                          </span>
                         </div>
-                        <span
-                          className={`text-xs px-2 py-1 rounded-full ${
-                            isDark
-                              ? "bg-gray-600 text-gray-300"
-                              : "bg-gray-200 text-gray-700"
-                          }`}
-                        >
-                          {user.role}
-                        </span>
                       </div>
                     ))}
+                  </div>
 
-                    {selectedContractingType.users.length > 5 && (
+                  {selectedContractingType.users.length > 6 && (
+                    <div className="mt-4 text-center">
                       <p
                         className={`text-sm ${
                           isDark ? "text-gray-300" : "text-gray-600"
-                        } text-center pt-2`}
+                        }`}
                       >
                         {t("contractingTypes.details.andMoreUsers", {
-                          count: selectedContractingType.users.length - 5,
+                          count: selectedContractingType.users.length - 6,
                         })}
                       </p>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               )}
           </div>
@@ -487,30 +538,35 @@ function SpecificContractingType() {
               <h3
                 className={`text-lg font-semibold ${
                   isDark ? "text-white" : "text-gray-900"
-                } mb-4`}
+                } mb-4 flex items-center`}
               >
+                <Users
+                  className={`h-5 w-5 ${isRTL ? "ml-2" : "mr-2"} ${
+                    isDark ? "text-blue-400" : "text-blue-600"
+                  }`}
+                />
                 {t("contractingTypes.details.statistics")}
               </h3>
 
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg">
                   <div className="flex items-center">
                     <Users
                       className={`h-5 w-5 ${
-                        isDark ? "text-gray-400" : "text-gray-500"
-                      } mr-2`}
+                        isDark ? "text-blue-400" : "text-blue-600"
+                      } ${isRTL ? "ml-2" : "mr-2"}`}
                     />
                     <span
-                      className={`text-sm ${
-                        isDark ? "text-gray-300" : "text-gray-600"
+                      className={`text-sm font-medium ${
+                        isDark ? "text-gray-300" : "text-gray-700"
                       }`}
                     >
                       {t("contractingTypes.table.users")}
                     </span>
                   </div>
                   <span
-                    className={`text-lg font-semibold ${
-                      isDark ? "text-white" : "text-gray-900"
+                    className={`text-2xl font-bold ${
+                      isDark ? "text-blue-400" : "text-blue-600"
                     }`}
                   >
                     {selectedContractingType.usersCount}
@@ -530,8 +586,13 @@ function SpecificContractingType() {
               <h3
                 className={`text-lg font-semibold ${
                   isDark ? "text-white" : "text-gray-900"
-                } mb-4`}
+                } mb-4 flex items-center`}
               >
+                <Calendar
+                  className={`h-5 w-5 ${isRTL ? "ml-2" : "mr-2"} ${
+                    isDark ? "text-blue-400" : "text-blue-600"
+                  }`}
+                />
                 {t("contractingTypes.details.auditInfo")}
               </h3>
 
@@ -562,16 +623,30 @@ function SpecificContractingType() {
                     >
                       {t("contractingTypes.details.createdBy")}
                     </label>
+                    <div className="flex items-center">
+                      <User
+                        className={`h-4 w-4 ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        } ${isRTL ? "ml-2" : "mr-2"}`}
+                      />
+                      <span
+                        className={`text-sm ${
+                          isDark ? "text-white" : "text-gray-900"
+                        }`}
+                      >
+                        {getUserName(selectedContractingType.createdByUser)}
+                      </span>
+                    </div>
                     <p
-                      className={`text-sm ${
-                        isDark ? "text-white" : "text-gray-900"
+                      className={`text-xs mt-1 ${
+                        isDark ? "text-gray-400" : "text-gray-500"
                       }`}
                     >
-                      {getUserName(selectedContractingType.createdByUser)}
+                      {selectedContractingType.createdByUser.role} •{" "}
+                      {selectedContractingType.createdByUser.email}
                     </p>
                   </div>
                 )}
-
                 {selectedContractingType.updatedAt && (
                   <div>
                     <label
@@ -590,7 +665,6 @@ function SpecificContractingType() {
                     </p>
                   </div>
                 )}
-
                 {selectedContractingType.updatedByUser && (
                   <div>
                     <label
@@ -600,12 +674,27 @@ function SpecificContractingType() {
                     >
                       {t("contractingTypes.details.updatedBy")}
                     </label>
+                    <div className="flex items-center">
+                      <User
+                        className={`h-4 w-4 ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        } ${isRTL ? "ml-2" : "mr-2"}`}
+                      />
+                      <span
+                        className={`text-sm ${
+                          isDark ? "text-white" : "text-gray-900"
+                        }`}
+                      >
+                        {getUserName(selectedContractingType.updatedByUser)}
+                      </span>
+                    </div>
                     <p
-                      className={`text-sm ${
-                        isDark ? "text-white" : "text-gray-900"
+                      className={`text-xs mt-1 ${
+                        isDark ? "text-gray-400" : "text-gray-500"
                       }`}
                     >
-                      {getUserName(selectedContractingType.updatedByUser)}
+                      {selectedContractingType.updatedByUser.role} •{" "}
+                      {selectedContractingType.updatedByUser.email}
                     </p>
                   </div>
                 )}

@@ -1,55 +1,33 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
+import { Eye, Edit, Trash2, Plus, Menu, X, Users } from "lucide-react";
 import {
-  Search,
-  Filter,
-  ChevronLeft,
-  ChevronRight,
-  Eye,
-  Edit,
-  Trash2,
-  Plus,
-  Menu,
-  X,
-  Users,
-  Clock,
-  CheckCircle,
-  XCircle,
-  Calendar,
-} from "lucide-react";
-import { getContractingTypes } from "../../../state/act/actContractingType";
-import {
-  clearError,
-  setCurrentPage,
-  setFilters,
-  setPageSize,
-} from "../../../state/slices/contractingType";
+  getContractingTypes,
+  getActiveContractingTypes,
+} from "../../../state/act/actContractingType";
+import { clearError } from "../../../state/slices/contractingType";
 import { Link } from "react-router-dom";
 import DeleteContractingTypeModal from "../../../components/DeleteContractingType";
+import DeleteCategoryModal from "../../../components/DeleteCategoryModal";
 
 function ContractingTypes() {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const [modalOpen, setModalOpen] = useState(false);
   const [toDelete, setToDelete] = useState({ id: null, name: "" });
+  const [statusFilter, setStatusFilter] = useState("all"); // "all" or "active"
+  const [showMobileTable, setShowMobileTable] = useState(false);
 
   const {
     contractingTypes,
-    pagination,
-    filters,
+    activeContractingTypes,
     loadingGetContractingTypes,
+    loadingGetActiveContractingTypes,
     error,
   } = useSelector((state) => state.contractingType);
 
   const { mymode } = useSelector((state) => state.mode);
-
-  const [searchInput, setSearchInput] = useState(filters.search);
-  const [showFilters, setShowFilters] = useState(false);
-  const [showMobileTable, setShowMobileTable] = useState(false);
-
-  // Debounced search
-  const [searchTimeout, setSearchTimeout] = useState(null);
 
   // Check if we're in dark mode
   const isDark = mymode === "dark";
@@ -58,50 +36,31 @@ function ContractingTypes() {
   const language = i18n.language;
   const isRTL = language === "ar";
 
-  // Fetch contracting types when filters change
+  // Get current data based on status filter
+  const currentData =
+    statusFilter === "active" ? activeContractingTypes : contractingTypes;
+  const isLoading =
+    statusFilter === "active"
+      ? loadingGetActiveContractingTypes
+      : loadingGetContractingTypes;
+
+  // Fetch contracting types based on status filter
   useEffect(() => {
-    dispatch(getContractingTypes(filters));
-  }, [dispatch, filters]);
+    if (statusFilter === "active") {
+      dispatch(getActiveContractingTypes());
+    } else {
+      dispatch(getContractingTypes());
+    }
+  }, [dispatch, statusFilter]);
 
   // Clear error on mount
   useEffect(() => {
     dispatch(clearError());
   }, [dispatch]);
 
-  // Debounced search function
-  const debouncedSearch = useCallback(
-    (searchTerm) => {
-      if (searchTimeout) {
-        clearTimeout(searchTimeout);
-      }
-      const timeout = setTimeout(() => {
-        dispatch(setFilters({ search: searchTerm, page: 1 }));
-      }, 500);
-      setSearchTimeout(timeout);
-    },
-    [dispatch, searchTimeout]
-  );
-
-  // Handle search input change
-  const handleSearchChange = (e) => {
-    const value = e.target.value;
-    setSearchInput(value);
-    debouncedSearch(value);
-  };
-
-  // Handle filter changes
-  const handleFilterChange = (filterName, value) => {
-    dispatch(setFilters({ [filterName]: value, page: 1 }));
-  };
-
-  // Handle page change
-  const handlePageChange = (newPage) => {
-    dispatch(setCurrentPage(newPage));
-  };
-
-  // Handle page size change
-  const handlePageSizeChange = (newPageSize) => {
-    dispatch(setPageSize(newPageSize));
+  // Handle status filter change
+  const handleStatusChange = (newStatus) => {
+    setStatusFilter(newStatus);
   };
 
   // Handle delete action
@@ -121,510 +80,521 @@ function ContractingTypes() {
       : contractingType.nameEnglish;
   };
 
-  // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return "-";
-    const date = new Date(dateString);
-    return date.toLocaleDateString(language === "ar" ? "ar-SA" : "en-US");
-  };
-
-  // Pagination component
-  const PaginationComponent = () => {
-    if (!pagination || pagination.totalPages <= 1) return null;
-
-    const {
-      page: currentPage,
-      totalPages,
-      hasNextPage,
-      hasPreviousPage,
-    } = pagination;
-
-    return (
-      <div className="flex items-center justify-between mt-6 px-4">
-        <div className="text-sm text-gray-500">
-          {t("common.pagination.showing")}{" "}
-          {(currentPage - 1) * filters.pageSize + 1} -{" "}
-          {Math.min(currentPage * filters.pageSize, pagination.totalCount)}{" "}
-          {t("common.pagination.of")} {pagination.totalCount}{" "}
-          {t("common.pagination.items")}
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={!hasPreviousPage}
-            className={`p-2 rounded-lg border ${
-              !hasPreviousPage
-                ? "border-gray-200 text-gray-400 cursor-not-allowed"
-                : "border-gray-300 text-gray-600 hover:bg-gray-50"
+  // Mobile card component for each contracting type
+  const ContractingTypeCard = ({ contractingType }) => (
+    <div
+      className={`p-4 rounded-lg border mb-3 ${
+        isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+      }`}
+    >
+      <div className="flex justify-between items-start mb-3">
+        <div>
+          <h3
+            className={`font-semibold text-lg ${
+              isDark ? "text-white" : "text-gray-900"
             }`}
           >
-            {isRTL ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
-          </button>
-
-          <span className="px-3 py-1 text-sm font-medium">
-            {currentPage} / {totalPages}
-          </span>
-
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={!hasNextPage}
-            className={`p-2 rounded-lg border ${
-              !hasNextPage
-                ? "border-gray-200 text-gray-400 cursor-not-allowed"
-                : "border-gray-300 text-gray-600 hover:bg-gray-50"
-            }`}
+            {contractingType.nameArabic}
+          </h3>
+          <p
+            className={`text-sm ${isDark ? "text-gray-300" : "text-gray-600"}`}
           >
-            {isRTL ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
-          </button>
+            {contractingType.nameEnglish}
+          </p>
         </div>
       </div>
-    );
-  };
+
+      <div className="grid grid-cols-1 gap-2 text-sm mb-3">
+        <div className="flex items-center">
+          <Users
+            className={`${isRTL ? "ml-2" : "mr-2"} ${
+              isDark ? "text-gray-400" : "text-gray-500"
+            }`}
+            size={16}
+          />
+          <span
+            className={`font-medium ${
+              isDark ? "text-gray-300" : "text-gray-700"
+            }`}
+          >
+            {t("contractingTypes.table.users")}:
+          </span>
+          <span
+            className={`${isRTL ? "mr-2" : "ml-2"} ${
+              isDark ? "text-white" : "text-gray-900"
+            }`}
+          >
+            {contractingType.usersCount}
+          </span>
+        </div>
+      </div>
+
+      <div className="flex gap-2 justify-end">
+        <Link to={`/admin-panel/contracting-types/${contractingType.id}`}>
+          <button
+            className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors"
+            title={t("contractingTypes.actions.view")}
+          >
+            <Eye size={16} />
+          </button>
+        </Link>
+        <Link to={`/admin-panel/contracting-types/edit/${contractingType.id}`}>
+          <button
+            className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors"
+            title={t("contractingTypes.actions.edit")}
+          >
+            <Edit size={16} />
+          </button>
+        </Link>
+        <button
+          className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors"
+          title={t("contractingTypes.actions.delete")}
+          onClick={() => handleDeleteClick(contractingType)}
+        >
+          <Trash2 size={16} />
+        </button>
+      </div>
+    </div>
+  );
 
   return (
     <div
-      className={`min-h-screen p-6 ${isDark ? "bg-gray-900" : "bg-gray-50"}`}
+      className={`min-h-screen ${isDark ? "bg-gray-900" : "bg-gray-50"}`}
+      dir={isRTL ? "rtl" : "ltr"}
     >
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-            <div>
+      <DeleteContractingTypeModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        contractingTypeId={toDelete.id}
+        info={toDelete}
+        contractingTypeName={toDelete.name}
+      />
+      <div className="p-4 sm:p-6">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="mb-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
               <h1
-                className={`text-3xl font-bold ${
+                className={`text-2xl sm:text-3xl font-bold ${
                   isDark ? "text-white" : "text-gray-900"
-                } mb-2`}
+                }`}
               >
                 {t("contractingTypes.title")}
               </h1>
-              <p className={`${isDark ? "text-gray-300" : "text-gray-600"}`}>
-                {t("contractingTypes.description")}
-              </p>
-            </div>
-
-            <div className="mt-4 md:mt-0">
-              <Link
-                to="/admin-panel/contracting-types/create"
-                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                <Plus size={20} className={`${isRTL ? "ml-2" : "mr-2"}`} />
-                {t("contractingTypes.addNew")}
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Filters and Search */}
-        <div
-          className={`${
-            isDark ? "bg-gray-800" : "bg-white"
-          } rounded-lg shadow-sm border ${
-            isDark ? "border-gray-700" : "border-gray-200"
-          } mb-6`}
-        >
-          <div className="p-6">
-            {/* Search and Filter Toggle */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-              <div className="relative flex-1 max-w-md">
-                <Search
-                  className={`absolute ${
-                    isRTL ? "right-3" : "left-3"
-                  } top-1/2 transform -translate-y-1/2 text-gray-400`}
-                  size={20}
-                />
-                <input
-                  type="text"
-                  placeholder={t("contractingTypes.search.placeholder")}
-                  value={searchInput}
-                  onChange={handleSearchChange}
-                  className={`w-full ${
-                    isRTL ? "pr-10 pl-4" : "pl-10 pr-4"
-                  } py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    isDark
-                      ? "bg-gray-700 border-gray-600 text-white"
-                      : "bg-white"
+              <div className="flex gap-2 w-full sm:w-auto">
+                <Link to="/admin-panel/contracting-types/create">
+                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors flex-1 sm:flex-none justify-center">
+                    <Plus size={20} />
+                    <span className="hidden sm:inline">
+                      {t("contractingTypes.addNew")}
+                    </span>
+                    <span className="sm:hidden">
+                      {t("contractingTypes.add")}
+                    </span>
+                  </button>
+                </Link>
+                {/* Mobile table toggle */}
+                <button
+                  onClick={() => setShowMobileTable(!showMobileTable)}
+                  className={`md:hidden px-3 py-2 rounded-lg border transition-colors ${
+                    showMobileTable
+                      ? "bg-blue-50 border-blue-300 text-blue-700 dark:bg-blue-900 dark:border-blue-600 dark:text-blue-300"
+                      : `border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 ${
+                          isDark ? "text-gray-300" : "text-gray-700"
+                        }`
                   }`}
-                />
+                >
+                  {showMobileTable ? <X size={20} /> : <Menu size={20} />}
+                </button>
               </div>
-
-              <button
-                onClick={() => setShowFilters(!showFilters)}
-                className={`mt-3 md:mt-0 md:ml-4 inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg ${
-                  isDark
-                    ? "bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
-                    : "bg-white text-gray-700 hover:bg-gray-50"
-                } transition-colors`}
-              >
-                <Filter size={20} className={`${isRTL ? "ml-2" : "mr-2"}`} />
-                {t("contractingTypes.filters.title")}
-              </button>
             </div>
 
-            {/* Filters Panel */}
-            {showFilters && (
-              <div className="border-t border-gray-200 pt-4 mt-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {/* Status Filter */}
-                  <div>
-                    <label
-                      className={`block text-sm font-medium ${
-                        isDark ? "text-gray-300" : "text-gray-700"
-                      } mb-2`}
-                    >
-                      {t("contractingTypes.filters.status")}
-                    </label>
-                    <select
-                      value={
-                        filters.isActive === null
-                          ? ""
-                          : filters.isActive.toString()
-                      }
-                      onChange={(e) =>
-                        handleFilterChange(
-                          "isActive",
-                          e.target.value === ""
-                            ? null
-                            : e.target.value === "true"
-                        )
-                      }
-                      className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                        isDark
-                          ? "bg-gray-700 border-gray-600 text-white"
-                          : "bg-white"
-                      }`}
-                    >
-                      <option value="">
-                        {t("contractingTypes.filters.allStatuses")}
-                      </option>
-                      <option value="true">
-                        {t("contractingTypes.status.active")}
-                      </option>
-                      <option value="false">
-                        {t("contractingTypes.status.inactive")}
-                      </option>
-                    </select>
-                  </div>
-
-                  {/* Order By */}
-                  <div>
-                    <label
-                      className={`block text-sm font-medium ${
-                        isDark ? "text-gray-300" : "text-gray-700"
-                      } mb-2`}
-                    >
-                      {t("contractingTypes.filters.orderBy")}
-                    </label>
-                    <select
-                      value={filters.orderBy}
-                      onChange={(e) =>
-                        handleFilterChange("orderBy", e.target.value)
-                      }
-                      className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                        isDark
-                          ? "bg-gray-700 border-gray-600 text-white"
-                          : "bg-white"
-                      }`}
-                    >
-                      <option value="nameArabic">
-                        {t("contractingTypes.filters.sortBy.nameArabic")}
-                      </option>
-                      <option value="nameEnglish">
-                        {t("contractingTypes.filters.sortBy.nameEnglish")}
-                      </option>
-                      <option value="createdAt">
-                        {t("contractingTypes.filters.sortBy.createdAt")}
-                      </option>
-                    </select>
-                  </div>
-
-                  {/* Order Direction */}
-                  <div>
-                    <label
-                      className={`block text-sm font-medium ${
-                        isDark ? "text-gray-300" : "text-gray-700"
-                      } mb-2`}
-                    >
-                      {t("contractingTypes.filters.orderDirection")}
-                    </label>
-                    <select
-                      value={filters.orderDesc.toString()}
-                      onChange={(e) =>
-                        handleFilterChange(
-                          "orderDesc",
-                          e.target.value === "true"
-                        )
-                      }
-                      className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                        isDark
-                          ? "bg-gray-700 border-gray-600 text-white"
-                          : "bg-white"
-                      }`}
-                    >
-                      <option value="false">
-                        {t("contractingTypes.filters.ascending")}
-                      </option>
-                      <option value="true">
-                        {t("contractingTypes.filters.descending")}
-                      </option>
-                    </select>
-                  </div>
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <div className="flex justify-between items-center">
+                  <span>{error.message}</span>
+                  <button
+                    onClick={() => dispatch(clearError())}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    ×
+                  </button>
                 </div>
               </div>
             )}
           </div>
-        </div>
 
-        {/* Error Message */}
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-600">{error.message}</p>
-          </div>
-        )}
-
-        {/* Mobile Table Toggle */}
-        <div className="md:hidden mb-4">
-          <button
-            onClick={() => setShowMobileTable(!showMobileTable)}
-            className={`w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg ${
+          {/* Status Filter */}
+          <div
+            className={`rounded-lg shadow-sm border mb-6 ${
               isDark
-                ? "bg-gray-700 border-gray-600 text-white"
-                : "bg-white text-gray-700"
+                ? "bg-gray-800 border-gray-700"
+                : "bg-white border-gray-200"
             }`}
           >
-            <Menu size={20} className={`${isRTL ? "ml-2" : "mr-2"}`} />
-            {showMobileTable ? t("common.hideTable") : t("common.showTable")}
-          </button>
-        </div>
-
-        {/* Table */}
-        <div
-          className={`${
-            isDark ? "bg-gray-800" : "bg-white"
-          } rounded-lg shadow-sm border ${
-            isDark ? "border-gray-700" : "border-gray-200"
-          } ${
-            showMobileTable || window.innerWidth >= 768
-              ? "block"
-              : "hidden md:block"
-          }`}
-        >
-          {loadingGetContractingTypes ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="p-4">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="w-full sm:w-48">
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => handleStatusChange(e.target.value)}
+                    className={`w-full p-2 border rounded-lg ${
+                      isDark
+                        ? "border-gray-600 bg-gray-700 text-white"
+                        : "border-gray-300 bg-white text-gray-900"
+                    }`}
+                  >
+                    <option value="all">
+                      {t("contractingTypes.filters.allStatuses")}
+                    </option>
+                    <option value="active">
+                      {t("contractingTypes.status.active")}
+                    </option>
+                  </select>
+                </div>
+              </div>
             </div>
-          ) : contractingTypes && contractingTypes.length > 0 ? (
+          </div>
+
+          {/* Mobile Cards View */}
+          <div className={`md:hidden ${showMobileTable ? "hidden" : "block"}`}>
+            {isLoading ? (
+              <div className="text-center p-8">
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                  <span
+                    className={`${isRTL ? "mr-3" : "ml-3"} ${
+                      isDark ? "text-gray-400" : "text-gray-600"
+                    }`}
+                  >
+                    {t("contractingTypes.loading")}
+                  </span>
+                </div>
+              </div>
+            ) : currentData && currentData.length === 0 ? (
+              <div
+                className={`text-center p-8 ${
+                  isDark ? "text-gray-400" : "text-gray-500"
+                }`}
+              >
+                {t("contractingTypes.noData")}
+              </div>
+            ) : (
+              currentData?.map((contractingType) => (
+                <ContractingTypeCard
+                  key={contractingType.id}
+                  contractingType={contractingType}
+                />
+              ))
+            )}
+          </div>
+
+          {/* Desktop Table View */}
+          <div
+            className={`hidden md:block ${showMobileTable ? "md:hidden" : ""} ${
+              isDark
+                ? "bg-gray-800 border-gray-700"
+                : "bg-white border-gray-200"
+            } rounded-lg shadow-sm border`}
+          >
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className={`${isDark ? "bg-gray-700" : "bg-gray-50"}`}>
-                  <tr>
+              <table className="w-full">
+                <thead>
+                  <tr
+                    className={`border-b ${
+                      isDark
+                        ? "border-gray-700 bg-gray-750"
+                        : "border-gray-200 bg-gray-50"
+                    }`}
+                  >
                     <th
-                      className={`px-6 py-3 ${
+                      className={`${
                         isRTL ? "text-right" : "text-left"
-                      } text-xs font-medium ${
-                        isDark ? "text-gray-300" : "text-gray-500"
-                      } uppercase tracking-wider`}
+                      } p-4 font-semibold ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
                     >
-                      {t("contractingTypes.table.name")}
+                      {t("contractingTypes.table.nameArabic")}
                     </th>
                     <th
-                      className={`px-6 py-3 ${
+                      className={`${
                         isRTL ? "text-right" : "text-left"
-                      } text-xs font-medium ${
-                        isDark ? "text-gray-300" : "text-gray-500"
-                      } uppercase tracking-wider`}
+                      } p-4 font-semibold ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
                     >
-                      {t("contractingTypes.table.overtime")}
+                      {t("contractingTypes.table.nameEnglish")}
                     </th>
                     <th
-                      className={`px-6 py-3 ${
+                      className={`${
                         isRTL ? "text-right" : "text-left"
-                      } text-xs font-medium ${
-                        isDark ? "text-gray-300" : "text-gray-500"
-                      } uppercase tracking-wider`}
-                    >
-                      {t("contractingTypes.table.maxHours")}
-                    </th>
-                    <th
-                      className={`px-6 py-3 ${
-                        isRTL ? "text-right" : "text-left"
-                      } text-xs font-medium ${
-                        isDark ? "text-gray-300" : "text-gray-500"
-                      } uppercase tracking-wider`}
+                      } p-4 font-semibold ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
                     >
                       {t("contractingTypes.table.users")}
                     </th>
                     <th
-                      className={`px-6 py-3 ${
+                      className={`${
                         isRTL ? "text-right" : "text-left"
-                      } text-xs font-medium ${
-                        isDark ? "text-gray-300" : "text-gray-500"
-                      } uppercase tracking-wider`}
-                    >
-                      {t("contractingTypes.table.status")}
-                    </th>
-                    <th
-                      className={`px-6 py-3 ${
-                        isRTL ? "text-right" : "text-left"
-                      } text-xs font-medium ${
-                        isDark ? "text-gray-300" : "text-gray-500"
-                      } uppercase tracking-wider`}
+                      } p-4 font-semibold ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
                     >
                       {t("contractingTypes.table.actions")}
                     </th>
                   </tr>
                 </thead>
-                <tbody
-                  className={`${
-                    isDark ? "bg-gray-800" : "bg-white"
-                  } divide-y divide-gray-200`}
-                >
-                  {contractingTypes.map((contractingType) => (
-                    <tr
-                      key={contractingType.id}
-                      className={`hover:${
-                        isDark ? "bg-gray-700" : "bg-gray-50"
-                      } transition-colors`}
+                <tbody>
+                  {isLoading ? (
+                    <tr>
+                      <td colSpan="4" className="text-center p-8">
+                        <div className="flex items-center justify-center">
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                          <span
+                            className={`${isRTL ? "mr-3" : "ml-3"} ${
+                              isDark ? "text-gray-400" : "text-gray-600"
+                            }`}
+                          >
+                            {t("contractingTypes.loading")}
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : currentData && currentData.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan="4"
+                        className={`text-center p-8 ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}
+                      >
+                        {t("contractingTypes.noData")}
+                      </td>
+                    </tr>
+                  ) : (
+                    currentData?.map((contractingType) => (
+                      <tr
+                        key={contractingType.id}
+                        className={`border-b transition-colors ${
+                          isDark
+                            ? "border-gray-700 hover:bg-gray-750"
+                            : "border-gray-200 hover:bg-gray-50"
+                        }`}
+                      >
+                        <td
+                          className={`p-4 font-semibold ${
+                            isDark ? "text-white" : "text-gray-900"
+                          }`}
+                        >
+                          {contractingType.nameArabic}
+                        </td>
+                        <td
+                          className={`p-4 ${
+                            isDark ? "text-gray-300" : "text-gray-600"
+                          }`}
+                        >
+                          {contractingType.nameEnglish}
+                        </td>
+                        <td className="p-4">
+                          <div className="flex items-center">
+                            <Users
+                              className={`${isRTL ? "ml-2" : "mr-2"} ${
+                                isDark ? "text-gray-400" : "text-gray-500"
+                              }`}
+                              size={16}
+                            />
+                            <span
+                              className={`text-sm ${
+                                isDark ? "text-gray-300" : "text-gray-700"
+                              }`}
+                            >
+                              {contractingType.usersCount}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <div className="flex gap-2">
+                            <Link
+                              to={`/admin-panel/contracting-types/${contractingType.id}`}
+                            >
+                              <button
+                                className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors cursor-pointer"
+                                title={t("contractingTypes.actions.view")}
+                              >
+                                <Eye size={16} />
+                              </button>
+                            </Link>
+                            <Link
+                              to={`/admin-panel/contracting-types/edit/${contractingType.id}`}
+                            >
+                              <button
+                                className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors cursor-pointer"
+                                title={t("contractingTypes.actions.edit")}
+                              >
+                                <Edit size={16} />
+                              </button>
+                            </Link>
+                            <button
+                              onClick={() => handleDeleteClick(contractingType)}
+                              className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors cursor-pointer"
+                              title={t("contractingTypes.actions.delete")}
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Mobile Table View (when toggled) */}
+          <div
+            className={`md:hidden ${showMobileTable ? "block" : "hidden"} ${
+              isDark
+                ? "bg-gray-800 border-gray-700"
+                : "bg-white border-gray-200"
+            } rounded-lg shadow-sm border overflow-hidden`}
+          >
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr
+                    className={`border-b ${
+                      isDark
+                        ? "border-gray-700 bg-gray-750"
+                        : "border-gray-200 bg-gray-50"
+                    }`}
+                  >
+                    <th
+                      className={`${
+                        isRTL ? "text-right" : "text-left"
+                      } p-2 font-semibold ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
                     >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div>
-                          <div
-                            className={`text-sm font-medium ${
-                              isDark ? "text-white" : "text-gray-900"
+                      {t("contractingTypes.table.name")}
+                    </th>
+                    <th
+                      className={`${
+                        isRTL ? "text-right" : "text-left"
+                      } p-2 font-semibold ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
+                    >
+                      {t("contractingTypes.table.users")}
+                    </th>
+                    <th
+                      className={`${
+                        isRTL ? "text-right" : "text-left"
+                      } p-2 font-semibold ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
+                    >
+                      {t("contractingTypes.table.actions")}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {isLoading ? (
+                    <tr>
+                      <td colSpan="3" className="text-center p-8">
+                        <div className="flex items-center justify-center">
+                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                          <span
+                            className={`${isRTL ? "mr-2" : "ml-2"} text-sm ${
+                              isDark ? "text-gray-400" : "text-gray-600"
                             }`}
                           >
-                            {getContractingTypeName(contractingType)}
+                            {t("contractingTypes.loading")}
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : currentData && currentData.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan="3"
+                        className={`text-center p-8 ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}
+                      >
+                        {t("contractingTypes.noData")}
+                      </td>
+                    </tr>
+                  ) : (
+                    currentData?.map((contractingType) => (
+                      <tr
+                        key={contractingType.id}
+                        className={`border-b transition-colors ${
+                          isDark
+                            ? "border-gray-700 hover:bg-gray-750"
+                            : "border-gray-200 hover:bg-gray-50"
+                        }`}
+                      >
+                        <td className="p-2">
+                          <div>
+                            <div
+                              className={`font-semibold ${
+                                isDark ? "text-white" : "text-gray-900"
+                              }`}
+                            >
+                              {contractingType.nameArabic}
+                            </div>
+                            <div
+                              className={`text-xs ${
+                                isDark ? "text-gray-400" : "text-gray-500"
+                              }`}
+                            >
+                              {contractingType.nameEnglish}
+                            </div>
                           </div>
-                          <div
+                        </td>
+                        <td className="p-2">
+                          <span
                             className={`text-sm ${
-                              isDark ? "text-gray-300" : "text-gray-500"
-                            }`}
-                          >
-                            {language === "ar"
-                              ? contractingType.nameEnglish
-                              : contractingType.nameArabic}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          {contractingType.allowOvertimeHours ? (
-                            <CheckCircle className="text-green-500" size={20} />
-                          ) : (
-                            <XCircle className="text-red-500" size={20} />
-                          )}
-                          <span
-                            className={`ml-2 text-sm ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            }`}
-                          >
-                            {contractingType.allowOvertimeHours
-                              ? t("contractingTypes.overtime.allowed")
-                              : t("contractingTypes.overtime.notAllowed")}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <Clock
-                            className={`${
-                              isDark ? "text-gray-400" : "text-gray-500"
-                            }`}
-                            size={16}
-                          />
-                          <span
-                            className={`ml-2 text-sm ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            }`}
-                          >
-                            {contractingType.maxHoursPerWeek}{" "}
-                            {t("contractingTypes.hoursPerWeek")}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <Users
-                            className={`${
-                              isDark ? "text-gray-400" : "text-gray-500"
-                            }`}
-                            size={16}
-                          />
-                          <span
-                            className={`ml-2 text-sm ${
                               isDark ? "text-gray-300" : "text-gray-700"
                             }`}
                           >
                             {contractingType.usersCount}
                           </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            contractingType.isActive
-                              ? "bg-green-100 text-green-800"
-                              : "bg-red-100 text-red-800"
-                          }`}
-                        >
-                          {contractingType.isActive
-                            ? t("contractingTypes.status.active")
-                            : t("contractingTypes.status.inactive")}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex space-x-2">
-                          <Link
-                            to={`/admin-panel/contracting-types/${contractingType.id}`}
-                            className="text-blue-600 hover:text-blue-900 p-1 rounded"
-                            title={t("contractingTypes.actions.view")}
-                          >
-                            <Eye size={16} />
-                          </Link>
-                          <Link
-                            to={`/admin-panel/contracting-types/edit/${contractingType.id}`}
-                            className="text-yellow-600 hover:text-yellow-900 p-1 rounded"
-                            title={t("contractingTypes.actions.edit")}
-                          >
-                            <Edit size={16} />
-                          </Link>
-                          <button
-                            onClick={() => handleDeleteClick(contractingType)}
-                            className="text-red-600 hover:text-red-900 p-1 rounded"
-                            title={t("contractingTypes.actions.delete")}
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                        </td>
+                        <td className="p-2">
+                          <div className="flex gap-1">
+                            <Link
+                              to={`/admin-panel/contracting-types/${contractingType.id}`}
+                            >
+                              <button className="p-1 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded transition-colors">
+                                <Eye size={14} />
+                              </button>
+                            </Link>
+                            <Link
+                              to={`/admin-panel/contracting-types/edit/${contractingType.id}`}
+                            >
+                              <button className="p-1 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded transition-colors">
+                                <Edit size={14} />
+                              </button>
+                            </Link>
+                            <button
+                              className="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded transition-colors"
+                              onClick={() => handleDeleteClick(contractingType)}
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
-          ) : (
-            <div className="text-center py-12">
-              <p
-                className={`text-lg ${
-                  isDark ? "text-gray-300" : "text-gray-500"
-                }`}
-              >
-                {t("contractingTypes.noData")}
-              </p>
-            </div>
-          )}
-
-          {/* Pagination */}
-          <PaginationComponent />
+          </div>
         </div>
-
-        {/* Delete Modal */}
-        <DeleteContractingTypeModal
-          isOpen={modalOpen}
-          onClose={() => setModalOpen(false)}
-          contractingTypeId={toDelete.id}
-          contractingTypeName={toDelete.name}
-        />
       </div>
     </div>
   );
