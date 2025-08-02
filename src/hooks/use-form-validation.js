@@ -1,188 +1,189 @@
-import { useTranslation } from "react-i18next";
+import React from "react";
 import * as Yup from "yup";
+import { useTranslation } from "react-i18next";
 
 function UseFormValidation() {
   const { t } = useTranslation();
 
-  const VALIDATION_SCHEMA_LOGIN = Yup.object({
+  // Login Validation Schema
+  const VALIDATION_SCHEMA_LOGIN = Yup.object().shape({
     email: Yup.string()
-      .email(t("validationLogin.email.invalid"))
-      .required(t("validationLogin.email.required")),
+      .email(t("validation.invalidEmail"))
+      .required(t("validation.emailRequired")),
     password: Yup.string()
-      .min(6, t("validationLogin.password.minLength"))
-      .required(t("validationLogin.password.required")),
+      .min(6, t("validation.passwordMinLength"))
+      .required(t("validation.passwordRequired")),
+    rememberMe: Yup.boolean(),
   });
-  const VALIDATION_SCHEMA_RESET_PASSWORD = Yup.object({
-    token: Yup.string()
-      .matches(/^\d{6}$/, t("code_invalid"))
-      .required(t("code_required")),
+
+  // Reset Password Validation Schema
+  const VALIDATION_SCHEMA_RESET_PASSWORD = Yup.object().shape({
+    token: Yup.string().required(t("validation.tokenRequired")),
     newPassword: Yup.string()
-      .min(8, t("password_min"))
-      .matches(/(?=.*[a-z])/, t("password_lower"))
-      .matches(/(?=.*[A-Z])/, t("password_upper"))
-      .matches(/(?=.*\d)/, t("password_number"))
-      .required(t("password_required")),
+      .min(6, t("validation.passwordMinLength"))
+      .required(t("validation.newPasswordRequired")),
     confirmNewPassword: Yup.string()
-      .oneOf([Yup.ref("newPassword"), null], t("password_match"))
-      .required(t("confirm_required")),
+      .oneOf([Yup.ref("newPassword"), null], t("validation.passwordsMatch"))
+      .required(t("validation.confirmPasswordRequired")),
   });
-  const VALIDATION_SCHEMA_ADD_CATEGORY = Yup.object({
+
+  // Category Add Validation Schema
+  const VALIDATION_SCHEMA_ADD_CATEGORY = Yup.object().shape({
     nameArabic: Yup.string()
-      .required(t("categoryForm.validation.nameArabic.required"))
-      .min(2, t("categoryForm.validation.nameArabic.min"))
-      .max(100, t("categoryForm.validation.nameArabic.max")),
-
+      .required(t("category.form.validation.nameArabicRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(100, t("validation.maxLength", { count: 100 }))
+      .matches(
+        /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$/,
+        t("validation.arabicOnly")
+      ),
     nameEnglish: Yup.string()
-      .required(t("categoryForm.validation.nameEnglish.required"))
-      .min(2, t("categoryForm.validation.nameEnglish.min"))
-      .max(100, t("categoryForm.validation.nameEnglish.max")),
-
+      .required(t("category.form.validation.nameEnglishRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(100, t("validation.maxLength", { count: 100 }))
+      .matches(/^[a-zA-Z\s]+$/, t("validation.englishOnly")),
     code: Yup.string()
-      .required(t("categoryForm.validation.code.required"))
-      .matches(/^[A-Z0-9_]+$/, t("categoryForm.validation.code.pattern"))
-      .min(2, t("categoryForm.validation.code.min"))
-      .max(50, t("categoryForm.validation.code.max")),
-
+      .required(t("category.form.validation.codeRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(10, t("validation.maxLength", { count: 10 }))
+      .matches(/^[A-Z0-9_]+$/, t("category.form.validation.codeFormat")),
     description: Yup.string().max(
       500,
-      t("categoryForm.validation.description.max")
+      t("validation.maxLength", { count: 500 })
     ),
-
-    isActive: Yup.boolean(),
-  });
-  const VALIDATION_SCHEMA_EDIT_CATEGORY = Yup.object({
-    nameArabic: Yup.string()
-      .required(t("categoryForm.validation.nameArabic.required"))
-      .min(2, t("categoryForm.validation.nameArabic.min"))
-      .max(100, t("categoryForm.validation.nameArabic.max")),
-
-    nameEnglish: Yup.string()
-      .required(t("categoryForm.validation.nameEnglish.required"))
-      .min(2, t("categoryForm.validation.nameEnglish.min"))
-      .max(100, t("categoryForm.validation.nameEnglish.max")),
-
-    code: Yup.string()
-      .required(t("categoryForm.validation.code.required"))
-      .matches(/^[A-Z0-9_]+$/, t("categoryForm.validation.code.pattern"))
-      .min(2, t("categoryForm.validation.code.min"))
-      .max(50, t("categoryForm.validation.code.max")),
-
-    description: Yup.string().max(
-      500,
-      t("categoryForm.validation.description.max")
-    ),
-
     isActive: Yup.boolean(),
   });
 
-  const VALIDATION_SCHEMA_ADD_DEPARTMENT = Yup.object({
+  // Category Edit Validation Schema
+  const VALIDATION_SCHEMA_EDIT_CATEGORY = Yup.object().shape({
     nameArabic: Yup.string()
-      .required(t("validation.required"))
+      .required(t("category.form.validation.nameArabicRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(100, t("validation.maxLength", { count: 100 }))
-      .matches(/^[\u0600-\u06FF\s\u0660-\u0669]+$/, t("validation.arabicOnly")),
-
+      .matches(
+        /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$/,
+        t("validation.arabicOnly")
+      ),
     nameEnglish: Yup.string()
-      .required(t("validation.required"))
+      .required(t("category.form.validation.nameEnglishRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(100, t("validation.maxLength", { count: 100 }))
-      .matches(/^[A-Za-z\s]+$/, t("validation.englishOnly")),
-
-    categoryId: Yup.number()
-      .required(t("validation.required"))
-      .positive(t("validation.selectCategory"))
-      .integer(t("validation.invalidCategory")),
-
-    location: Yup.string()
-      .required(t("validation.required"))
-
-      .max(200, t("validation.maxLength", { count: 200 }))
-      .nullable(),
-
-    isActive: Yup.boolean().required(t("validation.required")),
+      .matches(/^[a-zA-Z\s]+$/, t("validation.englishOnly")),
+    code: Yup.string()
+      .required(t("category.form.validation.codeRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(10, t("validation.maxLength", { count: 10 }))
+      .matches(/^[A-Z0-9_]+$/, t("category.form.validation.codeFormat")),
+    description: Yup.string().max(
+      500,
+      t("validation.maxLength", { count: 500 })
+    ),
+    isActive: Yup.boolean(),
   });
-  const VALIDATION_SCHEMA_EDIT_DEPARTMENT = Yup.object({
+
+  // Department Add Validation Schema
+  const VALIDATION_SCHEMA_ADD_DEPARTMENT = Yup.object().shape({
     nameArabic: Yup.string()
-      .required(t("validation.required"))
+      .required(t("department.form.validation.nameArabicRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(100, t("validation.maxLength", { count: 100 }))
-      .matches(/^[\u0600-\u06FF\s\u0660-\u0669]+$/, t("validation.arabicOnly")),
-
+      .matches(
+        /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$/,
+        t("validation.arabicOnly")
+      ),
     nameEnglish: Yup.string()
-      .required(t("validation.required"))
+      .required(t("department.form.validation.nameEnglishRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(100, t("validation.maxLength", { count: 100 }))
-      .matches(/^[A-Za-z\s]+$/, t("validation.englishOnly")),
-
+      .matches(/^[a-zA-Z\s]+$/, t("validation.englishOnly")),
     categoryId: Yup.number()
-      .required(t("validation.required"))
-      .positive(t("validation.selectCategory"))
-      .integer(t("validation.invalidCategory")),
-
+      .required(t("department.form.validation.categoryRequired"))
+      .positive(t("validation.positiveNumber"))
+      .integer(t("validation.integerOnly")),
     location: Yup.string()
-      .required(t("validation.required"))
-
-      .max(200, t("validation.maxLength", { count: 200 }))
-      .nullable(),
-
-    isActive: Yup.boolean().required(t("validation.required")),
+      .required(t("department.form.validation.locationRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(200, t("validation.maxLength", { count: 200 })),
+    description: Yup.string().max(
+      500,
+      t("validation.maxLength", { count: 500 })
+    ),
+    isActive: Yup.boolean(),
   });
 
-  const deleteDepartmentValidationSchema = Yup.object({
-    reason: Yup.string()
-      .required(t("validation.required"))
-      .min(10, t("validation.minLength", { count: 10 }))
-      .max(500, t("validation.maxLength", { count: 500 })),
-  });
-
-  const departmentFiltersValidationSchema = Yup.object({
-    search: Yup.string()
+  // Department Edit Validation Schema
+  const VALIDATION_SCHEMA_EDIT_DEPARTMENT = Yup.object().shape({
+    nameArabic: Yup.string()
+      .required(t("department.form.validation.nameArabicRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
       .max(100, t("validation.maxLength", { count: 100 }))
-      .nullable(),
-
+      .matches(
+        /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$/,
+        t("validation.arabicOnly")
+      ),
+    nameEnglish: Yup.string()
+      .required(t("department.form.validation.nameEnglishRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(100, t("validation.maxLength", { count: 100 }))
+      .matches(/^[a-zA-Z\s]+$/, t("validation.englishOnly")),
     categoryId: Yup.number()
-      .positive(t("validation.selectCategory"))
-      .integer(t("validation.invalidCategory"))
-      .nullable(),
+      .required(t("department.form.validation.categoryRequired"))
+      .positive(t("validation.positiveNumber"))
+      .integer(t("validation.integerOnly")),
+    location: Yup.string()
+      .required(t("department.form.validation.locationRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(200, t("validation.maxLength", { count: 200 })),
+    description: Yup.string().max(
+      500,
+      t("validation.maxLength", { count: 500 })
+    ),
+    isActive: Yup.boolean(),
+  });
 
-    isActive: Yup.boolean().nullable(),
-
-    createdFrom: Yup.date()
+  // Department Filters Validation Schema
+  const departmentFiltersValidationSchema = Yup.object().shape({
+    search: Yup.string().max(100, t("validation.maxLength", { count: 100 })),
+    categoryId: Yup.number()
       .nullable()
-      .max(new Date(), t("validation.dateNotFuture")),
-
+      .positive(t("validation.positiveNumber"))
+      .integer(t("validation.integerOnly")),
+    isActive: Yup.boolean().nullable(),
+    createdFrom: Yup.date().nullable(),
     createdTo: Yup.date()
       .nullable()
-      .max(new Date(), t("validation.dateNotFuture"))
       .when("createdFrom", (createdFrom, schema) => {
-        return createdFrom
-          ? schema.min(createdFrom, t("validation.endDateAfterStart"))
-          : schema;
+        if (createdFrom) {
+          return schema.min(createdFrom, t("validation.endDateAfterStart"));
+        }
+        return schema;
       }),
-
-    page: Yup.number()
-      .positive(t("validation.positiveNumber"))
-      .integer(t("validation.integerOnly"))
-      .min(1, t("validation.minValue", { count: 1 })),
-
-    pageSize: Yup.number()
-      .positive(t("validation.positiveNumber"))
-      .integer(t("validation.integerOnly"))
-      .min(1, t("validation.minValue", { count: 1 }))
-      .max(100, t("validation.maxValue", { count: 100 })),
-
-    orderBy: Yup.string().oneOf(
-      ["nameArabic", "nameEnglish", "createdAt", "updatedAt", "categoryName"],
-      t("validation.invalidOrderBy")
-    ),
-
-    orderDesc: Yup.boolean(),
-
     includeSubDepartments: Yup.boolean(),
     includeStatistics: Yup.boolean(),
     includeCategory: Yup.boolean(),
+    orderBy: Yup.string().oneOf(
+      ["nameArabic", "nameEnglish", "createdAt", "location"],
+      t("validation.invalidOrderBy")
+    ),
+    orderDesc: Yup.boolean(),
+    page: Yup.number()
+      .min(1, t("validation.minPage"))
+      .integer(t("validation.integerOnly")),
+    pageSize: Yup.number()
+      .min(1, t("validation.minPageSize"))
+      .max(100, t("validation.maxPageSize"))
+      .integer(t("validation.integerOnly")),
   });
 
+  // Delete Department Validation Schema
+  const deleteDepartmentValidationSchema = Yup.object().shape({
+    reason: Yup.string()
+      .required(t("department.delete.reasonRequired"))
+      .min(3, t("validation.minLength", { count: 3 }))
+      .max(500, t("validation.maxLength", { count: 500 })),
+  });
+
+  // SubDepartment Add Validation Schema
   const VALIDATION_SCHEMA_ADD_SUBDEPARTMENT = Yup.object().shape({
     nameArabic: Yup.string()
       .required(t("subDepartment.form.validation.nameArabicRequired"))
@@ -238,17 +239,80 @@ function UseFormValidation() {
     isActive: Yup.boolean(),
   });
 
+  // ContractingType Add Validation Schema
+  const VALIDATION_SCHEMA_ADD_CONTRACTINGTYPE = Yup.object().shape({
+    nameArabic: Yup.string()
+      .required(t("contractingTypes.form.validation.nameArabicRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(255, t("validation.maxLength", { count: 255 }))
+      .matches(
+        /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$/,
+        t("validation.arabicOnly")
+      ),
+    nameEnglish: Yup.string()
+      .required(t("contractingTypes.form.validation.nameEnglishRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(255, t("validation.maxLength", { count: 255 }))
+      .matches(/^[a-zA-Z\s]+$/, t("validation.englishOnly")),
+    allowOvertimeHours: Yup.boolean(),
+    maxHoursPerWeek: Yup.number()
+      .min(1, t("contractingTypes.form.validation.maxHoursMin"))
+      .max(168, t("contractingTypes.form.validation.maxHoursMax"))
+      .integer(t("validation.integerOnly"))
+      .required(t("contractingTypes.form.validation.maxHoursRequired")),
+    isActive: Yup.boolean(),
+  });
+
+  // ContractingType Edit Validation Schema
+  const VALIDATION_SCHEMA_EDIT_CONTRACTINGTYPE = Yup.object().shape({
+    id: Yup.number()
+      .required(t("validation.required"))
+      .positive(t("validation.positiveNumber"))
+      .integer(t("validation.integerOnly")),
+    nameArabic: Yup.string()
+      .required(t("contractingTypes.form.validation.nameArabicRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(255, t("validation.maxLength", { count: 255 }))
+      .matches(
+        /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$/,
+        t("validation.arabicOnly")
+      ),
+    nameEnglish: Yup.string()
+      .required(t("contractingTypes.form.validation.nameEnglishRequired"))
+      .min(2, t("validation.minLength", { count: 2 }))
+      .max(255, t("validation.maxLength", { count: 255 }))
+      .matches(/^[a-zA-Z\s]+$/, t("validation.englishOnly")),
+    allowOvertimeHours: Yup.boolean().required(),
+    maxHoursPerWeek: Yup.number()
+      .min(1, t("contractingTypes.form.validation.maxHoursMin"))
+      .max(168, t("contractingTypes.form.validation.maxHoursMax"))
+      .integer(t("validation.integerOnly"))
+      .required(t("contractingTypes.form.validation.maxHoursRequired")),
+    isActive: Yup.boolean().required(),
+  });
+
+  // Delete ContractingType Validation Schema
+  const deleteContractingTypeValidationSchema = Yup.object().shape({
+    reason: Yup.string()
+      .required(t("contractingTypes.delete.reasonRequired"))
+      .min(3, t("validation.minLength", { count: 3 }))
+      .max(500, t("validation.maxLength", { count: 500 })),
+  });
+
   return {
     VALIDATION_SCHEMA_LOGIN,
     VALIDATION_SCHEMA_RESET_PASSWORD,
-    VALIDATION_SCHEMA_ADD_DEPARTMENT,
-    VALIDATION_SCHEMA_EDIT_CATEGORY,
     VALIDATION_SCHEMA_ADD_CATEGORY,
-    departmentFiltersValidationSchema,
+    VALIDATION_SCHEMA_EDIT_CATEGORY,
+    VALIDATION_SCHEMA_ADD_DEPARTMENT,
     VALIDATION_SCHEMA_EDIT_DEPARTMENT,
+    departmentFiltersValidationSchema,
     deleteDepartmentValidationSchema,
     VALIDATION_SCHEMA_ADD_SUBDEPARTMENT,
     VALIDATION_SCHEMA_EDIT_SUBDEPARTMENT,
+    VALIDATION_SCHEMA_ADD_CONTRACTINGTYPE,
+    VALIDATION_SCHEMA_EDIT_CONTRACTINGTYPE,
+    deleteContractingTypeValidationSchema,
   };
 }
 

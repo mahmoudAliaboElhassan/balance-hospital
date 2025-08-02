@@ -22,6 +22,10 @@ import CreateSubDepartment from "../pages/adminPanel/subDepartment/createSubDepa
 import EditSubDepartment from "../pages/adminPanel/subDepartment/editSubDepartment";
 import SpecificSubDepartment from "../pages/adminPanel/subDepartment/specificSubDepartment";
 import PendingDoctorRequests from "../pages/adminPanel/category/pendingDoctors";
+import ContractingTypes from "../pages/adminPanel/contractingTypes";
+import CreateContractingType from "../pages/adminPanel/contractingTypes/createContractingType";
+import EditContractingType from "../pages/adminPanel/contractingTypes/editContractingType";
+import SpecificContractingType from "../pages/adminPanel/contractingTypes/specificContractingType";
 
 const router = createBrowserRouter([
   {
@@ -150,26 +154,34 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "sub-departments/create",
+            path: "contracting-types",
             element: (
               <Suspense fallback={<Loader />}>
-                <CreateSubDepartment />
+                <ContractingTypes />
               </Suspense>
             ),
           },
           {
-            path: "sub-departments/edit/:id",
+            path: "contracting-types/create",
             element: (
               <Suspense fallback={<Loader />}>
-                <EditSubDepartment />
+                <CreateContractingType />
               </Suspense>
             ),
           },
           {
-            path: "sub-departments/:id",
+            path: "contracting-types/edit/:id",
             element: (
               <Suspense fallback={<Loader />}>
-                <SpecificSubDepartment />
+                <EditContractingType />
+              </Suspense>
+            ),
+          },
+          {
+            path: "contracting-types/:id",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <SpecificContractingType />
               </Suspense>
             ),
           },

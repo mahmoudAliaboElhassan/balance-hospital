@@ -197,12 +197,65 @@ function UseInitialStates() {
     deleteMessage: "",
   };
 
+  const initialStateContractingTypes = {
+    // ContractingType filters
+    filters: {
+      search: "",
+      isActive: null,
+      createdFrom: null,
+      createdTo: null,
+      includeStatistics: true,
+      orderBy: "nameArabic",
+      orderDesc: true,
+      page: 1,
+      pageSize: 10,
+    },
+
+    // ContractingType data
+    contractingTypes: [],
+    activeContractingTypes: [],
+    contractingTypesForSignup: [],
+    pagination: null,
+    error: null,
+    message: "",
+    timestamp: null,
+
+    // Loading states
+    loadingGetContractingTypes: false,
+    loadingGetActiveContractingTypes: false,
+    loadingGetContractingTypesForSignup: false,
+    loadingGetSingleContractingType: false,
+    loadingCreateContractingType: false,
+    loadingUpdateContractingType: false,
+    loadingDeleteContractingType: false,
+
+    // Single contracting type
+    selectedContractingType: null,
+    singleContractingTypeError: null,
+
+    // Create contracting type
+    createSuccess: false,
+    createError: null,
+    createMessage: "",
+
+    // Update contracting type
+    updateSuccess: false,
+    updateError: null,
+    updateMessage: "",
+
+    // Delete contracting type
+    deleteSuccess: false,
+    deleteError: null,
+    deleteMessage: "",
+  };
+
   return {
     initialStateMode,
     initialStateAuth,
     initialStateCategories,
     initialStateDepartments,
     initialStateSubDepartments,
+    initialStateContractingTypes,
   };
 }
 

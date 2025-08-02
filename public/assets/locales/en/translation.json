@@ -744,5 +744,123 @@
     "warning": "Warning",
     "info": "Information",
     "goBack": "Go Back"
+  },
+
+  "contractingTypes": {
+    "title": "Contracting Types",
+    "description": "Manage employment contract types and their configurations",
+    "addNew": "Add New Contracting Type",
+    "backToList": "Back to Contracting Types",
+    "noData": "No contracting types found",
+    "loading": "Loading contracting types...",
+    "notFound": "Contracting type not found",
+    "fetchError": "Error fetching contracting types",
+    "hoursPerWeek": "hours/week",
+    "search": {
+      "placeholder": "Search contracting types by name..."
+    },
+    "filters": {
+      "title": "Filters",
+      "status": "Status",
+      "allStatuses": "All Statuses",
+      "orderBy": "Sort By",
+      "orderDirection": "Sort Direction",
+      "ascending": "Ascending",
+      "descending": "Descending",
+      "sortBy": {
+        "nameArabic": "Arabic Name",
+        "nameEnglish": "English Name",
+        "createdAt": "Creation Date"
+      }
+    },
+    "table": {
+      "name": "Name",
+      "nameArabic": "Arabic Name",
+      "nameEnglish": "English Name",
+      "overtime": "Overtime",
+      "maxHours": "Max Hours/Week",
+      "users": "Users",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "overtime": {
+      "allowed": "Allowed",
+      "notAllowed": "Not Allowed"
+    },
+    "actions": {
+      "view": "View Details",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "form": {
+      "nameArabic": "Arabic Name",
+      "nameArabicPlaceholder": "Enter Arabic name",
+      "nameEnglish": "English Name",
+      "nameEnglishPlaceholder": "Enter English name",
+      "maxHoursPerWeek": "Maximum Hours Per Week",
+      "maxHoursPlaceholder": "Enter maximum hours per week",
+      "maxHoursHint": "Maximum number of hours an employee can work per week (1-168)",
+      "allowOvertimeHours": "Allow Overtime Hours",
+      "allowOvertimeHint": "Allow employees to work overtime hours beyond regular hours",
+      "isActive": "Active Status",
+      "isActiveHint": "Whether this contracting type is available for selection",
+      "create": {
+        "title": "Create New Contracting Type",
+        "description": "Add a new employment contract type to the system",
+        "submit": "Create Contracting Type"
+      },
+      "edit": {
+        "title": "Edit Contracting Type",
+        "description": "Update contracting type information",
+        "submit": "Update Contracting Type"
+      },
+      "validation": {
+        "nameArabicRequired": "Arabic name is required",
+        "nameEnglishRequired": "English name is required",
+        "maxHoursRequired": "Maximum hours per week is required",
+        "maxHoursMin": "Minimum hours per week is 1",
+        "maxHoursMax": "Maximum hours per week cannot exceed 168 (24 hours × 7 days)"
+      }
+    },
+    "delete": {
+      "title": "Delete Contracting Type",
+      "confirmMessage": "Are you sure you want to delete this contracting type?",
+      "warning": "This action cannot be undone. Users assigned to this contracting type may be affected.",
+      "reason": "Reason for deletion",
+      "reasonPlaceholder": "Enter a reason for deleting this contracting type...",
+      "reasonRequired": "Please provide a reason for deletion",
+      "reasonTooShort": "Reason must be at least 3 characters long",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    },
+    "details": {
+      "basicInfo": "Basic Information",
+      "statistics": "Statistics",
+      "auditInfo": "Audit Information",
+      "associatedUsers": "Associated Users",
+      "code": "Contract Code",
+      "createdAt": "Created At",
+      "createdBy": "Created By",
+      "updatedAt": "Updated At",
+      "updatedBy": "Updated By",
+      "andMoreUsers": "and {{count}} more users"
+    },
+    "success": {
+      "created": "Contracting type created successfully!",
+      "updated": "Contracting type updated successfully!",
+      "deleted": "Contracting type \"{{name}}\" deleted successfully!"
+    },
+    "error": {
+      "title": "Error",
+      "createFailed": "Failed to create contracting type",
+      "updateFailed": "Failed to update contracting type",
+      "deleteFailed": "Failed to delete contracting type",
+      "loadFailed": "Failed to load contracting type data",
+      "dependencyError": "Cannot delete this contracting type as it has associated users"
+    }
   }
 }

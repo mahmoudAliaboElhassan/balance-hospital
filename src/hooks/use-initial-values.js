@@ -6,14 +6,17 @@ function UseInitialValues() {
     password: "",
     rememberMe: false,
   };
+
   const INITIAL_VALUES_FORGET_PASSWORD = {
     inputValue: "",
   };
+
   const INITIAL_VALUES_RESET_PASSWORD = {
     token: "",
     newPassword: "",
     confirmNewPassword: "",
   };
+
   const INITIAL_VALUES_ADD_CATEGORY = {
     nameArabic: "",
     nameEnglish: "",
@@ -22,8 +25,7 @@ function UseInitialValues() {
     isActive: true,
   };
 
-  // src/constants/initialValues/departmentInitialValues.js
-
+  // Department Form Initial Values
   const INITIAL_VALUES_ADD_DEPARTMENT = {
     nameArabic: "",
     nameEnglish: "",
@@ -74,6 +76,37 @@ function UseInitialValues() {
     location: "",
     isActive: true,
   };
+
+  // ContractingType Form Initial Values
+  const INITIAL_VALUES_ADD_CONTRACTINGTYPE = {
+    nameArabic: "",
+    nameEnglish: "",
+    allowOvertimeHours: false,
+    maxHoursPerWeek: 168,
+    isActive: true,
+  };
+
+  const INITIAL_VALUES_EDIT_CONTRACTINGTYPE = {
+    id: "",
+    nameArabic: "",
+    nameEnglish: "",
+    allowOvertimeHours: false,
+    maxHoursPerWeek: 168,
+    isActive: true,
+  };
+
+  const INITIAL_VALUES_CONTRACTINGTYPE_FILTERS = {
+    search: "",
+    isActive: null,
+    createdFrom: null,
+    createdTo: null,
+    includeStatistics: true,
+    orderBy: "nameArabic",
+    orderDesc: true,
+    page: 1,
+    pageSize: 10,
+  };
+
   return {
     INITIAL_VALUES_LOGIN,
     INITIAL_VALUES_FORGET_PASSWORD,
@@ -84,6 +117,9 @@ function UseInitialValues() {
     INITIAL_VALUES_DEPARTMENT_FILTERS,
     INITIAL_VALUES_ADD_SUBDEPARTMENT,
     INITIAL_VALUES_EDIT_SUBDEPARTMENT,
+    INITIAL_VALUES_ADD_CONTRACTINGTYPE,
+    INITIAL_VALUES_EDIT_CONTRACTINGTYPE,
+    INITIAL_VALUES_CONTRACTINGTYPE_FILTERS,
   };
 }
 

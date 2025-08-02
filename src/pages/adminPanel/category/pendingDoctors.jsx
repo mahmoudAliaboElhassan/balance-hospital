@@ -31,7 +31,7 @@ import {
   clearCategoryPendingRequestsError,
   clearCategoryPendingRequests,
   setSelectedCategoryId,
-  approveDoctorRequest, // Import the approve action
+  approveDoctorRequest,
   clearApprovalSuccess,
   clearApprovalError,
 } from "../../../state/slices/category";

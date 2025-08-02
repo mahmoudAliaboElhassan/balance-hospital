@@ -4,6 +4,7 @@ import authSlice from "./slices/auth";
 import categorySlice from "./slices/category";
 import departmentSlice from "./slices/department";
 import subDepartmentSlice from "./slices/subDepartment";
+import contractingTypeSlice from "./slices/contractingType";
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     category: categorySlice,
     department: departmentSlice,
     subDepartment: subDepartmentSlice,
+    contractingType: contractingTypeSlice,
   },
 });

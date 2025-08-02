@@ -47,7 +47,7 @@ function UseAdminPanel() {
       id: 7,
       name: t("adminPanel.contractTypes"),
       icon: "📋",
-      path: "/admin-panel/contract-types",
+      path: "/admin-panel/contracting-types",
     },
     {
       id: 8,
