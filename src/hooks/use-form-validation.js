@@ -8,23 +8,23 @@ function UseFormValidation() {
   // Login Validation Schema
   const VALIDATION_SCHEMA_LOGIN = Yup.object().shape({
     email: Yup.string()
-      .email(t("validation.invalidEmail"))
-      .required(t("validation.emailRequired")),
+      .email(t("validationAuth.email.invalid"))
+      .required(t("validationAuth.email.required")),
     password: Yup.string()
-      .min(6, t("validation.passwordMinLength"))
-      .required(t("validation.passwordRequired")),
+      .min(8, t("validationAuth.password.minLength"))
+      .required(t("validationAuth.password.required")),
     rememberMe: Yup.boolean(),
   });
 
   // Reset Password Validation Schema
   const VALIDATION_SCHEMA_RESET_PASSWORD = Yup.object().shape({
-    token: Yup.string().required(t("validation.tokenRequired")),
+    token: Yup.string().required(t("validationAuth.tokenRequired")),
     newPassword: Yup.string()
-      .min(6, t("validation.passwordMinLength"))
-      .required(t("validation.newPasswordRequired")),
+      .min(8, t("validationAuth.minLength"))
+      .required(t("validationAuth.password.required")),
     confirmNewPassword: Yup.string()
-      .oneOf([Yup.ref("newPassword"), null], t("validation.passwordsMatch"))
-      .required(t("validation.confirmPasswordRequired")),
+      .oneOf([Yup.ref("newPassword"), null], t("validationAuth.password.match"))
+      .required(t("validationAuth.password.confirmRequired")),
   });
 
   // Category Add Validation Schema

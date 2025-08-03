@@ -150,8 +150,9 @@ const ForgetPassword = () => {
             pauseOnHover: true,
             draggable: true,
           });
+          localStorage.setItem("resetMethod", resetMethod);
           // 2) navigate after toast (you can also delay if you like)
-          localStorage.setItem("email", values.inputValue);
+          localStorage.setItem("valueReset", values.inputValue);
           navigate("/reset-password");
         })
         .catch((error) => {

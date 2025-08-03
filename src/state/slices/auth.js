@@ -1,7 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import UseInitialStates from "../../hooks/use-initial-state";
-import { forgetPassword, logIn, resetPassword } from "../act/actAuth";
+import {
+  forgetPassword,
+  logIn,
+  resendForgetPasswordCode,
+  resetPassword,
+} from "../act/actAuth";
 const { initialStateAuth } = UseInitialStates();
 
 export const authSlice = createSlice({
@@ -11,6 +16,7 @@ export const authSlice = createSlice({
     logOut: (state) => {
       localStorage.removeItem("token");
       state.token = "";
+      state.role = "";
     },
   },
   extraReducers: (builder) => {
@@ -46,6 +52,16 @@ export const authSlice = createSlice({
         console.log("action.payload", action.payload);
       })
       .addCase(resetPassword.rejected, (state, action) => {
+        state.loadingAuth = false;
+      })
+      .addCase(resendForgetPasswordCode.pending, (state, action) => {
+        state.loadingAuth = true;
+      })
+      .addCase(resendForgetPasswordCode.fulfilled, (state, action) => {
+        state.loadingAuth = false;
+        console.log("action.payload", action.payload);
+      })
+      .addCase(resendForgetPasswordCode.rejected, (state, action) => {
         state.loadingAuth = false;
       });
   },

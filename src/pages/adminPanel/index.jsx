@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 import DrawerComponent from "../../components/drawer";
 import UseDirection from "../../hooks/use-direction";
 import { useTranslation } from "react-i18next";
+import { withGuard } from "../../utils/withGuard";
 
 function AdminPanel() {
   const [isDrawerExpanded, setIsDrawerExpanded] = useState(false);
@@ -73,4 +74,4 @@ function AdminPanel() {
   );
 }
 
-export default AdminPanel;
+export default withGuard(AdminPanel);

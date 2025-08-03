@@ -2,32 +2,29 @@ import { createSlice } from "@reduxjs/toolkit";
 import i18next from "i18next";
 import {
   getShiftHoursTypes,
-  getActiveShiftHoursTypes,
   getShiftHoursTypeById,
-  getShiftHoursTypesByPeriod,
-  getPagedShiftHoursTypes,
   createShiftHoursType,
   updateShiftHoursType,
   deleteShiftHoursType,
 } from "../act/actShiftHours";
 import UseInitialStates from "../../hooks/use-initial-state";
 
-// Helper functions for filtering and pagination
-const filterData = (data, search) => {
+// Helper function for client-side search filtering
+const filterDataBySearch = (data, search) => {
   if (!search) return data;
   const searchTerm = search.toLowerCase();
   return data.filter(
     (item) =>
       item.nameArabic?.toLowerCase().includes(searchTerm) ||
       item.nameEnglish?.toLowerCase().includes(searchTerm) ||
-      item.code?.toLowerCase().includes(searchTerm) ||
-      item.period?.toLowerCase().includes(searchTerm)
+      item.code?.toLowerCase().includes(searchTerm)
   );
 };
 
-const calculatePagination = (data, page, pageSize) => {
-  const totalItems = data.length;
-  const totalPages = Math.ceil(totalItems / pageSize);
+// Helper function for client-side pagination
+const paginateData = (data, page, pageSize) => {
+  const totalCount = data.length;
+  const totalPages = Math.ceil(totalCount / pageSize);
   const startIndex = (page - 1) * pageSize;
   const endIndex = startIndex + pageSize;
   const paginatedData = data.slice(startIndex, endIndex);
@@ -37,166 +34,135 @@ const calculatePagination = (data, page, pageSize) => {
     pagination: {
       page,
       pageSize,
-      totalItems,
+      totalCount,
       totalPages,
       hasNextPage: page < totalPages,
-      hasPrevPage: page > 1,
+      hasPreviousPage: page > 1,
     },
   };
 };
 
 const { initialStateShiftHoursTypes } = UseInitialStates();
 
+// Enhanced initial state
+const initialState = {
+  ...initialStateShiftHoursTypes,
+  // All data from server (filtered by server-side filters)
+  allShiftHoursTypes: [],
+  // Currently displayed data (after client-side search and pagination)
+  shiftHoursTypes: [],
+  // Loading states
+  loadingGetShiftHoursTypes: false,
+  loadingGetSingleShiftHoursType: false,
+  loadingCreateShiftHoursType: false,
+  loadingUpdateShiftHoursType: false,
+  loadingDeleteShiftHoursType: false,
+  // Error states
+  error: null,
+  singleShiftHoursTypeError: null,
+  createError: null,
+  updateError: null,
+  deleteError: null,
+  // Success states
+  createSuccess: false,
+  updateSuccess: false,
+  deleteSuccess: false,
+  // Messages
+  message: "",
+  createMessage: "",
+  updateMessage: "",
+  deleteMessage: "",
+  // Single item
+  selectedShiftHoursType: null,
+  // Filters
+  filters: {
+    search: "",
+    statusFilter: "all", // all, active, inactive
+    period: "", // empty string means all periods
+    minHours: null,
+    maxHours: null,
+    createdFromDate: null,
+    createdToDate: null,
+    orderBy: "nameArabic",
+    orderDesc: true,
+    page: 1,
+    pageSize: 10,
+  },
+  // Pagination info
+  pagination: {
+    page: 1,
+    pageSize: 10,
+    totalCount: 0,
+    totalPages: 1,
+    hasNextPage: false,
+    hasPreviousPage: false,
+  },
+  // Timestamp
+  timestamp: null,
+};
+
 export const shiftHoursTypeSlice = createSlice({
   name: "shiftHoursTypeSlice",
-  initialState: initialStateShiftHoursTypes,
+  initialState,
   reducers: {
-    // Pagination actions
-    setCurrentPage: (state, action) => {
-      state.filters.page = action.payload;
-      state.pagination.page = action.payload;
-
-      // Re-calculate pagination with current data
-      const currentData =
-        state.filters.statusFilter === "active"
-          ? state.allActiveShiftHoursTypes
-          : state.allShiftHoursTypes;
-
-      const filteredData = filterData(currentData, state.filters.search);
-      const result = calculatePagination(
-        filteredData,
-        action.payload,
-        state.filters.pageSize
-      );
-
-      if (state.filters.statusFilter === "active") {
-        state.activeShiftHoursTypes = result.data;
-      } else {
-        state.shiftHoursTypes = result.data;
-      }
-      state.pagination = result.pagination;
-    },
-
-    setPageSize: (state, action) => {
-      state.filters.pageSize = action.payload;
-      state.filters.page = 1; // Reset to first page when changing page size
-      state.pagination.pageSize = action.payload;
-      state.pagination.page = 1;
-
-      // Re-calculate pagination with current data
-      const currentData =
-        state.filters.statusFilter === "active"
-          ? state.allActiveShiftHoursTypes
-          : state.allShiftHoursTypes;
-
-      const filteredData = filterData(currentData, state.filters.search);
-      const result = calculatePagination(filteredData, 1, action.payload);
-
-      if (state.filters.statusFilter === "active") {
-        state.activeShiftHoursTypes = result.data;
-      } else {
-        state.shiftHoursTypes = result.data;
-      }
-      state.pagination = result.pagination;
-    },
-
-    // Search functionality
+    // Search filter (client-side)
     setSearchFilter: (state, action) => {
       state.filters.search = action.payload;
-      state.filters.page = 1; // Reset to first page when searching
-      state.pagination.page = 1;
+      state.filters.page = 1;
 
-      // Re-calculate pagination with filtered data
-      const currentData =
-        state.filters.statusFilter === "active"
-          ? state.allActiveShiftHoursTypes
-          : state.allShiftHoursTypes;
-
-      const filteredData = filterData(currentData, action.payload);
-      const result = calculatePagination(
-        filteredData,
-        1,
-        state.filters.pageSize
-      );
-
-      if (state.filters.statusFilter === "active") {
-        state.activeShiftHoursTypes = result.data;
-      } else {
-        state.shiftHoursTypes = result.data;
-      }
+      // Apply client-side search filtering and pagination
+      const searchFiltered = filterDataBySearch(state.allShiftHoursTypes, action.payload);
+      const result = paginateData(searchFiltered, 1, state.filters.pageSize);
+      
+      state.shiftHoursTypes = result.data;
       state.pagination = result.pagination;
+    },
+
+    // Server-side filters (will trigger API call)
+    setFilters: (state, action) => {
+      state.filters = { ...state.filters, ...action.payload };
     },
 
     // Status filter
     setStatusFilter: (state, action) => {
       state.filters.statusFilter = action.payload;
       state.filters.page = 1;
-      state.pagination.page = 1;
-
-      // Get appropriate data
-      const currentData =
-        action.payload === "active"
-          ? state.allActiveShiftHoursTypes
-          : state.allShiftHoursTypes;
-
-      const filteredData = filterData(currentData, state.filters.search);
-      const result = calculatePagination(
-        filteredData,
-        1,
-        state.filters.pageSize
-      );
-
-      if (action.payload === "active") {
-        state.activeShiftHoursTypes = result.data;
-      } else {
-        state.shiftHoursTypes = result.data;
-      }
-      state.pagination = result.pagination;
     },
 
     // Period filter
     setPeriodFilter: (state, action) => {
       state.filters.period = action.payload;
       state.filters.page = 1;
-      state.pagination.page = 1;
+    },
 
-      // Apply filters
-      const baseData =
-        state.filters.statusFilter === "active"
-          ? state.allActiveShiftHoursTypes
-          : state.allShiftHoursTypes;
+    // Pagination
+    setCurrentPage: (state, action) => {
+      state.filters.page = action.payload;
 
-      let filteredData = filterData(baseData, state.filters.search);
-
-      // Apply period filter if specified
-      if (action.payload && action.payload !== "all") {
-        filteredData = filteredData.filter(
-          (item) => item.period === action.payload
-        );
-      }
-
-      const result = calculatePagination(
-        filteredData,
-        1,
-        state.filters.pageSize
-      );
-
-      if (state.filters.statusFilter === "active") {
-        state.activeShiftHoursTypes = result.data;
-      } else {
-        state.shiftHoursTypes = result.data;
-      }
+      // Apply client-side pagination
+      const searchFiltered = filterDataBySearch(state.allShiftHoursTypes, state.filters.search);
+      const result = paginateData(searchFiltered, action.payload, state.filters.pageSize);
+      
+      state.shiftHoursTypes = result.data;
       state.pagination = result.pagination;
     },
 
-    // Filter management
-    setFilters: (state, action) => {
-      state.filters = { ...state.filters, ...action.payload };
+    setPageSize: (state, action) => {
+      state.filters.pageSize = action.payload;
+      state.filters.page = 1;
+
+      // Apply client-side pagination
+      const searchFiltered = filterDataBySearch(state.allShiftHoursTypes, state.filters.search);
+      const result = paginateData(searchFiltered, 1, action.payload);
+      
+      state.shiftHoursTypes = result.data;
+      state.pagination = result.pagination;
     },
 
+    // Clear filters
     clearFilters: (state) => {
       state.filters = {
-        ...initialStateShiftHoursTypes.filters,
+        ...initialState.filters,
         statusFilter: state.filters.statusFilter, // Keep status filter
       };
     },
@@ -205,11 +171,6 @@ export const shiftHoursTypeSlice = createSlice({
     clearShiftHoursTypes: (state) => {
       state.shiftHoursTypes = [];
       state.allShiftHoursTypes = [];
-    },
-
-    clearActiveShiftHoursTypes: (state) => {
-      state.activeShiftHoursTypes = [];
-      state.allActiveShiftHoursTypes = [];
     },
 
     // Clear errors and states
@@ -267,7 +228,7 @@ export const shiftHoursTypeSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-      // Get Shift Hours Types (All)
+      // Get Shift Hours Types
       .addCase(getShiftHoursTypes.pending, (state) => {
         state.loadingGetShiftHoursTypes = true;
         state.error = null;
@@ -278,70 +239,21 @@ export const shiftHoursTypeSlice = createSlice({
 
         const response = action.payload;
         if (response.success) {
-          // Store all data
+          // Store server-filtered data
           state.allShiftHoursTypes = response.data || [];
           state.message = response.messageAr || response.messageEn;
           state.timestamp = response.timestamp;
 
-          // Apply current filters and pagination
-          const filteredData = filterData(
-            state.allShiftHoursTypes,
-            state.filters.search
-          );
-          const result = calculatePagination(
-            filteredData,
-            state.filters.page,
-            state.filters.pageSize
-          );
-
-          state.shiftHoursTypes = response.data;
+          // Apply client-side search filtering and pagination
+          const searchFiltered = filterDataBySearch(state.allShiftHoursTypes, state.filters.search);
+          const result = paginateData(searchFiltered, state.filters.page, state.filters.pageSize);
+          
+          state.shiftHoursTypes = result.data;
           state.pagination = result.pagination;
         }
       })
       .addCase(getShiftHoursTypes.rejected, (state, action) => {
         state.loadingGetShiftHoursTypes = false;
-        state.error = {
-          message:
-            action.payload?.messageEn ||
-            action.payload?.messageAr ||
-            i18next.t("shiftHoursTypes.fetchError"),
-          errors: action.payload?.errors || [],
-          timestamp: new Date().toISOString(),
-        };
-      })
-
-      // Get Active Shift Hours Types
-      .addCase(getActiveShiftHoursTypes.pending, (state) => {
-        state.loadingGetActiveShiftHoursTypes = true;
-        state.error = null;
-      })
-      .addCase(getActiveShiftHoursTypes.fulfilled, (state, action) => {
-        state.loadingGetActiveShiftHoursTypes = false;
-        state.error = null;
-
-        const response = action.payload;
-        if (response.success) {
-          // Store all active data
-          state.allActiveShiftHoursTypes = response.data || [];
-          state.message = response.messageAr || response.messageEn;
-          state.timestamp = response.timestamp;
-
-          // Apply current filters and pagination
-          const filteredData = filterData(
-            state.allActiveShiftHoursTypes,
-            state.filters.search
-          );
-          const result = calculatePagination(
-            filteredData,
-            state.filters.page,
-            state.filters.pageSize
-          );
-
-          state.activeShiftHoursTypes = response.data;
-        }
-      })
-      .addCase(getActiveShiftHoursTypes.rejected, (state, action) => {
-        state.loadingGetActiveShiftHoursTypes = false;
         state.error = {
           message:
             action.payload?.messageEn ||
@@ -382,62 +294,6 @@ export const shiftHoursTypeSlice = createSlice({
         };
       })
 
-      // Get Shift Hours Types by Period
-      .addCase(getShiftHoursTypesByPeriod.pending, (state) => {
-        state.loadingGetShiftHoursTypesByPeriod = true;
-        state.error = null;
-      })
-      .addCase(getShiftHoursTypesByPeriod.fulfilled, (state, action) => {
-        state.loadingGetShiftHoursTypesByPeriod = false;
-        state.error = null;
-
-        const response = action.payload;
-        if (response.success) {
-          state.shiftHoursTypesByPeriod = response.data || [];
-          state.message = response.messageAr || response.messageEn;
-          state.timestamp = response.timestamp;
-        }
-      })
-      .addCase(getShiftHoursTypesByPeriod.rejected, (state, action) => {
-        state.loadingGetShiftHoursTypesByPeriod = false;
-        state.error = {
-          message:
-            action.payload?.messageEn ||
-            action.payload?.messageAr ||
-            i18next.t("shiftHoursTypes.fetchError"),
-          errors: action.payload?.errors || [],
-          timestamp: new Date().toISOString(),
-        };
-      })
-
-      // Get Paged Shift Hours Types
-      .addCase(getPagedShiftHoursTypes.pending, (state) => {
-        state.loadingGetPagedShiftHoursTypes = true;
-        state.error = null;
-      })
-      .addCase(getPagedShiftHoursTypes.fulfilled, (state, action) => {
-        state.loadingGetPagedShiftHoursTypes = false;
-        state.error = null;
-
-        const response = action.payload;
-        if (response.success) {
-          state.pagedShiftHoursTypes = response.data || {};
-          state.message = response.messageAr || response.messageEn;
-          state.timestamp = response.timestamp;
-        }
-      })
-      .addCase(getPagedShiftHoursTypes.rejected, (state, action) => {
-        state.loadingGetPagedShiftHoursTypes = false;
-        state.error = {
-          message:
-            action.payload?.messageEn ||
-            action.payload?.messageAr ||
-            i18next.t("shiftHoursTypes.fetchError"),
-          errors: action.payload?.errors || [],
-          timestamp: new Date().toISOString(),
-        };
-      })
-
       // Create Shift Hours Type
       .addCase(createShiftHoursType.pending, (state) => {
         state.loadingCreateShiftHoursType = true;
@@ -456,31 +312,15 @@ export const shiftHoursTypeSlice = createSlice({
             response.messageEn ||
             i18next.t("shiftHoursTypes.success.created");
 
-          // Add new item to the data arrays if response includes the created item
+          // Add new item to the data array if response includes the created item
           if (response.data) {
-            state.allShiftHoursTypes.push(response.data);
-            if (response.data.isActive) {
-              state.allActiveShiftHoursTypes.push(response.data);
-            }
+            state.allShiftHoursTypes = [response.data, ...state.allShiftHoursTypes];
 
-            // Re-calculate current view pagination
-            const currentData =
-              state.filters.statusFilter === "active"
-                ? state.allActiveShiftHoursTypes
-                : state.allShiftHoursTypes;
-
-            const filteredData = filterData(currentData, state.filters.search);
-            const result = calculatePagination(
-              filteredData,
-              state.filters.page,
-              state.filters.pageSize
-            );
-
-            if (state.filters.statusFilter === "active") {
-              state.activeShiftHoursTypes = result.data;
-            } else {
-              state.shiftHoursTypes = result.data;
-            }
+            // Re-apply current view
+            const searchFiltered = filterDataBySearch(state.allShiftHoursTypes, state.filters.search);
+            const result = paginateData(searchFiltered, state.filters.page, state.filters.pageSize);
+            
+            state.shiftHoursTypes = result.data;
             state.pagination = result.pagination;
           }
         }
@@ -521,38 +361,20 @@ export const shiftHoursTypeSlice = createSlice({
             state.selectedShiftHoursType = response.data;
           }
 
-          // Update in all arrays if data is provided
+          // Update in array if data is provided
           if (response.data) {
-            const updateItem = (array) => {
-              const index = array.findIndex(
-                (item) => item.id === response.data.id
-              );
-              if (index !== -1) {
-                array[index] = response.data;
-              }
-            };
-
-            updateItem(state.allShiftHoursTypes);
-            updateItem(state.allActiveShiftHoursTypes);
-
-            // Re-calculate current view pagination
-            const currentData =
-              state.filters.statusFilter === "active"
-                ? state.allActiveShiftHoursTypes
-                : state.allShiftHoursTypes;
-
-            const filteredData = filterData(currentData, state.filters.search);
-            const result = calculatePagination(
-              filteredData,
-              state.filters.page,
-              state.filters.pageSize
+            const index = state.allShiftHoursTypes.findIndex(
+              (item) => item.id === response.data.id
             );
-
-            if (state.filters.statusFilter === "active") {
-              state.activeShiftHoursTypes = result.data;
-            } else {
-              state.shiftHoursTypes = result.data;
+            if (index !== -1) {
+              state.allShiftHoursTypes[index] = response.data;
             }
+
+            // Re-apply current view
+            const searchFiltered = filterDataBySearch(state.allShiftHoursTypes, state.filters.search);
+            const result = paginateData(searchFiltered, state.filters.page, state.filters.pageSize);
+            
+            state.shiftHoursTypes = result.data;
             state.pagination = result.pagination;
           }
         }
@@ -588,46 +410,25 @@ export const shiftHoursTypeSlice = createSlice({
             response.messageEn ||
             i18next.t("shiftHoursTypes.success.deleted");
 
-          // Remove deleted item from all arrays
+          // Remove deleted item from array
           if (response.deletedId) {
-            const removeItem = (array) => {
-              return array.filter((item) => item.id !== response.deletedId);
-            };
-
-            state.allShiftHoursTypes = removeItem(state.allShiftHoursTypes);
-            state.allActiveShiftHoursTypes = removeItem(
-              state.allActiveShiftHoursTypes
+            state.allShiftHoursTypes = state.allShiftHoursTypes.filter(
+              (item) => item.id !== response.deletedId
             );
 
-            // Re-calculate current view pagination
-            const currentData =
-              state.filters.statusFilter === "active"
-                ? state.allActiveShiftHoursTypes
-                : state.allShiftHoursTypes;
-
-            const filteredData = filterData(currentData, state.filters.search);
-
-            // Adjust page if current page becomes empty
+            // Re-apply current view and adjust page if necessary
+            const searchFiltered = filterDataBySearch(state.allShiftHoursTypes, state.filters.search);
             let currentPage = state.filters.page;
-            const maxPage = Math.ceil(
-              filteredData.length / state.filters.pageSize
-            );
+            const maxPage = Math.ceil(searchFiltered.length / state.filters.pageSize);
+            
             if (currentPage > maxPage && maxPage > 0) {
               currentPage = maxPage;
               state.filters.page = currentPage;
             }
 
-            const result = calculatePagination(
-              filteredData,
-              currentPage,
-              state.filters.pageSize
-            );
-
-            if (state.filters.statusFilter === "active") {
-              state.activeShiftHoursTypes = result.data;
-            } else {
-              state.shiftHoursTypes = result.data;
-            }
+            const result = paginateData(searchFiltered, currentPage, state.filters.pageSize);
+            
+            state.shiftHoursTypes = result.data;
             state.pagination = result.pagination;
           }
         }
@@ -647,17 +448,15 @@ export const shiftHoursTypeSlice = createSlice({
   },
 });
 
-// Fixed export section for the slice
 export const {
-  setCurrentPage,
-  setPageSize,
   setSearchFilter,
+  setFilters,
   setStatusFilter,
   setPeriodFilter,
-  setFilters,
+  setCurrentPage,
+  setPageSize,
   clearFilters,
   clearShiftHoursTypes,
-  clearActiveShiftHoursTypes,
   clearError,
   clearCreateSuccess,
   clearUpdateSuccess,

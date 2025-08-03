@@ -5,11 +5,20 @@ import logo from "../assets/logo.jpg";
 import Mode from "./mode";
 import { useTranslation } from "react-i18next";
 import { AnimatedLogo } from "./AnimatedLogo";
+import { logOut } from "../state/slices/auth";
+import { useDispatch, useSelector } from "react-redux";
 
 // Animated Logo Component
 
 const Header = () => {
   const { t } = useTranslation();
+  const token = useSelector((state) => state.auth.token);
+  const dispatch = useDispatch();
+  const handleLogOut = () => {
+    dispatch(logOut());
+    // optionally redirect or clear other state…
+  };
+
   return (
     <header className="bg-white/80 dark:bg-black/80 backdrop-blur-sm sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-700">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -47,12 +56,20 @@ const Header = () => {
 
           {/* Action Buttons */}
           <div className="flex items-center gap-4">
-            <Link
-              to="/login"
-              className="sm:inline-flex items-center justify-center rounded-md text-sm font-medium h-10 px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors duration-300"
-            >
-              {t("get-started")}{" "}
-            </Link>
+            {token ? (
+              <button
+                onClick={handleLogOut}
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors flex-1 sm:flex-none justify-center cursor-pointer"
+              >
+                {t("logOut")}
+              </button>
+            ) : (
+              <Link to="/login">
+                <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors flex-1 sm:flex-none justify-center cursor-pointer">
+                  {t("get-started")}
+                </button>
+              </Link>
+            )}
 
             {/* 🌐 LANGUAGE TOGGLE - Place it here between Get Started and Theme Toggle */}
             <LanguageToggle variant="icon" />

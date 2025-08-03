@@ -1,18 +1,77 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../utils/axiosInstance";
 
-// Get All Shift Hours Types
 export const getShiftHoursTypes = createAsyncThunk(
   "shiftHoursTypeSlice/getShiftHoursTypes",
-  async (_, thunkAPI) => {
+  async (filters = {}, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
 
     try {
-      const res = await axiosInstance.get("/api/v1/ShiftHoursType", {
+      // Build query parameters from filters
+      const queryParams = new URLSearchParams();
+
+      // Period filter
+      if (filters.period && filters.period !== "all") {
+        queryParams.append("period", filters.period);
+      }
+
+      // Active status filter
+      if (filters.statusFilter && filters.statusFilter !== "all") {
+        queryParams.append("isActive", filters.statusFilter === "active");
+      }
+
+      // Hours range filters
+      if (filters.minHours) {
+        queryParams.append("minHoursCount", filters.minHours);
+      }
+
+      if (filters.maxHours) {
+        queryParams.append("maxHoursCount", filters.maxHours);
+      }
+
+      // Date range filters
+      if (filters.createdFromDate) {
+        queryParams.append("createdFromDate", filters.createdFromDate);
+      }
+
+      if (filters.createdToDate) {
+        queryParams.append("createdToDate", filters.createdToDate);
+      }
+
+      // Sorting
+      if (filters.orderBy) {
+        // Map frontend field names to API field names
+        const fieldMapping = {
+          nameArabic: "NameArabic",
+          nameEnglish: "NameEnglish",
+          code: "Code",
+          hours: "HoursCount",
+          period: "Period",
+          createdAt: "CreatedAt",
+          updatedAt: "UpdatedAt",
+          isActive: "IsActive",
+        };
+
+        const apiField = fieldMapping[filters.orderBy] || "NameArabic";
+        queryParams.append("sortBy", apiField);
+      }
+
+      // Sort direction
+      if (filters.orderDesc !== undefined) {
+        queryParams.append("sortDirection", filters.orderDesc ? "Desc" : "Asc");
+      }
+
+      // Build the URL with query parameters
+      const url = `/api/v1/ShiftHoursType${
+        queryParams.toString() ? `?${queryParams.toString()}` : ""
+      }`;
+
+      const res = await axiosInstance.get(url, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
+
       console.log("Shift Hours Types fetched successfully:", res);
       return res.data;
     } catch (error) {

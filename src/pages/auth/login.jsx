@@ -13,6 +13,8 @@ import i18next from "i18next";
 import UseInitialValues from "../../hooks/use-initial-values";
 import UseFormValidation from "../../hooks/use-form-validation";
 import UseDirection from "../../hooks/use-direction";
+import { useNavigate } from "react-router-dom";
+import withGuard from "../../utils/withGuard";
 
 const UserIcon = () => (
   <svg
@@ -114,6 +116,7 @@ const Login = () => {
   // Yup validation schema
   const { VALIDATION_SCHEMA_LOGIN } = UseFormValidation();
   const { mymode } = useSelector((state) => state.mode);
+  const navigate = useNavigate();
   // Handle form submission
   const handleSubmit = async (values, { setSubmitting }) => {
     dispatch(
@@ -133,6 +136,7 @@ const Login = () => {
           pauseOnHover: true,
           draggable: true,
         });
+        navigate("/admin-panel");
       })
       .catch((error) => {
         console.log("error", error);
@@ -284,4 +288,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default withGuard(Login);

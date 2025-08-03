@@ -3,7 +3,10 @@ import { useTranslation } from "react-i18next";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { resetPassword } from "../../state/act/actAuth";
+import {
+  resendForgetPasswordCode,
+  resetPassword,
+} from "../../state/act/actAuth";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import i18next from "i18next";
@@ -154,25 +157,42 @@ export default function ResetPassword() {
   };
 
   const handleResendCode = async () => {
-    try {
-      // Reset token
-      setToken(new Array(6).fill(""));
-      formik.setFieldValue("token", "");
-      formik.setFieldError("token", "");
+    // Reset token
+    setToken(new Array(6).fill(""));
+    formik.setFieldValue("token", "");
+    formik.setFieldError("token", "");
 
-      // You can dispatch a resend action here if available
-      // await dispatch(resendResetCode({ identifier })).unwrap();
+    // You can dispatch a resend action here if available
+    // await dispatch(resendResetCode({ identifier })).unwrap();
+    const resetMethod = localStorage.getItem("resetMethod");
+    const valueReset = localStorage.getItem("valueReset");
+    const curerentLanguage = i18next.language;
 
-      toast.success(t("resetPassword.resend_success"), {
-        position: "top-right",
-        autoClose: 3000,
+    dispatch(resendForgetPasswordCode({ [resetMethod]: valueReset }))
+      .unwrap()
+      .then(() => {
+        toast.success(t("resetPassword.resend_success"), {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      })
+      .catch((error) => {
+        console.log("Reset error:", error); // show SweetAlert error
+        Swal.fire({
+          title: t("resetPassword.resend_error"),
+          text:
+            curerentLanguage === "ar"
+              ? error?.response?.data?.messageAr ||
+                t("forgetPassword.error.message")
+              : error?.response?.data?.messageEn ||
+                t("forgetPassword.error.message"),
+          icon: "error",
+          confirmButtonText: t("common.ok"),
+          confirmButtonColor: "#ef4444",
+          background: mymode === "dark" ? "#1f2937" : "#ffffff",
+          color: mymode === "dark" ? "#f9fafb" : "#111827",
+        });
       });
-    } catch (error) {
-      toast.error(t("resetPassword.resend_error"), {
-        position: "top-right",
-        autoClose: 3000,
-      });
-    }
   };
 
   // Focus first input on mount
@@ -340,7 +360,7 @@ export default function ResetPassword() {
                 type="button"
                 onClick={handleResendCode}
                 disabled={loadingAuth}
-                className="text-blue-600 dark:text-blue-500 hover:underline font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                className="text-blue-600 dark:text-blue-500 hover:underline font-semibold disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 {t("resend_code")}
               </button>

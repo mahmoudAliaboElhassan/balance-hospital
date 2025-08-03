@@ -16,15 +16,19 @@
       "message": "An error occurred during login."
     }
   },
-  "validationLogin": {
+  "logOut": "Log Out",
+  "validationAuth": {
     "email": {
       "invalid": "Please enter a valid email address.",
       "required": "Email is required."
     },
     "password": {
-      "minLength": "Password must be at least 6 characters.",
-      "required": "Password is required."
-    }
+      "minLength": "Password must be at least 8 characters.",
+      "required": "Password is required.",
+      "match": "Passwords must match",
+      "confirmRequired": "Please confirm your password"
+    },
+    "tokenRequired": "Token is required"
   },
   "reset_password": "Reset Password",
   "choose_method": "Choose how you'd like to reset your password",
@@ -49,7 +53,7 @@
     "id_format": "User ID must be exactly 14 digits"
   },
   "reset_title": "Reset Your Password",
-  "reset_description": "We've sent a 6-digit code to {{identifier}}",
+  "reset_description": "We've sent a 6-digit code to Your Email",
   "reset_code_label": "Enter verification code",
   "new_password": "New Password",
   "confirm_password": "Confirm New Password",
@@ -83,7 +87,7 @@
     "loading": "Sending reset request…",
     "button": "Send Reset Link"
   },
-  "resetPassword": {
+   "resetPassword": {
     "code_invalid": "Code must be exactly 6 digits.",
     "code_required": "Verification code is required.",
     "password_min": "Password must be at least 8 characters.",
@@ -93,13 +97,16 @@
     "password_required": "New password is required.",
     "password_match": "Passwords must match.",
     "confirm_required": "Please confirm your new password.",
+    "resend_success": "Verification code has been resent successfully!",
+    "resend_error": "Failed to resend the verification code.",
     "success": "Your password has been reset!",
     "loading": "Resetting password…",
     "error": {
       "title": "Reset Failed",
       "message": "Unable to reset your password."
     }
-  },
+  }
+ ,
   "adminPanel": {
     "categories": "Categories",
     "pendingDoctorRequests": "Pending Doctor Requests",
