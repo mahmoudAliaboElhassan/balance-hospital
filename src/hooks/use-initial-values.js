@@ -117,7 +117,7 @@ function UseInitialValues() {
     nameEnglish: "",
     code: "",
     period: "",
-    hoursCount: "",
+    hours: "",
     startTime: "",
     endTime: "",
     isActive: true,

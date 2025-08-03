@@ -441,7 +441,7 @@ function UseFormValidation() {
       t("shiftHourTypeForm.fields.period") + " is required"
     ),
 
-    hoursCount: Yup.number()
+    hours: Yup.number()
       .required(t("shiftHourTypeForm.fields.hoursCount") + " is required")
       .integer(t("validation.integerOnly"))
       .min(1, t("shiftHourTypeForm.hints.hoursCount"))

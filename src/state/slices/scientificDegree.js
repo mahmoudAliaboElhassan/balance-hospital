@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 import i18next from "i18next";
 import {
   getScientificDegrees,
-  getActiveScientificDegrees,
   getScientificDegreesForSignup,
   getScientificDegreeById,
   getScientificDegreeByCode,
@@ -12,167 +11,70 @@ import {
 } from "../act/actScientificDegree";
 import UseInitialStates from "../../hooks/use-initial-state";
 
-// Helper functions for filtering and pagination
-const filterData = (data, search) => {
-  if (!search) return data;
-  const searchTerm = search.toLowerCase();
-  return data.filter(
-    (item) =>
-      item.nameArabic?.toLowerCase().includes(searchTerm) ||
-      item.nameEnglish?.toLowerCase().includes(searchTerm) ||
-      item.code?.toLowerCase().includes(searchTerm)
-  );
-};
-
-const calculatePagination = (data, page, pageSize) => {
-  const totalItems = data.length;
-  const totalPages = Math.ceil(totalItems / pageSize);
-  const startIndex = (page - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-  const paginatedData = data.slice(startIndex, endIndex);
-
-  return {
-    data: paginatedData,
-    pagination: {
-      page,
-      pageSize,
-      totalItems,
-      totalPages,
-      hasNextPage: page < totalPages,
-      hasPrevPage: page > 1,
-    },
-  };
-};
-
 const { initialStateScientificDegrees } = UseInitialStates();
+
 export const scientificDegreeSlice = createSlice({
   name: "scientificDegreeSlice",
   initialState: initialStateScientificDegrees,
   reducers: {
-    // Pagination actions
+    // Filter actions
+    setFilters: (state, action) => {
+      state.filters = { ...state.filters, ...action.payload };
+    },
+
     setCurrentPage: (state, action) => {
       state.filters.page = action.payload;
-      state.pagination.page = action.payload;
-
-      // Re-calculate pagination with current data
-      const currentData =
-        state.filters.statusFilter === "active"
-          ? state.allActiveScientificDegrees
-          : state.allScientificDegrees;
-
-      const filteredData = filterData(currentData, state.filters.search);
-      const result = calculatePagination(
-        filteredData,
-        action.payload,
-        state.filters.pageSize
-      );
-
-      if (state.filters.statusFilter === "active") {
-        state.activeScientificDegrees = result.data;
-      } else {
-        state.scientificDegrees = result.data;
-      }
-      state.pagination = result.pagination;
     },
 
     setPageSize: (state, action) => {
       state.filters.pageSize = action.payload;
       state.filters.page = 1; // Reset to first page when changing page size
-      state.pagination.pageSize = action.payload;
-      state.pagination.page = 1;
-
-      // Re-calculate pagination with current data
-      const currentData =
-        state.filters.statusFilter === "active"
-          ? state.allActiveScientificDegrees
-          : state.allScientificDegrees;
-
-      const filteredData = filterData(currentData, state.filters.search);
-      const result = calculatePagination(filteredData, 1, action.payload);
-
-      if (state.filters.statusFilter === "active") {
-        state.activeScientificDegrees = result.data;
-      } else {
-        state.scientificDegrees = result.data;
-      }
-      state.pagination = result.pagination;
     },
 
-    // Search functionality
     setSearchFilter: (state, action) => {
       state.filters.search = action.payload;
       state.filters.page = 1; // Reset to first page when searching
-      state.pagination.page = 1;
-
-      // Re-calculate pagination with filtered data
-      const currentData =
-        state.filters.statusFilter === "active"
-          ? state.allActiveScientificDegrees
-          : state.allScientificDegrees;
-
-      const filteredData = filterData(currentData, action.payload);
-      const result = calculatePagination(
-        filteredData,
-        1,
-        state.filters.pageSize
-      );
-
-      if (state.filters.statusFilter === "active") {
-        state.activeScientificDegrees = result.data;
-      } else {
-        state.scientificDegrees = result.data;
-      }
-      state.pagination = result.pagination;
     },
 
-    // Status filter
-    setStatusFilter: (state, action) => {
-      state.filters.statusFilter = action.payload;
+    setCodeFilter: (state, action) => {
+      state.filters.code = action.payload;
       state.filters.page = 1;
-      state.pagination.page = 1;
-
-      // Get appropriate data
-      const currentData =
-        action.payload === "active"
-          ? state.allActiveScientificDegrees
-          : state.allScientificDegrees;
-
-      const filteredData = filterData(currentData, state.filters.search);
-      const result = calculatePagination(
-        filteredData,
-        1,
-        state.filters.pageSize
-      );
-
-      if (action.payload === "active") {
-        state.activeScientificDegrees = result.data;
-      } else {
-        state.scientificDegrees = result.data;
-      }
-      state.pagination = result.pagination;
     },
 
-    // Filter management
-    setFilters: (state, action) => {
-      state.filters = { ...state.filters, ...action.payload };
+    setStatusFilter: (state, action) => {
+      state.filters.isActive = action.payload;
+      state.filters.page = 1;
+    },
+
+    setDateRangeFilter: (state, action) => {
+      state.filters.createdFromDate = action.payload.fromDate;
+      state.filters.createdToDate = action.payload.toDate;
+      state.filters.page = 1;
+    },
+
+    setSortFilter: (state, action) => {
+      state.filters.sortBy = action.payload.sortBy;
+      state.filters.sortDirection = action.payload.sortDirection;
     },
 
     clearFilters: (state) => {
       state.filters = {
-        ...initialState.filters,
-        statusFilter: state.filters.statusFilter, // Keep status filter
+        search: "",
+        code: "",
+        isActive: undefined,
+        createdFromDate: "",
+        createdToDate: "",
+        sortBy: 5, // Default to CreatedAt
+        sortDirection: 1, // Default to Descending (newest first)
+        page: 1,
+        pageSize: 10,
       };
     },
 
     // Clear data
     clearScientificDegrees: (state) => {
       state.scientificDegrees = [];
-      state.allScientificDegrees = [];
-    },
-
-    clearActiveScientificDegrees: (state) => {
-      state.activeScientificDegrees = [];
-      state.allActiveScientificDegrees = [];
+      state.pagination = null;
     },
 
     // Clear errors and states
@@ -230,7 +132,7 @@ export const scientificDegreeSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-      // Get Scientific Degrees (All)
+      // Get Scientific Degrees
       .addCase(getScientificDegrees.pending, (state) => {
         state.loadingGetScientificDegrees = true;
         state.error = null;
@@ -241,71 +143,31 @@ export const scientificDegreeSlice = createSlice({
 
         const response = action.payload;
         if (response.success) {
-          // Store all data
-          state.allScientificDegrees = response.data || [];
+          // Handle paginated response
+          if (response.data.items) {
+            state.scientificDegrees = response.data.items;
+            state.pagination = {
+              totalCount: response.data.totalCount,
+              page: response.data.page,
+              pageSize: response.data.pageSize,
+              totalPages: response.data.totalPages,
+              hasNextPage: response.data.hasNextPage,
+              hasPreviousPage: response.data.hasPreviousPage,
+            };
+          } else {
+            // Handle non-paginated response
+            state.scientificDegrees = response.data || [];
+            state.pagination = null;
+          }
+
           state.message = response.messageAr || response.messageEn;
           state.timestamp = response.timestamp;
-
-          // Apply current filters and pagination
-          const filteredData = filterData(
-            state.allScientificDegrees,
-            state.filters.search
-          );
-          const result = calculatePagination(
-            filteredData,
-            state.filters.page,
-            state.filters.pageSize
-          );
-
-          state.scientificDegrees = response.data;
-          state.pagination = result.pagination;
         }
       })
       .addCase(getScientificDegrees.rejected, (state, action) => {
         state.loadingGetScientificDegrees = false;
-        state.error = {
-          message:
-            action.payload?.messageEn ||
-            action.payload?.messageAr ||
-            i18next.t("scientificDegrees.fetchError"),
-          errors: action.payload?.errors || [],
-          timestamp: new Date().toISOString(),
-        };
-      })
-
-      // Get Active Scientific Degrees
-      .addCase(getActiveScientificDegrees.pending, (state) => {
-        state.loadingGetActiveScientificDegrees = true;
-        state.error = null;
-      })
-      .addCase(getActiveScientificDegrees.fulfilled, (state, action) => {
-        state.loadingGetActiveScientificDegrees = false;
-        state.error = null;
-
-        const response = action.payload;
-        if (response.success) {
-          // Store all active data
-          state.allActiveScientificDegrees = response.data || [];
-          state.message = response.messageAr || response.messageEn;
-          state.timestamp = response.timestamp;
-
-          // Apply current filters and pagination
-          const filteredData = filterData(
-            state.allActiveScientificDegrees,
-            state.filters.search
-          );
-          const result = calculatePagination(
-            filteredData,
-            state.filters.page,
-            state.filters.pageSize
-          );
-
-          state.activeScientificDegrees = response.data;
-          //   state.pagination = result.pagination;
-        }
-      })
-      .addCase(getActiveScientificDegrees.rejected, (state, action) => {
-        state.loadingGetActiveScientificDegrees = false;
+        state.scientificDegrees = [];
+        state.pagination = null;
         state.error = {
           message:
             action.payload?.messageEn ||
@@ -421,34 +283,6 @@ export const scientificDegreeSlice = createSlice({
             response.messageAr ||
             response.messageEn ||
             i18next.t("scientificDegrees.success.created");
-
-          // Add new item to the data arrays if response includes the created item
-          if (response.data) {
-            state.allScientificDegrees.push(response.data);
-            if (response.data.isActive) {
-              state.allActiveScientificDegrees.push(response.data);
-            }
-
-            // Re-calculate current view pagination
-            const currentData =
-              state.filters.statusFilter === "active"
-                ? state.allActiveScientificDegrees
-                : state.allScientificDegrees;
-
-            const filteredData = filterData(currentData, state.filters.search);
-            const result = calculatePagination(
-              filteredData,
-              state.filters.page,
-              state.filters.pageSize
-            );
-
-            if (state.filters.statusFilter === "active") {
-              state.activeScientificDegrees = result.data;
-            } else {
-              state.scientificDegrees = result.data;
-            }
-            state.pagination = result.pagination;
-          }
         }
       })
       .addCase(createScientificDegree.rejected, (state, action) => {
@@ -486,41 +320,6 @@ export const scientificDegreeSlice = createSlice({
           if (state.selectedScientificDegree && response.data) {
             state.selectedScientificDegree = response.data;
           }
-
-          // Update in all arrays if data is provided
-          if (response.data) {
-            const updateItem = (array) => {
-              const index = array.findIndex(
-                (item) => item.id === response.data.id
-              );
-              if (index !== -1) {
-                array[index] = response.data;
-              }
-            };
-
-            updateItem(state.allScientificDegrees);
-            updateItem(state.allActiveScientificDegrees);
-
-            // Re-calculate current view pagination
-            const currentData =
-              state.filters.statusFilter === "active"
-                ? state.allActiveScientificDegrees
-                : state.allScientificDegrees;
-
-            const filteredData = filterData(currentData, state.filters.search);
-            const result = calculatePagination(
-              filteredData,
-              state.filters.page,
-              state.filters.pageSize
-            );
-
-            if (state.filters.statusFilter === "active") {
-              state.activeScientificDegrees = result.data;
-            } else {
-              state.scientificDegrees = result.data;
-            }
-            state.pagination = result.pagination;
-          }
         }
       })
       .addCase(updateScientificDegree.rejected, (state, action) => {
@@ -553,49 +352,6 @@ export const scientificDegreeSlice = createSlice({
             response.messageAr ||
             response.messageEn ||
             i18next.t("scientificDegrees.success.deleted");
-
-          // Remove deleted item from all arrays
-          if (response.deletedId) {
-            const removeItem = (array) => {
-              return array.filter((item) => item.id !== response.deletedId);
-            };
-
-            state.allScientificDegrees = removeItem(state.allScientificDegrees);
-            state.allActiveScientificDegrees = removeItem(
-              state.allActiveScientificDegrees
-            );
-
-            // Re-calculate current view pagination
-            const currentData =
-              state.filters.statusFilter === "active"
-                ? state.allActiveScientificDegrees
-                : state.allScientificDegrees;
-
-            const filteredData = filterData(currentData, state.filters.search);
-
-            // Adjust page if current page becomes empty
-            let currentPage = state.filters.page;
-            const maxPage = Math.ceil(
-              filteredData.length / state.filters.pageSize
-            );
-            if (currentPage > maxPage && maxPage > 0) {
-              currentPage = maxPage;
-              state.filters.page = currentPage;
-            }
-
-            const result = calculatePagination(
-              filteredData,
-              currentPage,
-              state.filters.pageSize
-            );
-
-            if (state.filters.statusFilter === "active") {
-              state.activeScientificDegrees = result.data;
-            } else {
-              state.scientificDegrees = result.data;
-            }
-            state.pagination = result.pagination;
-          }
         }
       })
       .addCase(deleteScientificDegree.rejected, (state, action) => {
@@ -614,14 +370,16 @@ export const scientificDegreeSlice = createSlice({
 });
 
 export const {
+  setFilters,
   setCurrentPage,
   setPageSize,
   setSearchFilter,
+  setCodeFilter,
   setStatusFilter,
-  setFilters,
+  setDateRangeFilter,
+  setSortFilter,
   clearFilters,
   clearScientificDegrees,
-  clearActiveScientificDegrees,
   clearError,
   clearCreateSuccess,
   clearUpdateSuccess,

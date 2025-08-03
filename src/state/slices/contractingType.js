@@ -5,62 +5,18 @@ import {
   getContractingTypeById,
   updateContractingType,
   deleteContractingType,
-  getActiveContractingTypes,
   getContractingTypesForSignup,
 } from "../act/actContractingType";
 import i18next from "i18next";
 
-// Helper function to calculate pagination
-const calculatePagination = (allData, page, pageSize) => {
-  const totalCount = allData.length;
-  const totalPages = Math.ceil(totalCount / pageSize);
-  const startIndex = (page - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-  const paginatedData = allData.slice(startIndex, endIndex);
-
-  return {
-    data: paginatedData,
-    pagination: {
-      page,
-      pageSize,
-      totalCount,
-      totalPages,
-      hasNextPage: page < totalPages,
-      hasPreviousPage: page > 1,
-      startIndex: startIndex + 1,
-      endIndex: Math.min(endIndex, totalCount),
-    },
-  };
-};
-
-// Helper function to filter data (search functionality)
-const filterData = (allData, searchTerm) => {
-  if (!searchTerm || searchTerm.trim() === "") {
-    return allData;
-  }
-
-  const term = searchTerm.toLowerCase().trim();
-  return allData.filter(
-    (item) =>
-      item.nameArabic?.toLowerCase().includes(term) ||
-      item.nameEnglish?.toLowerCase().includes(term) ||
-      item.code?.toLowerCase().includes(term)
-  );
-};
-
 // Initial state
 const initialState = {
-  // Raw data from API (all items)
-  allContractingTypes: [],
-  allActiveContractingTypes: [],
+  // Data from API
+  contractingTypes: [],
   contractingTypesForSignup: [],
   selectedContractingType: null,
 
-  // Paginated/filtered data for display
-  contractingTypes: [],
-  activeContractingTypes: [],
-
-  // Pagination state
+  // Pagination state (now handled by API)
   pagination: {
     page: 1,
     pageSize: 10,
@@ -75,14 +31,20 @@ const initialState = {
   // Filter state
   filters: {
     search: "",
-    statusFilter: "all", // "all" or "active"
+    statusFilter: true, // "all", "active", "inactive"
+    allowOvertimeHours: undefined, // undefined, true, false
+    minHoursPerWeek: undefined,
+    maxHoursPerWeek: undefined,
+    createdFromDate: "",
+    createdToDate: "",
+    sortBy: 0, // 0: createdAt, 1: nameArabic, 2: nameEnglish, 3: code, 4: usersCount, 5: maxHours
+    sortDirection: 1, // 0: ascending, 1: descending
     page: 1,
     pageSize: 10,
   },
 
   // Loading states
   loadingGetContractingTypes: false,
-  loadingGetActiveContractingTypes: false,
   loadingGetContractingTypesForSignup: false,
   loadingGetSingleContractingType: false,
   loadingCreateContractingType: false,
@@ -116,136 +78,73 @@ export const contractingTypeSlice = createSlice({
     // Pagination actions
     setCurrentPage: (state, action) => {
       state.filters.page = action.payload;
-      state.pagination.page = action.payload;
-
-      // Re-calculate pagination with current data
-      const currentData =
-        state.filters.statusFilter === "active"
-          ? state.allActiveContractingTypes
-          : state.allContractingTypes;
-
-      const filteredData = filterData(currentData, state.filters.search);
-      const result = calculatePagination(
-        filteredData,
-        action.payload,
-        state.filters.pageSize
-      );
-
-      if (state.filters.statusFilter === "active") {
-        state.activeContractingTypes = result.data;
-      } else {
-        state.contractingTypes = result.data;
-      }
-      state.pagination = result.pagination;
     },
 
     setPageSize: (state, action) => {
       state.filters.pageSize = action.payload;
       state.filters.page = 1; // Reset to first page when changing page size
-      state.pagination.pageSize = action.payload;
-      state.pagination.page = 1;
-
-      // Re-calculate pagination with current data
-      const currentData =
-        state.filters.statusFilter === "active"
-          ? state.allActiveContractingTypes
-          : state.allContractingTypes;
-
-      const filteredData = filterData(currentData, state.filters.search);
-      const result = calculatePagination(filteredData, 1, action.payload);
-
-      if (state.filters.statusFilter === "active") {
-        state.activeContractingTypes = result.data;
-      } else {
-        state.contractingTypes = result.data;
-      }
-      state.pagination = result.pagination;
     },
 
-    // Search functionality
+    // Filter actions
     setSearchFilter: (state, action) => {
       state.filters.search = action.payload;
       state.filters.page = 1; // Reset to first page when searching
-      state.pagination.page = 1;
-
-      // Re-calculate pagination with filtered data
-      const currentData =
-        state.filters.statusFilter === "active"
-          ? state.allActiveContractingTypes
-          : state.allContractingTypes;
-
-      const filteredData = filterData(currentData, action.payload);
-      const result = calculatePagination(
-        filteredData,
-        1,
-        state.filters.pageSize
-      );
-
-      if (state.filters.statusFilter === "active") {
-        state.activeContractingTypes = result.data;
-      } else {
-        state.contractingTypes = result.data;
-      }
-      state.pagination = result.pagination;
     },
 
-    // Status filter (all/active)
     setStatusFilter: (state, action) => {
       state.filters.statusFilter = action.payload;
+      state.filters.page = 1; // Reset to first page when changing status
+    },
+
+    setOvertimeFilter: (state, action) => {
+      state.filters.allowOvertimeHours = action.payload;
       state.filters.page = 1;
-      state.pagination.page = 1;
-
-      // Switch data source and re-calculate pagination
-      const currentData =
-        action.payload === "active"
-          ? state.allActiveContractingTypes
-          : state.allContractingTypes;
-
-      const filteredData = filterData(currentData, state.filters.search);
-      const result = calculatePagination(
-        filteredData,
-        1,
-        state.filters.pageSize
-      );
-
-      if (action.payload === "active") {
-        state.activeContractingTypes = result.data;
-      } else {
-        state.contractingTypes = result.data;
-      }
-      state.pagination = result.pagination;
     },
 
-    // General filter actions
-    setFilters: (state, action) => {
-      state.filters = { ...state.filters, ...action.payload };
+    setHoursRangeFilter: (state, action) => {
+      const { minHours, maxHours } = action.payload;
+      state.filters.minHoursPerWeek = minHours;
+      state.filters.maxHoursPerWeek = maxHours;
+      state.filters.page = 1;
     },
+
+    setDateRangeFilter: (state, action) => {
+      const { fromDate, toDate } = action.payload;
+      state.filters.createdFromDate = fromDate;
+      state.filters.createdToDate = toDate;
+      state.filters.page = 1;
+    },
+
+    setSortFilter: (state, action) => {
+      const { sortBy, sortDirection } = action.payload;
+      state.filters.sortBy = sortBy;
+      state.filters.sortDirection = sortDirection;
+      state.filters.page = 1;
+    },
+
     clearFilters: (state) => {
       state.filters = {
         search: "",
-        statusFilter: "all",
+        statusFilter: "",
+        allowOvertimeHours: undefined,
+        minHoursPerWeek: undefined,
+        maxHoursPerWeek: undefined,
+        createdFromDate: "",
+        createdToDate: "",
+        sortBy: 0,
+        sortDirection: 1,
         page: 1,
-        pageSize: 10,
+        pageSize: state.filters.pageSize, // Keep current page size
       };
-
-      // Reset to show all data
-      const result = calculatePagination(state.allContractingTypes, 1, 10);
-      state.contractingTypes = result.data;
-      state.pagination = result.pagination;
     },
 
     // Clear data actions
     clearContractingTypes: (state) => {
-      state.allContractingTypes = [];
       state.contractingTypes = [];
       state.pagination = initialState.pagination;
       state.error = null;
     },
-    clearActiveContractingTypes: (state) => {
-      state.allActiveContractingTypes = [];
-      state.activeContractingTypes = [];
-      state.error = null;
-    },
+
     clearError: (state) => {
       state.error = null;
     },
@@ -256,11 +155,13 @@ export const contractingTypeSlice = createSlice({
       state.createMessage = "";
       state.createError = null;
     },
+
     clearUpdateSuccess: (state) => {
       state.updateSuccess = false;
       state.updateMessage = "";
       state.updateError = null;
     },
+
     clearDeleteSuccess: (state) => {
       state.deleteSuccess = false;
       state.deleteMessage = "";
@@ -274,12 +175,14 @@ export const contractingTypeSlice = createSlice({
       state.createSuccess = false;
       state.createMessage = "";
     },
+
     resetUpdateForm: (state) => {
       state.loadingUpdateContractingType = false;
       state.updateError = null;
       state.updateSuccess = false;
       state.updateMessage = "";
     },
+
     resetDeleteForm: (state) => {
       state.loadingDeleteContractingType = false;
       state.deleteError = null;
@@ -292,13 +195,14 @@ export const contractingTypeSlice = createSlice({
       state.selectedContractingType = null;
       state.singleContractingTypeError = null;
     },
+
     clearSingleContractingTypeError: (state) => {
       state.singleContractingTypeError = null;
     },
   },
   extraReducers: (builder) => {
     builder
-      // Get ContractingTypes (All)
+      // Get ContractingTypes
       .addCase(getContractingTypes.pending, (state) => {
         state.loadingGetContractingTypes = true;
         state.error = null;
@@ -309,81 +213,30 @@ export const contractingTypeSlice = createSlice({
 
         const response = action.payload;
         if (response.success) {
-          // Store all data
-          state.allContractingTypes = response.data || [];
+          // Set data and pagination from API response
+          state.contractingTypes = response.data || [];
           state.message = response.messageAr || response.messageEn;
           state.timestamp = response.timestamp;
 
-          // Apply current filters and pagination
-          const filteredData = filterData(
-            state.allContractingTypes,
-            state.filters.search
-          );
-          const result = calculatePagination(
-            filteredData,
-            state.filters.page,
-            state.filters.pageSize
-          );
-
-          state.contractingTypes = result.data;
-          state.pagination = result.pagination;
+          // Update pagination from API response
+          if (response.pagination) {
+            state.pagination = {
+              page: response.pagination.page,
+              pageSize: response.pagination.pageSize,
+              totalCount: response.pagination.totalCount,
+              totalPages: response.pagination.totalPages,
+              hasNextPage: response.pagination.hasNextPage,
+              hasPreviousPage: response.pagination.hasPreviousPage,
+              startIndex: response.pagination.startIndex,
+              endIndex: response.pagination.endIndex,
+            };
+          }
         }
       })
       .addCase(getContractingTypes.rejected, (state, action) => {
         state.loadingGetContractingTypes = false;
-        state.allContractingTypes = [];
         state.contractingTypes = [];
         state.pagination = initialState.pagination;
-        state.error = {
-          message:
-            action.payload?.messageEn ||
-            action.payload?.messageAr ||
-            i18next.t("contractingTypes.fetchError"),
-          errors: action.payload?.errors || [],
-          timestamp: new Date().toISOString(),
-        };
-      })
-
-      // Get Active ContractingTypes
-      .addCase(getActiveContractingTypes.pending, (state) => {
-        state.loadingGetActiveContractingTypes = true;
-        state.error = null;
-      })
-      .addCase(getActiveContractingTypes.fulfilled, (state, action) => {
-        state.loadingGetActiveContractingTypes = false;
-        state.error = null;
-
-        const response = action.payload;
-        if (response.success) {
-          // Store all active data
-          state.allActiveContractingTypes = response.data || [];
-          state.message = response.messageAr || response.messageEn;
-          state.timestamp = response.timestamp;
-
-          // If currently viewing active filter, apply pagination
-          if (state.filters.statusFilter === "active") {
-            const filteredData = filterData(
-              state.allActiveContractingTypes,
-              state.filters.search
-            );
-            const result = calculatePagination(
-              filteredData,
-              state.filters.page,
-              state.filters.pageSize
-            );
-
-            state.activeContractingTypes = result.data;
-            state.pagination = result.pagination;
-          }
-        }
-      })
-      .addCase(getActiveContractingTypes.rejected, (state, action) => {
-        state.loadingGetActiveContractingTypes = false;
-        state.allActiveContractingTypes = [];
-        state.activeContractingTypes = [];
-        if (state.filters.statusFilter === "active") {
-          state.pagination = initialState.pagination;
-        }
         state.error = {
           message:
             action.payload?.messageEn ||
@@ -470,34 +323,6 @@ export const contractingTypeSlice = createSlice({
             response.messageAr ||
             response.messageEn ||
             i18next.t("contractingTypes.success.created");
-
-          // Add new item to the data arrays if response includes the created item
-          if (response.data) {
-            state.allContractingTypes.push(response.data);
-            if (response.data.isActive) {
-              state.allActiveContractingTypes.push(response.data);
-            }
-
-            // Re-calculate current view pagination
-            const currentData =
-              state.filters.statusFilter === "active"
-                ? state.allActiveContractingTypes
-                : state.allContractingTypes;
-
-            const filteredData = filterData(currentData, state.filters.search);
-            const result = calculatePagination(
-              filteredData,
-              state.filters.page,
-              state.filters.pageSize
-            );
-
-            if (state.filters.statusFilter === "active") {
-              state.activeContractingTypes = result.data;
-            } else {
-              state.contractingTypes = result.data;
-            }
-            state.pagination = result.pagination;
-          }
         }
       })
       .addCase(createContractingType.rejected, (state, action) => {
@@ -531,52 +356,12 @@ export const contractingTypeSlice = createSlice({
             response.messageEn ||
             i18next.t("contractingTypes.success.updated");
 
-          // Update item in data arrays if response includes the updated item
-          if (response.data) {
-            const updatedItem = response.data;
-
-            // Update in all arrays
-            const allIndex = state.allContractingTypes.findIndex(
-              (item) => item.id === updatedItem.id
-            );
-            if (allIndex !== -1) {
-              state.allContractingTypes[allIndex] = updatedItem;
-            }
-
-            const activeIndex = state.allActiveContractingTypes.findIndex(
-              (item) => item.id === updatedItem.id
-            );
-            if (updatedItem.isActive) {
-              if (activeIndex !== -1) {
-                state.allActiveContractingTypes[activeIndex] = updatedItem;
-              } else {
-                state.allActiveContractingTypes.push(updatedItem);
-              }
-            } else {
-              if (activeIndex !== -1) {
-                state.allActiveContractingTypes.splice(activeIndex, 1);
-              }
-            }
-
-            // Re-calculate current view pagination
-            const currentData =
-              state.filters.statusFilter === "active"
-                ? state.allActiveContractingTypes
-                : state.allContractingTypes;
-
-            const filteredData = filterData(currentData, state.filters.search);
-            const result = calculatePagination(
-              filteredData,
-              state.filters.page,
-              state.filters.pageSize
-            );
-
-            if (state.filters.statusFilter === "active") {
-              state.activeContractingTypes = result.data;
-            } else {
-              state.contractingTypes = result.data;
-            }
-            state.pagination = result.pagination;
+          // Update the selected contracting type if it's the one being edited
+          if (
+            response.data &&
+            state.selectedContractingType?.id === response.data.id
+          ) {
+            state.selectedContractingType = response.data;
           }
         }
       })
@@ -604,56 +389,16 @@ export const contractingTypeSlice = createSlice({
         state.deleteError = null;
 
         const response = action.payload;
+        console.log("response from delete", response);
         if (response.success) {
           state.deleteSuccess = true;
+          state.contractingTypes = state.contractingTypes.filter(
+            (dept) => dept.id !== response.deletedContractingTypeId
+          );
           state.deleteMessage =
             response.messageAr ||
             response.messageEn ||
             i18next.t("contractingTypes.success.deleted");
-
-          // Remove deleted item from all arrays
-          if (response.deletedContractingTypeId) {
-            const deletedId = response.deletedContractingTypeId;
-
-            state.allContractingTypes = state.allContractingTypes.filter(
-              (item) => item.id !== deletedId
-            );
-            state.allActiveContractingTypes =
-              state.allActiveContractingTypes.filter(
-                (item) => item.id !== deletedId
-              );
-
-            // Re-calculate current view pagination
-            const currentData =
-              state.filters.statusFilter === "active"
-                ? state.allActiveContractingTypes
-                : state.allContractingTypes;
-
-            const filteredData = filterData(currentData, state.filters.search);
-
-            // Adjust page if current page becomes empty
-            let currentPage = state.filters.page;
-            const maxPage = Math.ceil(
-              filteredData.length / state.filters.pageSize
-            );
-            if (currentPage > maxPage && maxPage > 0) {
-              currentPage = maxPage;
-              state.filters.page = currentPage;
-            }
-
-            const result = calculatePagination(
-              filteredData,
-              currentPage,
-              state.filters.pageSize
-            );
-
-            if (state.filters.statusFilter === "active") {
-              state.activeContractingTypes = result.data;
-            } else {
-              state.contractingTypes = result.data;
-            }
-            state.pagination = result.pagination;
-          }
         }
       })
       .addCase(deleteContractingType.rejected, (state, action) => {
@@ -671,15 +416,18 @@ export const contractingTypeSlice = createSlice({
   },
 });
 
+// Export actions
 export const {
   setCurrentPage,
   setPageSize,
   setSearchFilter,
   setStatusFilter,
-  setFilters,
+  setOvertimeFilter,
+  setHoursRangeFilter,
+  setDateRangeFilter,
+  setSortFilter,
   clearFilters,
   clearContractingTypes,
-  clearActiveContractingTypes,
   clearError,
   clearCreateSuccess,
   clearUpdateSuccess,
@@ -691,4 +439,5 @@ export const {
   clearSingleContractingTypeError,
 } = contractingTypeSlice.actions;
 
+// Export reducer
 export default contractingTypeSlice.reducer;

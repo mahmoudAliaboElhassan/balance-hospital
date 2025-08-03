@@ -31,6 +31,7 @@ import {
   getActiveShiftHoursTypes,
   getShiftHoursTypes,
 } from "../../../state/act/actShiftHours";
+import DeleteShiftHoursTypeModal from "../../../components/DeleteShiftHoursTypeModal";
 
 function ShiftHours() {
   const { t, i18n } = useTranslation();
@@ -340,13 +341,13 @@ function ShiftHours() {
       className={`min-h-screen ${isDark ? "bg-gray-900" : "bg-gray-50"}`}
       dir={isRTL ? "rtl" : "ltr"}
     >
-      {/* <DeleteShiftHoursTypeModal
+      <DeleteShiftHoursTypeModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         shiftHoursTypeId={toDelete.id}
         info={toDelete}
         shiftHoursTypeName={toDelete.name}
-      /> */}
+      />
       <div className="p-4 sm:p-6">
         <div className="max-w-7xl mx-auto">
           {/* Header */}

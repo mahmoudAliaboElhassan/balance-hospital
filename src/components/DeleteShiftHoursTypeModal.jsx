@@ -4,17 +4,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { X, AlertTriangle } from "lucide-react";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
-import { deleteScientificDegree } from "../state/act/actScientificDegree";
+import { deleteShiftHoursType } from "../state/act/actShiftHours";
 import { useNavigate } from "react-router-dom";
 import i18next from "i18next";
 
-const DeleteScientificDegreeModal = ({
+const DeleteShiftHoursTypeModal = ({
   isOpen,
   onClose,
   info,
-  scientificDegree,
-  scientificDegreeId,
-  scientificDegreeName,
+  shiftHoursType,
+  shiftHoursTypeId,
+  shiftHoursTypeName,
   loading = false,
 }) => {
   const { t, i18n } = useTranslation();
@@ -26,46 +26,45 @@ const DeleteScientificDegreeModal = ({
   const navigate = useNavigate();
   const isRTL = i18n.language === "ar";
   const dispatch = useDispatch();
-  const { loadingDeleteScientificDegree } = useSelector(
-    (state) => state.scientificDegree
+  const { loadingDeleteShiftHoursType } = useSelector(
+    (state) => state.shiftHour
   );
 
-  // Get scientific degree info from props with fallback
-  const degreeInfo = scientificDegree ||
+  // Get shift hours type info from props with fallback
+  const shiftHoursInfo = shiftHoursType ||
     info || {
-      id: scientificDegreeId,
-      nameArabic: scientificDegreeName || "غير محدد",
-      nameEnglish: scientificDegreeName || "Not specified",
+      id: shiftHoursTypeId,
+      nameArabic: shiftHoursTypeName || "غير محدد",
+      nameEnglish: shiftHoursTypeName || "Not specified",
       code: "",
+      hours: 0,
+      period: "",
     };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!reason.trim()) {
-      setError(t("scientificDegrees.delete.reasonRequired"));
+      setError(t("contractingTypes.delete.reasonRequired"));
       return;
     }
 
     if (reason.trim().length < 3) {
-      setError(t("scientificDegrees.delete.reasonTooShort"));
+      setError(t("contractingTypes.delete.reasonTooShort"));
       return;
     }
 
     dispatch(
-      deleteScientificDegree({
-        id: degreeInfo.id || scientificDegreeId,
+      deleteShiftHoursType({
+        id: shiftHoursInfo.id || shiftHoursTypeId,
         reason: reason.trim(),
       })
     )
       .unwrap()
       .then(() => {
         toast.success(
-          t("scientificDegrees.deleteSuccess", {
-            name:
-              degreeInfo.nameArabic ||
-              degreeInfo.nameEnglish ||
-              scientificDegreeName,
+          t("contractingTypes.deleteSuccess", {
+            name: info.name,
           }),
           {
             position: "top-right",
@@ -74,7 +73,7 @@ const DeleteScientificDegreeModal = ({
         );
         handleClose();
         // Optional: Navigate to list page if we're on a detail page
-        // navigate("/admin-panel/scientific-degrees");
+        // navigate("/admin-panel/shift-hours-types");
       })
       .catch((error) => {
         handleClose();
@@ -85,11 +84,11 @@ const DeleteScientificDegreeModal = ({
           i18next.language === "en"
             ? (error?.messageEn ||
                 error?.message ||
-                "Failed to delete scientific degree") +
+                "Failed to delete shift hours type") +
               (error?.errors?.[0] ? " " + error.errors[0] : "")
             : (error?.messageAr ||
                 error?.message ||
-                "فشل في حذف الدرجة العلمية") +
+                "فشل في حذف نوع ساعات الوردية") +
               (error?.errors?.[0] ? " " + error.errors[0] : "");
 
         Swal.fire({
@@ -115,6 +114,14 @@ const DeleteScientificDegreeModal = ({
     setError("");
     onClose();
   };
+
+  // Format hours for display
+  const formatHours = (hours) => {
+    if (!hours) return "0";
+    return parseFloat(hours).toString();
+  };
+
+  // Get period display text
 
   if (!isOpen) return null;
 
@@ -143,12 +150,12 @@ const DeleteScientificDegreeModal = ({
                 isDark ? "text-white" : "text-gray-900"
               }`}
             >
-              {t("scientificDegrees.delete.title")}
+              {t("contractingTypes.delete.title")}
             </h3>
           </div>
           <button
             onClick={handleClose}
-            disabled={loading || loadingDeleteScientificDegree}
+            disabled={loading || loadingDeleteShiftHoursType}
             className={`p-1 rounded-lg transition-colors ${
               isDark
                 ? "hover:bg-gray-700 text-gray-400 hover:text-white"
@@ -167,10 +174,10 @@ const DeleteScientificDegreeModal = ({
                 isDark ? "text-gray-300" : "text-gray-600"
               }`}
             >
-              {t("scientificDegrees.delete.confirmMessage")}
+              {t("contractingTypes.delete.confirmMessage")}
             </p>
 
-            {info && (
+            {shiftHoursInfo && (
               <div
                 className={`p-3 rounded-lg border ${
                   isDark
@@ -182,9 +189,25 @@ const DeleteScientificDegreeModal = ({
                   className={`font-semibold ${
                     isDark ? "text-white" : "text-gray-900"
                   }`}
+                  dir="rtl"
                 >
                   {info.name}
                 </p>
+
+                {(shiftHoursInfo.hours || shiftHoursInfo.period) && (
+                  <div
+                    className={`flex items-center gap-2 mt-1 text-xs ${
+                      isDark ? "text-gray-400" : "text-gray-500"
+                    }`}
+                  >
+                    {shiftHoursInfo.hours && (
+                      <>
+                        <Clock size={12} />
+                        <span>{formatHours(shiftHoursInfo.hours)}h</span>
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
@@ -193,7 +216,7 @@ const DeleteScientificDegreeModal = ({
                 isDark ? "text-gray-300" : "text-gray-600"
               }`}
             >
-              {t("scientificDegrees.delete.warning")}
+              {t("contractingTypes.delete.warning")}
             </p>
           </div>
 
@@ -203,7 +226,7 @@ const DeleteScientificDegreeModal = ({
                 isDark ? "text-gray-300" : "text-gray-700"
               }`}
             >
-              {t("scientificDegrees.delete.reason")}{" "}
+              {t("contractingTypes.delete.reason")}{" "}
               <span className="text-red-500">*</span>
             </label>
             <textarea
@@ -212,9 +235,9 @@ const DeleteScientificDegreeModal = ({
                 setReason(e.target.value);
                 if (error) setError("");
               }}
-              placeholder={t("scientificDegrees.delete.reasonPlaceholder")}
+              placeholder={t("contractingTypes.delete.reasonPlaceholder")}
               rows={3}
-              disabled={loading || loadingDeleteScientificDegree}
+              disabled={loading || loadingDeleteShiftHoursType}
               className={`w-full p-3 border rounded-lg resize-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors ${
                 isDark
                   ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400"
@@ -231,7 +254,7 @@ const DeleteScientificDegreeModal = ({
             <button
               type="button"
               onClick={handleClose}
-              disabled={loadingDeleteScientificDegree}
+              disabled={loadingDeleteShiftHoursType}
               className={`px-4 py-2 rounded-lg border transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                 isDark
                   ? "border-gray-600 text-gray-300 hover:bg-gray-700"
@@ -242,13 +265,13 @@ const DeleteScientificDegreeModal = ({
             </button>
             <button
               type="submit"
-              disabled={loadingDeleteScientificDegree || !reason.trim()}
+              disabled={loadingDeleteShiftHoursType || !reason.trim()}
               className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
-              {(loading || loadingDeleteScientificDegree) && (
+              {(loading || loadingDeleteShiftHoursType) && (
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
               )}
-              {t("scientificDegrees.delete.confirm")}
+              {t("contractingTypes.delete.confirm")}
             </button>
           </div>
         </form>
@@ -257,4 +280,4 @@ const DeleteScientificDegreeModal = ({
   );
 };
 
-export default DeleteScientificDegreeModal;
+export default DeleteShiftHoursTypeModal;

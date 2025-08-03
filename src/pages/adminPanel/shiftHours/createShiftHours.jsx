@@ -36,11 +36,12 @@ function CreateShiftHourType() {
     { value: "Evening", labelKey: "shiftHourTypeForm.periods.evening" },
     { value: "Night", labelKey: "shiftHourTypeForm.periods.night" },
   ];
-  console.log("values", values);
   const handleSubmit = async (
     values,
     { setSubmitting, resetForm, setFieldError }
   ) => {
+    console.log("values", values);
+
     dispatch(createShiftHoursType(values))
       .unwrap()
       .then(() => {
@@ -54,7 +55,7 @@ function CreateShiftHourType() {
           pauseOnHover: true,
           draggable: true,
         });
-        navigate("/admin-panel/shift-hour-types");
+        navigate("/admin-panel/shift-hours-types");
       })
       .catch((error) => {
         console.error("Shift hour type creation error:", error);
@@ -83,7 +84,7 @@ function CreateShiftHourType() {
           isRTL ? "font-arabic" : ""
         }`}
       >
-        {t("shiftHourTypeForm.title")}
+        {t("shiftHourTypeForm.addTitle")}
       </h2>
 
       <Formik
@@ -230,11 +231,11 @@ function CreateShiftHourType() {
               <Field
                 type="number"
                 id="hoursCount"
-                name="hoursCount"
+                name="hours"
                 min="1"
                 max="24"
                 className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.hoursCount && touched.hoursCount
+                  errors.hours && touched.hours
                     ? "border-red-500 bg-red-50"
                     : "border-gray-300"
                 }`}

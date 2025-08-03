@@ -222,7 +222,7 @@ function UseInitialStates() {
     // Filter state
     filters: {
       search: "",
-      statusFilter: "all", // "all" or "active"
+      statusFilter: true, // "all" or "active"
       page: 1,
       pageSize: 10,
     },
@@ -257,43 +257,28 @@ function UseInitialStates() {
   };
 
   const initialStateScientificDegrees = {
-    // Scientific Degree filters
-    filters: {
-      search: "",
-      isActive: null,
-      createdFrom: null,
-      createdTo: null,
-      includeStatistics: true,
-      orderBy: "nameArabic",
-      orderDesc: true,
-      page: 1,
-      pageSize: 10,
-      statusFilter: "all", // "all" or "active"
-    },
-
-    // Scientific Degree data
-    allScientificDegrees: [],
-    allActiveScientificDegrees: [],
     scientificDegrees: [],
-    activeScientificDegrees: [],
     scientificDegreesForSignup: [],
     selectedScientificDegree: null,
-    pagination: {
+
+    // Pagination
+    pagination: null,
+
+    // Filters
+    filters: {
+      search: "",
+      code: "",
+      isActive: undefined, // undefined = all, true = active, false = inactive
+      createdFromDate: "",
+      createdToDate: "",
+      sortBy: 5, // Default to CreatedAt (based on API documentation)
+      sortDirection: 1, // Default to Descending (newest first)
       page: 1,
       pageSize: 10,
-      totalItems: 0,
-      totalPages: 0,
-      hasNextPage: false,
-      hasPrevPage: false,
     },
-
-    // Messages and timestamps
-    message: "",
-    timestamp: null,
 
     // Loading states
     loadingGetScientificDegrees: false,
-    loadingGetActiveScientificDegrees: false,
     loadingGetScientificDegreesForSignup: false,
     loadingGetSingleScientificDegree: false,
     loadingCreateScientificDegree: false,
@@ -312,10 +297,14 @@ function UseInitialStates() {
     updateSuccess: false,
     deleteSuccess: false,
 
-    // Messages
+    // Success messages
     createMessage: "",
     updateMessage: "",
     deleteMessage: "",
+
+    // General
+    message: "",
+    timestamp: null,
   };
 
   const initialStateShiftHoursTypes = {

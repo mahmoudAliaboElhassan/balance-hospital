@@ -73,7 +73,7 @@ function EditShiftHourType() {
         pauseOnHover: true,
         draggable: true,
       });
-      navigate("/admin-panel/shift-hour-types");
+      navigate("/admin-panel/shift-hours-types");
     }
   }, [updateSuccess, updateMessage, navigate, t]);
 
@@ -85,7 +85,7 @@ function EditShiftHourType() {
         nameEnglish: selectedShiftHoursType.nameEnglish || "",
         code: selectedShiftHoursType.code || "",
         period: selectedShiftHoursType.period || "",
-        hoursCount: selectedShiftHoursType.hours || "",
+        hours: selectedShiftHoursType.hours || "",
         startTime: selectedShiftHoursType.startTime || "",
         endTime: selectedShiftHoursType.endTime || "",
         isActive:
@@ -98,7 +98,8 @@ function EditShiftHourType() {
   };
 
   const handleSubmit = async (values, { setSubmitting, setFieldError }) => {
-    dispatch(updateShiftHoursType({ id, shiftHoursTypeData: values }))
+    const data = { ...values, id };
+    dispatch(updateShiftHoursType({ id, shiftHoursTypeData: data }))
       .unwrap()
       .then(() => {
         // Success is handled in useEffect
@@ -160,7 +161,7 @@ function EditShiftHourType() {
               : singleShiftHoursTypeError.message}
           </p>
           <button
-            onClick={() => navigate("/admin-panel/shift-hour-types")}
+            onClick={() => navigate("/admin-panel/shift-hours-types")}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             {t("common.goBack")}
@@ -197,7 +198,7 @@ function EditShiftHourType() {
             {t("shiftHourTypeForm.error.notFoundMessage")}
           </p>
           <button
-            onClick={() => navigate("/admin-panel/shift-hour-types")}
+            onClick={() => navigate("/admin-panel/shift-hours-types")}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             {t("common.goBack")}
@@ -361,11 +362,11 @@ function EditShiftHourType() {
               <Field
                 type="number"
                 id="hoursCount"
-                name="hoursCount"
+                name="hours"
                 min="1"
                 max="24"
                 className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.hoursCount && touched.hoursCount
+                  errors.hours && touched.hours
                     ? "border-red-500 bg-red-50"
                     : "border-gray-300"
                 }`}
@@ -463,7 +464,7 @@ function EditShiftHourType() {
                 type="button"
                 className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 onClick={() => {
-                  navigate("/admin-panel/shift-hour-types");
+                  navigate("/admin-panel/shift-hours-types");
                 }}
               >
                 {t("shiftHourTypeForm.buttons.cancel")}

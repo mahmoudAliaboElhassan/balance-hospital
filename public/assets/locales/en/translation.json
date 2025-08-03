@@ -750,7 +750,6 @@
     "title": "Contracting Types",
     "description": "Manage employment contract types and their configurations",
     "addNew": "Add New Contracting Type",
-    "deleteSuccess": "Contracting Type \"{{name}}\" deleted successfully!",
     "add": "Add",
     "backToList": "Back to Contracting Types",
     "noData": "No contracting types found",
@@ -758,6 +757,7 @@
     "notFound": "Contracting type not found",
     "fetchError": "Error fetching contracting types",
     "hoursPerWeek": "hours/week",
+    "deleteSuccess": "Contracting Type \"{{name}}\" deleted successfully!",
     "search": {
       "placeholder": "Search contracting types by name..."
     },
@@ -765,15 +765,30 @@
       "title": "Filters",
       "status": "Status",
       "allStatuses": "All Statuses",
+      "overtime": "Overtime",
+      "allOvertimes": "All Overtime Options",
+      "minHours": "Min Hours/Week",
+      "maxHours": "Max Hours/Week",
+      "fromDate": "From Date",
+      "toDate": "To Date",
       "orderBy": "Sort By",
       "orderDirection": "Sort Direction",
       "ascending": "Ascending",
       "descending": "Descending",
-      "sortBy": {
+      "sortBy": "Sort By",
+      "sortByOptions": {
+        "createdAt": "Creation Date",
+        "updatedAt": "Updated At",
         "nameArabic": "Arabic Name",
         "nameEnglish": "English Name",
-        "createdAt": "Creation Date"
-      }
+        "code": "Code",
+        "usersCount": "Users Count",
+        "maxHours": "Max Hours/Week",
+        "allowOvertime": "Allow Overtime Hours"
+      },
+      "sortDirection": "اتجاه الترتيب",
+
+      "clear": "Clear Filters"
     },
     "table": {
       "name": "Name",
@@ -853,6 +868,13 @@
       "updatedBy": "Updated By",
       "andMoreUsers": "and {{count}} more users"
     },
+    "pagination": {
+      "showing": "Showing",
+      "to": "to",
+      "of": "of",
+      "results": "results",
+      "perPage": "Per page"
+    },
     "success": {
       "created": "Contracting type created successfully!",
       "updated": "Contracting type updated successfully!",
@@ -867,7 +889,6 @@
       "dependencyError": "Cannot delete this contracting type as it has associated users"
     }
   },
-
   "scientificDegrees": {
     "title": "Scientific Degrees",
     "description": "Manage academic and scientific degree types",
@@ -891,12 +912,9 @@
       "orderDirection": "Sort Direction",
       "ascending": "Ascending",
       "descending": "Descending",
-      "sortBy": {
-        "nameArabic": "Arabic Name",
-        "nameEnglish": "English Name",
-        "code": "Code",
-        "createdAt": "Creation Date"
-      }
+      "codePlaceholder": "Enter scientific degree code",
+
+      "code": "Code"
     },
     "table": {
       "name": "Name",
@@ -1062,6 +1080,7 @@
 
   "shiftHourTypeForm": {
     "editTitle": "Edit Shift Hour Type",
+    "addTitle": "Add New Shift Hour Type",
     "periods": {
       "morning": "Morning",
       "day": "Day",
@@ -1091,7 +1110,8 @@
     },
     "buttons": {
       "cancel": "Cancel",
-      "update": "Update",
+      "create": "Create Shift Hour Type",
+      "update": "Update Shift Hour Type",
       "updating": "Updating..."
     },
     "success": {

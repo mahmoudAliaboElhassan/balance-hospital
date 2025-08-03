@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../utils/axiosInstance";
 
-// Get ContractingTypes
+// Get ContractingTypes (Updated to match endpoint spec)
 export const getContractingTypes = createAsyncThunk(
   "contractingTypeSlice/getContractingTypes",
   async (params = {}, thunkAPI) => {
@@ -10,22 +10,25 @@ export const getContractingTypes = createAsyncThunk(
     try {
       const queryParams = new URLSearchParams();
 
-      // Add parameters if they exist
-      if (params.search) queryParams.append("search", params.search);
-      if (params.isActive !== undefined)
-        queryParams.append("isActive", params.isActive);
-      if (params.createdFrom)
-        queryParams.append("createdFrom", params.createdFrom);
-      if (params.createdTo) queryParams.append("createdTo", params.createdTo);
-      if (params.includeStatistics !== undefined)
-        queryParams.append("includeStatistics", params.includeStatistics);
-      if (params.page) queryParams.append("page", params.page);
-      if (params.pageSize) queryParams.append("pageSize", params.pageSize);
-      if (params.orderBy) queryParams.append("orderBy", params.orderBy);
-      if (params.orderDesc !== undefined)
-        queryParams.append("orderDesc", params.orderDesc);
+      // Add parameters based on endpoint documentation
+      if (params.search) queryParams.append("Search", params.search);
+      if (params.allowOvertimeHours !== undefined)
+        queryParams.append("AllowOvertimeHours", params.allowOvertimeHours);
+      if (params.minHoursPerWeek !== undefined)
+        queryParams.append("MinHoursPerWeek", params.minHoursPerWeek);
+      if (params.maxHoursPerWeek !== undefined)
+        queryParams.append("MaxHoursPerWeek", params.maxHoursPerWeek);
+      if (params.statusFilter !== undefined)
+        queryParams.append("IsActive", params.statusFilter);
+      if (params.createdFromDate)
+        queryParams.append("CreatedFromDate", params.createdFromDate);
+      if (params.createdToDate)
+        queryParams.append("CreatedToDate", params.createdToDate);
+      if (params.sortBy !== undefined)
+        queryParams.append("SortBy", params.sortBy);
+      if (params.sortDirection !== undefined)
+        queryParams.append("SortDirection", params.sortDirection);
 
-      // Use /All endpoint for admin management
       const url = `/api/v1/ContractingType/All${
         queryParams.toString() ? `?${queryParams.toString()}` : ""
       }`;

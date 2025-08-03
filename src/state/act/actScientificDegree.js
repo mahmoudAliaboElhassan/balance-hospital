@@ -1,14 +1,35 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../utils/axiosInstance";
 
-// Get All Scientific Degrees
+// Get All Scientific Degrees with Query Parameters
 export const getScientificDegrees = createAsyncThunk(
   "scientificDegreeSlice/getScientificDegrees",
-  async (_, thunkAPI) => {
+  async (params = {}, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
 
     try {
-      const res = await axiosInstance.get("/api/v1/ScientificDegree", {
+      const queryParams = new URLSearchParams();
+
+      // Add parameters if they exist
+      if (params.search) queryParams.append("Search", params.search);
+      if (params.code) queryParams.append("Code", params.code);
+      if (params.isActive !== undefined)
+        queryParams.append("IsActive", params.isActive);
+      if (params.createdFromDate)
+        queryParams.append("CreatedFromDate", params.createdFromDate);
+      if (params.createdToDate)
+        queryParams.append("CreatedToDate", params.createdToDate);
+      if (params.sortBy !== undefined)
+        queryParams.append("SortBy", params.sortBy);
+      if (params.sortDirection !== undefined)
+        queryParams.append("SortDirection", params.sortDirection);
+
+      // Construct the URL with query parameters
+      const url = `/api/v1/ScientificDegree${
+        queryParams.toString() ? `?${queryParams.toString()}` : ""
+      }`;
+
+      const res = await axiosInstance.get(url, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
