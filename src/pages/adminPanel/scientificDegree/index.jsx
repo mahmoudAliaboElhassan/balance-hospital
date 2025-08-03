@@ -258,17 +258,6 @@ function ScientificDegrees() {
             </div>
           )}
         </div>
-        <div
-          className={`px-2 py-1 text-xs rounded-full ${
-            scientificDegree.isActive
-              ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-              : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-          }`}
-        >
-          {scientificDegree.isActive
-            ? t("scientificDegrees.status.active")
-            : t("scientificDegrees.status.inactive")}
-        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-2 text-sm mb-3">
@@ -299,7 +288,7 @@ function ScientificDegrees() {
       <div className="flex gap-2 justify-end">
         <Link to={`/admin-panel/scientific-degrees/${scientificDegree.id}`}>
           <button
-            className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors"
+            className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors cursor-pointer"
             title={t("scientificDegrees.actions.view")}
           >
             <Eye size={16} />
@@ -309,14 +298,14 @@ function ScientificDegrees() {
           to={`/admin-panel/scientific-degrees/edit/${scientificDegree.id}`}
         >
           <button
-            className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors"
+            className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors cursor-pointer"
             title={t("scientificDegrees.actions.edit")}
           >
             <Edit size={16} />
           </button>
         </Link>
         <button
-          className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors"
+          className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors cursor-pointer"
           title={t("scientificDegrees.actions.delete")}
           onClick={() => handleDeleteClick(scientificDegree)}
         >
@@ -325,10 +314,6 @@ function ScientificDegrees() {
       </div>
     </div>
   );
-
-  if (loadingGetScientificDegrees && !scientificDegrees?.length) {
-    return <LoadingGetData />;
-  }
 
   return (
     <div
@@ -356,7 +341,7 @@ function ScientificDegrees() {
               </h1>
               <div className="flex gap-2 w-full sm:w-auto">
                 <Link to="/admin-panel/scientific-degrees/create">
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors flex-1 sm:flex-none justify-center">
+                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors flex-1 sm:flex-none justify-center cursor-pointer">
                     <Plus size={20} />
                     <span className="hidden sm:inline">
                       {t("scientificDegrees.addNew")}
@@ -369,7 +354,7 @@ function ScientificDegrees() {
                 {/* Mobile table toggle */}
                 <button
                   onClick={() => setShowMobileTable(!showMobileTable)}
-                  className={`md:hidden px-3 py-2 rounded-lg border transition-colors ${
+                  className={`md:hidden px-3 py-2 rounded-lg border transition-colors cursor-pointer ${
                     showMobileTable
                       ? "bg-blue-50 border-blue-300 text-blue-700 dark:bg-blue-900 dark:border-blue-600 dark:text-blue-300"
                       : `border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 ${
@@ -388,7 +373,7 @@ function ScientificDegrees() {
                   <span>{error.message}</span>
                   <button
                     onClick={() => dispatch(clearError())}
-                    className="text-red-500 hover:text-red-700"
+                    className="text-red-500 hover:text-red-700 cursor-pointer"
                   >
                     ×
                   </button>
@@ -433,7 +418,7 @@ function ScientificDegrees() {
                 </div>
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2 justify-center sm:justify-start ${
+                  className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2 justify-center sm:justify-start cursor-pointer ${
                     showFilters
                       ? "bg-blue-50 border-blue-300 text-blue-700 dark:bg-blue-900 dark:border-blue-600 dark:text-blue-300"
                       : `hover:bg-gray-50 dark:hover:bg-gray-700 ${
@@ -637,7 +622,7 @@ function ScientificDegrees() {
                   <div className="sm:col-span-2 lg:col-span-3">
                     <button
                       onClick={handleClearFilters}
-                      className={`px-4 py-2 rounded-lg border transition-colors ${
+                      className={`px-4 py-2 rounded-lg border cursor-pointer transition-colors ${
                         isDark
                           ? "border-gray-600 text-gray-300 hover:bg-gray-700"
                           : "border-gray-300 text-gray-700 hover:bg-gray-50"
@@ -810,7 +795,7 @@ function ScientificDegrees() {
                               to={`/admin-panel/scientific-degrees/${scientificDegree.id}`}
                             >
                               <button
-                                className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors"
+                                className="p-2 cursor-pointer text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors"
                                 title={t("scientificDegrees.actions.view")}
                               >
                                 <Eye size={16} />
@@ -820,14 +805,14 @@ function ScientificDegrees() {
                               to={`/admin-panel/scientific-degrees/edit/${scientificDegree.id}`}
                             >
                               <button
-                                className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors"
+                                className="p-2 cursor-pointer text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors"
                                 title={t("scientificDegrees.actions.edit")}
                               >
                                 <Edit size={16} />
                               </button>
                             </Link>
                             <button
-                              className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors"
+                              className="p-2 cursor-pointer text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors"
                               title={t("scientificDegrees.actions.delete")}
                               onClick={() =>
                                 handleDeleteClick(scientificDegree)
@@ -897,7 +882,7 @@ function ScientificDegrees() {
                   <button
                     onClick={() => handlePageChange(pagination.page - 1)}
                     disabled={!pagination.hasPreviousPage}
-                    className={`p-2 rounded-lg border transition-colors ${
+                    className={`p-2 rounded-lg border cursor-pointer transition-colors ${
                       pagination.hasPreviousPage
                         ? `border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 ${
                             isDark ? "text-gray-300" : "text-gray-700"
@@ -915,7 +900,7 @@ function ScientificDegrees() {
                     <button
                       key={pageNum}
                       onClick={() => handlePageChange(pageNum)}
-                      className={`px-3 py-2 rounded-lg border transition-colors ${
+                      className={`px-3 py-2 rounded-lg cursor-pointer border transition-colors ${
                         pageNum === pagination.page
                           ? "bg-blue-600 border-blue-600 text-white"
                           : `border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 ${
@@ -931,7 +916,7 @@ function ScientificDegrees() {
                   <button
                     onClick={() => handlePageChange(pagination.page + 1)}
                     disabled={!pagination.hasNextPage}
-                    className={`p-2 rounded-lg border transition-colors ${
+                    className={`p-2 rounded-lg cursor-pointer border transition-colors ${
                       pagination.hasNextPage
                         ? `border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 ${
                             isDark ? "text-gray-300" : "text-gray-700"

@@ -410,6 +410,7 @@
   "department": {
     "title": "Departments",
     "addNew": "Add New Department",
+    "add": "Add",
     "noData": "No departments available",
     "loading": "Loading departments...",
     "deleteSuccess": "Department \"{{name}}\" deleted successfully!",
@@ -898,7 +899,7 @@
   "scientificDegrees": {
     "title": "Scientific Degrees",
     "description": "Manage academic and scientific degree types",
-    "addNew": "Add New Scientific Degree",
+    "addNew": "Add Scientific Degree",
     "deleteSuccess": "Scientific Degree \"{{name}}\" deleted successfully!",
     "add": "Add",
     "backToList": "Back to Scientific Degrees",

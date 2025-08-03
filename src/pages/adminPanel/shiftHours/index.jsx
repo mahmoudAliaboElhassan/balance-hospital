@@ -217,17 +217,6 @@ function ShiftHours() {
             </div>
           )}
         </div>
-        <span
-          className={`px-2 py-1 rounded-full text-xs font-medium ${
-            shiftHoursType.isActive
-              ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
-              : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
-          }`}
-        >
-          {shiftHoursType.isActive
-            ? t("shiftHoursTypes.status.active")
-            : t("shiftHoursTypes.status.inactive")}
-        </span>
       </div>
 
       <div className="grid grid-cols-2 gap-2 text-sm mb-3">
@@ -294,7 +283,7 @@ function ShiftHours() {
       <div className="flex gap-2 justify-end">
         <Link to={`/admin-panel/shift-hours-types/${shiftHoursType.id}`}>
           <button
-            className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors"
+            className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 cursor-pointer rounded-lg transition-colors"
             title={t("shiftHoursTypes.actions.view")}
           >
             <Eye size={16} />
@@ -302,14 +291,14 @@ function ShiftHours() {
         </Link>
         <Link to={`/admin-panel/shift-hours-types/edit/${shiftHoursType.id}`}>
           <button
-            className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors"
+            className="p-2 text-green-600 cursor-pointer hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors"
             title={t("shiftHoursTypes.actions.edit")}
           >
             <Edit size={16} />
           </button>
         </Link>
         <button
-          className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors"
+          className="p-2 text-red-600 cursor-pointer hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors"
           title={t("shiftHoursTypes.actions.delete")}
           onClick={() => handleDeleteClick(shiftHoursType)}
         >
@@ -349,7 +338,7 @@ function ShiftHours() {
               </h1>
               <div className="flex gap-2 w-full sm:w-auto">
                 <Link to="/admin-panel/shift-hours-types/create">
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors flex-1 sm:flex-none justify-center">
+                  <button className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors flex-1 sm:flex-none justify-center">
                     <Plus size={20} />
                     <span className="hidden sm:inline">
                       {t("shiftHoursTypes.addNew")}
@@ -362,7 +351,7 @@ function ShiftHours() {
                 {/* Mobile table toggle */}
                 <button
                   onClick={() => setShowMobileTable(!showMobileTable)}
-                  className={`md:hidden px-3 py-2 rounded-lg border transition-colors ${
+                  className={`md:hidden px-3 py-2 cursor-pointer rounded-lg border transition-colors ${
                     showMobileTable
                       ? "bg-blue-50 border-blue-300 text-blue-700 dark:bg-blue-900 dark:border-blue-600 dark:text-blue-300"
                       : `border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 ${
@@ -381,7 +370,7 @@ function ShiftHours() {
                   <span>{error.message}</span>
                   <button
                     onClick={() => dispatch(clearError())}
-                    className="text-red-500 hover:text-red-700"
+                    className="text-red-500 cursor-pointer hover:text-red-700"
                   >
                     ×
                   </button>
@@ -426,7 +415,7 @@ function ShiftHours() {
                 </div>
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2 justify-center sm:justify-start ${
+                  className={`px-4 py-2 cursor-pointer rounded-lg border transition-colors flex items-center gap-2 justify-center sm:justify-start ${
                     showFilters
                       ? "bg-blue-50 border-blue-300 text-blue-700 dark:bg-blue-900 dark:border-blue-600 dark:text-blue-300"
                       : `hover:bg-gray-50 dark:hover:bg-gray-700 ${
@@ -587,7 +576,7 @@ function ShiftHours() {
                       onClick={handleClearFilters}
                       className={`px-4 py-2 rounded-lg border transition-colors ${
                         isDark
-                          ? "border-gray-600 text-gray-300 hover:bg-gray-700"
+                          ? "border-gray-600 cursor-pointer text-gray-300 hover:bg-gray-700"
                           : "border-gray-300 text-gray-700 hover:bg-gray-50"
                       }`}
                     >
@@ -801,7 +790,7 @@ function ShiftHours() {
                               to={`/admin-panel/shift-hours-types/${shiftHoursType.id}`}
                             >
                               <button
-                                className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors"
+                                className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors cursor-pointer"
                                 title={t("shiftHoursTypes.actions.view")}
                               >
                                 <Eye size={16} />
@@ -811,7 +800,7 @@ function ShiftHours() {
                               to={`/admin-panel/shift-hours-types/edit/${shiftHoursType.id}`}
                             >
                               <button
-                                className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors"
+                                className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors cursor-pointer"
                                 title={t("shiftHoursTypes.actions.edit")}
                               >
                                 <Edit size={16} />
@@ -819,7 +808,7 @@ function ShiftHours() {
                             </Link>
                             <button
                               onClick={() => handleDeleteClick(shiftHoursType)}
-                              className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors"
+                              className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors cursor-pointer"
                               title={t("shiftHoursTypes.actions.delete")}
                             >
                               <Trash2 size={16} />
@@ -964,37 +953,25 @@ function ShiftHours() {
                             {getPeriodDisplay(shiftHoursType.period)}
                           </div>
                         </td>
-                        <td className="p-2">
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              shiftHoursType.isActive
-                                ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
-                                : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
-                            }`}
-                          >
-                            {shiftHoursType.isActive
-                              ? t("shiftHoursTypes.status.active")
-                              : t("shiftHoursTypes.status.inactive")}
-                          </span>
-                        </td>
+
                         <td className="p-2">
                           <div className="flex gap-1">
                             <Link
                               to={`/admin-panel/shift-hours-types/${shiftHoursType.id}`}
                             >
-                              <button className="p-1 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded transition-colors">
+                              <button className="p-1 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded transition-colors cursor-pointer">
                                 <Eye size={14} />
                               </button>
                             </Link>
                             <Link
                               to={`/admin-panel/shift-hours-types/edit/${shiftHoursType.id}`}
                             >
-                              <button className="p-1 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded transition-colors">
+                              <button className="p-1 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded transition-colors cursor-pointer">
                                 <Edit size={14} />
                               </button>
                             </Link>
                             <button
-                              className="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded transition-colors"
+                              className="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded transition-colors cursor-pointer"
                               onClick={() => handleDeleteClick(shiftHoursType)}
                             >
                               <Trash2 size={14} />
@@ -1061,7 +1038,7 @@ function ShiftHours() {
                   <button
                     onClick={() => handlePageChange(pagination.page - 1)}
                     disabled={!pagination.hasPreviousPage}
-                    className={`p-2 rounded-lg border transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                    className={`p-2 rounded-lg border transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer ${
                       isDark
                         ? "border-gray-600 hover:bg-gray-700"
                         : "border-gray-300 hover:bg-gray-50"
@@ -1074,7 +1051,7 @@ function ShiftHours() {
                     <button
                       key={pageNum}
                       onClick={() => handlePageChange(pageNum)}
-                      className={`px-2 sm:px-3 py-2 rounded-lg transition-colors text-sm ${
+                      className={`px-2 sm:px-3 py-2 rounded-lg transition-colors text-sm cursor-pointer ${
                         pageNum === pagination.page
                           ? "bg-blue-600 text-white"
                           : isDark
@@ -1089,7 +1066,7 @@ function ShiftHours() {
                   <button
                     onClick={() => handlePageChange(pagination.page + 1)}
                     disabled={!pagination.hasNextPage}
-                    className={`p-2 rounded-lg border transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                    className={`p-2 rounded-lg border transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer ${
                       isDark
                         ? "border-gray-600 hover:bg-gray-700"
                         : "border-gray-300 hover:bg-gray-50"

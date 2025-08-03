@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 import UseAdminPanel from "../../hooks/use-admin-panel";
 
-export default function TabsViewFancy({ isExpanded = false }) {
+export default function TabsViewFancy({ isExpanded = false, click }) {
   const [activeTab, setActiveTab] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const { adminPanelRoutes } = UseAdminPanel();
@@ -22,6 +22,7 @@ export default function TabsViewFancy({ isExpanded = false }) {
 
   const handleTabClick = (tab) => {
     setActiveTab(tab.id);
+    click();
     setIsLoading(true);
     navigate(tab.path);
 
@@ -40,7 +41,7 @@ export default function TabsViewFancy({ isExpanded = false }) {
               key={tab.id}
               onClick={() => handleTabClick(tab)}
               className={`
-                relative group flex items-center w-full transition-all
+                relative group flex items-center w-full transition-all cursor-pointer
                 ${isExpanded ? "px-4 py-3" : "px-2 py-3 justify-center"}
                 ${
                   activeTab === tab.id

@@ -53,7 +53,7 @@ export default function DrawerComponent({
       }}
     >
       <div className="p-2 h-full overflow-hidden flex items-center justify-center">
-        <TabsViewFancy isExpanded={isExpanded} />
+        <TabsViewFancy isExpanded={isExpanded} click={handleMouseLeave} />
       </div>
     </div>
   );
