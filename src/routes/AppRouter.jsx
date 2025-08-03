@@ -34,6 +34,9 @@ import ShiftHours from "../pages/adminPanel/shiftHours";
 import CreateShiftHourType from "../pages/adminPanel/shiftHours/createShiftHours";
 import SpecificShiftHoursType from "../pages/adminPanel/shiftHours/specificShiftHours";
 import EditShiftHourType from "../pages/adminPanel/shiftHours/editShiftHours";
+import ManagementRoles from "../pages/adminPanel/managementRoles";
+import Managers from "../pages/adminPanel/managementRoles/managers";
+import AssignManager from "../pages/adminPanel/managementRoles/assignManager";
 // import CreateScientificDegree from "../pages/adminPanel/scientificDegree/createScientificDegree";
 // import EditScientificDegree from "../pages/adminPanel/scientificDegree/editScientificDegree";
 // import SpecificScientificDegree from "../pages/adminPanel/scientificDegree/specificScientificDegree";
@@ -287,6 +290,70 @@ const router = createBrowserRouter([
               </Suspense>
             ),
           },
+          {
+            path: "management-roles",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <ManagementRoles />
+              </Suspense>
+            ),
+          },
+          {
+            path: "management-roles/managers",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <Managers />
+              </Suspense>
+            ),
+          },
+          {
+            path: "management-roles/managers/assign",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <AssignManager />
+              </Suspense>
+            ),
+          },
+          // {
+          //   path: "management-roles/managers/history",
+          //   element: (
+          //     <Suspense fallback={<Loader />}>
+          //       <ManagerHistory />
+          //     </Suspense>
+          //   ),
+          // },
+          // {
+          //   path: "management-roles/department-heads",
+          //   element: (
+          //     <Suspense fallback={<Loader />}>
+          //       <DepartmentHeads />
+          //     </Suspense>
+          //   ),
+          // },
+          // {
+          //   path: "management-roles/department-heads/assign",
+          //   element: (
+          //     <Suspense fallback={<Loader />}>
+          //       <AssignDepartmentHead />
+          //     </Suspense>
+          //   ),
+          // },
+          // {
+          //   path: "management-roles/statistics",
+          //   element: (
+          //     <Suspense fallback={<Loader />}>
+          //       <RoleStatistics />
+          //     </Suspense>
+          //   ),
+          // },
+          // {
+          //   path: "management-roles/categories-managers",
+          //   element: (
+          //     <Suspense fallback={<Loader />}>
+          //       <CategoriesManagers />
+          //     </Suspense>
+          //   ),
+          // },
         ],
       },
     ],

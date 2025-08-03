@@ -1143,5 +1143,102 @@
       "notFound": "لم يتم العثور على نوع ساعات الدوام",
       "notFoundMessage": "نوع ساعات الدوام المطلوب غير موجود"
     }
+  },
+
+  "managementRoles": {
+    "title": "أدوار الإدارة",
+    "description": "إدارة أدوار النظام وتعيين المديرين ورؤساء الأقسام",
+    "refresh": "تحديث",
+
+    "statistics": {
+      "totalUsers": "إجمالي المستخدمين",
+      "totalManagers": "مديري النظام",
+      "departmentHeads": "رؤساء الأقسام",
+      "categoriesWithManagers": "الفئات التي لديها مديرين",
+      "total": "الإجمالي"
+    },
+
+    "quickActions": "الإجراءات السريعة",
+    "actions": {
+      "assignManager": "تعيين مدير",
+      "assignManagerDesc": "منح صلاحية المدير لمستخدم",
+      "assignDepartmentHead": "تعيين رئيس قسم",
+      "assignDepartmentHeadDesc": "تعيين رئيس قسم لفئة معينة",
+      "viewStatistics": "عرض الإحصائيات",
+      "viewStatisticsDesc": "تحليلات وتقارير مفصلة للأدوار",
+      "manageCategories": "إدارة الفئات",
+      "manageCategoriesDesc": "عرض وإدارة تعيينات الفئات"
+    },
+
+    "categoriesOverview": "نظرة عامة على الفئات",
+    "recentActivity": "النشاط الأخير",
+    "quickStats": "إحصائيات سريعة",
+    "viewAll": "عرض الكل",
+
+    "doctors": "أطباء",
+    "departments": "أقسام",
+    "hasManager": "يوجد مدير",
+    "noManager": "لا يوجد مدير",
+
+    "wasAssignedAs": "تم تعيينه كـ",
+    "wasRemovedFrom": "تمت إزالته من",
+    "manager": "مدير",
+    "departmentHead": "رئيس قسم",
+
+    "activeManagers": "المديرين النشطين",
+    "activeDepartmentHeads": "رؤساء الأقسام النشطين",
+
+    "errors": {
+      "statisticsError": "خطأ في تحميل الإحصائيات",
+      "summaryError": "خطأ في تحميل بيانات الملخص",
+      "categoriesError": "خطأ في تحميل الفئات"
+    }
+  },
+
+  "assignManager": {
+    "title": "تعيين مدير جديد",
+    "description": "منح صلاحيات المدير لمستخدم",
+    "backToManagers": "العودة إلى المديرين",
+    "success": "تم تعيين المدير بنجاح! جاري إعادة التوجيه...",
+
+    "form": {
+      "infoMessage": "لتعيين مدير، تحتاج إلى معرف المستخدم. يمكنك العثور على هذا في قسم إدارة المستخدمين أو الملف الشخصي للمستخدم.",
+
+      "userId": "معرف المستخدم",
+      "userIdPlaceholder": "أدخل معرف المستخدم (مثال: 123)",
+      "userIdHelp": "أدخل المعرف الرقمي للمستخدم الذي تريد تعيينه كمدير",
+
+      "notes": "ملاحظات التعيين",
+      "notesPlaceholder": "أدخل سبب تعيين هذا المستخدم كمدير وأي ملاحظات إضافية...",
+      "characters": "حرف",
+
+      "assignmentPreview": "معاينة التعيين",
+
+      "whatHappens": "ما يحدث عند تعيين هذا المدير:",
+      "consequence1": "سيحصل المستخدم على صلاحيات المدير الكاملة عبر جميع الفئات",
+      "consequence2": "سيكون قادراً على إدارة المستخدمين الآخرين ورؤساء الأقسام",
+      "consequence3": "سيتم تسجيل هذا التعيين في سجلات النظام",
+
+      "reset": "إعادة تعيين",
+      "cancel": "إلغاء",
+      "assignManager": "تعيين مدير",
+      "assigning": "جاري التعيين..."
+    },
+
+    "errors": {
+      "userIdRequired": "معرف المستخدم مطلوب",
+      "userIdInvalid": "يجب أن يكون معرف المستخدم رقماً صالحاً",
+      "userIdMustBePositive": "يجب أن يكون معرف المستخدم رقماً موجباً",
+      "notesRequired": "ملاحظات التعيين مطلوبة",
+      "notesTooShort": "يجب أن تكون الملاحظات على الأقل 10 أحرف",
+      "notesTooLong": "لا يمكن أن تتجاوز الملاحظات 500 حرف"
+    },
+
+    "help": {
+      "title": "كيفية العثور على معرف المستخدم:",
+      "step1": "انتقل إلى قسم إدارة المستخدمين في لوحة الإدارة",
+      "step2": "ابحث عن المستخدم الذي تريد تعيينه كمدير",
+      "step3": "معرف المستخدم معروض في تفاصيل المستخدم أو جدول قائمة المستخدمين"
+    }
   }
 }

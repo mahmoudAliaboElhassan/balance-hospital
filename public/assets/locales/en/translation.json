@@ -1136,5 +1136,151 @@
       "notFound": "Shift hour type not found",
       "notFoundMessage": "The requested shift hour type does not exist."
     }
+  },
+
+  "managementRoles": {
+    "title": "Management Roles",
+    "description": "Manage system roles, assign managers and department heads",
+    "refresh": "Refresh",
+    "backToRoles": "Back to Management Roles",
+    "statistics": {
+      "totalUsers": "Total Users",
+      "totalManagers": "System Managers",
+      "departmentHeads": "Department Heads",
+      "categoriesWithManagers": "Categories with Managers",
+      "total": "Total"
+    },
+    "quickActions": "Quick Actions",
+    "actions": {
+      "assignManager": "Assign Manager",
+      "assignManagerDesc": "Grant manager access to a user",
+      "assignDepartmentHead": "Assign Department Head",
+      "assignDepartmentHeadDesc": "Assign department head to a category",
+      "viewStatistics": "View Statistics",
+      "viewStatisticsDesc": "Detailed role analytics and reports",
+      "manageCategories": "Manage Categories",
+      "manageCategoriesDesc": "View and manage category assignments"
+    },
+    "categoriesOverview": "Categories Overview",
+    "recentActivity": "Recent Activity",
+    "quickStats": "Quick Stats",
+    "viewAll": "View All",
+    "doctors": "doctors",
+    "departments": "departments",
+    "hasManager": "Has Manager",
+    "noManager": "No Manager",
+    "wasAssignedAs": "was assigned as",
+    "wasRemovedFrom": "was removed from",
+    "manager": "Manager",
+    "departmentHead": "Department Head",
+    "activeManagers": "Active Managers",
+    "activeDepartmentHeads": "Active Department Heads",
+    "errors": {
+      "statisticsError": "Error loading statistics",
+      "summaryError": "Error loading summary data",
+      "categoriesError": "Error loading categories"
+    }
+  },
+  "managers": {
+    "title": "System Managers",
+    "assignNew": "Assign New Manager",
+    "assign": "Assign",
+    "loading": "Loading managers...",
+    "noData": "No managers found",
+    "noDataDescription": "No system managers have been assigned yet. Click 'Assign New Manager' to get started.",
+    "assignedOn": "Assigned on",
+    "search": {
+      "placeholder": "Search managers by name, email, or mobile..."
+    },
+    "filters": {
+      "title": "Filters",
+      "clear": "Clear",
+      "itemsPerPage": "Items per page",
+      "perPage": "per page"
+    },
+    "statistics": {
+      "totalManagers": "Total Managers",
+      "activeAssignments": "Active Assignments",
+      "totalAssignments": "Total Assignments"
+    },
+    "table": {
+      "name": "Name",
+      "contact": "Contact Information",
+      "assignedDate": "Assigned Date",
+      "assignedBy": "Assigned By",
+      "actions": "Actions"
+    },
+    "pagination": {
+      "showing": "Showing",
+      "of": "of",
+      "managers": "managers"
+    },
+    "removeModal": {
+      "title": "Remove Manager",
+      "warning": "Warning",
+      "confirmMessage": "Are you sure you want to remove {{name}} from the manager role?",
+      "managerDetails": "Manager Details",
+      "name": "Name",
+      "id": "ID",
+      "reason": "Revocation Reason",
+      "reasonPlaceholder": "Enter the reason for removing this manager...",
+      "reasonRequired": "Please provide a reason for removing this manager.",
+      "reasonTooShort": "Reason must be at least 3 characters long.",
+      "consequences": "What happens when you remove this manager:",
+      "consequence1": "They will lose all manager privileges immediately",
+      "consequence2": "Any pending actions they initiated may be affected",
+      "consequence3": "This action will be recorded in the system logs",
+      "cancel": "Cancel",
+      "confirm": "Remove Manager",
+      "removing": "Removing...",
+      "error": "Failed to remove manager. Please try again."
+    }
+  },
+
+  "assignManager": {
+    "title": "Assign New Manager",
+    "description": "Grant manager privileges to a user",
+    "backToManagers": "Back to Managers",
+    "success": "Manager assigned successfully! Redirecting...",
+
+    "form": {
+      "infoMessage": "To assign a manager, you need the User ID. You can find this in the user management section or user profile.",
+
+      "userId": "User ID",
+      "userIdPlaceholder": "Enter the user ID (e.g. 123)",
+      "userIdHelp": "Enter the numeric ID of the user you want to assign as manager",
+
+      "notes": "Assignment Notes",
+      "notesPlaceholder": "Enter the reason for assigning this user as manager and any additional notes...",
+      "characters": "characters",
+
+      "assignmentPreview": "Assignment Preview",
+
+      "whatHappens": "What happens when you assign this manager:",
+      "consequence1": "The user will gain full manager privileges across all categories",
+      "consequence2": "They will be able to manage other users and department heads",
+      "consequence3": "This assignment will be recorded in the system logs",
+
+      "reset": "Reset",
+      "cancel": "Cancel",
+      "assignManager": "Assign Manager",
+      "assigning": "Assigning..."
+    },
+
+    "errors": {
+      "userIdRequired": "User ID is required",
+      "userIdInvalid": "User ID must be a valid number",
+      "userIdMustBePositive": "User ID must be a positive number",
+      "notesRequired": "Assignment notes are required",
+      "notesTooShort": "Notes must be at least 10 characters long",
+      "notesTooLong": "Notes cannot exceed 500 characters"
+    },
+
+    "help": {
+      "title": "How to find a User ID:",
+      "step1": "Go to the user management section in the admin panel",
+      "step2": "Find the user you want to assign as manager",
+      "step3": "The User ID is displayed in the user details or user list table"
+    }
   }
 }
