@@ -41,18 +41,9 @@ export const getShiftHoursTypes = createAsyncThunk(
       // Sorting
       if (filters.orderBy) {
         // Map frontend field names to API field names
-        const fieldMapping = {
-          nameArabic: "NameArabic",
-          nameEnglish: "NameEnglish",
-          code: "Code",
-          hours: "HoursCount",
-          period: "Period",
-          createdAt: "CreatedAt",
-          updatedAt: "UpdatedAt",
-          isActive: "IsActive",
-        };
+        console.log(`Sorting by from act: ${filters.orderBy}`);
 
-        const apiField = fieldMapping[filters.orderBy] || "NameArabic";
+        const apiField = filters.orderBy;
         queryParams.append("sortBy", apiField);
       }
 

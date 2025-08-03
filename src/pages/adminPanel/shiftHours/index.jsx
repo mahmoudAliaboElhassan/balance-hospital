@@ -23,14 +23,11 @@ import {
   setCurrentPage,
   setFilters,
   setPageSize,
+  clearFilters,
 } from "../../../state/slices/shiftHours";
 import { Link } from "react-router-dom";
-// import DeleteShiftHoursTypeModal from "../../../components/DeleteShiftHoursTypeModal";
 import LoadingGetData from "../../../components/LoadingGetData";
-import {
-  getActiveShiftHoursTypes,
-  getShiftHoursTypes,
-} from "../../../state/act/actShiftHours";
+import { getShiftHoursTypes } from "../../../state/act/actShiftHours";
 import DeleteShiftHoursTypeModal from "../../../components/DeleteShiftHoursTypeModal";
 
 function ShiftHours() {
@@ -41,9 +38,7 @@ function ShiftHours() {
 
   const {
     shiftHoursTypes,
-    activeShiftHoursTypes,
     loadingGetShiftHoursTypes,
-    loadingGetActiveShiftHoursTypes,
     pagination,
     filters,
     error,
@@ -65,21 +60,9 @@ function ShiftHours() {
   const language = i18n.language;
   const isRTL = language === "ar";
 
-  // Get current data based on status filter
-  const currentData =
-    filters.statusFilter === "active" ? activeShiftHoursTypes : shiftHoursTypes;
-  const isLoading =
-    filters.statusFilter === "active"
-      ? loadingGetActiveShiftHoursTypes
-      : loadingGetShiftHoursTypes;
-
-  // Fetch shift hours types based on status filter and other filters
+  // Fetch shift hours types with current filters
   useEffect(() => {
-    if (filters.statusFilter === "active") {
-      dispatch(getActiveShiftHoursTypes(filters));
-    } else {
-      dispatch(getShiftHoursTypes(filters));
-    }
+    dispatch(getShiftHoursTypes(filters));
   }, [dispatch, filters]);
 
   // Clear error on mount
@@ -106,6 +89,7 @@ function ShiftHours() {
 
   // Handle filter changes
   const handleFilterChange = (key, value) => {
+    console.log(`Filter changed: ${key} = ${value}`);
     dispatch(setFilters({ [key]: value, page: 1 }));
   };
 
@@ -139,7 +123,10 @@ function ShiftHours() {
       ? shiftHoursType.nameArabic
       : shiftHoursType.nameEnglish;
   };
-
+  const handleClearFilters = () => {
+    dispatch(clearFilters());
+    setSearchInput("");
+  };
   // Format date
   const formatDate = (dateString) => {
     const locale = i18n.language === "ar" ? "ar-EG" : "en-US";
@@ -332,9 +319,9 @@ function ShiftHours() {
     </div>
   );
 
-  if (isLoading) {
-    return <LoadingGetData />;
-  }
+  // if (loadingGetShiftHoursTypes) {
+  //   return <LoadingGetData />;
+  // }
 
   return (
     <div
@@ -512,14 +499,14 @@ function ShiftHours() {
                       <option value="">
                         {t("shiftHoursTypes.filters.allPeriods")}
                       </option>
-                      <option value="daily">
-                        {t("shiftHoursTypes.periods.daily")}
+                      <option value="Morning">
+                        {t("shiftHoursTypes.periods.morning")}
                       </option>
-                      <option value="weekly">
-                        {t("shiftHoursTypes.periods.weekly")}
+                      <option value="Evening">
+                        {t("shiftHoursTypes.periods.evening")}
                       </option>
-                      <option value="monthly">
-                        {t("shiftHoursTypes.periods.monthly")}
+                      <option value="Night">
+                        {t("shiftHoursTypes.periods.night")}
                       </option>
                     </select>
                   </div>
@@ -543,17 +530,23 @@ function ShiftHours() {
                           : "border-gray-300 bg-white text-gray-900"
                       }`}
                     >
-                      <option value="nameArabic">
+                      <option value="NameArabic">
                         {t("shiftHoursTypes.filters.sortBy.nameArabic")}
                       </option>
-                      <option value="nameEnglish">
+                      <option value="NameEnglish">
                         {t("shiftHoursTypes.filters.sortBy.nameEnglish")}
                       </option>
-                      <option value="hours">
+                      <option value="Period">
+                        {t("shiftHoursTypes.filters.sortBy.period")}
+                      </option>
+                      <option value="HoursCount">
                         {t("shiftHoursTypes.filters.sortBy.hours")}
                       </option>
-                      <option value="createdAt">
+                      <option value="CreatedAt">
                         {t("shiftHoursTypes.filters.sortBy.createdAt")}
+                      </option>
+                      <option value="UpdatedAt">
+                        {t("shiftHoursTypes.filters.sortBy.updatedAt")}
                       </option>
                     </select>
                   </div>
@@ -588,6 +581,19 @@ function ShiftHours() {
                       </option>
                     </select>
                   </div>
+
+                  <div className="sm:col-span-2 lg:col-span-3">
+                    <button
+                      onClick={handleClearFilters}
+                      className={`px-4 py-2 rounded-lg border transition-colors ${
+                        isDark
+                          ? "border-gray-600 text-gray-300 hover:bg-gray-700"
+                          : "border-gray-300 text-gray-700 hover:bg-gray-50"
+                      }`}
+                    >
+                      {t("contractingTypes.filters.clear")}
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -595,7 +601,7 @@ function ShiftHours() {
 
           {/* Mobile Cards View */}
           <div className={`md:hidden ${showMobileTable ? "hidden" : "block"}`}>
-            {isLoading ? (
+            {loadingGetShiftHoursTypes ? (
               <div className="text-center p-8">
                 <div className="flex items-center justify-center">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -608,7 +614,7 @@ function ShiftHours() {
                   </span>
                 </div>
               </div>
-            ) : !currentData || currentData.length === 0 ? (
+            ) : !shiftHoursTypes || shiftHoursTypes.length === 0 ? (
               <div
                 className={`text-center p-8 ${
                   isDark ? "text-gray-400" : "text-gray-500"
@@ -617,7 +623,7 @@ function ShiftHours() {
                 {t("shiftHoursTypes.noData")}
               </div>
             ) : (
-              currentData.map((shiftHoursType) => (
+              shiftHoursTypes.map((shiftHoursType) => (
                 <ShiftHoursTypeCard
                   key={shiftHoursType.id}
                   shiftHoursType={shiftHoursType}
@@ -689,24 +695,7 @@ function ShiftHours() {
                     >
                       {t("shiftHoursTypes.table.period")}
                     </th>
-                    <th
-                      className={`${
-                        isRTL ? "text-right" : "text-left"
-                      } p-4 font-semibold ${
-                        isDark ? "text-white" : "text-gray-900"
-                      }`}
-                    >
-                      {t("shiftHoursTypes.table.status")}
-                    </th>
-                    <th
-                      className={`${
-                        isRTL ? "text-right" : "text-left"
-                      } p-4 font-semibold ${
-                        isDark ? "text-white" : "text-gray-900"
-                      }`}
-                    >
-                      {t("shiftHoursTypes.table.createdAt")}
-                    </th>
+
                     <th
                       className={`${
                         isRTL ? "text-right" : "text-left"
@@ -719,7 +708,7 @@ function ShiftHours() {
                   </tr>
                 </thead>
                 <tbody>
-                  {isLoading ? (
+                  {loadingGetShiftHoursTypes ? (
                     <tr>
                       <td colSpan="8" className="text-center p-8">
                         <div className="flex items-center justify-center">
@@ -734,7 +723,7 @@ function ShiftHours() {
                         </div>
                       </td>
                     </tr>
-                  ) : !currentData || currentData.length === 0 ? (
+                  ) : !shiftHoursTypes || shiftHoursTypes.length === 0 ? (
                     <tr>
                       <td
                         colSpan="8"
@@ -746,7 +735,7 @@ function ShiftHours() {
                       </td>
                     </tr>
                   ) : (
-                    currentData.map((shiftHoursType) => (
+                    shiftHoursTypes.map((shiftHoursType) => (
                       <tr
                         key={shiftHoursType.id}
                         className={`border-b transition-colors ${
@@ -805,28 +794,7 @@ function ShiftHours() {
                             {getPeriodDisplay(shiftHoursType.period)}
                           </span>
                         </td>
-                        <td className="p-4">
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              shiftHoursType.isActive
-                                ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
-                                : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
-                            }`}
-                          >
-                            {shiftHoursType.isActive
-                              ? t("shiftHoursTypes.status.active")
-                              : t("shiftHoursTypes.status.inactive")}
-                          </span>
-                        </td>
-                        <td
-                          className={`p-4 text-sm ${
-                            isDark ? "text-gray-300" : "text-gray-600"
-                          }`}
-                        >
-                          {shiftHoursType.createdAt
-                            ? formatDate(shiftHoursType.createdAt)
-                            : "-"}
-                        </td>
+
                         <td className="p-4">
                           <div className="flex gap-2">
                             <Link
@@ -923,7 +891,7 @@ function ShiftHours() {
                   </tr>
                 </thead>
                 <tbody>
-                  {isLoading ? (
+                  {loadingGetShiftHoursTypes ? (
                     <tr>
                       <td colSpan="4" className="text-center p-8">
                         <div className="flex items-center justify-center">
@@ -938,7 +906,7 @@ function ShiftHours() {
                         </div>
                       </td>
                     </tr>
-                  ) : !currentData || currentData.length === 0 ? (
+                  ) : !shiftHoursTypes || shiftHoursTypes.length === 0 ? (
                     <tr>
                       <td
                         colSpan="4"
@@ -950,7 +918,7 @@ function ShiftHours() {
                       </td>
                     </tr>
                   ) : (
-                    currentData.map((shiftHoursType) => (
+                    shiftHoursTypes.map((shiftHoursType) => (
                       <tr
                         key={shiftHoursType.id}
                         className={`border-b transition-colors ${

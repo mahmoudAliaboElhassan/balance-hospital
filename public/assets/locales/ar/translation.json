@@ -1015,7 +1015,7 @@
     "title": "أنواع ساعات الدوام",
     "addNew": "إضافة نوع ساعات دوام جديد",
     "add": "إضافة",
-    "loading": "جارٍ التحميل...",
+    "loading": "جاري تحميل أنواع ساعات الدوام...",
     "noData": "لا توجد بيانات",
     "search": {
       "placeholder": "ابحث..."
@@ -1032,7 +1032,9 @@
         "nameArabic": "الاسم (عربي)",
         "nameEnglish": "الاسم (إنجليزي)",
         "hours": "الساعات",
-        "createdAt": "تاريخ الإنشاء"
+        "createdAt": "تاريخ الإنشاء",
+        "period": "الفترة",
+        "updatedAt": "تاريخ آخر تحديث"
       },
       "descending": "تنازلي",
       "ascending": "تصاعدي"
@@ -1044,7 +1046,10 @@
     "periods": {
       "daily": "يومي",
       "weekly": "أسبوعي",
-      "monthly": "شهري"
+      "monthly": "شهري",
+      "morning": "صباحي",
+      "evening": "مسائي",
+      "night": "ليلي"
     },
     "table": {
       "nameArabic": "الاسم (عربي)",

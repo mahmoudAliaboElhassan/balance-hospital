@@ -111,9 +111,12 @@ export const shiftHoursTypeSlice = createSlice({
       state.filters.page = 1;
 
       // Apply client-side search filtering and pagination
-      const searchFiltered = filterDataBySearch(state.allShiftHoursTypes, action.payload);
+      const searchFiltered = filterDataBySearch(
+        state.allShiftHoursTypes,
+        action.payload
+      );
       const result = paginateData(searchFiltered, 1, state.filters.pageSize);
-      
+
       state.shiftHoursTypes = result.data;
       state.pagination = result.pagination;
     },
@@ -140,9 +143,16 @@ export const shiftHoursTypeSlice = createSlice({
       state.filters.page = action.payload;
 
       // Apply client-side pagination
-      const searchFiltered = filterDataBySearch(state.allShiftHoursTypes, state.filters.search);
-      const result = paginateData(searchFiltered, action.payload, state.filters.pageSize);
-      
+      const searchFiltered = filterDataBySearch(
+        state.allShiftHoursTypes,
+        state.filters.search
+      );
+      const result = paginateData(
+        searchFiltered,
+        action.payload,
+        state.filters.pageSize
+      );
+
       state.shiftHoursTypes = result.data;
       state.pagination = result.pagination;
     },
@@ -152,9 +162,12 @@ export const shiftHoursTypeSlice = createSlice({
       state.filters.page = 1;
 
       // Apply client-side pagination
-      const searchFiltered = filterDataBySearch(state.allShiftHoursTypes, state.filters.search);
+      const searchFiltered = filterDataBySearch(
+        state.allShiftHoursTypes,
+        state.filters.search
+      );
       const result = paginateData(searchFiltered, 1, action.payload);
-      
+
       state.shiftHoursTypes = result.data;
       state.pagination = result.pagination;
     },
@@ -245,9 +258,16 @@ export const shiftHoursTypeSlice = createSlice({
           state.timestamp = response.timestamp;
 
           // Apply client-side search filtering and pagination
-          const searchFiltered = filterDataBySearch(state.allShiftHoursTypes, state.filters.search);
-          const result = paginateData(searchFiltered, state.filters.page, state.filters.pageSize);
-          
+          const searchFiltered = filterDataBySearch(
+            state.allShiftHoursTypes,
+            state.filters.search
+          );
+          const result = paginateData(
+            searchFiltered,
+            state.filters.page,
+            state.filters.pageSize
+          );
+
           state.shiftHoursTypes = result.data;
           state.pagination = result.pagination;
         }
@@ -314,12 +334,22 @@ export const shiftHoursTypeSlice = createSlice({
 
           // Add new item to the data array if response includes the created item
           if (response.data) {
-            state.allShiftHoursTypes = [response.data, ...state.allShiftHoursTypes];
+            state.allShiftHoursTypes = [
+              response.data,
+              ...state.allShiftHoursTypes,
+            ];
 
             // Re-apply current view
-            const searchFiltered = filterDataBySearch(state.allShiftHoursTypes, state.filters.search);
-            const result = paginateData(searchFiltered, state.filters.page, state.filters.pageSize);
-            
+            const searchFiltered = filterDataBySearch(
+              state.allShiftHoursTypes,
+              state.filters.search
+            );
+            const result = paginateData(
+              searchFiltered,
+              state.filters.page,
+              state.filters.pageSize
+            );
+
             state.shiftHoursTypes = result.data;
             state.pagination = result.pagination;
           }
@@ -371,9 +401,16 @@ export const shiftHoursTypeSlice = createSlice({
             }
 
             // Re-apply current view
-            const searchFiltered = filterDataBySearch(state.allShiftHoursTypes, state.filters.search);
-            const result = paginateData(searchFiltered, state.filters.page, state.filters.pageSize);
-            
+            const searchFiltered = filterDataBySearch(
+              state.allShiftHoursTypes,
+              state.filters.search
+            );
+            const result = paginateData(
+              searchFiltered,
+              state.filters.page,
+              state.filters.pageSize
+            );
+
             state.shiftHoursTypes = result.data;
             state.pagination = result.pagination;
           }
@@ -417,17 +454,26 @@ export const shiftHoursTypeSlice = createSlice({
             );
 
             // Re-apply current view and adjust page if necessary
-            const searchFiltered = filterDataBySearch(state.allShiftHoursTypes, state.filters.search);
+            const searchFiltered = filterDataBySearch(
+              state.allShiftHoursTypes,
+              state.filters.search
+            );
             let currentPage = state.filters.page;
-            const maxPage = Math.ceil(searchFiltered.length / state.filters.pageSize);
-            
+            const maxPage = Math.ceil(
+              searchFiltered.length / state.filters.pageSize
+            );
+
             if (currentPage > maxPage && maxPage > 0) {
               currentPage = maxPage;
               state.filters.page = currentPage;
             }
 
-            const result = paginateData(searchFiltered, currentPage, state.filters.pageSize);
-            
+            const result = paginateData(
+              searchFiltered,
+              currentPage,
+              state.filters.pageSize
+            );
+
             state.shiftHoursTypes = result.data;
             state.pagination = result.pagination;
           }

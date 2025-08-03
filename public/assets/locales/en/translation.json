@@ -87,7 +87,7 @@
     "loading": "Sending reset request…",
     "button": "Send Reset Link"
   },
-   "resetPassword": {
+  "resetPassword": {
     "code_invalid": "Code must be exactly 6 digits.",
     "code_required": "Verification code is required.",
     "password_min": "Password must be at least 8 characters.",
@@ -105,8 +105,7 @@
       "title": "Reset Failed",
       "message": "Unable to reset your password."
     }
-  }
- ,
+  },
   "adminPanel": {
     "categories": "Categories",
     "pendingDoctorRequests": "Pending Doctor Requests",
@@ -1012,7 +1011,7 @@
     "title": "Shift Hours Types",
     "addNew": "Add New Shift Hours Type",
     "add": "Add",
-    "loading": "Loading...",
+    "loading": "Loading shift hours types...",
     "noData": "No data available",
     "search": {
       "placeholder": "Search..."
@@ -1029,7 +1028,9 @@
         "nameArabic": "Name (Arabic)",
         "nameEnglish": "Name (English)",
         "hours": "Hours",
-        "createdAt": "Created At"
+        "period": "Period",
+        "createdAt": "Created At",
+        "updatedAt": "Updated At"
       },
       "descending": "Descending",
       "ascending": "Ascending"
