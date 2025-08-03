@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
+import "../../../styles/general.css";
+
 import {
   Search,
   Filter,

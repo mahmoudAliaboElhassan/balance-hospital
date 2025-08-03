@@ -859,15 +859,7 @@ function ShiftHours() {
                     >
                       {t("shiftHoursTypes.table.hours")}
                     </th>
-                    <th
-                      className={`${
-                        isRTL ? "text-right" : "text-left"
-                      } p-2 font-semibold ${
-                        isDark ? "text-white" : "text-gray-900"
-                      }`}
-                    >
-                      {t("shiftHoursTypes.table.status")}
-                    </th>
+
                     <th
                       className={`${
                         isRTL ? "text-right" : "text-left"
@@ -923,7 +915,9 @@ function ShiftHours() {
                                 isDark ? "text-white" : "text-gray-900"
                               }`}
                             >
-                              {shiftHoursType.nameArabic}
+                              {
+                                language === "ar"?
+                                shiftHoursType.nameArabic:shiftHoursType.nameEnglish}
                             </div>
                             <div
                               className={`text-xs ${

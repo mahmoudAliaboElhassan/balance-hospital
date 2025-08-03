@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
+import "../../../styles/general.css";
 import {
   Search,
   Filter,
@@ -26,6 +27,7 @@ import {
   setFilters,
   setPageSize,
   setCategoryFilter,
+  clearFilters,
 } from "../../../state/slices/department";
 import { Link } from "react-router-dom";
 import DeleteDepartmentModal from "../../../components/DeleteDepartmentModal";
@@ -94,7 +96,11 @@ function Department() {
   const handlePageSizeChange = (newPageSize) => {
     dispatch(setPageSize(parseInt(newPageSize)));
   };
-
+  const handleClearFilters = () => {
+    dispatch(clearFilters());
+    setSearchInput("");
+    handleFilterChange("isActive", true);
+  };
   // Format date
   const formatDate = (dateString) => {
     const locale = i18n.language === "ar" ? "ar-EG" : "en-US";
@@ -246,7 +252,7 @@ function Department() {
       <div className="flex gap-2 justify-end">
         <Link to={`/admin-panel/department/${department.id}`}>
           <button
-            className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors"
+            className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors cursor-pointer cursor-pointer"
             title={t("department.actions.view")}
           >
             <Eye size={16} />
@@ -254,14 +260,14 @@ function Department() {
         </Link>
         <Link to={`/admin-panel/department/edit/${department.id}`}>
           <button
-            className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors"
+            className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors cursor-pointer cursor-pointer"
             title={t("department.actions.edit")}
           >
             <Edit size={16} />
           </button>
         </Link>
         <button
-          className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors"
+          className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors cursor-pointer"
           title={t("department.actions.delete")}
           onClick={() => {
             setToDelete({
@@ -306,7 +312,7 @@ function Department() {
               </h1>
               <div className="flex gap-2 w-full sm:w-auto">
                 <Link to="/admin-panel/department/create">
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors flex-1 sm:flex-none justify-center">
+                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors cursor-pointer flex-1 sm:flex-none justify-center">
                     <Plus size={20} />
                     <span className="hidden sm:inline">
                       {t("department.addNew")}
@@ -317,7 +323,7 @@ function Department() {
                 {/* Mobile table toggle */}
                 <button
                   onClick={() => setShowMobileTable(!showMobileTable)}
-                  className={`md:hidden px-3 py-2 rounded-lg border transition-colors ${
+                  className={`md:hidden px-3 py-2 rounded-lg border transition-colors cursor-pointer ${
                     showMobileTable
                       ? "bg-blue-50 border-blue-300 text-blue-700 dark:bg-blue-900 dark:border-blue-600 dark:text-blue-300"
                       : `border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 ${
@@ -381,7 +387,7 @@ function Department() {
                 </div>
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2 justify-center sm:justify-start ${
+                  className={`px-4 py-2 rounded-lg border transition-colors cursor-pointer flex items-center gap-2 justify-center sm:justify-start ${
                     showFilters
                       ? "bg-blue-50 border-blue-300 text-blue-700 dark:bg-blue-900 dark:border-blue-600 dark:text-blue-300"
                       : `hover:bg-gray-50 dark:hover:bg-gray-700 ${
@@ -415,9 +421,7 @@ function Department() {
                       value={filters.categoryId || 1}
                       onChange={(e) => {
                         const value =
-                          e.target.value === ""
-                            ? null
-                            : parseInt(e.target.value);
+                          e.target.value === "" ? "" : parseInt(e.target.value);
                         handleFilterChange("categoryId", value);
                       }}
                       className={`w-full p-2 border rounded-lg ${
@@ -539,6 +543,18 @@ function Department() {
                       </option>
                     </select>
                   </div>
+                  <div className="sm:col-span-2 lg:col-span-3">
+                    <button
+                      onClick={handleClearFilters}
+                      className={`px-4 py-2 rounded-lg border transition-colors cursor-pointer cursor-pointer ${
+                        isDark
+                          ? "border-gray-600 text-gray-300 hover:bg-gray-700"
+                          : "border-gray-300 text-gray-700 hover:bg-gray-50"
+                      }`}
+                    >
+                      {t("contractingTypes.filters.clear")}
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -583,7 +599,7 @@ function Department() {
             } rounded-lg shadow-sm border`}
           >
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full text-center">
                 <thead>
                   <tr
                     className={`border-b ${
@@ -715,7 +731,7 @@ function Department() {
                     departments.map((department) => (
                       <tr
                         key={department.id}
-                        className={`border-b transition-colors ${
+                        className={`border-b transition-colors cursor-pointer ${
                           isDark
                             ? "border-gray-700 hover:bg-gray-750"
                             : "border-gray-200 hover:bg-gray-50"
@@ -822,7 +838,7 @@ function Department() {
                               to={`/admin-panel/department/${department.id}`}
                             >
                               <button
-                                className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors"
+                                className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors cursor-pointer"
                                 title={t("departments.actions.view")}
                               >
                                 <Eye size={16} />
@@ -832,7 +848,7 @@ function Department() {
                               to={`/admin-panel/department/edit/${department.id}`}
                             >
                               <button
-                                className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors"
+                                className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors cursor-pointer"
                                 title={t("department.actions.edit")}
                               >
                                 <Edit size={16} />
@@ -849,7 +865,7 @@ function Department() {
                                 });
                                 setModalOpen(true);
                               }}
-                              className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors"
+                              className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors cursor-pointer"
                               title={t("department.actions.delete")}
                             >
                               <Trash2 size={16} />
@@ -873,7 +889,7 @@ function Department() {
             } rounded-lg shadow-sm border overflow-hidden`}
           >
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full text-sm text-center">
                 <thead>
                   <tr
                     className={`border-b ${
@@ -942,7 +958,7 @@ function Department() {
                     departments.map((department) => (
                       <tr
                         key={department.id}
-                        className={`border-b transition-colors ${
+                        className={`border-b transition-colors cursor-pointer ${
                           isDark
                             ? "border-gray-700 hover:bg-gray-750"
                             : "border-gray-200 hover:bg-gray-50"
@@ -984,19 +1000,19 @@ function Department() {
                             <Link
                               to={`/admin-panel/department/${department.id}`}
                             >
-                              <button className="p-1 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded transition-colors">
+                              <button className="p-1 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded transition-colors cursor-pointer">
                                 <Eye size={14} />
                               </button>
                             </Link>
                             <Link
                               to={`/admin-panel/department/edit/${department.id}`}
                             >
-                              <button className="p-1 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded transition-colors">
+                              <button className="p-1 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded transition-colors cursor-pointer">
                                 <Edit size={14} />
                               </button>
                             </Link>
                             <button
-                              className="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded transition-colors"
+                              className="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded transition-colors cursor-pointer"
                               onClick={() => {
                                 setToDelete({
                                   id: department.id,
@@ -1070,7 +1086,7 @@ function Department() {
                   <button
                     onClick={() => handlePageChange(pagination.page - 1)}
                     disabled={!pagination.hasPreviousPage}
-                    className={`p-2 rounded-lg border transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                    className={`p-2 rounded-lg border transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
                       isDark
                         ? "border-gray-600 hover:bg-gray-700"
                         : "border-gray-300 hover:bg-gray-50"
@@ -1083,7 +1099,7 @@ function Department() {
                     <button
                       key={pageNum}
                       onClick={() => handlePageChange(pageNum)}
-                      className={`px-2 sm:px-3 py-2 rounded-lg transition-colors text-sm ${
+                      className={`px-2 sm:px-3 py-2 rounded-lg transition-colors cursor-pointer text-sm ${
                         pageNum === pagination.page
                           ? "bg-blue-600 text-white"
                           : isDark
@@ -1098,7 +1114,7 @@ function Department() {
                   <button
                     onClick={() => handlePageChange(pagination.page + 1)}
                     disabled={!pagination.hasNextPage}
-                    className={`p-2 rounded-lg border transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                    className={`p-2 rounded-lg border transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
                       isDark
                         ? "border-gray-600 hover:bg-gray-700"
                         : "border-gray-300 hover:bg-gray-50"

@@ -22,7 +22,7 @@ export const departmentSlice = createSlice({
     clearFilters: (state) => {
       state.filters = {
         search: "",
-        categoryId: null,
+        categoryId: "",
         isActive: null,
         createdFrom: null,
         createdTo: null,
@@ -132,7 +132,7 @@ export const departmentSlice = createSlice({
         state.pagination = null;
         state.error = {
           message:
-            action.payload?.message || i18next.t("departments.fetchError"),
+            action.payload?.message || i18next.t("department.fetchError"),
           errors: action.payload?.errors || [],
           timestamp: new Date().toISOString(),
         };

@@ -1,0 +1,10 @@
+table th,
+table td {
+  text-align: center !important;
+}
+
+table div {
+  display: flex;
+  justify-content: center !important;
+  align-items: center !important;
+}

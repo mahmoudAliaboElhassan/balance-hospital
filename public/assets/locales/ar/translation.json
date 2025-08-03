@@ -108,7 +108,7 @@
     }
   },
   "adminPanel": {
-    "categories": "التصنيفات",
+    "categories": "التخصصات",
     "pendingDoctorRequests": "طلبات الأطباء المعلقة",
     "departments": "الأقسام",
     "subDepartments": "الأقسام الفرعية",
@@ -118,21 +118,21 @@
     "shiftHours": "ساعات المناوبة"
   },
   "categories": {
-    "title": "التصنيفات",
+    "title": "التخصصات",
     "loading": "جاري التحميل…",
-    "fetchError": "حدث خطأ أثناء جلب التصنيفات.",
-    "noData": "لا توجد تصنيفات",
+    "fetchError": "حدث خطأ أثناء جلب التخصصات.",
+    "noData": "لا توجد تخصصات",
     "delete": {
-      "title": "حذف التصنيف",
+      "title": "حذف التخصص",
       "confirmMessage": "هل أنت متأكد أنك تريد حذف هذا التصنيف؟",
       "reason": "سبب الحذف",
       "reasonPlaceholder": "أدخل السبب…",
       "reasonRequired": "يرجى تقديم سبب الحذف.",
       "confirm": "حذف"
     },
-    "deleteSuccess": "تم حذف التصنيف “{{name}}” بنجاح!",
+    "deleteSuccess": "تم حذف التخصص “{{name}}” بنجاح!",
     "search": {
-      "placeholder": "ابحث في التصنيفات…"
+      "placeholder": "ابحث في التخصصات…"
     },
     "filters": {
       "title": "الفلاتر",
@@ -167,7 +167,7 @@
     },
     "actions": {
       "add": "إضافة",
-      "addNew": "إضافة تصنيف جديد",
+      "addNew": "إضافة تحصص جديد",
       "view": "عرض",
       "edit": "تعديل",
       "delete": "حذف"
@@ -180,7 +180,7 @@
     }
   },
   "categoryForm": {
-    "title": "إنشاء تصنيف جديد",
+    "title": "إنشاء تحصص جديد",
     "fields": {
       "nameArabic": "الاسم بالعربية",
       "nameEnglish": "الاسم بالإنجليزية",
@@ -219,14 +219,14 @@
       }
     },
     "success": {
-      "created": "تم إنشاء التصنيف بنجاح!",
-      "updated": "تم تحديث التصنيف بنجاح!"
+      "created": "تم إنشاء التخصص بنجاح!",
+      "updated": "تم تحديث التخصص بنجاح!"
     },
     "error": {
       "title": "خطأ في الإنشاء",
       "message": "حدث خطأ أثناء إنشاء التصنيف، يرجى المحاولة مرة أخرى."
     },
-    "editTitle": "تعديل التصنيف",
+    "editTitle": "تعديل التخصص",
     "buttons": {
       "create": "إنشاء",
       "creating": "جاري الإنشاء…",
@@ -238,7 +238,7 @@
   },
   "category": {
     "error": {
-      "message": "حدث خطأ أثناء تحديث التصنيف."
+      "message": "حدث خطأ أثناء تحديث التخصص."
     }
   },
   "specificCategory": {
@@ -247,7 +247,7 @@
       "backToCategories": "العودة للتصنيفات"
     },
     "notFound": {
-      "title": "التصنيف غير موجود",
+      "title": "التخصص غير موجود",
       "backToCategories": "العودة للتصنيفات"
     },
     "navigation": {
@@ -282,7 +282,7 @@
   "loading": "جاري التحميل…",
   "pendingDoctorRequests": {
     "title": "طلبات الأطباء المعلقة",
-    "subtitle": "طلبات انضمام الأطباء لهذا التصنيف",
+    "subtitle": "طلبات انضمام الأطباء لهذا التخصص",
     "backButton": "عودة",
     "loading": {
       "categories": "جاري تحميل بيانات التصنيف…",
@@ -297,10 +297,10 @@
       "dismissButton": "تجاهل"
     },
     "categorySelector": {
-      "title": "اختر تصنيفًا لعرض الطلبات",
-      "refreshCategories": "تحديث التصنيفات",
-      "selectPrompt": "اختر التصنيف لعرض الطلبات",
-      "selectDescription": "يرجى اختيار تصنيف من القائمة أعلاه لعرض طلبات انضمام الأطباء"
+      "title": "اخترتحصصًا لعرض الطلبات",
+      "refreshCategories": "تحديث التخصصات",
+      "selectPrompt": "اختر التخصص لعرض الطلبات",
+      "selectDescription": "يرجى اختيارتحصص من القائمة أعلاه لعرض طلبات انضمام الأطباء"
     },
     "selectedCategory": {
       "refreshButton": "تحديث"
@@ -315,15 +315,15 @@
       }
     },
     "emptyStates": {
-      "noRequests": "لا توجد طلبات لهذا التصنيف",
-      "noRequestsWithFilter": "لا توجد طلبات بحالة \"{status}\" لهذا التصنيف",
+      "noRequests": "لا توجد طلبات لهذا التخصص",
+      "noRequestsWithFilter": "لا توجد طلبات بحالة \"{status}\" لهذا التخصص",
       "noRequestsDefault": "لم يتم تقديم أي طلبات بعد",
       "showAllRequests": "عرض كل الطلبات"
     },
     "pagination": {
       "showing": "عرض {start} إلى {end} من {total} طلب",
       "resultsCount": "عرض {start} إلى {end} من {total} نتيجة",
-      "category": "التصنيف: {categoryName}",
+      "category": "التخصص: {categoryName}",
       "perPage": "{count} لكل صفحة",
       "previous": "السابق",
       "next": "التالي"
@@ -370,7 +370,7 @@
     "fields": {
       "nameArabic": "الاسم بالعربية",
       "nameEnglish": "الاسم بالإنجليزية",
-      "category": "التصنيف",
+      "category": "التخصص",
       "location": "الموقع",
       "description": "الوصف",
       "isActive": "نشط"
@@ -378,7 +378,7 @@
     "placeholders": {
       "nameArabic": "أدخل اسم القسم بالعربية",
       "nameEnglish": "أدخل اسم القسم بالإنجليزية",
-      "category": "اختر تصنيفًا",
+      "category": "اخترتحصصًا",
       "location": "أدخل موقع القسم (مثل: الطابق الثالث – الجناح أ)",
       "description": "أدخل وصفًا للقسم (اختياري)"
     },
@@ -412,6 +412,7 @@
     "title": "الأقسام",
     "addNew": "إضافة قسم جديد",
     "add": "إضافة",
+    "department": "حدث خطأ أثناء جلب التخصصات.",
     "noData": "لا توجد بيانات متاحه ",
     "loading": "جاري تحميل الأقسام...",
     "search": {
@@ -424,7 +425,7 @@
       "allCategories": "كل الأقسام",
       "active": "الأقسام النشطة فقط",
       "inactive": "الأقسام غير النشطة فقط",
-      "category": "تصفية حسب التصنيف",
+      "category": "تصفية حسب التخصص",
       "dateRange": "نطاق التاريخ",
       "createdFrom": "أنشئ من",
       "createdTo": "أنشئ إلى",
@@ -434,7 +435,8 @@
     "table": {
       "nameArabic": "الاسم بالعربية",
       "nameEnglish": "الاسم بالإنجليزية",
-      "category": "التصنيف",
+      "name": "الاسم",
+      "category": "التخصص",
       "location": "الموقع",
       "subDepartments": "الأقسام الفرعية",
       "doctors": "الأطباء",
@@ -476,7 +478,7 @@
       "createdAt": "تاريخ الإنشاء",
       "updatedAt": "تاريخ آخر تحديث",
       "backToDepartments": "العودة للأقسام",
-      "noCategoryInfo": "لا توجد معلومات عن التصنيف"
+      "noCategoryInfo": "لا توجد معلومات عن التخصص"
     },
     "statistics": {
       "totalEmployees": "إجمالي الموظفين",
@@ -514,8 +516,8 @@
     "maxLength": "يجب ألا يتجاوز {{count}} حرف",
     "arabicOnly": "يرجى إدخال نص بالعربية فقط",
     "englishOnly": "يرجى إدخال نص بالإنجليزية فقط",
-    "selectCategory": "يرجى اختيار تصنيف",
-    "invalidCategory": "اختيار تصنيف غير صالح",
+    "selectCategory": "يرجى اختيارتحصص",
+    "invalidCategory": "اختيارتحصص غير صالح",
     "positiveNumber": "يجب أن يكون رقمًا موجبًا",
     "integerOnly": "يجب أن يكون عددًا صحيحًا",
     "minValue": "يجب ألا يقل عن {{count}}",
@@ -1055,6 +1057,8 @@
     "table": {
       "nameArabic": "الاسم (عربي)",
       "nameEnglish": "الاسم (إنجليزي)",
+      "name": "الاسم",
+
       "code": "الرمز",
       "hours": "الساعات",
       "period": "الفترة",

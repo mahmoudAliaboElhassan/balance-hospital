@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
+import "../../../styles/general.css";
+
 import {
   Search,
   Filter,
@@ -217,7 +219,7 @@ function Category() {
 
       {category.description && (
         <p
-          className={`text-sm mb-3 ${
+          className={`text-sm text-center mb-3 ${
             isDark ? "text-gray-300" : "text-gray-600"
           }`}
         >
@@ -228,7 +230,7 @@ function Category() {
       <div className="flex gap-2 justify-end">
         <Link to={`/admin-panel/category/${category.id}`}>
           <button
-            className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors"
+            className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors cursor-pointer"
             title={t("categories.actions.view")}
           >
             <Eye size={16} />
@@ -236,14 +238,14 @@ function Category() {
         </Link>
         <Link to={`/admin-panel/category/edit/${category.id}`}>
           <button
-            className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors"
+            className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors cursor-pointer"
             title={t("categories.actions.edit")}
           >
             <Edit size={16} />
           </button>
         </Link>
         <button
-          className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors"
+          className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors cursor-pointer"
           title={t("categories.actions.delete")}
           onClick={() => {
             setToDelete({
@@ -286,7 +288,7 @@ function Category() {
               </h1>
               <div className="flex gap-2 w-full sm:w-auto">
                 <Link to="/admin-panel/category/create">
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors flex-1 sm:flex-none justify-center">
+                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors flex-1 sm:flex-none justify-center cursor-pointer">
                     <Plus size={20} />
                     <span className="hidden sm:inline">
                       {t("categories.actions.addNew")}
@@ -299,7 +301,7 @@ function Category() {
                 {/* Mobile table toggle */}
                 <button
                   onClick={() => setShowMobileTable(!showMobileTable)}
-                  className={`md:hidden px-3 py-2 rounded-lg border transition-colors ${
+                  className={`md:hidden px-3 py-2 rounded-lg border transition-colors cursor-pointer ${
                     showMobileTable
                       ? "bg-blue-50 border-blue-300 text-blue-700 dark:bg-blue-900 dark:border-blue-600 dark:text-blue-300"
                       : `border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 ${
@@ -318,7 +320,7 @@ function Category() {
                   <span>{error.message}</span>
                   <button
                     onClick={() => dispatch(clearError())}
-                    className="text-red-500 hover:text-red-700"
+                    className="text-red-500 hover:text-red-700 cursor-pointer"
                   >
                     ×
                   </button>
@@ -363,7 +365,7 @@ function Category() {
                 </div>
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2 justify-center sm:justify-start ${
+                  className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2 justify-center sm:justify-start cursor-pointer ${
                     showFilters
                       ? "bg-blue-50 border-blue-300 text-blue-700 dark:bg-blue-900 dark:border-blue-600 dark:text-blue-300"
                       : `hover:bg-gray-50 dark:hover:bg-gray-700 ${
@@ -659,28 +661,28 @@ function Category() {
                         }`}
                       >
                         <td
-                          className={`p-4 font-mono ${
+                          className={`p-4 text-center font-mono ${
                             isDark ? "text-white" : "text-gray-900"
                           }`}
                         >
                           {category.code}
                         </td>
                         <td
-                          className={`p-4 font-semibold ${
+                          className={`p-4 text-center font-semibold ${
                             isDark ? "text-white" : "text-gray-900"
                           }`}
                         >
                           {category.nameArabic}
                         </td>
                         <td
-                          className={`p-4 ${
+                          className={`p-4 text-center ${
                             isDark ? "text-gray-300" : "text-gray-600"
                           }`}
                         >
                           {category.nameEnglish}
                         </td>
                         <td
-                          className={`p-4 ${
+                          className={`p-4 text-center ${
                             isDark ? "text-gray-300" : "text-gray-600"
                           }`}
                         >
@@ -691,7 +693,7 @@ function Category() {
                             {category.description}
                           </div>
                         </td>
-                        <td className="p-4">
+                        <td className="p-4 text-center">
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-medium ${
                               category.isActive
@@ -705,27 +707,27 @@ function Category() {
                           </span>
                         </td>
                         <td
-                          className={`p-4 ${
+                          className={`p-4 text-center ${
                             isDark ? "text-gray-300" : "text-gray-600"
                           }`}
                         >
                           {category.departmentsCount}
                         </td>
                         <td
-                          className={`p-4 ${
+                          className={`p-4 text-center ${
                             isDark ? "text-gray-300" : "text-gray-600"
                           }`}
                         >
                           {category.usersCount}
                         </td>
                         <td
-                          className={`p-4 text-sm ${
+                          className={`p-4 text-center text-sm ${
                             isDark ? "text-gray-300" : "text-gray-600"
                           }`}
                         >
                           {formatDate(category.createdAt)}
                         </td>
-                        <td className="p-4">
+                        <td className="p-4 text-center">
                           <div className="flex gap-2">
                             <Link to={`/admin-panel/category/${category.id}`}>
                               <button
@@ -790,7 +792,7 @@ function Category() {
                     }`}
                   >
                     <th
-                      className={`${
+                      className={`text-center ${
                         isRTL ? "text-right" : "text-left"
                       } p-2 font-semibold ${
                         isDark ? "text-white" : "text-gray-900"
@@ -799,7 +801,7 @@ function Category() {
                       {t("categories.table.name")}
                     </th>
                     <th
-                      className={`${
+                      className={`text-center ${
                         isRTL ? "text-right" : "text-left"
                       } p-2 font-semibold ${
                         isDark ? "text-white" : "text-gray-900"
@@ -808,7 +810,7 @@ function Category() {
                       {t("categories.table.status")}
                     </th>
                     <th
-                      className={`${
+                      className={`text-center ${
                         isRTL ? "text-right" : "text-left"
                       } p-2 font-semibold ${
                         isDark ? "text-white" : "text-gray-900"
@@ -855,7 +857,7 @@ function Category() {
                             : "border-gray-200 hover:bg-gray-50"
                         }`}
                       >
-                        <td className="p-2">
+                        <td className="p-2 text-center">
                           <div>
                             <div
                               className={`font-semibold ${
@@ -873,7 +875,7 @@ function Category() {
                             </div>
                           </div>
                         </td>
-                        <td className="p-2">
+                        <td className="p-2 text-center">
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-medium ${
                               category.isActive
@@ -886,22 +888,22 @@ function Category() {
                               : t("categories.status.inactive")}
                           </span>
                         </td>
-                        <td className="p-2">
+                        <td className="p-2 text-center">
                           <div className="flex gap-1">
                             <Link to={`/admin-panel/category/${category.id}`}>
-                              <button className="p-1 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded transition-colors">
+                              <button className="p-1 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded transition-colors cursor-pointer">
                                 <Eye size={14} />
                               </button>
                             </Link>
                             <Link
                               to={`/admin-panel/category/edit/${category.id}`}
                             >
-                              <button className="p-1 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded transition-colors">
+                              <button className="p-1 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded transition-colors cursor-pointer">
                                 <Edit size={14} />
                               </button>
                             </Link>
                             <button
-                              className="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded transition-colors"
+                              className="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded transition-colors cursor-pointer"
                               onClick={() => {
                                 setToDelete({
                                   id: category.id,
@@ -975,7 +977,7 @@ function Category() {
                   <button
                     onClick={() => handlePageChange(pagination.page - 1)}
                     disabled={!pagination.hasPreviousPage}
-                    className={`p-2 rounded-lg border transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                    className={`p-2 rounded-lg border transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer ${
                       isDark
                         ? "border-gray-600 hover:bg-gray-700"
                         : "border-gray-300 hover:bg-gray-50"
@@ -988,7 +990,7 @@ function Category() {
                     <button
                       key={pageNum}
                       onClick={() => handlePageChange(pageNum)}
-                      className={`px-2 sm:px-3 py-2 rounded-lg transition-colors text-sm ${
+                      className={`px-2 sm:px-3 py-2 rounded-lg transition-colors text-sm cursor-pointer ${
                         pageNum === pagination.page
                           ? "bg-blue-600 text-white"
                           : isDark
@@ -1003,7 +1005,7 @@ function Category() {
                   <button
                     onClick={() => handlePageChange(pagination.page + 1)}
                     disabled={!pagination.hasNextPage}
-                    className={`p-2 rounded-lg border transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                    className={`p-2 rounded-lg border transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer ${
                       isDark
                         ? "border-gray-600 hover:bg-gray-700"
                         : "border-gray-300 hover:bg-gray-50"

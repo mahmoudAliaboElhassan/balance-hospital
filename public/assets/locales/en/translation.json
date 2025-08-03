@@ -411,6 +411,7 @@
     "title": "Departments",
     "addNew": "Add New Department",
     "add": "Add",
+    "fetchError": "Failed to fetch departments",
     "noData": "No departments available",
     "loading": "Loading departments...",
     "deleteSuccess": "Department \"{{name}}\" deleted successfully!",
@@ -444,6 +445,7 @@
     "table": {
       "nameArabic": "Arabic Name",
       "nameEnglish": "English Name",
+      "name": "Name",
       "category": "Category",
       "location": "Location",
       "status": "Status",
@@ -1048,6 +1050,8 @@
     "table": {
       "nameArabic": "Name (Arabic)",
       "nameEnglish": "Name (English)",
+      "name": "Name",
+
       "code": "Code",
       "hours": "Hours",
       "period": "Period",

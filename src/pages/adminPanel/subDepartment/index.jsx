@@ -152,13 +152,11 @@ function SubDepartment() {
               isDark ? "text-white" : "text-gray-900"
             }`}
           >
-            {subDepartment.nameArabic}
+            {language === "en"
+              ? subDepartment.nameEnglish
+              : subDepartment.nameArabic}{" "}
           </h3>
-          <p
-            className={`text-sm ${isDark ? "text-gray-300" : "text-gray-600"}`}
-          >
-            {subDepartment.nameEnglish}
-          </p>
+
           {subDepartment.departmentNameArabic && (
             <p
               className={`text-xs mt-1 px-2 py-1 rounded-full inline-block ${
@@ -167,7 +165,9 @@ function SubDepartment() {
                   : "bg-blue-100 text-blue-800"
               }`}
             >
-              {subDepartment.departmentNameArabic}
+              {language === "en"
+                ? subDepartment.departmentNameEnglish
+                : subDepartment.departmentNameArabic || "بدون قسم"}{" "}
             </p>
           )}
         </div>
@@ -937,18 +937,23 @@ function SubDepartment() {
                         <td className="p-2">
                           <div>
                             <div
-                              className={`font-semibold ${
+                              className={`font-semibold m-1 ${
                                 isDark ? "text-white" : "text-gray-900"
                               }`}
                             >
-                              {subDepartment.nameArabic}
+                              {language === "en"
+                                ? subDepartment.nameEnglish
+                                : subDepartment.nameArabic}
                             </div>
                             <div
                               className={`text-xs ${
                                 isDark ? "text-gray-400" : "text-gray-500"
                               }`}
                             >
-                              {subDepartment.departmentNameArabic || "بدون قسم"}
+                              {language === "en"
+                                ? subDepartment.departmentNameEnglish
+                                : subDepartment.departmentNameArabic ||
+                                  "بدون قسم"}
                             </div>
                           </div>
                         </td>
