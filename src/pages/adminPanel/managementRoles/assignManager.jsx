@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
@@ -10,12 +10,22 @@ import {
   AlertCircle,
   CheckCircle,
   Loader as LoaderIcon,
-  Info,
+  Search,
+  Phone,
+  X,
+  Users,
 } from "lucide-react";
 
 // Redux actions
-import { addManager } from "../../../state/act/actManagementRole";
-import { clearRoleErrors } from "../../../state/slices/managementRole";
+import {
+  addManager,
+  getUsersForManagerAssignment,
+  getCurrentManagers,
+} from "../../../state/act/actManagementRole";
+import {
+  clearRoleErrors,
+  clearUsersData,
+} from "../../../state/slices/managementRole";
 
 // Hooks
 import i18next from "i18next";
@@ -30,9 +40,15 @@ const AssignManager = () => {
   const navigate = useNavigate();
 
   // Redux state
-  const { loadingAddManager, addManagerError, addManagerSuccess } = useSelector(
-    (state) => state.role
-  );
+  const {
+    loadingAddManager,
+    addManagerError,
+    addManagerSuccess,
+    usersForManagerAssignment,
+    loadingUsersForManagerAssignment,
+    usersForManagerAssignmentError,
+    currentManagers,
+  } = useSelector((state) => state.role);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -42,6 +58,40 @@ const AssignManager = () => {
 
   // Local state
   const [errors, setErrors] = useState({});
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [searchTimeout, setSearchTimeout] = useState(null);
+
+  // Fetch data on component mount
+  useEffect(() => {
+    dispatch(getUsersForManagerAssignment({ pageSize: 100 }));
+    dispatch(getCurrentManagers());
+
+    return () => {
+      dispatch(clearUsersData());
+    };
+  }, [dispatch]);
+
+  // Filter users based on search term and exclude current managers
+  const filteredUsers =
+    usersForManagerAssignment?.filter((user) => {
+      // Exclude users who are already managers
+      const isCurrentManager = currentManagers?.some(
+        (manager) => manager.id === user.id
+      );
+      const isAdmin = user.role === "Admin" ? true : false;
+      if (isCurrentManager || isAdmin) return false;
+
+      // Apply search filter - if no search term, show all users
+      if (!searchTerm.trim()) return true;
+
+      const searchLower = searchTerm.toLowerCase();
+      return (
+        user.nameArabic?.toLowerCase().includes(searchLower) ||
+        user.nameEnglish?.toLowerCase().includes(searchLower)
+      );
+    }) || [];
 
   // Handle form input changes
   const handleInputChange = (e) => {
@@ -54,20 +104,95 @@ const AssignManager = () => {
     }
   };
 
+  // Handle user search with debounce
+  const handleSearchChange = useCallback(
+    (value) => {
+      setSearchTerm(value);
+
+      // Always show dropdown when there are users available
+      setShowUserDropdown(true);
+
+      // Reset selection if search is cleared
+      if (!value) {
+        setSelectedUser(null);
+        setFormData((prev) => ({ ...prev, userId: "" }));
+      }
+
+      // Debounced search for more users if needed
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+      }
+
+      const timeout = setTimeout(() => {
+        if (value.length > 2) {
+          dispatch(
+            getUsersForManagerAssignment({
+              search: value,
+              pageSize: 100,
+            })
+          );
+        }
+      }, 500);
+
+      setSearchTimeout(timeout);
+    },
+    [dispatch, searchTimeout]
+  );
+
+  // Clear search
+  const handleClearSearch = () => {
+    setSearchTerm("");
+    setSelectedUser(null);
+    setFormData((prev) => ({ ...prev, userId: "" }));
+    setShowUserDropdown(true);
+
+    // Fetch all users again
+    dispatch(getUsersForManagerAssignment({ pageSize: 100 }));
+  };
+
+  // Handle user selection
+  const handleUserSelect = (user) => {
+    setSelectedUser(user);
+    setFormData((prev) => ({ ...prev, userId: user.id }));
+    setSearchTerm(`${language === "ar" ? user.nameArabic : user.nameEnglish}`);
+    setShowUserDropdown(false);
+
+    // Clear user selection error
+    if (errors.userId) {
+      setErrors((prev) => ({ ...prev, userId: null }));
+    }
+  };
+
+  // Handle input focus
+  const handleInputFocus = () => {
+    // Show dropdown if there are users available
+    if (filteredUsers.length > 0) {
+      setShowUserDropdown(true);
+    }
+  };
+
+  // Handle click outside to close dropdown
+  const handleClickOutside = useCallback((e) => {
+    if (!e.target.closest(".user-dropdown-container")) {
+      setShowUserDropdown(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [handleClickOutside]);
+
   // Validate form
   const validateForm = () => {
     const newErrors = {};
 
-    // Validate user ID
-    if (!formData.userId.trim()) {
-      newErrors.userId = t("assignManager.errors.userIdRequired");
-    } else if (!/^\d+$/.test(formData.userId.trim())) {
-      newErrors.userId = t("assignManager.errors.userIdInvalid");
-    } else if (parseInt(formData.userId) <= 0) {
-      newErrors.userId = t("assignManager.errors.userIdMustBePositive");
+    if (!formData.userId) {
+      newErrors.userId = t("assignManager.errors.userRequired");
     }
 
-    // Validate notes
     if (!formData.notes.trim()) {
       newErrors.notes = t("assignManager.errors.notesRequired");
     } else if (formData.notes.trim().length < 10) {
@@ -89,7 +214,7 @@ const AssignManager = () => {
     try {
       const result = await dispatch(
         addManager({
-          userId: parseInt(formData.userId.trim()),
+          userId: parseInt(formData.userId),
           notes: formData.notes.trim(),
         })
       ).unwrap();
@@ -97,6 +222,8 @@ const AssignManager = () => {
       if (result.success) {
         // Reset form
         setFormData({ userId: "", notes: "" });
+        setSelectedUser(null);
+        setSearchTerm("");
         setErrors({});
 
         // Navigate back to managers list after a short delay
@@ -112,7 +239,10 @@ const AssignManager = () => {
   // Handle form reset
   const handleReset = () => {
     setFormData({ userId: "", notes: "" });
+    setSelectedUser(null);
+    setSearchTerm("");
     setErrors({});
+    setShowUserDropdown(false);
     dispatch(clearRoleErrors());
   };
 
@@ -183,16 +313,20 @@ const AssignManager = () => {
           </div>
         )}
 
-        {/* Error Message */}
-        {addManagerError && (
+        {/* Error Messages */}
+        {(addManagerError || usersForManagerAssignmentError) && (
           <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
             <div className="flex justify-between items-center">
               <div className="flex items-center">
                 <AlertCircle className="h-5 w-5 mr-2" />
                 <span>
                   {language === "ar"
-                    ? addManagerError?.messageAr || "حدث خطأ أثناء تعيين المدير"
-                    : addManagerError?.messageEn || "Error assigning manager"}
+                    ? addManagerError?.messageAr ||
+                      usersForManagerAssignmentError?.messageAr ||
+                      "حدث خطأ"
+                    : addManagerError?.messageEn ||
+                      usersForManagerAssignmentError?.messageEn ||
+                      "An error occurred"}
                 </span>
               </div>
               <button
@@ -205,30 +339,6 @@ const AssignManager = () => {
           </div>
         )}
 
-        {/* Info Message */}
-        <div
-          className={`mb-6 p-4 rounded-lg border ${
-            isDark
-              ? "bg-blue-900/20 border-blue-800"
-              : "bg-blue-50 border-blue-200"
-          }`}
-        >
-          <div className="flex items-center">
-            <Info
-              className={`h-5 w-5 mr-2 ${
-                isDark ? "text-blue-400" : "text-blue-600"
-              }`}
-            />
-            <span
-              className={`text-sm ${
-                isDark ? "text-blue-300" : "text-blue-700"
-              }`}
-            >
-              {t("assignManager.form.infoMessage")}
-            </span>
-          </div>
-        </div>
-
         {/* Form */}
         <div
           className={`${
@@ -236,21 +346,20 @@ const AssignManager = () => {
           } border rounded-xl shadow-sm p-6`}
         >
           <form onSubmit={handleSubmit}>
-            {/* User ID Input */}
-            <div className="mb-6">
+            {/* User Selection */}
+            <div className="mb-6 user-dropdown-container">
               <label
-                htmlFor="userId"
                 className={`block text-sm font-medium mb-2 ${
                   isDark ? "text-gray-300" : "text-gray-700"
                 }`}
               >
-                {t("assignManager.form.userId")}{" "}
+                {t("assignManager.form.selectUser")}{" "}
                 <span className="text-red-500">*</span>
               </label>
 
               <div className="relative">
                 <div className="relative">
-                  <User
+                  <Search
                     className={`absolute ${
                       isRTL ? "right-3" : "left-3"
                     } top-1/2 transform -translate-y-1/2 ${
@@ -259,13 +368,12 @@ const AssignManager = () => {
                   />
                   <input
                     type="text"
-                    id="userId"
-                    name="userId"
-                    value={formData.userId}
-                    onChange={handleInputChange}
-                    placeholder={t("assignManager.form.userIdPlaceholder")}
+                    value={searchTerm}
+                    onChange={(e) => handleSearchChange(e.target.value)}
+                    onFocus={handleInputFocus}
+                    placeholder={t("assignManager.form.searchUserPlaceholder")}
                     className={`w-full ${
-                      isRTL ? "pr-10 pl-4" : "pl-10 pr-4"
+                      isRTL ? "pr-10 pl-10" : "pl-10 pr-10"
                     } py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                       errors.userId
                         ? "border-red-500"
@@ -274,7 +382,135 @@ const AssignManager = () => {
                         : "bg-white border-gray-300 text-gray-900 placeholder-gray-500"
                     }`}
                   />
+                  {/* Clear Search Button */}
+                  {searchTerm && (
+                    <button
+                      type="button"
+                      onClick={handleClearSearch}
+                      className={`absolute ${
+                        isRTL ? "left-3" : "right-3"
+                      } top-1/2 transform -translate-y-1/2 ${
+                        isDark
+                          ? "text-gray-400 hover:text-gray-300"
+                          : "text-gray-500 hover:text-gray-700"
+                      } transition-colors`}
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
                 </div>
+
+                {/* User Dropdown */}
+                {showUserDropdown && (
+                  <div
+                    className={`absolute z-10 w-full mt-1 ${
+                      isDark
+                        ? "bg-gray-700 border-gray-600"
+                        : "bg-white border-gray-300"
+                    } border rounded-lg shadow-lg max-h-60 overflow-y-auto`}
+                  >
+                    {loadingUsersForManagerAssignment ? (
+                      <div className="p-4 text-center">
+                        <LoaderIcon className="h-4 w-4 animate-spin mx-auto mb-2" />
+                        <span
+                          className={`text-sm ${
+                            isDark ? "text-gray-300" : "text-gray-600"
+                          }`}
+                        >
+                          {t("assignManager.form.loadingUsers")}
+                        </span>
+                      </div>
+                    ) : filteredUsers.length === 0 ? (
+                      <div className="p-4 text-center">
+                        <Users className="h-8 w-8 mx-auto mb-2 opacity-50 text-gray-400" />
+                        <span
+                          className={`text-sm ${
+                            isDark ? "text-gray-400" : "text-gray-600"
+                          }`}
+                        >
+                          {searchTerm.trim()
+                            ? t("assignManager.form.noUsersFound")
+                            : t("assignManager.form.noAvailableUsers")}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="max-h-60 overflow-y-auto">
+                        {filteredUsers.map((user) => (
+                          <button
+                            key={user.id}
+                            type="button"
+                            onClick={() => handleUserSelect(user)}
+                            className={`w-full p-3 text-left hover:bg-gray-50 dark:hover:bg-gray-600 border-b border-gray-200 dark:border-gray-600 last:border-b-0 transition-colors ${
+                              selectedUser?.id === user.id
+                                ? "bg-blue-50 dark:bg-blue-900/30"
+                                : ""
+                            }`}
+                          >
+                            <div className="flex items-center">
+                              <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-600 mr-3">
+                                <User className="h-4 w-4 text-gray-600 dark:text-gray-300" />
+                              </div>
+                              <div className="flex-1">
+                                <div
+                                  className={`font-medium ${
+                                    isDark ? "text-white" : "text-gray-900"
+                                  }`}
+                                >
+                                  {language === "ar"
+                                    ? user.nameArabic
+                                    : user.nameEnglish}
+                                </div>
+                                <div className="flex items-center space-x-2 space-x-reverse">
+                                  <div className="flex items-center">
+                                    <Phone className="h-3 w-3 mr-1 text-gray-400" />
+                                    <span
+                                      className={`text-xs ${
+                                        isDark
+                                          ? "text-gray-400"
+                                          : "text-gray-600"
+                                      }`}
+                                    >
+                                      {user.mobile}
+                                    </span>
+                                  </div>
+                                  {user.role && (
+                                    <span
+                                      className={`text-xs px-2 py-1 rounded-full ${
+                                        user.role === "Admin"
+                                          ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                                          : user.role === "Manager"
+                                          ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
+                                          : "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400"
+                                      }`}
+                                    >
+                                      {user.role}
+                                    </span>
+                                  )}
+                                </div>
+                                <div
+                                  className={`text-xs ${
+                                    isDark ? "text-gray-500" : "text-gray-500"
+                                  }`}
+                                >
+                                  ID: {user.id}
+                                  {user.primaryCategoryNameEn && (
+                                    <span>
+                                      {" • "}
+                                      {language === "ar"
+                                        ? user.primaryCategoryNameAr ||
+                                          user.primaryCategoryNameEn
+                                        : user.primaryCategoryNameEn}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {errors.userId && (
@@ -286,9 +522,89 @@ const AssignManager = () => {
                   isDark ? "text-gray-400" : "text-gray-600"
                 }`}
               >
-                {t("assignManager.form.userIdHelp")}
+                {filteredUsers.length > 0
+                  ? t("assignManager.form.usersAvailable", {
+                      count: filteredUsers.length,
+                    })
+                  : t("assignManager.form.noUsersAvailableDesc")}
               </p>
             </div>
+
+            {/* Selected User Display */}
+            {selectedUser && (
+              <div
+                className={`mb-6 p-4 rounded-lg border ${
+                  isDark
+                    ? "bg-gray-700 border-gray-600"
+                    : "bg-gray-50 border-gray-200"
+                }`}
+              >
+                <h4
+                  className={`font-medium ${
+                    isDark ? "text-white" : "text-gray-900"
+                  } mb-2`}
+                >
+                  {t("assignManager.form.selectedUser")}
+                </h4>
+                <div className="flex items-center">
+                  <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30 mr-3">
+                    <User className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div className="flex-1">
+                    <div
+                      className={`font-medium ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
+                    >
+                      {language === "ar"
+                        ? selectedUser.nameArabic
+                        : selectedUser.nameEnglish}
+                    </div>
+                    <div className="flex items-center space-x-2 space-x-reverse mt-1">
+                      <div className="flex items-center">
+                        <Phone className="h-3 w-3 mr-1 text-gray-400" />
+                        <span
+                          className={`text-sm ${
+                            isDark ? "text-gray-400" : "text-gray-600"
+                          }`}
+                        >
+                          {selectedUser.mobile}
+                        </span>
+                      </div>
+                      {selectedUser.role && (
+                        <span
+                          className={`text-xs px-2 py-1 rounded-full ${
+                            selectedUser.role === "Admin"
+                              ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                              : selectedUser.role === "Manager"
+                              ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
+                              : "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400"
+                          }`}
+                        >
+                          {selectedUser.role}
+                        </span>
+                      )}
+                    </div>
+                    <div
+                      className={`text-xs mt-1 ${
+                        isDark ? "text-gray-500" : "text-gray-500"
+                      }`}
+                    >
+                      ID: {selectedUser.id}
+                      {selectedUser.primaryCategoryNameEn && (
+                        <span>
+                          {" • "}
+                          {language === "ar"
+                            ? selectedUser.primaryCategoryNameAr ||
+                              selectedUser.primaryCategoryNameEn
+                            : selectedUser.primaryCategoryNameEn}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Notes */}
             <div className="mb-6">
@@ -327,46 +643,6 @@ const AssignManager = () => {
                 {formData.notes.length}/500 {t("assignManager.form.characters")}
               </p>
             </div>
-
-            {/* Preview Section */}
-            {formData.userId && formData.notes && (
-              <div
-                className={`mb-6 p-4 rounded-lg border ${
-                  isDark
-                    ? "bg-gray-700 border-gray-600"
-                    : "bg-gray-50 border-gray-200"
-                }`}
-              >
-                <h4
-                  className={`font-medium ${
-                    isDark ? "text-white" : "text-gray-900"
-                  } mb-3`}
-                >
-                  {t("assignManager.form.assignmentPreview")}
-                </h4>
-                <div className="space-y-2">
-                  <div className="flex items-center">
-                    <User className="h-4 w-4 mr-2 text-gray-400" />
-                    <span
-                      className={`text-sm ${
-                        isDark ? "text-gray-300" : "text-gray-600"
-                      }`}
-                    >
-                      <strong>{t("assignManager.form.userId")}:</strong>{" "}
-                      {formData.userId}
-                    </span>
-                  </div>
-                  <div
-                    className={`text-sm ${
-                      isDark ? "text-gray-300" : "text-gray-600"
-                    }`}
-                  >
-                    <strong>{t("assignManager.form.notes")}:</strong>
-                    <p className="mt-1 italic">{formData.notes}</p>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* Assignment Details */}
             <div
@@ -421,11 +697,7 @@ const AssignManager = () => {
 
               <button
                 type="submit"
-                disabled={
-                  loadingAddManager ||
-                  !formData.userId.trim() ||
-                  !formData.notes.trim()
-                }
+                disabled={loadingAddManager || !selectedUser}
                 className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
               >
                 {loadingAddManager ? (
@@ -442,30 +714,6 @@ const AssignManager = () => {
               </button>
             </div>
           </form>
-        </div>
-
-        {/* How to Find User ID Help */}
-        <div
-          className={`mt-6 p-4 rounded-lg border ${
-            isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
-          }`}
-        >
-          <h4
-            className={`font-medium ${
-              isDark ? "text-white" : "text-gray-900"
-            } mb-2`}
-          >
-            {t("assignManager.help.title")}
-          </h4>
-          <ul
-            className={`text-sm ${
-              isDark ? "text-gray-400" : "text-gray-600"
-            } space-y-1`}
-          >
-            <li>• {t("assignManager.help.step1")}</li>
-            <li>• {t("assignManager.help.step2")}</li>
-            <li>• {t("assignManager.help.step3")}</li>
-          </ul>
         </div>
       </div>
     </div>

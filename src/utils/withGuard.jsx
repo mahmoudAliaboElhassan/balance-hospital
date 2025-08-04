@@ -13,13 +13,16 @@ export const withGuard = (Component) => {
 
       if (!token && location.pathname.startsWith("/admin-panel")) {
         // Save current path for redirect after login
-        navigate("/login", {
+        navigate("/role-select", {
           state: { from: location.pathname },
           replace: true,
         });
       }
 
-      if (token && location.pathname === "/login") {
+      if (
+        (token && location.pathname === "/login") ||
+        (token && location.pathname === "/role-select")
+      ) {
         navigate("/admin-panel", { replace: true });
       }
     }, [navigate, token, location.pathname]);

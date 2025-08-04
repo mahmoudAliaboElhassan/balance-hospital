@@ -1084,6 +1084,9 @@
       "basicInfo": "المعلومات الأساسية",
       "timeInfo": "معلومات الوقت",
       "timeline": "الجدول الزمني",
+      "createdAt": "تاريخ الإنشاء",
+      "createdBy": "أنشأ بواسطة",
+      "updatedAt": "تاريخ آخر تحديث",
       "quickStats": "الإحصائيات السريعة",
       "auditInfo": "معلومات التدقيق"
     },
@@ -1149,6 +1152,7 @@
     "title": "أدوار الإدارة",
     "description": "إدارة أدوار النظام وتعيين المديرين ورؤساء الأقسام",
     "refresh": "تحديث",
+    "backToRoles": "العودة إلى أدوار الإدارة",
 
     "statistics": {
       "totalUsers": "إجمالي المستخدمين",
@@ -1194,7 +1198,6 @@
       "categoriesError": "خطأ في تحميل الفئات"
     }
   },
-
   "assignManager": {
     "title": "تعيين مدير جديد",
     "description": "منح صلاحيات المدير لمستخدم",
@@ -1202,17 +1205,18 @@
     "success": "تم تعيين المدير بنجاح! جاري إعادة التوجيه...",
 
     "form": {
-      "infoMessage": "لتعيين مدير، تحتاج إلى معرف المستخدم. يمكنك العثور على هذا في قسم إدارة المستخدمين أو الملف الشخصي للمستخدم.",
-
-      "userId": "معرف المستخدم",
-      "userIdPlaceholder": "أدخل معرف المستخدم (مثال: 123)",
-      "userIdHelp": "أدخل المعرف الرقمي للمستخدم الذي تريد تعيينه كمدير",
+      "selectUser": "اختيار المستخدم",
+      "searchUserPlaceholder": "البحث عن المستخدمين بالاسم أو الجوال أو المعرف...",
+      "loadingUsers": "جاري تحميل المستخدمين...",
+      "noUsersFound": "لم يتم العثور على مستخدمين مطابقين لبحثك",
+      "noAvailableUsers": "لا يوجد مستخدمين متاحين للتعيين",
+      "noUsersAvailableDesc": "قد يكون جميع المستخدمين المؤهلين معينين بالفعل كمديرين",
+      "usersAvailable": "{{count}} مستخدم متاح",
+      "selectedUser": "المستخدم المحدد",
 
       "notes": "ملاحظات التعيين",
       "notesPlaceholder": "أدخل سبب تعيين هذا المستخدم كمدير وأي ملاحظات إضافية...",
       "characters": "حرف",
-
-      "assignmentPreview": "معاينة التعيين",
 
       "whatHappens": "ما يحدث عند تعيين هذا المدير:",
       "consequence1": "سيحصل المستخدم على صلاحيات المدير الكاملة عبر جميع الفئات",
@@ -1226,19 +1230,189 @@
     },
 
     "errors": {
-      "userIdRequired": "معرف المستخدم مطلوب",
-      "userIdInvalid": "يجب أن يكون معرف المستخدم رقماً صالحاً",
-      "userIdMustBePositive": "يجب أن يكون معرف المستخدم رقماً موجباً",
+      "userRequired": "يرجى اختيار مستخدم لتعيينه كمدير",
       "notesRequired": "ملاحظات التعيين مطلوبة",
       "notesTooShort": "يجب أن تكون الملاحظات على الأقل 10 أحرف",
       "notesTooLong": "لا يمكن أن تتجاوز الملاحظات 500 حرف"
+    }
+  },
+  "managers": {
+    "title": "مديرو النظام",
+    "assignNew": "تعيين مدير جديد",
+    "assign": "تعيين",
+    "loading": "جارٍ تحميل المدراء...",
+    "noData": "لم يتم العثور على مدراء",
+    "noDataDescription": "لم يتم تعيين أي من مدراء النظام بعد. انقر على 'تعيين مدير جديد' للبدء.",
+    "assignedOn": "تاريخ التعيين",
+    "search": {
+      "placeholder": "ابحث عن المدراء بالاسم أو البريد الإلكتروني أو الجوال..."
+    },
+    "filters": {
+      "title": "الفلاتر",
+      "clear": "مسح",
+      "itemsPerPage": "العناصر لكل صفحة",
+      "perPage": "لكل صفحة"
+    },
+    "statistics": {
+      "totalManagers": "إجمالي المدراء",
+      "activeAssignments": "التعيينات النشطة",
+      "totalAssignments": "إجمالي التعيينات"
+    },
+    "table": {
+      "name": "الاسم",
+      "contact": "معلومات الاتصال",
+      "assignedDate": "تاريخ التعيين",
+      "assignedBy": "تم التعيين بواسطة",
+      "actions": "الإجراءات"
+    },
+    "pagination": {
+      "showing": "عرض",
+      "of": "من",
+      "managers": "مدراء"
+    },
+    "removeModal": {
+      "title": "إزالة مدير",
+      "warning": "تحذير",
+      "confirmMessage": "هل أنت متأكد أنك تريد إزالة {{name}} من دور المدير؟",
+      "managerDetails": "تفاصيل المدير",
+      "name": "الاسم",
+      "id": "المعرّف",
+      "reason": "سبب الإلغاء",
+      "reasonPlaceholder": "أدخل سبب إزالة هذا المدير...",
+      "reasonRequired": "يرجى تقديم سبب لإزالة هذا المدير.",
+      "reasonTooShort": "يجب ألا يقل السبب عن 3 أحرف.",
+      "consequences": "ما يحدث عند إزالة هذا المدير:",
+      "consequence1": "سيفقد جميع صلاحيات المدير على الفور",
+      "consequence2": "قد تتأثر أي إجراءات معلقة بدأها",
+      "consequence3": "سيتم تسجيل هذا الإجراء في سجلات النظام",
+      "cancel": "إلغاء",
+      "confirm": "إزالة المدير",
+      "removing": "جارٍ الإزالة...",
+      "error": "فشل في إزالة المدير. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "managerHistory": {
+    "title": "تاريخ المديرين",
+    "backToRoles": "العودة إلى أدوار الإدارة",
+    "loading": "جاري تحميل التاريخ...",
+    "noData": "لم يتم العثور على سجلات تاريخية",
+    "noDataDescription": "لم يتم تسجيل أي تعيينات مديرين أو رؤساء أقسام بعد.",
+    "assignedOn": "تم التعيين في",
+    "assignedBy": "تم التعيين بواسطة",
+    "revocationReason": "سبب الإلغاء",
+
+    "search": {
+      "placeholder": "البحث بالاسم أو معرف المستخدم أو الفئة..."
     },
 
-    "help": {
-      "title": "كيفية العثور على معرف المستخدم:",
-      "step1": "انتقل إلى قسم إدارة المستخدمين في لوحة الإدارة",
-      "step2": "ابحث عن المستخدم الذي تريد تعيينه كمدير",
-      "step3": "معرف المستخدم معروض في تفاصيل المستخدم أو جدول قائمة المستخدمين"
+    "filters": {
+      "title": "المرشحات",
+      "clear": "مسح",
+      "userId": "معرف المستخدم",
+      "userIdPlaceholder": "أدخل معرف المستخدم",
+      "categoryId": "معرف الفئة",
+      "categoryIdPlaceholder": "أدخل معرف الفئة",
+      "managerType": "نوع الدور",
+      "allTypes": "جميع الأنواع",
+      "status": "الحالة",
+      "allStatuses": "جميع الحالات",
+      "fromDate": "من تاريخ",
+      "toDate": "إلى تاريخ",
+      "itemsPerPage": "العناصر لكل صفحة",
+      "perPage": "لكل صفحة"
+    },
+
+    "types": {
+      "manager": "مدير",
+      "departmentHead": "رئيس قسم"
+    },
+
+    "status": {
+      "active": "نشط",
+      "ended": "منتهي"
+    },
+
+    "duration": {
+      "today": "اليوم",
+      "days": "أيام",
+      "months": "أشهر",
+      "years": "سنوات"
+    },
+
+    "table": {
+      "user": "المستخدم",
+      "role": "الدور",
+      "category": "الفئة",
+      "assignedDate": "تاريخ التعيين",
+      "duration": "المدة",
+      "status": "الحالة",
+      "actions": "الإجراءات"
+    },
+
+    "pagination": {
+      "showing": "عرض",
+      "of": "من",
+      "records": "سجل"
     }
+  },
+
+  "departmentHeads": {
+    "backToRoles": "العودة إلى أدوار الإدارة",
+    "title": "رؤساء الأقسام",
+    "assignNew": "تعيين رئيس جديد",
+    "assign": "تعيين",
+    "loading": "جارٍ تحميل رؤساء الأقسام...",
+    "noData": "لم يتم العثور على رؤساء أقسام",
+    "noDataDescription": "لم يتم تعيين أي رئيس قسم بعد. انقر على 'تعيين رئيس جديد' للبدء.",
+    "search": {
+      "placeholder": "ابحث بالاسم أو البريد الإلكتروني أو الجوال..."
+    },
+    "filters": {
+      "title": "الفلاتر",
+      "clear": "مسح",
+      "categoryId": "معرّف الفئة",
+      "categoryIdPlaceholder": "أدخل معرّف الفئة…",
+      "status": "الحالة",
+      "allStatuses": "كل الحالات",
+      "itemsPerPage": "العناصر لكل صفحة",
+      "perPage": "لكل صفحة"
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط"
+    },
+    "statistics": {
+      "totalDepartmentHeads": "إجمالي رؤساء الأقسام",
+      "activeDepartmentHeads": "رؤساء أقسام نشطون",
+      "categoriesWithHeads": "الفئات مع رؤساء"
+    },
+    "table": {
+      "user": "المستخدم",
+      "category": "الفئة",
+      "permissions": "الصلاحيات",
+      "assignedDate": "تاريخ التعيين",
+      "status": "الحالة",
+      "actions": "الإجراءات"
+    },
+    "more": "المزيد",
+    "pagination": {
+      "showing": "عرض",
+      "of": "من",
+      "departmentHeads": "مدخلات"
+    }
+  },
+
+  "loginSelection": {
+    "welcomeBack": "مرحبًا بعودتك",
+    "selectType": "اختر نوع تسجيل الدخول للمتابعة",
+    "admin": {
+      "title": "تسجيل دخول المسؤول",
+      "description": "وصول كامل للنظام وإدارته"
+    },
+    "departmentHead": {
+      "title": "رئيس القسم",
+      "description": "إدارة القسم والإشراف عليه"
+    },
+    "footerHelp": "تحتاج مساعدة؟ تواصل مع مسؤول النظام"
   }
 }

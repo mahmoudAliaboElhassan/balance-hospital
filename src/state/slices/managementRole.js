@@ -10,11 +10,19 @@ import {
   removeManager,
   assignDepartmentHead,
   removeDepartmentHead,
+  getUsersForManagerAssignment,
 } from "../act/actManagementRole";
 
 // Initial state for role management
 const initialStateRole = {
   // Loading states
+
+  // Loading states
+  loadingUsersForManagerAssignment: false,
+
+  // Error states
+  usersForManagerAssignmentError: null,
+
   loadingRoleStatistics: false,
   loadingCategoriesSummary: false,
   loadingCategoriesWithManagers: false,
@@ -35,7 +43,8 @@ const initialStateRole = {
   departmentHeads: [],
   managerHistory: [],
   pagination: null,
-
+  users: [],
+  usersForManagerAssignment: [],
   // Error states
   roleStatisticsError: null,
   categoriesSummaryError: null,
@@ -57,7 +66,12 @@ export const roleSlice = createSlice({
       state.addManagerSuccess = false;
       state.addManagerMessage = "";
     },
-
+    clearUsersData: (state) => {
+      state.users = [];
+      state.usersForManagerAssignment = [];
+      state.usersError = null;
+      state.usersForManagerAssignmentError = null;
+    },
     clearRoleErrors: (state) => {
       state.roleStatisticsError = null;
       state.categoriesSummaryError = null;
@@ -231,9 +245,22 @@ export const roleSlice = createSlice({
       .addCase(removeDepartmentHead.rejected, (state, action) => {
         state.loadingRemoveDepartmentHead = false;
         state.removeDepartmentHeadError = action.payload;
+      })
+      .addCase(getUsersForManagerAssignment.pending, (state) => {
+        state.loadingUsersForManagerAssignment = true;
+        state.usersForManagerAssignmentError = null;
+      })
+      .addCase(getUsersForManagerAssignment.fulfilled, (state, action) => {
+        state.loadingUsersForManagerAssignment = false;
+        state.usersForManagerAssignment = action.payload.data.items || [];
+      })
+      .addCase(getUsersForManagerAssignment.rejected, (state, action) => {
+        state.loadingUsersForManagerAssignment = false;
+        state.usersForManagerAssignmentError = action.payload;
       });
   },
 });
 
 export default roleSlice.reducer;
-export const { clearRoleErrors, resetRoleData } = roleSlice.actions;
+export const { clearRoleErrors, resetRoleData, clearUsersData } =
+  roleSlice.actions;

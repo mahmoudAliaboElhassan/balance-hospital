@@ -1075,6 +1075,9 @@
     "notFound": "Shift hours type not found",
     "details": {
       "basicInfo": "Basic Information",
+      "createdAt": "Created At",
+      "createdBy": "Created By",
+      "updatedAt": "Updated At",
       "timeInfo": "Time Information",
       "timeline": "Timeline",
       "quickStats": "Quick Stats",
@@ -1244,17 +1247,18 @@
     "success": "Manager assigned successfully! Redirecting...",
 
     "form": {
-      "infoMessage": "To assign a manager, you need the User ID. You can find this in the user management section or user profile.",
-
-      "userId": "User ID",
-      "userIdPlaceholder": "Enter the user ID (e.g. 123)",
-      "userIdHelp": "Enter the numeric ID of the user you want to assign as manager",
+      "selectUser": "Select User",
+      "searchUserPlaceholder": "Search users by name, mobile, or ID...",
+      "loadingUsers": "Loading users...",
+      "noUsersFound": "No users found matching your search",
+      "noAvailableUsers": "No users available for assignment",
+      "noUsersAvailableDesc": "All eligible users may already be assigned as managers",
+      "usersAvailable": "{{count}} users available",
+      "selectedUser": "Selected User",
 
       "notes": "Assignment Notes",
       "notesPlaceholder": "Enter the reason for assigning this user as manager and any additional notes...",
       "characters": "characters",
-
-      "assignmentPreview": "Assignment Preview",
 
       "whatHappens": "What happens when you assign this manager:",
       "consequence1": "The user will gain full manager privileges across all categories",
@@ -1268,19 +1272,138 @@
     },
 
     "errors": {
-      "userIdRequired": "User ID is required",
-      "userIdInvalid": "User ID must be a valid number",
-      "userIdMustBePositive": "User ID must be a positive number",
+      "userRequired": "Please select a user to assign as manager",
       "notesRequired": "Assignment notes are required",
       "notesTooShort": "Notes must be at least 10 characters long",
       "notesTooLong": "Notes cannot exceed 500 characters"
+    }
+  },
+
+  "managerHistory": {
+    "title": "Manager History",
+    "backToRoles": "Back to Management Roles",
+    "loading": "Loading history...",
+    "noData": "No history records found",
+    "revocationReason": "Revocation Reason",
+
+    "noDataDescription": "No manager or department head assignments have been recorded yet.",
+    "assignedOn": "Assigned on",
+    "assignedBy": "Assigned by",
+
+    "search": {
+      "placeholder": "Search by user name, ID, or category..."
     },
 
-    "help": {
-      "title": "How to find a User ID:",
-      "step1": "Go to the user management section in the admin panel",
-      "step2": "Find the user you want to assign as manager",
-      "step3": "The User ID is displayed in the user details or user list table"
+    "filters": {
+      "title": "Filters",
+      "clear": "Clear",
+      "userId": "User ID",
+      "userIdPlaceholder": "Enter user ID",
+      "categoryId": "Category ID",
+      "categoryIdPlaceholder": "Enter category ID",
+      "managerType": "Role Type",
+      "allTypes": "All Types",
+      "status": "Status",
+      "allStatuses": "All Statuses",
+      "revocationReason": "Revocation Reason",
+
+      "fromDate": "From Date",
+      "toDate": "To Date",
+      "itemsPerPage": "Items per page",
+      "perPage": "per page"
+    },
+
+    "types": {
+      "manager": "Manager",
+      "departmentHead": "Department Head"
+    },
+
+    "status": {
+      "active": "Active",
+      "ended": "Ended"
+    },
+
+    "duration": {
+      "today": "Today",
+      "days": "days",
+      "months": "months",
+      "years": "years"
+    },
+
+    "table": {
+      "user": "User",
+      "role": "Role",
+      "category": "Category",
+      "assignedDate": "Assigned Date",
+      "duration": "Duration",
+      "status": "Status",
+      "actions": "Actions"
+    },
+
+    "pagination": {
+      "showing": "Showing",
+      "of": "of",
+      "records": "records"
     }
+  },
+
+  "departmentHeads": {
+    "backToRoles": "Back to Management Roles",
+    "title": "Department Heads",
+    "assignNew": "Assign New Head",
+    "assign": "Assign",
+    "loading": "Loading department heads...",
+    "noData": "No department heads found",
+    "noDataDescription": "No department heads have been assigned yet. Click 'Assign New Head' to get started.",
+    "search": {
+      "placeholder": "Search by name, email, or mobile..."
+    },
+    "filters": {
+      "title": "Filters",
+      "clear": "Clear",
+      "categoryId": "Category ID",
+      "categoryIdPlaceholder": "Enter category ID…",
+      "status": "Status",
+      "allStatuses": "All Statuses",
+      "itemsPerPage": "Items per page",
+      "perPage": "per page"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "statistics": {
+      "totalDepartmentHeads": "Total Department Heads",
+      "activeDepartmentHeads": "Active Department Heads",
+      "categoriesWithHeads": "Categories with Heads"
+    },
+    "table": {
+      "user": "User",
+      "category": "Category",
+      "permissions": "Permissions",
+      "assignedDate": "Assigned Date",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "more": "more",
+    "pagination": {
+      "showing": "Showing",
+      "of": "of",
+      "departmentHeads": "entries"
+    }
+  },
+
+  "loginSelection": {
+    "welcomeBack": "Welcome Back",
+    "selectType": "Select your login type to continue",
+    "admin": {
+      "title": "Admin Login",
+      "description": "Full system access and management"
+    },
+    "departmentHead": {
+      "title": "Department Head",
+      "description": "Department management and oversight"
+    },
+    "footerHelp": "Need help? Contact system administrator"
   }
 }

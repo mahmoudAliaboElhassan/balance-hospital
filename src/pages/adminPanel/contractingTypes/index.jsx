@@ -221,33 +221,14 @@ function ContractingTypes() {
               isDark ? "text-white" : "text-gray-900"
             }`}
           >
-            {contractingType.nameArabic}
+            {language === "en"
+              ? contractingType.nameEnglish
+              : contractingType.nameArabic}
           </h3>
-          <p
-            className={`text-sm ${isDark ? "text-gray-300" : "text-gray-600"}`}
-          >
-            {contractingType.nameEnglish}
-          </p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-2 text-sm mb-3">
-        <div>
-          <span
-            className={`font-medium ${
-              isDark ? "text-gray-300" : "text-gray-700"
-            }`}
-          >
-            {t("contractingTypes.table.code")}:
-          </span>
-          <span
-            className={`${isRTL ? "mr-2" : "ml-2"} font-mono ${
-              isDark ? "text-white" : "text-gray-900"
-            }`}
-          >
-            {contractingType.code}
-          </span>
-        </div>
         <div>
           <span
             className={`font-medium ${
@@ -262,40 +243,6 @@ function ContractingTypes() {
             }`}
           >
             {contractingType.usersCount}
-          </span>
-        </div>
-        <div>
-          <span
-            className={`font-medium ${
-              isDark ? "text-gray-300" : "text-gray-700"
-            }`}
-          >
-            {t("contractingTypes.table.maxHours")}:
-          </span>
-          <span
-            className={`${isRTL ? "mr-2" : "ml-2"} ${
-              isDark ? "text-gray-200" : "text-gray-800"
-            }`}
-          >
-            {contractingType.maxHoursPerWeek}
-          </span>
-        </div>
-        <div>
-          <span
-            className={`font-medium ${
-              isDark ? "text-gray-300" : "text-gray-700"
-            }`}
-          >
-            {t("contractingTypes.table.overtime")}:
-          </span>
-          <span
-            className={`${isRTL ? "mr-2" : "ml-2"} ${
-              isDark ? "text-gray-200" : "text-gray-800"
-            }`}
-          >
-            {contractingType.allowOvertimeHours
-              ? t("contractingTypes.overtime.allowed")
-              : t("contractingTypes.overtime.notAllowed")}
           </span>
         </div>
       </div>

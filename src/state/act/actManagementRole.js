@@ -272,3 +272,25 @@ export const addManager = createAsyncThunk(
     }
   }
 );
+
+export const getUsersForManagerAssignment = createAsyncThunk(
+  "roleSlice/getUsersForManagerAssignment",
+  async (_, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+
+    try {
+      const url = `/api/v1/Users/summaries?isApproved=true`;
+
+      const res = await axiosInstance.get(url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      console.log("Users for manager assignment fetched successfully:", res);
+      return res.data;
+    } catch (error) {
+      console.log("Error fetching users for manager assignment:", error);
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);

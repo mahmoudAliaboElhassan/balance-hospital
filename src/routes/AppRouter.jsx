@@ -37,6 +37,9 @@ import EditShiftHourType from "../pages/adminPanel/shiftHours/editShiftHours";
 import ManagementRoles from "../pages/adminPanel/managementRoles";
 import Managers from "../pages/adminPanel/managementRoles/managers";
 import AssignManager from "../pages/adminPanel/managementRoles/assignManager";
+import ManagerHistory from "../pages/adminPanel/managementRoles/managerHistory ";
+import DepartmentHeads from "../pages/adminPanel/managementRoles/departmentHeads";
+import LoginSelection from "../pages/auth/loginRoleSelection";
 // import CreateScientificDegree from "../pages/adminPanel/scientificDegree/createScientificDegree";
 // import EditScientificDegree from "../pages/adminPanel/scientificDegree/editScientificDegree";
 // import SpecificScientificDegree from "../pages/adminPanel/scientificDegree/specificScientificDegree";
@@ -61,6 +64,14 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<Loader />}>
             <Login />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/role-select",
+        element: (
+          <Suspense fallback={<Loader />}>
+            <LoginSelection />
           </Suspense>
         ),
       },
@@ -314,22 +325,22 @@ const router = createBrowserRouter([
               </Suspense>
             ),
           },
-          // {
-          //   path: "management-roles/managers/history",
-          //   element: (
-          //     <Suspense fallback={<Loader />}>
-          //       <ManagerHistory />
-          //     </Suspense>
-          //   ),
-          // },
-          // {
-          //   path: "management-roles/department-heads",
-          //   element: (
-          //     <Suspense fallback={<Loader />}>
-          //       <DepartmentHeads />
-          //     </Suspense>
-          //   ),
-          // },
+          {
+            path: "management-roles/managers/history",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <ManagerHistory />
+              </Suspense>
+            ),
+          },
+          {
+            path: "management-roles/department-heads",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <DepartmentHeads />
+              </Suspense>
+            ),
+          },
           // {
           //   path: "management-roles/department-heads/assign",
           //   element: (
