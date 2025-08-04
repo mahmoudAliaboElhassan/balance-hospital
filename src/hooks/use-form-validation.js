@@ -20,7 +20,7 @@ function UseFormValidation() {
   const VALIDATION_SCHEMA_RESET_PASSWORD = Yup.object().shape({
     token: Yup.string().required(t("validationAuth.tokenRequired")),
     newPassword: Yup.string()
-      .min(8, t("validationAuth.minLength"))
+      .min(8, t("validationAuth.password.minLength"))
       .required(t("validationAuth.password.required")),
     confirmNewPassword: Yup.string()
       .oneOf([Yup.ref("newPassword"), null], t("validationAuth.password.match"))
