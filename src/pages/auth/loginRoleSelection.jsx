@@ -2,6 +2,7 @@ import React from "react";
 import { Shield, Users, ArrowRight } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 const LoginSelection = () => {
   const { t, i18n } = useTranslation();
@@ -59,8 +60,8 @@ const LoginSelection = () => {
           {/* Login Options */}
           <div className="space-y-4">
             {/* Admin Login */}
-            <a
-              href="/admin-login"
+            <Link
+              to="/login"
               className={`group block w-full p-6 rounded-xl border-2 transition-all duration-300 hover:scale-[1.02] ${
                 isDark
                   ? "bg-gray-700/50 border-gray-600 hover:border-blue-500 hover:bg-gray-700"
@@ -105,11 +106,11 @@ const LoginSelection = () => {
                   }`}
                 />
               </div>
-            </a>
+            </Link>
 
             {/* Department Head Login */}
-            <a
-              href="/department-head-login"
+            <Link
+              to="/login"
               className={`group block w-full p-6 rounded-xl border-2 transition-all duration-300 hover:scale-[1.02] ${
                 isDark
                   ? "bg-gray-700/50 border-gray-600 hover:border-green-500 hover:bg-gray-700"
@@ -154,7 +155,7 @@ const LoginSelection = () => {
                   }`}
                 />
               </div>
-            </a>
+            </Link>
           </div>
 
           {/* Footer */}
