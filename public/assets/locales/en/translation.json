@@ -921,6 +921,12 @@
     "search": {
       "placeholder": "Search scientific degrees by name or code..."
     },
+    "pagination": {
+      "showing": "Showing",
+      "of": "of",
+      "items": "items",
+      "itemsPerPage": "items per page"
+    },
     "filters": {
       "title": "Filters",
       "status": "Status",
@@ -1434,5 +1440,7 @@
     "footerHelp": "Need help? Contact system administrator"
   },
   "create-specific-department": "Create specific department to that category",
-  "create-specific-sub-department": "Create specific sub-department to that department"
+  "create-specific-sub-department": "Create specific sub-department to that department",
+
+  "displayRange": "Showing {{start}} - {{end}} of {{total}} items"
 }

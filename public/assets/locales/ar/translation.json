@@ -928,6 +928,13 @@
     "search": {
       "placeholder": "البحث في الدرجات العلمية بالاسم أو الرمز..."
     },
+
+    "pagination": {
+      "showing": "يعرض",
+      "of": "من",
+      "items": "عنصر",
+      "itemsPerPage": "عنصر في كل صفحة"
+    },
     "filters": {
       "title": "المرشحات",
       "status": "الحالة",
@@ -1446,5 +1453,6 @@
     "footerHelp": "تحتاج مساعدة؟ تواصل مع مسؤول النظام"
   },
   "create-specific-department": "إنشاء قسم محدد لهذه الفئة",
-  "create-specific-sub-department": "إنشاء قسم فرعي لهذا القسم"
+  "create-specific-sub-department": "إنشاء قسم فرعي لهذا القسم",
+  "displayRange": "عرض {{start}} - {{end}} من {{total}} عنصر"
 }

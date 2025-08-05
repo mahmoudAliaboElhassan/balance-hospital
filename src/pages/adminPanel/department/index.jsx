@@ -1050,13 +1050,16 @@ function Department() {
                   <span
                     className={`${isDark ? "text-gray-400" : "text-gray-600"}`}
                   >
-                    عرض {(pagination.page - 1) * pagination.pageSize + 1} -{" "}
-                    {Math.min(
-                      pagination.page * pagination.pageSize,
-                      pagination.totalCount
-                    )}{" "}
-                    من {pagination.totalCount} عنصر
+                    {t("departmentHeads.pagination.displayRange", {
+                      start: (pagination.page - 1) * pagination.pageSize + 1,
+                      end: Math.min(
+                        pagination.page * pagination.pageSize,
+                        pagination.totalCount
+                      ),
+                      total: pagination.totalCount,
+                    })}
                   </span>
+
                   <div className="flex items-center gap-2">
                     <select
                       value={pagination.pageSize}
