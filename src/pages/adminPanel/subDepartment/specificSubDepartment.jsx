@@ -310,13 +310,13 @@ function SpecificSubDepartment() {
                 <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
                   {getSubDepartmentName()}
                 </h1>
-                <p
+                {/* <p
                   className={`text-xl ${
                     isDark ? "text-gray-300" : "text-gray-600"
                   }`}
                 >
                   {getSubDepartmentSecondaryName()}
-                </p>
+                </p> */}
                 <p
                   className={`text-lg ${
                     isDark ? "text-gray-400" : "text-gray-500"

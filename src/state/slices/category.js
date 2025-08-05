@@ -25,7 +25,7 @@ export const categorySlice = createSlice({
     clearFilters: (state) => {
       state.filters = {
         search: "",
-        isActive: null,
+        isActive: "",
         orderBy: "createdAt",
         orderDesc: true,
         page: 1,
@@ -249,6 +249,7 @@ export const categorySlice = createSlice({
           state.message = response.messageAr || response.messageEn;
           state.timestamp = response.timestamp;
         }
+        console.log(state.categoryTypes);
       })
       .addCase(getCategoryTypes.rejected, (state, action) => {
         state.loadingGetCategoryTypes = false;

@@ -27,9 +27,10 @@ function SpecificDepartment() {
   const { mymode } = useSelector((state) => state.mode);
   const { t, i18n } = useTranslation();
 
-  // Get current language direction
+  // Get current language direction and theme
   const isRTL = i18n.language === "ar";
   const currentLang = i18n.language || "ar";
+  const isDark = mymode === "dark";
 
   useEffect(() => {
     if (id) {
@@ -72,6 +73,24 @@ function SpecificDepartment() {
       : selectedDepartment.nameEnglish;
   };
 
+  const handleCreateSubDepartment = () => {
+    if (selectedDepartment) {
+      // Save category information to localStorage
+      localStorage.setItem("departmentId", selectedDepartment.id);
+      localStorage.setItem(
+        "departmentEnglishName",
+        selectedDepartment.nameEnglish
+      );
+      localStorage.setItem(
+        "departmentArabicName",
+        selectedDepartment.nameArabic
+      );
+
+      // Navigate to create department page
+      navigate("/admin-panel/sub-department/create-specific");
+    }
+  };
+
   // Get category name based on current language
   const getCategoryName = () => {
     if (!selectedDepartment?.category && !categories) return "";
@@ -110,16 +129,51 @@ function SpecificDepartment() {
 
   // Loading Component
   if (loadingGetSingleDepartment) {
-    return <LoadingGetData />;
+    return (
+      <div
+        className={`min-h-screen bg-gradient-to-br ${
+          isDark
+            ? "from-gray-900 via-gray-800 to-gray-900"
+            : "from-blue-50 via-indigo-50 to-purple-50"
+        } p-6 ${isRTL ? "rtl" : "ltr"}`}
+      >
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center p-8">
+            <div className="flex items-center justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <span
+                className={`${isRTL ? "mr-3" : "ml-3"} ${
+                  isDark ? "text-gray-400" : "text-gray-600"
+                }`}
+              >
+                {t("department.loading")}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   // Error Component
   if (singleDepartmentError) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 to-pink-100 dark:from-gray-900 dark:to-gray-800 p-6">
+      <div
+        className={`min-h-screen bg-gradient-to-br ${
+          isDark ? "from-gray-900 to-gray-800" : "from-red-50 to-pink-100"
+        } p-6`}
+      >
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center">
-            <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div
+            className={`${
+              isDark ? "bg-gray-800" : "bg-white"
+            } rounded-2xl shadow-xl p-8 text-center`}
+          >
+            <div
+              className={`w-20 h-20 ${
+                isDark ? "bg-red-900/30" : "bg-red-100"
+              } rounded-full flex items-center justify-center mx-auto mb-6`}
+            >
               <svg
                 className="w-10 h-10 text-red-500"
                 fill="none"
@@ -134,10 +188,18 @@ function SpecificDepartment() {
                 />
               </svg>
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            <h3
+              className={`text-2xl font-bold ${
+                isDark ? "text-white" : "text-gray-900"
+              } mb-4`}
+            >
               {t("department.error.title") || "Error"}
             </h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-8 text-lg">
+            <p
+              className={`${
+                isDark ? "text-gray-300" : "text-gray-600"
+              } mb-8 text-lg`}
+            >
               {singleDepartmentError.message}
             </p>
             <button
@@ -156,10 +218,22 @@ function SpecificDepartment() {
   // Not Found Component
   if (!selectedDepartment) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-6">
+      <div
+        className={`min-h-screen bg-gradient-to-br ${
+          isDark ? "from-gray-900 to-gray-800" : "from-gray-50 to-gray-100"
+        } p-6`}
+      >
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center">
-            <div className="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div
+            className={`${
+              isDark ? "bg-gray-800" : "bg-white"
+            } rounded-2xl shadow-xl p-8 text-center`}
+          >
+            <div
+              className={`w-20 h-20 ${
+                isDark ? "bg-gray-700" : "bg-gray-100"
+              } rounded-full flex items-center justify-center mx-auto mb-6`}
+            >
               <svg
                 className="w-10 h-10 text-gray-500"
                 fill="none"
@@ -174,10 +248,18 @@ function SpecificDepartment() {
                 />
               </svg>
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            <h3
+              className={`text-2xl font-bold ${
+                isDark ? "text-white" : "text-gray-900"
+              } mb-4`}
+            >
               {t("department.empty.title") || "Department Not Found"}
             </h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-8 text-lg">
+            <p
+              className={`${
+                isDark ? "text-gray-300" : "text-gray-600"
+              } mb-8 text-lg`}
+            >
               {t("department.error.notFound") ||
                 "The requested department was not found."}
             </p>
@@ -197,16 +279,22 @@ function SpecificDepartment() {
   // Main Component
   return (
     <div
-      className={`min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-6 ${
-        isRTL ? "rtl" : "ltr"
-      }`}
+      className={`min-h-screen bg-gradient-to-br ${
+        isDark
+          ? "from-gray-900 via-gray-800 to-gray-900"
+          : "from-blue-50 via-indigo-50 to-purple-50"
+      } p-6 ${isRTL ? "rtl" : "ltr"}`}
     >
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <button
             onClick={() => navigate("/admin-panel/departments")}
-            className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200 mb-4 group"
+            className={`inline-flex items-center ${
+              isDark
+                ? "text-blue-400 hover:text-blue-300"
+                : "text-blue-600 hover:text-blue-800"
+            } transition-colors duration-200 mb-4 group`}
           >
             <svg
               className={`w-5 h-5 ${isRTL ? "mr-2" : "ml-2"} transform ${
@@ -228,16 +316,28 @@ function SpecificDepartment() {
             {t("department.details.backToDepartments") || "Back to Departments"}
           </button>
 
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-8">
+          <div
+            className={`${
+              isDark ? "bg-gray-800" : "bg-white"
+            } rounded-2xl shadow-xl p-8 mb-8`}
+          >
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div>
                 <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
                   {getDepartmentName()}
                 </h1>
-                <p className="text-xl text-gray-600 dark:text-gray-300">
+                {/* <p
+                  className={`text-xl ${
+                    isDark ? "text-gray-300" : "text-gray-600"
+                  }`}
+                >
                   {getDepartmentSecondaryName()}
-                </p>
-                <p className="text-lg text-gray-500 dark:text-gray-400 mt-2">
+                </p> */}
+                <p
+                  className={`text-lg ${
+                    isDark ? "text-gray-400" : "text-gray-500"
+                  } mt-2`}
+                >
                   {t("department.table.category")}: {getCategoryName()}
                 </p>
               </div>
@@ -250,8 +350,14 @@ function SpecificDepartment() {
                 <div
                   className={`px-4 py-2 rounded-full text-sm font-medium ${
                     selectedDepartment.isActive
-                      ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                      : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                      ? `bg-green-100 text-green-800 ${
+                          isDark
+                            ? "dark:bg-green-900/30 dark:text-green-400"
+                            : ""
+                        }`
+                      : `bg-red-100 text-red-800 ${
+                          isDark ? "dark:bg-red-900/30 dark:text-red-400" : ""
+                        }`
                   }`}
                 >
                   {selectedDepartment.isActive
@@ -259,6 +365,30 @@ function SpecificDepartment() {
                     : t("department.status.inactive")}
                 </div>
               </div>
+            </div>
+
+            <div
+              className={`mt-6 flex ${isRTL ? "justify-start" : "justify-end"}`}
+            >
+              <button
+                onClick={handleCreateSubDepartment}
+                className="inline-flex items-center bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              >
+                <svg
+                  className={`w-5 h-5 ${isRTL ? "mr-2" : "ml-2"}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                  />
+                </svg>
+                {t("create-specific-sub-department")}
+              </button>
             </div>
           </div>
         </div>
@@ -268,15 +398,27 @@ function SpecificDepartment() {
           {/* Main Info */}
           <div className="lg:col-span-2 space-y-6">
             {/* Basic Information Card */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+            <div
+              className={`${
+                isDark ? "bg-gray-800" : "bg-white"
+              } rounded-2xl shadow-xl p-6`}
+            >
+              <h2
+                className={`text-2xl font-bold ${
+                  isDark ? "text-white" : "text-gray-900"
+                } mb-6 flex items-center`}
+              >
                 <div
-                  className={`w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center ${
+                  className={`w-8 h-8 ${
+                    isDark ? "bg-blue-900/30" : "bg-blue-100"
+                  } rounded-lg flex items-center justify-center ${
                     isRTL ? "mr-3" : "ml-3"
                   }`}
                 >
                   <svg
-                    className="w-4 h-4 text-blue-600 dark:text-blue-400"
+                    className={`w-4 h-4 ${
+                      isDark ? "text-blue-400" : "text-blue-600"
+                    }`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -294,11 +436,17 @@ function SpecificDepartment() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                  <label
+                    className={`block text-sm font-medium ${
+                      isDark ? "text-gray-400" : "text-gray-500"
+                    } mb-2`}
+                  >
                     {t("departmentForm.fields.nameArabic")}
                   </label>
                   <p
-                    className="text-lg text-gray-900 dark:text-white font-medium"
+                    className={`text-lg ${
+                      isDark ? "text-white" : "text-gray-900"
+                    } font-medium`}
                     dir="rtl"
                   >
                     {selectedDepartment.nameArabic}
@@ -306,30 +454,52 @@ function SpecificDepartment() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                  <label
+                    className={`block text-sm font-medium ${
+                      isDark ? "text-gray-400" : "text-gray-500"
+                    } mb-2`}
+                  >
                     {t("departmentForm.fields.nameEnglish")}
                   </label>
-                  <p className="text-lg text-gray-900 dark:text-white font-medium">
+                  <p
+                    className={`text-lg ${
+                      isDark ? "text-white" : "text-gray-900"
+                    } font-medium`}
+                  >
                     {selectedDepartment.nameEnglish}
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                  <label
+                    className={`block text-sm font-medium ${
+                      isDark ? "text-gray-400" : "text-gray-500"
+                    } mb-2`}
+                  >
                     {t("departmentForm.fields.category")}
                   </label>
-                  <p className="text-lg text-gray-900 dark:text-white font-medium">
+                  <p
+                    className={`text-lg ${
+                      isDark ? "text-white" : "text-gray-900"
+                    } font-medium`}
+                  >
                     {getCategoryName()}
                   </p>
                 </div>
 
                 {selectedDepartment.location && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                    <label
+                      className={`block text-sm font-medium ${
+                        isDark ? "text-gray-400" : "text-gray-500"
+                      } mb-2`}
+                    >
                       {t("departmentForm.fields.location")}
                     </label>
                     <p
-                      className="text-lg text-gray-900 dark:text-white font-medium"
+                      className={`text-lg ${
+                        isDark ? "text-white" : "text-gray-900"
+                      } font-medium`}
                       dir={isRTL ? "rtl" : "ltr"}
                     >
                       {selectedDepartment.location}
@@ -341,15 +511,27 @@ function SpecificDepartment() {
 
             {/* Description Card */}
             {selectedDepartment.description && (
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+              <div
+                className={`${
+                  isDark ? "bg-gray-800" : "bg-white"
+                } rounded-2xl shadow-xl p-6`}
+              >
+                <h2
+                  className={`text-2xl font-bold ${
+                    isDark ? "text-white" : "text-gray-900"
+                  } mb-4 flex items-center`}
+                >
                   <div
-                    className={`w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center ${
+                    className={`w-8 h-8 ${
+                      isDark ? "bg-purple-900/30" : "bg-purple-100"
+                    } rounded-lg flex items-center justify-center ${
                       isRTL ? "mr-3" : "ml-3"
                     }`}
                   >
                     <svg
-                      className="w-4 h-4 text-purple-600 dark:text-purple-400"
+                      className={`w-4 h-4 ${
+                        isDark ? "text-purple-400" : "text-purple-600"
+                      }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -365,7 +547,9 @@ function SpecificDepartment() {
                   {t("departmentForm.fields.description")}
                 </h2>
                 <p
-                  className="text-gray-600 dark:text-gray-300 leading-relaxed text-lg"
+                  className={`${
+                    isDark ? "text-gray-300" : "text-gray-600"
+                  } leading-relaxed text-lg`}
                   dir={isRTL ? "rtl" : "ltr"}
                 >
                   {selectedDepartment.description}
@@ -375,15 +559,27 @@ function SpecificDepartment() {
 
             {/* Head of Department Card - if exists */}
             {selectedDepartment.head && (
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+              <div
+                className={`${
+                  isDark ? "bg-gray-800" : "bg-white"
+                } rounded-2xl shadow-xl p-6`}
+              >
+                <h2
+                  className={`text-2xl font-bold ${
+                    isDark ? "text-white" : "text-gray-900"
+                  } mb-4 flex items-center`}
+                >
                   <div
-                    className={`w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center ${
+                    className={`w-8 h-8 ${
+                      isDark ? "bg-green-900/30" : "bg-green-100"
+                    } rounded-lg flex items-center justify-center ${
                       isRTL ? "mr-3" : "ml-3"
                     }`}
                   >
                     <svg
-                      className="w-4 h-4 text-green-600 dark:text-green-400"
+                      className={`w-4 h-4 ${
+                        isDark ? "text-green-400" : "text-green-600"
+                      }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -398,11 +594,19 @@ function SpecificDepartment() {
                   </div>
                   {t("department.details.head") || "Head of Department"}
                 </h2>
-                <p className="text-gray-600 dark:text-gray-300 text-lg">
+                <p
+                  className={`${
+                    isDark ? "text-gray-300" : "text-gray-600"
+                  } text-lg`}
+                >
                   {selectedDepartment.head.name}
                 </p>
                 {selectedDepartment.head.email && (
-                  <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
+                  <p
+                    className={`${
+                      isDark ? "text-gray-400" : "text-gray-500"
+                    } text-sm mt-1`}
+                  >
                     {selectedDepartment.head.email}
                   </p>
                 )}
@@ -413,23 +617,39 @@ function SpecificDepartment() {
           {/* Statistics Sidebar */}
           <div className="space-y-6">
             {/* Statistics Cards */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+            <div
+              className={`${
+                isDark ? "bg-gray-800" : "bg-white"
+              } rounded-2xl shadow-xl p-6`}
+            >
+              <h2
+                className={`text-xl font-bold ${
+                  isDark ? "text-white" : "text-gray-900"
+                } mb-6`}
+              >
                 {t("department.details.statistics")}
               </h2>
 
               <div className="space-y-4">
                 {selectedDepartment.statistics?.totalEmployees !==
                   undefined && (
-                  <div className="flex items-center justify-between p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+                  <div
+                    className={`flex items-center justify-between p-4 ${
+                      isDark ? "bg-blue-900/20" : "bg-blue-50"
+                    } rounded-xl`}
+                  >
                     <div className="flex items-center">
                       <div
-                        className={`w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center ${
+                        className={`w-10 h-10 ${
+                          isDark ? "bg-blue-900/30" : "bg-blue-100"
+                        } rounded-lg flex items-center justify-center ${
                           isRTL ? "mr-3" : "ml-3"
                         }`}
                       >
                         <svg
-                          className="w-5 h-5 text-blue-600 dark:text-blue-400"
+                          className={`w-5 h-5 ${
+                            isDark ? "text-blue-400" : "text-blue-600"
+                          }`}
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -442,11 +662,19 @@ function SpecificDepartment() {
                           />
                         </svg>
                       </div>
-                      <span className="text-gray-700 dark:text-gray-300 font-medium">
+                      <span
+                        className={`${
+                          isDark ? "text-gray-300" : "text-gray-700"
+                        } font-medium`}
+                      >
                         {t("department.statistics.totalEmployees")}
                       </span>
                     </div>
-                    <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                    <span
+                      className={`text-2xl font-bold ${
+                        isDark ? "text-blue-400" : "text-blue-600"
+                      }`}
+                    >
                       {selectedDepartment.statistics.totalEmployees}
                     </span>
                   </div>
@@ -454,15 +682,23 @@ function SpecificDepartment() {
 
                 {selectedDepartment.statistics?.activeEmployees !==
                   undefined && (
-                  <div className="flex items-center justify-between p-4 bg-green-50 dark:bg-green-900/20 rounded-xl">
+                  <div
+                    className={`flex items-center justify-between p-4 ${
+                      isDark ? "bg-green-900/20" : "bg-green-50"
+                    } rounded-xl`}
+                  >
                     <div className="flex items-center">
                       <div
-                        className={`w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center ${
+                        className={`w-10 h-10 ${
+                          isDark ? "bg-green-900/30" : "bg-green-100"
+                        } rounded-lg flex items-center justify-center ${
                           isRTL ? "mr-3" : "ml-3"
                         }`}
                       >
                         <svg
-                          className="w-5 h-5 text-green-600 dark:text-green-400"
+                          className={`w-5 h-5 ${
+                            isDark ? "text-green-400" : "text-green-600"
+                          }`}
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -475,11 +711,19 @@ function SpecificDepartment() {
                           />
                         </svg>
                       </div>
-                      <span className="text-gray-700 dark:text-gray-300 font-medium">
+                      <span
+                        className={`${
+                          isDark ? "text-gray-300" : "text-gray-700"
+                        } font-medium`}
+                      >
                         {t("department.statistics.activeEmployees")}
                       </span>
                     </div>
-                    <span className="text-2xl font-bold text-green-600 dark:text-green-400">
+                    <span
+                      className={`text-2xl font-bold ${
+                        isDark ? "text-green-400" : "text-green-600"
+                      }`}
+                    >
                       {selectedDepartment.statistics.activeEmployees}
                     </span>
                   </div>
@@ -487,15 +731,23 @@ function SpecificDepartment() {
 
                 {selectedDepartment.statistics?.subDepartments !==
                   undefined && (
-                  <div className="flex items-center justify-between p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
+                  <div
+                    className={`flex items-center justify-between p-4 ${
+                      isDark ? "bg-purple-900/20" : "bg-purple-50"
+                    } rounded-xl`}
+                  >
                     <div className="flex items-center">
                       <div
-                        className={`w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center ${
+                        className={`w-10 h-10 ${
+                          isDark ? "bg-purple-900/30" : "bg-purple-100"
+                        } rounded-lg flex items-center justify-center ${
                           isRTL ? "mr-3" : "ml-3"
                         }`}
                       >
                         <svg
-                          className="w-5 h-5 text-purple-600 dark:text-purple-400"
+                          className={`w-5 h-5 ${
+                            isDark ? "text-purple-400" : "text-purple-600"
+                          }`}
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -508,11 +760,19 @@ function SpecificDepartment() {
                           />
                         </svg>
                       </div>
-                      <span className="text-gray-700 dark:text-gray-300 font-medium">
+                      <span
+                        className={`${
+                          isDark ? "text-gray-300" : "text-gray-700"
+                        } font-medium`}
+                      >
                         {t("department.statistics.subDepartments")}
                       </span>
                     </div>
-                    <span className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                    <span
+                      className={`text-2xl font-bold ${
+                        isDark ? "text-purple-400" : "text-purple-600"
+                      }`}
+                    >
                       {selectedDepartment.statistics.subDepartments}
                     </span>
                   </div>
@@ -521,27 +781,59 @@ function SpecificDepartment() {
             </div>
 
             {/* Metadata Card */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+            <div
+              className={`${
+                isDark ? "bg-gray-800" : "bg-white"
+              } rounded-2xl shadow-xl p-6`}
+            >
+              <h2
+                className={`text-xl font-bold ${
+                  isDark ? "text-white" : "text-gray-900"
+                } mb-6`}
+              >
                 {t("department.details.information")}
               </h2>
 
               <div className="space-y-4 text-sm">
-                <div className="border-b border-gray-200 dark:border-gray-700 pb-3">
-                  <div className="text-gray-500 dark:text-gray-400 mb-1">
+                <div
+                  className={`border-b ${
+                    isDark ? "border-gray-700" : "border-gray-200"
+                  } pb-3`}
+                >
+                  <div
+                    className={`${
+                      isDark ? "text-gray-400" : "text-gray-500"
+                    } mb-1`}
+                  >
                     {t("department.details.createdAt")}
                   </div>
-                  <div className="text-gray-900 dark:text-white font-medium">
+                  <div
+                    className={`${
+                      isDark ? "text-white" : "text-gray-900"
+                    } font-medium`}
+                  >
                     {formatDate(selectedDepartment.createdAt)}
                   </div>
                 </div>
 
                 {selectedDepartment.createdByName && (
-                  <div className="border-b border-gray-200 dark:border-gray-700 pb-3">
-                    <div className="text-gray-500 dark:text-gray-400 mb-1">
+                  <div
+                    className={`border-b ${
+                      isDark ? "border-gray-700" : "border-gray-200"
+                    } pb-3`}
+                  >
+                    <div
+                      className={`${
+                        isDark ? "text-gray-400" : "text-gray-500"
+                      } mb-1`}
+                    >
                       {t("department.details.createdBy")}
                     </div>
-                    <div className="text-gray-900 dark:text-white font-medium">
+                    <div
+                      className={`${
+                        isDark ? "text-white" : "text-gray-900"
+                      } font-medium`}
+                    >
                       {selectedDepartment.createdByName}
                     </div>
                   </div>
@@ -549,21 +841,41 @@ function SpecificDepartment() {
 
                 {selectedDepartment.updatedAt && (
                   <>
-                    <div className="border-b border-gray-200 dark:border-gray-700 pb-3">
-                      <div className="text-gray-500 dark:text-gray-400 mb-1">
+                    <div
+                      className={`border-b ${
+                        isDark ? "border-gray-700" : "border-gray-200"
+                      } pb-3`}
+                    >
+                      <div
+                        className={`${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        } mb-1`}
+                      >
                         {t("department.details.updatedAt")}
                       </div>
-                      <div className="text-gray-900 dark:text-white font-medium">
+                      <div
+                        className={`${
+                          isDark ? "text-white" : "text-gray-900"
+                        } font-medium`}
+                      >
                         {formatDate(selectedDepartment.updatedAt)}
                       </div>
                     </div>
 
                     {selectedDepartment.updatedByName && (
                       <div>
-                        <div className="text-gray-500 dark:text-gray-400 mb-1">
+                        <div
+                          className={`${
+                            isDark ? "text-gray-400" : "text-gray-500"
+                          } mb-1`}
+                        >
                           {t("department.details.updatedBy")}
                         </div>
-                        <div className="text-gray-900 dark:text-white font-medium">
+                        <div
+                          className={`${
+                            isDark ? "text-white" : "text-gray-900"
+                          } font-medium`}
+                        >
                           {selectedDepartment.updatedByName}
                         </div>
                       </div>

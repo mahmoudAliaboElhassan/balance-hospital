@@ -413,7 +413,7 @@ function UseFormValidation() {
   const VALIDATION_SCHEMA_ADD_SHIFT_HOUR_TYPE = Yup.object().shape({
     nameArabic: Yup.string()
       .trim()
-      .required(t("shiftHourTypeForm.fields.nameArabic") + " is required")
+      .required(t("shiftHourTypeForm.form.validation.nameArabic"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(255, t("validation.maxLength", { count: 255 }))
       .matches(
@@ -424,7 +424,7 @@ function UseFormValidation() {
 
     nameEnglish: Yup.string()
       .trim()
-      .required(t("shiftHourTypeForm.fields.nameEnglish") + " is required")
+      .required(t("shiftHourTypeForm.form.validation.nameEnglish"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(255, t("validation.maxLength", { count: 255 }))
       .matches(
@@ -434,25 +434,28 @@ function UseFormValidation() {
       ),
     code: Yup.string()
       .trim()
-      .required(t("shiftHourTypeForm.fields.code") + " is required")
-      .matches(/^[A-Z0-9]+$/, t("shiftHourTypeForm.hints.code")),
+      .required(t("shiftHourTypeForm.form.validation.code"))
+      .matches(
+        /^[A-Z0-9]+$/,
+        t("shiftHourTypeForm.form.validation.hints.code")
+      ),
 
     period: Yup.string().required(
-      t("shiftHourTypeForm.fields.period") + " is required"
+      t("shiftHourTypeForm.form.validation.period")
     ),
 
     hours: Yup.number()
-      .required(t("shiftHourTypeForm.fields.hoursCount") + " is required")
+      .required(t("shiftHourTypeForm.form.validation.hoursCount"))
       .integer(t("validation.integerOnly"))
-      .min(1, t("shiftHourTypeForm.hints.hoursCount"))
-      .max(24, t("shiftHourTypeForm.hints.hoursCount")),
+      .min(1, t("shiftHourTypeForm.form.validation.hints.hoursCount"))
+      .max(24, t("shiftHourTypeForm.form.validation.hints.hoursCount")),
 
     startTime: Yup.string().required(
-      t("shiftHourTypeForm.fields.startTime") + " is required"
+      t("shiftHourTypeForm.form.validation.startTime")
     ),
 
     endTime: Yup.string().required(
-      t("shiftHourTypeForm.fields.endTime") + " is required"
+      t("shiftHourTypeForm.form.validation.endTime")
     ),
 
     isActive: Yup.boolean().required(),

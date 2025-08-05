@@ -518,6 +518,14 @@
       "first": "First",
       "last": "Last",
       "itemsPerPage": "items per page"
+    },
+    "form": {
+      "validation": {
+        "nameArabicRequired": "Arabic name is required",
+        "nameEnglishRequired": "English name is required",
+        "departmentRequired": "Department is required",
+        "locationRequired": "Location is required"
+      }
     }
   },
   "subDepartment": {
@@ -1097,6 +1105,21 @@
   "shiftHourTypeForm": {
     "editTitle": "Edit Shift Hour Type",
     "addTitle": "Add New Shift Hour Type",
+    "form": {
+      "validation": {
+        "nameArabic": "Name (Arabic) is required",
+        "nameEnglish": "Name (English) is required",
+        "code": "Code is required",
+        "period": "Period is required",
+        "hoursCount": "Hours Count is required",
+        "startTime": "Start Time is required",
+        "endTime": "End Time is required",
+        "hints": {
+          "code": "Use uppercase letters (A–Z) and digits only",
+          "hoursCount": "Value must be between 1 and 24"
+        }
+      }
+    },
     "periods": {
       "morning": "Morning",
       "day": "Day",
@@ -1118,7 +1141,9 @@
       "nameEnglish": "Enter English name",
       "code": "Enter code",
       "period": "Select period",
-      "hoursCount": "e.g. 8"
+      "hoursCount": "e.g. 8",
+      "startTime": "Select start time",
+      "endTime": "Select end time"
     },
     "hints": {
       "code": "Uppercase letters and numbers only",
@@ -1127,20 +1152,22 @@
     "buttons": {
       "cancel": "Cancel",
       "create": "Create Shift Hour Type",
+      "creating": "Creating Shift Hour Type...",
       "update": "Update Shift Hour Type",
       "updating": "Updating..."
     },
     "success": {
+      "created": "Shift hour type created successfully",
       "updated": "Shift hour type updated successfully"
     },
     "error": {
       "title": "Update Failed",
       "loadFailed": "Failed to load shift hour type",
       "notFound": "Shift hour type not found",
-      "notFoundMessage": "The requested shift hour type does not exist."
+      "notFoundMessage": "The requested shift hour type does not exist.",
+      "message": "An unexpected error occurred"
     }
   },
-
   "managementRoles": {
     "title": "Management Roles",
     "description": "Manage system roles, assign managers and department heads",
@@ -1405,5 +1432,7 @@
       "description": "Department management and oversight"
     },
     "footerHelp": "Need help? Contact system administrator"
-  }
+  },
+  "create-specific-department": "Create specific department to that category",
+  "create-specific-sub-department": "Create specific sub-department to that department"
 }

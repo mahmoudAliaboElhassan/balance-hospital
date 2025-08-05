@@ -276,9 +276,10 @@ export const departmentSlice = createSlice({
         if (response.success) {
           state.deleteSuccess = true;
           state.deleteMessage = response.messageAr || response.messageEn;
-
+          console.log(Number(localStorage.getItem("deletedDepartmentId")));
           state.departments = state.departments.filter(
-            (dept) => dept.id !== response.deletedDepartmentId
+            (dept) =>
+              dept.id != Number(localStorage.getItem("deletedDepartmentId"))
           );
 
           if (state.pagination) {

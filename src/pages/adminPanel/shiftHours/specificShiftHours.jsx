@@ -278,13 +278,13 @@ function SpecificShiftHoursType() {
               >
                 {getShiftHoursTypeName()}
               </h1>
-              <p
+              {/* <p
                 className={`text-lg ${
                   isDark ? "text-gray-300" : "text-gray-600"
                 }`}
               >
                 {getShiftHoursTypeSecondaryName()}
-              </p>
+              </p> */}
               {selectedShiftHoursType.code && (
                 <div className="flex items-center mt-2">
                   <Hash

@@ -237,13 +237,13 @@ function SpecificScientificDegree() {
               >
                 {getScientificDegreeName()}
               </h1>
-              <p
+              {/* <p
                 className={`text-lg ${
                   isDark ? "text-gray-300" : "text-gray-600"
                 }`}
               >
                 {getScientificDegreeSecondaryName()}
-              </p>
+              </p> */}
               {selectedScientificDegree.code && (
                 <div className="flex items-center mt-2">
                   <Hash

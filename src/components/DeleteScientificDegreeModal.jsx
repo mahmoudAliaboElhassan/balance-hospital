@@ -51,7 +51,7 @@ const DeleteScientificDegreeModal = ({
       setError(t("scientificDegrees.delete.reasonTooShort"));
       return;
     }
-
+    localStorage.setItem("deletedScientificDegreeId", info.id);
     dispatch(
       deleteScientificDegree({
         id: degreeInfo.id || scientificDegreeId,

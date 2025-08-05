@@ -230,13 +230,13 @@ function SpecificContractingType() {
               >
                 {getContractingTypeName()}
               </h1>
-              <p
+              {/* <p
                 className={`text-lg ${
                   isDark ? "text-gray-300" : "text-gray-600"
                 }`}
               >
                 {getContractingTypeSecondaryName()}
-              </p>
+              </p> */}
               {selectedContractingType.code && (
                 <div className="flex items-center mt-2">
                   <Hash

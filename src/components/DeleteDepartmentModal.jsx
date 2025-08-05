@@ -38,6 +38,7 @@ const DeleteDepartmentModal = ({
       setError(t("department.delete.reasonRequired"));
       return;
     }
+    localStorage.setItem("deletedDepartmentId", info.id);
 
     dispatch(deleteDepartment({ id: info.id, reason }))
       .unwrap()

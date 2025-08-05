@@ -22,11 +22,11 @@ export const subDepartmentSlice = createSlice({
     clearFilters: (state) => {
       state.filters = {
         search: "",
-        departmentId: null,
-        categoryId: null,
-        isActive: null,
-        createdFrom: null,
-        createdTo: null,
+        departmentId: "",
+        categoryId: "",
+        isActive: "",
+        createdFrom: "",
+        createdTo: "",
         includeDepartment: true,
         includeStatistics: true,
         orderBy: "nameArabic",

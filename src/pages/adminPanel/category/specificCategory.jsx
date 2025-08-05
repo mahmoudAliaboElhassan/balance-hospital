@@ -8,6 +8,7 @@ import {
 } from "../../../state/slices/category";
 import LoadingGetData from "../../../components/LoadingGetData";
 import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 const SpecificCategory = () => {
   const { catId: id } = useParams();
@@ -21,9 +22,10 @@ const SpecificCategory = () => {
   const { mymode } = useSelector((state) => state.mode);
   const { t } = useTranslation();
 
-  // Get current language direction
+  // Get current language direction and theme
   const isRTL = mymode === "ar";
-  const currentLang = mymode || "ar";
+  const currentLang = i18next.language;
+  const isDark = mymode === "dark";
 
   useEffect(() => {
     if (id) {
@@ -80,18 +82,66 @@ const SpecificCategory = () => {
     return date.toLocaleDateString(locale, options);
   };
 
+  // Handle create department for this category
+  const handleCreateDepartment = () => {
+    if (selectedCategory) {
+      // Save category information to localStorage
+      localStorage.setItem("categoryId", selectedCategory.id);
+      localStorage.setItem("categoryEnglishName", selectedCategory.nameEnglish);
+      localStorage.setItem("categoryArabicName", selectedCategory.nameArabic);
+
+      // Navigate to create department page
+      navigate("/admin-panel/department/create-specific");
+    }
+  };
+
   // Loading Component
   if (loadingGetSingleCategory) {
-    return <LoadingGetData />;
+    return (
+      <div
+        className={`min-h-screen bg-gradient-to-br ${
+          isDark
+            ? "from-gray-900 via-gray-800 to-gray-900"
+            : "from-blue-50 via-indigo-50 to-purple-50"
+        } p-6 ${isRTL ? "rtl" : "ltr"}`}
+      >
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center p-8">
+            <div className="flex items-center justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <span
+                className={`${isRTL ? "mr-3" : "ml-3"} ${
+                  isDark ? "text-gray-400" : "text-gray-600"
+                }`}
+              >
+                {t("category.loading")}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   // Error Component
   if (singleCategoryError) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 to-pink-100 dark:from-gray-900 dark:to-gray-800 p-6">
+      <div
+        className={`min-h-screen bg-gradient-to-br ${
+          isDark ? "from-gray-900 to-gray-800" : "from-red-50 to-pink-100"
+        } p-6`}
+      >
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center">
-            <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div
+            className={`${
+              isDark ? "bg-gray-800" : "bg-white"
+            } rounded-2xl shadow-xl p-8 text-center`}
+          >
+            <div
+              className={`w-20 h-20 ${
+                isDark ? "bg-red-900/30" : "bg-red-100"
+              } rounded-full flex items-center justify-center mx-auto mb-6`}
+            >
               <svg
                 className="w-10 h-10 text-red-500"
                 fill="none"
@@ -106,10 +156,18 @@ const SpecificCategory = () => {
                 />
               </svg>
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            <h3
+              className={`text-2xl font-bold ${
+                isDark ? "text-white" : "text-gray-900"
+              } mb-4`}
+            >
               {t("specificCategory.error.title")}
             </h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-8 text-lg">
+            <p
+              className={`${
+                isDark ? "text-gray-300" : "text-gray-600"
+              } mb-8 text-lg`}
+            >
               {singleCategoryError.message}
             </p>
             <button
@@ -127,10 +185,22 @@ const SpecificCategory = () => {
   // Not Found Component
   if (!selectedCategory) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-6">
+      <div
+        className={`min-h-screen bg-gradient-to-br ${
+          isDark ? "from-gray-900 to-gray-800" : "from-gray-50 to-gray-100"
+        } p-6`}
+      >
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center">
-            <div className="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div
+            className={`${
+              isDark ? "bg-gray-800" : "bg-white"
+            } rounded-2xl shadow-xl p-8 text-center`}
+          >
+            <div
+              className={`w-20 h-20 ${
+                isDark ? "bg-gray-700" : "bg-gray-100"
+              } rounded-full flex items-center justify-center mx-auto mb-6`}
+            >
               <svg
                 className="w-10 h-10 text-gray-500"
                 fill="none"
@@ -145,7 +215,11 @@ const SpecificCategory = () => {
                 />
               </svg>
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            <h3
+              className={`text-2xl font-bold ${
+                isDark ? "text-white" : "text-gray-900"
+              } mb-4`}
+            >
               {t("specificCategory.notFound.title")}
             </h3>
             <button
@@ -163,16 +237,22 @@ const SpecificCategory = () => {
   // Main Component
   return (
     <div
-      className={`min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-6 ${
-        isRTL ? "rtl" : "ltr"
-      }`}
+      className={`min-h-screen bg-gradient-to-br ${
+        isDark
+          ? "from-gray-900 via-gray-800 to-gray-900"
+          : "from-blue-50 via-indigo-50 to-purple-50"
+      } p-6 ${isRTL ? "rtl" : "ltr"}`}
     >
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <button
             onClick={() => navigate("/admin-panel/categories")}
-            className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200 mb-4 group"
+            className={`inline-flex items-center ${
+              isDark
+                ? "text-blue-400 hover:text-blue-300"
+                : "text-blue-600 hover:text-blue-800"
+            } transition-colors duration-200 mb-4 group`}
           >
             <svg
               className={`w-5 h-5 ${isRTL ? "mr-2" : "ml-2"} transform ${
@@ -194,15 +274,23 @@ const SpecificCategory = () => {
             {t("specificCategory.navigation.backToCategories")}
           </button>
 
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-8">
+          <div
+            className={`${
+              isDark ? "bg-gray-800" : "bg-white"
+            } rounded-2xl shadow-xl p-8 mb-8`}
+          >
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div>
                 <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
                   {getCategoryName()}
                 </h1>
-                <p className="text-xl text-gray-600 dark:text-gray-300">
+                {/* <p
+                  className={`text-xl ${
+                    isDark ? "text-gray-300" : "text-gray-600"
+                  }`}
+                >
                   {getCategorySecondaryName()}
-                </p>
+                </p> */}
               </div>
 
               <div
@@ -213,8 +301,14 @@ const SpecificCategory = () => {
                 <div
                   className={`px-4 py-2 rounded-full text-sm font-medium ${
                     selectedCategory.isActive
-                      ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                      : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                      ? `bg-green-100 text-green-800 ${
+                          isDark
+                            ? "dark:bg-green-900/30 dark:text-green-400"
+                            : ""
+                        }`
+                      : `bg-red-100 text-red-800 ${
+                          isDark ? "dark:bg-red-900/30 dark:text-red-400" : ""
+                        }`
                   }`}
                 >
                   {selectedCategory.isActive
@@ -222,10 +316,41 @@ const SpecificCategory = () => {
                     : t("specificCategory.status.inactive")}
                 </div>
 
-                <div className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 px-4 py-2 rounded-full text-sm font-medium font-mono">
+                <div
+                  className={`${
+                    isDark
+                      ? "bg-blue-900/30 text-blue-400"
+                      : "bg-blue-100 text-blue-800"
+                  } px-4 py-2 rounded-full text-sm font-medium font-mono`}
+                >
                   {selectedCategory.code}
                 </div>
               </div>
+            </div>
+
+            {/* Create Department Button */}
+            <div
+              className={`mt-6 flex ${isRTL ? "justify-start" : "justify-end"}`}
+            >
+              <button
+                onClick={handleCreateDepartment}
+                className="inline-flex items-center bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              >
+                <svg
+                  className={`w-5 h-5 ${isRTL ? "mr-2" : "ml-2"}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                  />
+                </svg>
+                {t("create-specific-department")}
+              </button>
             </div>
           </div>
         </div>
@@ -235,15 +360,27 @@ const SpecificCategory = () => {
           {/* Main Info */}
           <div className="lg:col-span-2 space-y-6">
             {/* Description Card */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+            <div
+              className={`${
+                isDark ? "bg-gray-800" : "bg-white"
+              } rounded-2xl shadow-xl p-6`}
+            >
+              <h2
+                className={`text-2xl font-bold ${
+                  isDark ? "text-white" : "text-gray-900"
+                } mb-4 flex items-center`}
+              >
                 <div
-                  className={`w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center ${
+                  className={`w-8 h-8 ${
+                    isDark ? "bg-blue-900/30" : "bg-blue-100"
+                  } rounded-lg flex items-center justify-center ${
                     isRTL ? "mr-3" : "ml-3"
                   }`}
                 >
                   <svg
-                    className="w-4 h-4 text-blue-600 dark:text-blue-400"
+                    className={`w-4 h-4 ${
+                      isDark ? "text-blue-400" : "text-blue-600"
+                    }`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -258,7 +395,11 @@ const SpecificCategory = () => {
                 </div>
                 {t("specificCategory.sections.description.title")}
               </h2>
-              <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-lg">
+              <p
+                className={`${
+                  isDark ? "text-gray-300" : "text-gray-600"
+                } leading-relaxed text-lg`}
+              >
                 {selectedCategory.description ||
                   t("specificCategory.sections.description.noDescription")}
               </p>
@@ -266,15 +407,27 @@ const SpecificCategory = () => {
 
             {/* Chief Card - if exists */}
             {selectedCategory.chief && (
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+              <div
+                className={`${
+                  isDark ? "bg-gray-800" : "bg-white"
+                } rounded-2xl shadow-xl p-6`}
+              >
+                <h2
+                  className={`text-2xl font-bold ${
+                    isDark ? "text-white" : "text-gray-900"
+                  } mb-4 flex items-center`}
+                >
                   <div
-                    className={`w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center ${
+                    className={`w-8 h-8 ${
+                      isDark ? "bg-purple-900/30" : "bg-purple-100"
+                    } rounded-lg flex items-center justify-center ${
                       isRTL ? "mr-3" : "ml-3"
                     }`}
                   >
                     <svg
-                      className="w-4 h-4 text-purple-600 dark:text-purple-400"
+                      className={`w-4 h-4 ${
+                        isDark ? "text-purple-400" : "text-purple-600"
+                      }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -289,7 +442,11 @@ const SpecificCategory = () => {
                   </div>
                   {t("specificCategory.sections.chief.title")}
                 </h2>
-                <p className="text-gray-600 dark:text-gray-300 text-lg">
+                <p
+                  className={`${
+                    isDark ? "text-gray-300" : "text-gray-600"
+                  } text-lg`}
+                >
                   {selectedCategory.chief.name}
                 </p>
               </div>
@@ -299,21 +456,37 @@ const SpecificCategory = () => {
           {/* Statistics Sidebar */}
           <div className="space-y-6">
             {/* Statistics Cards */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+            <div
+              className={`${
+                isDark ? "bg-gray-800" : "bg-white"
+              } rounded-2xl shadow-xl p-6`}
+            >
+              <h2
+                className={`text-xl font-bold ${
+                  isDark ? "text-white" : "text-gray-900"
+                } mb-6`}
+              >
                 {t("specificCategory.sections.statistics.title")}
               </h2>
 
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+                <div
+                  className={`flex items-center justify-between p-4 ${
+                    isDark ? "bg-blue-900/20" : "bg-blue-50"
+                  } rounded-xl`}
+                >
                   <div className="flex items-center">
                     <div
-                      className={`w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center ${
+                      className={`w-10 h-10 ${
+                        isDark ? "bg-blue-900/30" : "bg-blue-100"
+                      } rounded-lg flex items-center justify-center ${
                         isRTL ? "mr-3" : "ml-3"
                       }`}
                     >
                       <svg
-                        className="w-5 h-5 text-blue-600 dark:text-blue-400"
+                        className={`w-5 h-5 ${
+                          isDark ? "text-blue-400" : "text-blue-600"
+                        }`}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -326,26 +499,42 @@ const SpecificCategory = () => {
                         />
                       </svg>
                     </div>
-                    <span className="text-gray-700 dark:text-gray-300 font-medium">
+                    <span
+                      className={`${
+                        isDark ? "text-gray-300" : "text-gray-700"
+                      } font-medium`}
+                    >
                       {t(
                         "specificCategory.sections.statistics.departmentsCount"
                       )}
                     </span>
                   </div>
-                  <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                  <span
+                    className={`text-2xl font-bold ${
+                      isDark ? "text-blue-400" : "text-blue-600"
+                    }`}
+                  >
                     {selectedCategory.departmentsCount}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-green-50 dark:bg-green-900/20 rounded-xl">
+                <div
+                  className={`flex items-center justify-between p-4 ${
+                    isDark ? "bg-green-900/20" : "bg-green-50"
+                  } rounded-xl`}
+                >
                   <div className="flex items-center">
                     <div
-                      className={`w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center ${
+                      className={`w-10 h-10 ${
+                        isDark ? "bg-green-900/30" : "bg-green-100"
+                      } rounded-lg flex items-center justify-center ${
                         isRTL ? "mr-3" : "ml-3"
                       }`}
                     >
                       <svg
-                        className="w-5 h-5 text-green-600 dark:text-green-400"
+                        className={`w-5 h-5 ${
+                          isDark ? "text-green-400" : "text-green-600"
+                        }`}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -358,11 +547,19 @@ const SpecificCategory = () => {
                         />
                       </svg>
                     </div>
-                    <span className="text-gray-700 dark:text-gray-300 font-medium">
+                    <span
+                      className={`${
+                        isDark ? "text-gray-300" : "text-gray-700"
+                      } font-medium`}
+                    >
                       {t("specificCategory.sections.statistics.usersCount")}
                     </span>
                   </div>
-                  <span className="text-2xl font-bold text-green-600 dark:text-green-400">
+                  <span
+                    className={`text-2xl font-bold ${
+                      isDark ? "text-green-400" : "text-green-600"
+                    }`}
+                  >
                     {selectedCategory.usersCount}
                   </span>
                 </div>
@@ -370,47 +567,99 @@ const SpecificCategory = () => {
             </div>
 
             {/* Metadata Card */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+            <div
+              className={`${
+                isDark ? "bg-gray-800" : "bg-white"
+              } rounded-2xl shadow-xl p-6`}
+            >
+              <h2
+                className={`text-xl font-bold ${
+                  isDark ? "text-white" : "text-gray-900"
+                } mb-6`}
+              >
                 {t("specificCategory.sections.metadata.title")}
               </h2>
 
               <div className="space-y-4 text-sm">
-                <div className="border-b border-gray-200 dark:border-gray-700 pb-3">
-                  <div className="text-gray-500 dark:text-gray-400 mb-1">
+                <div
+                  className={`border-b ${
+                    isDark ? "border-gray-700" : "border-gray-200"
+                  } pb-3`}
+                >
+                  <div
+                    className={`${
+                      isDark ? "text-gray-400" : "text-gray-500"
+                    } mb-1`}
+                  >
                     {t("specificCategory.sections.metadata.createdAt")}
                   </div>
-                  <div className="text-gray-900 dark:text-white font-medium">
+                  <div
+                    className={`${
+                      isDark ? "text-white" : "text-gray-900"
+                    } font-medium`}
+                  >
                     {formatDate(selectedCategory.createdAt)}
                   </div>
                 </div>
 
-                <div className="border-b border-gray-200 dark:border-gray-700 pb-3">
-                  <div className="text-gray-500 dark:text-gray-400 mb-1">
+                <div
+                  className={`border-b ${
+                    isDark ? "border-gray-700" : "border-gray-200"
+                  } pb-3`}
+                >
+                  <div
+                    className={`${
+                      isDark ? "text-gray-400" : "text-gray-500"
+                    } mb-1`}
+                  >
                     {t("specificCategory.sections.metadata.createdBy")}
                   </div>
-                  <div className="text-gray-900 dark:text-white font-medium">
+                  <div
+                    className={`${
+                      isDark ? "text-white" : "text-gray-900"
+                    } font-medium`}
+                  >
                     {selectedCategory.createdByName}
                   </div>
                 </div>
 
                 {selectedCategory.updatedAt && (
                   <>
-                    <div className="border-b border-gray-200 dark:border-gray-700 pb-3">
-                      <div className="text-gray-500 dark:text-gray-400 mb-1">
+                    <div
+                      className={`border-b ${
+                        isDark ? "border-gray-700" : "border-gray-200"
+                      } pb-3`}
+                    >
+                      <div
+                        className={`${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        } mb-1`}
+                      >
                         {t("specificCategory.sections.metadata.updatedAt")}
                       </div>
-                      <div className="text-gray-900 dark:text-white font-medium">
+                      <div
+                        className={`${
+                          isDark ? "text-white" : "text-gray-900"
+                        } font-medium`}
+                      >
                         {formatDate(selectedCategory.updatedAt)}
                       </div>
                     </div>
 
                     {selectedCategory.updatedByName && (
                       <div>
-                        <div className="text-gray-500 dark:text-gray-400 mb-1">
+                        <div
+                          className={`${
+                            isDark ? "text-gray-400" : "text-gray-500"
+                          } mb-1`}
+                        >
                           {t("specificCategory.sections.metadata.updatedBy")}
                         </div>
-                        <div className="text-gray-900 dark:text-white font-medium">
+                        <div
+                          className={`${
+                            isDark ? "text-white" : "text-gray-900"
+                          } font-medium`}
+                        >
                           {selectedCategory.updatedByName}
                         </div>
                       </div>

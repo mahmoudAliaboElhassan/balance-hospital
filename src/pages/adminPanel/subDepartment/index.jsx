@@ -28,6 +28,7 @@ import {
   setPageSize,
   setDepartmentFilter,
   setCategoryFilter,
+  clearFilters,
 } from "../../../state/slices/subDepartment";
 import { Link } from "react-router-dom";
 import DeleteSubDepartmentModal from "../../../components/DeleteSubDepartmentModal";
@@ -540,6 +541,18 @@ function SubDepartment() {
                         {t("subDepartment.filters.sortBy.location")}
                       </option>
                     </select>
+                  </div>
+                  <div className="sm:col-span-2 lg:col-span-3">
+                    <button
+                      onClick={() => dispatch(clearFilters())}
+                      className={`px-4 py-2 rounded-lg border transition-colors cursor-pointer cursor-pointer ${
+                        isDark
+                          ? "border-gray-600 text-gray-300 hover:bg-gray-700"
+                          : "border-gray-300 text-gray-700 hover:bg-gray-50"
+                      }`}
+                    >
+                      {t("contractingTypes.filters.clear")}
+                    </button>
                   </div>
                 </div>
               )}

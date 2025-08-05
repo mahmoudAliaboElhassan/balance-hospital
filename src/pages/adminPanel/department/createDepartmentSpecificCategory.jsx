@@ -9,13 +9,9 @@ import { createDepartment } from "../../../state/act/actDepartment";
 import { useNavigate } from "react-router-dom";
 import UseInitialValues from "../../../hooks/use-initial-values";
 import UseFormValidation from "../../../hooks/use-form-validation";
-import {
-  getCategories,
-  getCategoryTypes,
-} from "../../../state/act/actCategory";
-import LoadingGetData from "../../../components/LoadingGetData";
+import i18next from "i18next";
 
-function CreateDepartment() {
+function CreateDepartmentSpecificCategory() {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const currentLang = i18n.language;
@@ -24,15 +20,6 @@ function CreateDepartment() {
   const { loadingCreateDepartment, createError, createSuccess, createMessage } =
     useSelector((state) => state.department);
 
-  const { loadingGetCategoryTypes } = useSelector((state) => state.category);
-
-  useEffect(() => {
-    dispatch(getCategoryTypes());
-  }, [dispatch]);
-
-  // Get categories for dropdown (assuming you have categories in your state)
-  const { categoryTypes } = useSelector((state) => state.category);
-
   // Validation schema with translations
   const { VALIDATION_SCHEMA_ADD_DEPARTMENT } = UseFormValidation();
   const navigate = useNavigate();
@@ -40,11 +27,30 @@ function CreateDepartment() {
   // Initial form values
   const { INITIAL_VALUES_ADD_DEPARTMENT } = UseInitialValues();
 
+  // Get categoryId from localStorage
+  const categoryId = localStorage.getItem("categoryId");
+  const currentLanguage = i18next.language;
+  const name =
+    currentLanguage === "en"
+      ? localStorage.getItem("categoryEnglishName")
+      : localStorage.getItem("categoryArabicName");
+  // Enhanced initial values with categoryId from localStorage
+  const enhancedInitialValues = {
+    ...INITIAL_VALUES_ADD_DEPARTMENT,
+    categoryId: categoryId || "",
+  };
+
   const handleSubmit = async (
     values,
     { setSubmitting, resetForm, setFieldError }
   ) => {
-    dispatch(createDepartment(values))
+    // Ensure categoryId is included in the submission
+    const submissionValues = {
+      ...values,
+      categoryId: categoryId || values.categoryId,
+    };
+
+    dispatch(createDepartment(submissionValues))
       .unwrap()
       .then(() => {
         // Success handling
@@ -78,7 +84,18 @@ function CreateDepartment() {
         });
       });
   };
-  if (loadingGetCategoryTypes) return <LoadingGetData />;
+
+  // Check if categoryId exists in localStorage
+  useEffect(() => {
+    if (!categoryId) {
+      console.warn("No categoryId found in localStorage");
+      // Optionally show a warning or redirect
+      toast.warning(t("departmentForm.warning.noCategorySelected"), {
+        position: "top-right",
+        autoClose: 5000,
+      });
+    }
+  }, [categoryId, t]);
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
@@ -89,15 +106,32 @@ function CreateDepartment() {
       >
         {t("departmentForm.title")}
       </h2>
-
       <Formik
-        initialValues={INITIAL_VALUES_ADD_DEPARTMENT}
+        initialValues={enhancedInitialValues}
         validationSchema={VALIDATION_SCHEMA_ADD_DEPARTMENT}
         onSubmit={handleSubmit}
         enableReinitialize
       >
         {({ isSubmitting, errors, touched, values, setFieldValue }) => (
           <Form className="space-y-6">
+            {/* Hidden field for categoryId */}
+            <Field type="hidden" name="categoryId" value={categoryId || ""} />
+            {/* Category Name Display */}
+            {name && (
+              <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-4">
+                <label className="block text-sm font-medium text-blue-700 mb-1">
+                  {t("departmentForm.fields.category")}
+                </label>
+                <div
+                  className={`text-lg font-semibold text-blue-800 ${
+                    isRTL ? "text-right font-arabic" : "text-left"
+                  }`}
+                  dir={isRTL ? "rtl" : "ltr"}
+                >
+                  {name}
+                </div>
+              </div>
+            )}
             {/* Arabic Name */}
             <div>
               <label
@@ -148,43 +182,6 @@ function CreateDepartment() {
               />
               <ErrorMessage
                 name="nameEnglish"
-                component="div"
-                className="mt-1 text-sm text-red-600"
-              />
-            </div>
-
-            {/* Category Selection */}
-            <div>
-              <label
-                htmlFor="categoryId"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                {t("departmentForm.fields.category")}{" "}
-                <span className="text-red-500">*</span>
-              </label>
-              <Field
-                as="select"
-                id="categoryId"
-                name="categoryId"
-                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.categoryId && touched.categoryId
-                    ? "border-red-500 bg-red-50"
-                    : "border-gray-300"
-                }`}
-              >
-                <option value="">
-                  {t("departmentForm.placeholders.category")}
-                </option>
-                {categoryTypes?.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {currentLang === "ar"
-                      ? category.nameArabic
-                      : category.nameEnglish}
-                  </option>
-                ))}
-              </Field>
-              <ErrorMessage
-                name="categoryId"
                 component="div"
                 className="mt-1 text-sm text-red-600"
               />
@@ -255,9 +252,11 @@ function CreateDepartment() {
 
               <button
                 type="submit"
-                disabled={isSubmitting || loadingCreateDepartment}
+                disabled={
+                  isSubmitting || loadingCreateDepartment || !categoryId
+                }
                 className={`px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-                  isSubmitting || loadingCreateDepartment
+                  isSubmitting || loadingCreateDepartment || !categoryId
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-blue-600 hover:bg-blue-700"
                 }`}
@@ -298,4 +297,4 @@ function CreateDepartment() {
   );
 }
 
-export default CreateDepartment;
+export default CreateDepartmentSpecificCategory;

@@ -40,6 +40,9 @@ import AssignManager from "../pages/adminPanel/managementRoles/assignManager";
 import ManagerHistory from "../pages/adminPanel/managementRoles/managerHistory ";
 import DepartmentHeads from "../pages/adminPanel/managementRoles/departmentHeads";
 import LoginSelection from "../pages/auth/loginRoleSelection";
+import CreateDepartmentSpecificCategory from "../pages/adminPanel/department/createDepartmentSpecificCategory";
+import CreateSpecificSubDepartment from "../pages/adminPanel/subDepartment/createSpecificSubDepartment";
+import CreateSubDepartmentSpecificDepartment from "../pages/adminPanel/subDepartment/createSpecificSubDepartment";
 // import CreateScientificDegree from "../pages/adminPanel/scientificDegree/createScientificDegree";
 // import EditScientificDegree from "../pages/adminPanel/scientificDegree/editScientificDegree";
 // import SpecificScientificDegree from "../pages/adminPanel/scientificDegree/specificScientificDegree";
@@ -168,6 +171,22 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<Loader />}>
                 <SpecificDepartment />
+              </Suspense>
+            ),
+          },
+          {
+            path: "department/create-specific",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <CreateDepartmentSpecificCategory />
+              </Suspense>
+            ),
+          },
+          {
+            path: "sub-department/create-specific",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <CreateSubDepartmentSpecificDepartment />
               </Suspense>
             ),
           },

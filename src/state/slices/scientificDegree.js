@@ -344,10 +344,14 @@ export const scientificDegreeSlice = createSlice({
       .addCase(deleteScientificDegree.fulfilled, (state, action) => {
         state.loadingDeleteScientificDegree = false;
         state.deleteError = null;
-
+        console.log(Number(localStorage.getItem("deletedScientificDegreeId")));
         const response = action.payload;
         if (response.success) {
           state.deleteSuccess = true;
+          state.scientificDegrees = state.scientificDegrees.filter(
+            (sc) =>
+              sc.id != Number(localStorage.getItem("deletedScientificDegreeId"))
+          );
           state.deleteMessage =
             response.messageAr ||
             response.messageEn ||
