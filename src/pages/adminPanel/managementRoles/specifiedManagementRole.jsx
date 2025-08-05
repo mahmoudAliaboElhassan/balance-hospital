@@ -53,6 +53,7 @@ import {
 } from "../../../state/slices/managementRole.js";
 
 import DeleteRoleModal from "../../../components/DeleteRoleModal";
+import LoadingGetData from "../../../components/LoadingGetData.jsx";
 // import RoleFormModal from "../../../components/RoleFormModal";
 
 function SpecifiedManagementRole() {
@@ -70,6 +71,8 @@ function SpecifiedManagementRole() {
   const permissions = useSelector(selectRolePermissions);
   const assignmentHistory = useSelector(selectAssignmentHistory);
   const canDeleteStatus = useSelector(selectCanDeleteStatus);
+
+  console.log("assignmentHistory", assignmentHistory);
 
   const { mymode } = useSelector((state) => state.mode);
 
@@ -280,20 +283,7 @@ function SpecifiedManagementRole() {
   ];
 
   if (loading.details) {
-    return (
-      <div
-        className={`min-h-screen flex items-center justify-center ${
-          isDark ? "bg-gray-900" : "bg-gray-50"
-        }`}
-      >
-        <div className="flex items-center space-x-3">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <span className={isDark ? "text-gray-300" : "text-gray-600"}>
-            {t("managementRoles.loading-specific") || "Loading role details..."}
-          </span>
-        </div>
-      </div>
-    );
+    return <LoadingGetData />;
   }
 
   if (!currentRole) {
@@ -416,16 +406,7 @@ function SpecifiedManagementRole() {
                           : t("managementRoles.actions.activate") || "Activate"}
                       </span>
                     </button>
-                    <button
-                      onClick={handleClone}
-                      className="flex-1 sm:flex-none bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors justify-center"
-                      disabled={loading.clone}
-                    >
-                      <Copy size={16} />
-                      <span className="hidden sm:inline">
-                        {t("managementRoles.actions.clone") || "Clone"}
-                      </span>
-                    </button>
+
                     <button
                       onClick={handleDeleteClick}
                       className="flex-1 sm:flex-none bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors justify-center"
@@ -477,114 +458,435 @@ function SpecifiedManagementRole() {
 
           {/* Statistics Cards */}
           {analytics && (
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-              <div
-                className={`p-4 rounded-lg shadow ${
-                  isDark ? "bg-gray-800" : "bg-white"
-                }`}
-              >
-                <div className="flex items-center">
-                  <Users className="h-8 w-8 text-blue-600" />
-                  <div className="ml-4">
-                    <p
-                      className={`text-sm font-medium ${
-                        isDark ? "text-gray-400" : "text-gray-500"
-                      }`}
-                    >
-                      {t("managementRoles.analytics.totalUsers") ||
-                        "Total Users"}
-                    </p>
-                    <p
-                      className={`text-2xl font-semibold ${
-                        isDark ? "text-white" : "text-gray-900"
-                      }`}
-                    >
-                      {analytics.totalUsers || 0}
-                    </p>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                {/* Active Users Count */}
+                <div
+                  className={`p-4 rounded-lg shadow ${
+                    isDark ? "bg-gray-800" : "bg-white"
+                  }`}
+                >
+                  <div className="flex items-center">
+                    <Users className="h-8 w-8 text-blue-600" />
+                    <div className="ml-4">
+                      <p
+                        className={`text-sm font-medium ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}
+                      >
+                        {t("managementRoles.analytics.activeUsers") ||
+                          "Active Users"}
+                      </p>
+                      <p
+                        className={`text-2xl font-semibold ${
+                          isDark ? "text-white" : "text-gray-900"
+                        }`}
+                      >
+                        {analytics.ActiveUsersCount || 0}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Recent Assignments */}
+                <div
+                  className={`p-4 rounded-lg shadow ${
+                    isDark ? "bg-gray-800" : "bg-white"
+                  }`}
+                >
+                  <div className="flex items-center">
+                    <Activity className="h-8 w-8 text-green-600" />
+                    <div className="ml-4">
+                      <p
+                        className={`text-sm font-medium ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}
+                      >
+                        {t("managementRoles.analytics.recentAssignments") ||
+                          "Recent Assignments"}
+                      </p>
+                      <p
+                        className={`text-2xl font-semibold ${
+                          isDark ? "text-white" : "text-gray-900"
+                        }`}
+                      >
+                        {analytics.RecentAssignments || 0}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Usage Percentage */}
+                <div
+                  className={`p-4 rounded-lg shadow ${
+                    isDark ? "bg-gray-800" : "bg-white"
+                  }`}
+                >
+                  <div className="flex items-center">
+                    <BarChart3 className="h-8 w-8 text-purple-600" />
+                    <div className="ml-4">
+                      <p
+                        className={`text-sm font-medium ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}
+                      >
+                        {t("managementRoles.analytics.usagePercentage") ||
+                          "Usage Percentage"}
+                      </p>
+                      <p
+                        className={`text-2xl font-semibold ${
+                          isDark ? "text-white" : "text-gray-900"
+                        }`}
+                      >
+                        {analytics.UsagePercentage
+                          ? `${analytics.UsagePercentage.toFixed(1)}%`
+                          : "0%"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Net Change */}
+                <div
+                  className={`p-4 rounded-lg shadow ${
+                    isDark ? "bg-gray-800" : "bg-white"
+                  }`}
+                >
+                  <div className="flex items-center">
+                    <Calendar className="h-8 w-8 text-orange-600" />
+                    <div className="ml-4">
+                      <p
+                        className={`text-sm font-medium ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}
+                      >
+                        {t("managementRoles.analytics.netChange") ||
+                          "Net Change"}
+                      </p>
+                      <p
+                        className={`text-2xl font-semibold ${
+                          analytics.NetChange > 0
+                            ? "text-green-600"
+                            : analytics.NetChange < 0
+                            ? "text-red-600"
+                            : isDark
+                            ? "text-white"
+                            : "text-gray-900"
+                        }`}
+                      >
+                        {analytics.NetChange > 0 ? "+" : ""}
+                        {analytics.NetChange || 0}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div
-                className={`p-4 rounded-lg shadow ${
-                  isDark ? "bg-gray-800" : "bg-white"
-                }`}
-              >
-                <div className="flex items-center">
-                  <Activity className="h-8 w-8 text-green-600" />
-                  <div className="ml-4">
-                    <p
-                      className={`text-sm font-medium ${
-                        isDark ? "text-gray-400" : "text-gray-500"
+
+              {/* Assignment vs Removal Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                {/* Recent Activity Breakdown */}
+                <div
+                  className={`p-6 rounded-lg shadow ${
+                    isDark ? "bg-gray-800" : "bg-white"
+                  }`}
+                >
+                  <h3
+                    className={`text-lg font-semibold mb-4 ${
+                      isDark ? "text-white" : "text-gray-900"
+                    }`}
+                  >
+                    {t("managementRoles.analytics.recentActivity") ||
+                      "Recent Activity"}
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span
+                        className={`text-sm font-medium ${
+                          isDark ? "text-gray-300" : "text-gray-700"
+                        }`}
+                      >
+                        {t("managementRoles.analytics.assignments") ||
+                          "Assignments"}
+                      </span>
+                      <span className="text-lg font-semibold text-green-600">
+                        +{analytics.RecentAssignments || 0}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span
+                        className={`text-sm font-medium ${
+                          isDark ? "text-gray-300" : "text-gray-700"
+                        }`}
+                      >
+                        {t("managementRoles.analytics.removals") || "Removals"}
+                      </span>
+                      <span className="text-lg font-semibold text-red-600">
+                        -{analytics.RecentRemovals || 0}
+                      </span>
+                    </div>
+                    <div
+                      className={`pt-2 border-t ${
+                        isDark ? "border-gray-700" : "border-gray-200"
                       }`}
                     >
-                      {t("managementRoles.analytics.activeUsers") ||
-                        "Active Users"}
-                    </p>
-                    <p
-                      className={`text-2xl font-semibold ${
+                      <div className="flex justify-between items-center">
+                        <span
+                          className={`text-sm font-semibold ${
+                            isDark ? "text-gray-200" : "text-gray-800"
+                          }`}
+                        >
+                          {t("managementRoles.analytics.netChange") ||
+                            "Net Change"}
+                        </span>
+                        <span
+                          className={`text-lg font-bold ${
+                            analytics.NetChange > 0
+                              ? "text-green-600"
+                              : analytics.NetChange < 0
+                              ? "text-red-600"
+                              : isDark
+                              ? "text-gray-300"
+                              : "text-gray-700"
+                          }`}
+                        >
+                          {analytics.NetChange > 0 ? "+" : ""}
+                          {analytics.NetChange || 0}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Top Assigners */}
+                {analytics.TopAssigners &&
+                  analytics.TopAssigners.length > 0 && (
+                    <div
+                      className={`p-6 rounded-lg shadow ${
+                        isDark ? "bg-gray-800" : "bg-white"
+                      }`}
+                    >
+                      <h3
+                        className={`text-lg font-semibold mb-4 ${
+                          isDark ? "text-white" : "text-gray-900"
+                        }`}
+                      >
+                        {t("managementRoles.analytics.topAssigners") ||
+                          "Top Assigners"}
+                      </h3>
+                      <div className="space-y-3">
+                        {analytics.TopAssigners.slice(0, 3).map(
+                          (assigner, index) => (
+                            <div
+                              key={assigner.userId}
+                              className="flex justify-between items-center"
+                            >
+                              <div>
+                                <p
+                                  className={`text-sm font-medium ${
+                                    isDark ? "text-gray-300" : "text-gray-700"
+                                  }`}
+                                >
+                                  {assigner.userName}
+                                </p>
+                                <p
+                                  className={`text-xs ${
+                                    isDark ? "text-gray-400" : "text-gray-500"
+                                  }`}
+                                >
+                                  {t(
+                                    "managementRoles.analytics.lastAssigned"
+                                  ) || "Last assigned"}
+                                  : {formatDate(assigner.lastAssignmentDate)}
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <span
+                                  className={`text-lg font-semibold ${
+                                    isDark ? "text-blue-400" : "text-blue-600"
+                                  }`}
+                                >
+                                  {assigner.assignmentCount}
+                                </span>
+                                <p
+                                  className={`text-xs ${
+                                    isDark ? "text-gray-400" : "text-gray-500"
+                                  }`}
+                                >
+                                  {t(
+                                    "managementRoles.analytics.assignments"
+                                  ).toLowerCase() || "assignments"}
+                                </p>
+                              </div>
+                            </div>
+                          )
+                        )}
+                      </div>
+                    </div>
+                  )}
+              </div>
+
+              {/* Change Type Breakdown */}
+              {analytics.ChangeTypeBreakdown &&
+                Object.keys(analytics.ChangeTypeBreakdown).length > 0 && (
+                  <div
+                    className={`p-6 rounded-lg shadow mb-6 ${
+                      isDark ? "bg-gray-800" : "bg-white"
+                    }`}
+                  >
+                    <h3
+                      className={`text-lg font-semibold mb-4 ${
                         isDark ? "text-white" : "text-gray-900"
                       }`}
                     >
-                      {analytics.activeUsers || 0}
-                    </p>
+                      {t("managementRoles.analytics.changeTypeBreakdown") ||
+                        "Change Type Breakdown"}
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {Object.entries(analytics.ChangeTypeBreakdown).map(
+                        ([changeType, count]) => (
+                          <div key={changeType} className="text-center">
+                            <div
+                              className={`p-4 rounded-lg ${
+                                changeType === "ASSIGNED"
+                                  ? "bg-green-100 dark:bg-green-900/20"
+                                  : changeType === "REMOVED"
+                                  ? "bg-red-100 dark:bg-red-900/20"
+                                  : "bg-blue-100 dark:bg-blue-900/20"
+                              }`}
+                            >
+                              <p
+                                className={`text-2xl font-bold ${
+                                  changeType === "ASSIGNED"
+                                    ? "text-green-600"
+                                    : changeType === "REMOVED"
+                                    ? "text-red-600"
+                                    : "text-blue-600"
+                                }`}
+                              >
+                                {count}
+                              </p>
+                              <p
+                                className={`text-sm font-medium mt-1 ${
+                                  isDark ? "text-gray-300" : "text-gray-700"
+                                }`}
+                              >
+                                {t(
+                                  `managementRoles.analytics.changeTypes.${changeType}`
+                                ) || changeType.toLowerCase().replace("_", " ")}
+                              </p>
+                            </div>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </div>
+                )}
+
+              {/* Monthly Trend */}
+              {analytics.MonthlyTrend && analytics.MonthlyTrend.length > 0 && (
+                <div
+                  className={`p-6 rounded-lg shadow mb-6 ${
+                    isDark ? "bg-gray-800" : "bg-white"
+                  }`}
+                >
+                  <h3
+                    className={`text-lg font-semibold mb-4 ${
+                      isDark ? "text-white" : "text-gray-900"
+                    }`}
+                  >
+                    {t("managementRoles.analytics.monthlyTrend") ||
+                      "Monthly Trend"}
+                  </h3>
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full">
+                      <thead>
+                        <tr>
+                          <th
+                            className={`px-4 py-2 text-left text-sm font-medium ${
+                              isDark ? "text-gray-300" : "text-gray-700"
+                            }`}
+                          >
+                            {t("managementRoles.analytics.period") || "Period"}
+                          </th>
+                          <th
+                            className={`px-4 py-2 text-left text-sm font-medium ${
+                              isDark ? "text-gray-300" : "text-gray-700"
+                            }`}
+                          >
+                            {t("managementRoles.analytics.assignments") ||
+                              "Assignments"}
+                          </th>
+                          <th
+                            className={`px-4 py-2 text-left text-sm font-medium ${
+                              isDark ? "text-gray-300" : "text-gray-700"
+                            }`}
+                          >
+                            {t("managementRoles.analytics.removals") ||
+                              "Removals"}
+                          </th>
+                          <th
+                            className={`px-4 py-2 text-left text-sm font-medium ${
+                              isDark ? "text-gray-300" : "text-gray-700"
+                            }`}
+                          >
+                            {t("managementRoles.analytics.netChange") ||
+                              "Net Change"}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {analytics.MonthlyTrend.map((trend, index) => {
+                          const netChange =
+                            (trend.assignments || 0) - (trend.removals || 0);
+                          return (
+                            <tr
+                              key={index}
+                              className={`border-b ${
+                                isDark ? "border-gray-700" : "border-gray-200"
+                              }`}
+                            >
+                              <td
+                                className={`px-4 py-2 text-sm ${
+                                  isDark ? "text-gray-300" : "text-gray-900"
+                                }`}
+                              >
+                                {trend.period ||
+                                  trend.month ||
+                                  `Period ${index + 1}`}
+                              </td>
+                              <td
+                                className={`px-4 py-2 text-sm font-semibold text-green-600`}
+                              >
+                                +{trend.assignments || 0}
+                              </td>
+                              <td
+                                className={`px-4 py-2 text-sm font-semibold text-red-600`}
+                              >
+                                -{trend.removals || 0}
+                              </td>
+                              <td
+                                className={`px-4 py-2 text-sm font-semibold ${
+                                  netChange > 0
+                                    ? "text-green-600"
+                                    : netChange < 0
+                                    ? "text-red-600"
+                                    : isDark
+                                    ? "text-gray-300"
+                                    : "text-gray-900"
+                                }`}
+                              >
+                                {netChange > 0 ? "+" : ""}
+                                {netChange}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
-              </div>
-              <div
-                className={`p-4 rounded-lg shadow ${
-                  isDark ? "bg-gray-800" : "bg-white"
-                }`}
-              >
-                <div className="flex items-center">
-                  <Calendar className="h-8 w-8 text-purple-600" />
-                  <div className="ml-4">
-                    <p
-                      className={`text-sm font-medium ${
-                        isDark ? "text-gray-400" : "text-gray-500"
-                      }`}
-                    >
-                      {t("managementRoles.analytics.lastAssigned") ||
-                        "Last Assigned"}
-                    </p>
-                    <p
-                      className={`text-sm font-semibold ${
-                        isDark ? "text-white" : "text-gray-900"
-                      }`}
-                    >
-                      {analytics.lastAssigned
-                        ? formatDate(analytics.lastAssigned)
-                        : "Never"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div
-                className={`p-4 rounded-lg shadow ${
-                  isDark ? "bg-gray-800" : "bg-white"
-                }`}
-              >
-                <div className="flex items-center">
-                  <BarChart3 className="h-8 w-8 text-orange-600" />
-                  <div className="ml-4">
-                    <p
-                      className={`text-sm font-medium ${
-                        isDark ? "text-gray-400" : "text-gray-500"
-                      }`}
-                    >
-                      {t("managementRoles.analytics.usageScore") ||
-                        "Usage Score"}
-                    </p>
-                    <p
-                      className={`text-2xl font-semibold ${
-                        isDark ? "text-white" : "text-gray-900"
-                      }`}
-                    >
-                      {analytics.usageScore || 0}%
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+              )}
+            </>
           )}
 
           {/* Tabs */}
@@ -931,7 +1233,13 @@ function SpecifiedManagementRole() {
                         {assignmentHistory.map((entry, index) => (
                           <div
                             key={index}
-                            className={`border-l-4 border-blue-500 pl-4 py-2 ${
+                            className={`border-l-4 ${
+                              entry.changeType === "ASSIGNED"
+                                ? "border-green-500"
+                                : entry.changeType === "REMOVED"
+                                ? "border-red-500"
+                                : "border-blue-500"
+                            } pl-4 py-2 ${
                               isDark ? "bg-gray-700/50" : "bg-blue-50"
                             } rounded`}
                           >
@@ -942,15 +1250,32 @@ function SpecifiedManagementRole() {
                                     isDark ? "text-white" : "text-gray-900"
                                   }`}
                                 >
-                                  {entry.action || "Role Assignment"}
+                                  {entry.changeType === "ASSIGNED"
+                                    ? t("managementRoles.history.assigned", {
+                                        roleName: entry.newRoleName,
+                                      })
+                                    : entry.changeType === "REMOVED"
+                                    ? t("managementRoles.history.removed", {
+                                        roleName: entry.oldRoleName,
+                                      })
+                                    : entry.changeType === "UPDATED"
+                                    ? t("managementRoles.history.modified", {
+                                        oldRoleName: entry.oldRoleName,
+                                        newRoleName: entry.newRoleName,
+                                      })
+                                    : entry.changeType}
                                 </p>
-                                <p
-                                  className={`text-sm ${
-                                    isDark ? "text-gray-300" : "text-gray-600"
-                                  }`}
-                                >
-                                  {entry.userName || "Unknown User"}
-                                </p>
+                                {entry.changeReason && (
+                                  <p
+                                    className={`text-sm ${
+                                      isDark ? "text-gray-300" : "text-gray-600"
+                                    }`}
+                                  >
+                                    {t("managementRoles.history.reason") ||
+                                      "Reason"}
+                                    : {entry.changeReason}
+                                  </p>
+                                )}
                               </div>
                               <div className="text-right">
                                 <p
@@ -958,28 +1283,35 @@ function SpecifiedManagementRole() {
                                     isDark ? "text-gray-400" : "text-gray-500"
                                   }`}
                                 >
-                                  {formatDate(entry.timestamp)}
+                                  {formatDate(entry.changedAt)}
                                 </p>
-                                {entry.performedBy && (
+                                {entry.changedByName && (
                                   <p
                                     className={`text-xs ${
                                       isDark ? "text-gray-400" : "text-gray-500"
                                     }`}
                                   >
                                     {t("managementRoles.history.by") || "by"}{" "}
-                                    {entry.performedBy}
+                                    {entry.changedByName}
                                   </p>
                                 )}
                               </div>
                             </div>
-                            {entry.reason && (
-                              <p
-                                className={`text-sm mt-1 ${
-                                  isDark ? "text-gray-400" : "text-gray-600"
+                            {entry.notes && (
+                              <div
+                                className={`text-sm mt-2 p-2 rounded ${
+                                  isDark
+                                    ? "bg-gray-600/50 text-gray-300"
+                                    : "bg-gray-100 text-gray-600"
                                 }`}
                               >
-                                {entry.reason}
-                              </p>
+                                <span className="font-medium">
+                                  {t("managementRoles.history.notes") ||
+                                    "Notes"}
+                                  :
+                                </span>{" "}
+                                {entry.notes}
+                              </div>
                             )}
                           </div>
                         ))}

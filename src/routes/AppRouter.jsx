@@ -46,6 +46,7 @@ import CreateSubDepartmentSpecificDepartment from "../pages/adminPanel/subDepart
 import SpecifiedManagementRole from "../pages/adminPanel/managementRoles/specifiedManagementRole";
 import CreateManagementRole from "../pages/adminPanel/managementRoles/createManagementRole";
 import EditManagementRole from "../pages/adminPanel/managementRoles/editManagementRole";
+import AssignUserToRole from "../pages/adminPanel/managementRoles/assignUser";
 
 const router = createBrowserRouter([
   {
@@ -351,14 +352,14 @@ const router = createBrowserRouter([
               </Suspense>
             ),
           },
-          // {
-          //   path: "management-roles/department-heads",
-          //   element: (
-          //     <Suspense fallback={<Loader />}>
-          //       <DepartmentHeads />
-          //     </Suspense>
-          //   ),
-          // },
+          {
+            path: "management-roles/assign-user-to-role",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <AssignUserToRole />
+              </Suspense>
+            ),
+          },
           // {
           //   path: "management-roles/department-heads/assign",
           //   element: (

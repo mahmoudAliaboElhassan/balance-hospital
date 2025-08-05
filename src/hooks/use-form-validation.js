@@ -499,6 +499,35 @@ function UseFormValidation() {
     ),
   });
 
+  const VALIDATION_SCHEMA_ASSIGN_USER_TO_ROLE = Yup.object({
+    userId: Yup.string().required(
+      t("assignUserRole.validation.userRequired") || "Please select a user"
+    ),
+    roleId: Yup.string().required(
+      t("assignUserRole.validation.roleRequired") || "Please select a role"
+    ),
+    changeReason: Yup.string()
+      //   .required(
+      //     t("assignUserRole.validation.changeReasonRequired") ||
+      //       "Change reason is required"
+      //   )
+      .min(
+        3,
+        t("assignUserRole.validation.changeReasonMin") ||
+          "Change reason must be at least 3 characters"
+      )
+      .max(
+        200,
+        t("assignUserRole.validation.changeReasonMax") ||
+          "Change reason must not exceed 200 characters"
+      ),
+    notes: Yup.string().max(
+      500,
+      t("assignUserRole.validation.notesMax") ||
+        "Notes must not exceed 500 characters"
+    ),
+  });
+
   return {
     VALIDATION_SCHEMA_LOGIN,
     VALIDATION_SCHEMA_RESET_PASSWORD,
@@ -517,6 +546,7 @@ function UseFormValidation() {
     VALIDATION_SCHEMA_ADD_SCIENTIFIC_DEGREE,
     VALIDATION_SCHEMA_ADD_SHIFT_HOUR_TYPE,
     VALIDATION_SCHEMA_ADD_ROLE,
+    VALIDATION_SCHEMA_ASSIGN_USER_TO_ROLE,
   };
 }
 

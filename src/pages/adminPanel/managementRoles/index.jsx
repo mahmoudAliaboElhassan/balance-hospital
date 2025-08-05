@@ -21,6 +21,7 @@ import {
   Copy,
   Shield,
   ShieldOff,
+  UserPlus,
 } from "lucide-react";
 
 // Import actions from the actions file
@@ -65,6 +66,7 @@ import {
 
 import { Link } from "react-router-dom";
 import DeleteRoleModal from "../../../components/DeleteRoleModal";
+import AssignUserToRoleForm from "./assignUser.jsx";
 
 function ManagementRoles() {
   const { t, i18n } = useTranslation();
@@ -252,13 +254,17 @@ function ManagementRoles() {
   // Handle activate/deactivate
   const handleToggleActive = async (role) => {
     if (role.isActive) {
-      dispatch(deactivateRole(role.id)).unwrap().then(()=>{
-        toast.success(t("role-deactived-success"))
-      })
+      dispatch(deactivateRole(role.id))
+        .unwrap()
+        .then(() => {
+          toast.success(t("role-deactived-success"));
+        });
     } else {
-      dispatch(activateRole(role.id)).unwrap().then(() => {
-        toast.success(t("role-activated-success"))
-      });
+      dispatch(activateRole(role.id))
+        .unwrap()
+        .then(() => {
+          toast.success(t("role-activated-success"));
+        });
     }
   };
 
@@ -392,15 +398,7 @@ function ManagementRoles() {
             >
               {role.isActive ? <ShieldOff size={16} /> : <Shield size={16} />}
             </button>
-            <button
-              onClick={() =>
-                handleClone(role.id, role.roleNameAr, role.roleNameEn)
-              }
-              className="p-2 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900 rounded-lg transition-colors cursor-pointer"
-              title={t("managementRoles.actions.clone") || "Clone"}
-            >
-              <Copy size={16} />
-            </button>
+
             <button
               className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors cursor-pointer"
               title={t("managementRoles.actions.delete") || "Delete"}
@@ -447,6 +445,17 @@ function ManagementRoles() {
                     </span>
                     <span className="sm:hidden">
                       {t("managementRoles.actions.add") || "Add"}
+                    </span>
+                  </button>
+                </Link>
+                <Link to="/admin-panel/management-roles/assign-user-to-role">
+                  <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors flex-1 sm:flex-none justify-center cursor-pointer">
+                    <UserPlus size={20} />
+                    <span className="hidden sm:inline">
+                      {t("managementRoles.actions.assignUser") || "Assign User"}
+                    </span>
+                    <span className="sm:hidden">
+                      {t("managementRoles.actions.assign") || "Assign"}
                     </span>
                   </button>
                 </Link>
@@ -1026,22 +1035,7 @@ function ManagementRoles() {
                                     <Shield size={16} />
                                   )}
                                 </button>
-                                <button
-                                  onClick={() =>
-                                    handleClone(
-                                      role.id,
-                                      role.roleNameAr,
-                                      role.roleNameEn
-                                    )
-                                  }
-                                  className="p-2 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900 rounded-lg transition-colors cursor-pointer"
-                                  title={
-                                    t("managementRoles.actions.clone") ||
-                                    "Clone"
-                                  }
-                                >
-                                  <Copy size={16} />
-                                </button>
+
                                 <button
                                   onClick={() => handleDeleteClick(role)}
                                   className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors cursor-pointer"

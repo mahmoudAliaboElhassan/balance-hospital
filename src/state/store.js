@@ -8,6 +8,7 @@ import subDepartmentSlice from "./slices/subDepartment";
 import contractingTypeSlice from "./slices/contractingType";
 import scientificDegreeSlice from "./slices/scientificDegree";
 import managementRolesSlice from "./slices/managementRole";
+import usersSlice from "./slices/user";
 
 export const store = configureStore({
   reducer: {
@@ -20,5 +21,6 @@ export const store = configureStore({
     scientificDegree: scientificDegreeSlice,
     shiftHour: shiftHoursTypeSlice,
     managementRoles: managementRolesSlice,
+    users: usersSlice,
   },
 });

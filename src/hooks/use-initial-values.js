@@ -141,6 +141,13 @@ function UseInitialValues() {
     userCanManageRequests: false,
   };
 
+  const INITIAL_VALUES_ASSIGN_USER_TO_ROLE = {
+    userId: "",
+    roleId: "",
+    changeReason: "",
+    notes: "",
+  };
+
   return {
     INITIAL_VALUES_LOGIN,
     INITIAL_VALUES_FORGET_PASSWORD,
@@ -157,6 +164,7 @@ function UseInitialValues() {
     INITIAL_VALUES_ADD_SCIENTIFIC_DEGREE,
     INITIAL_VALUES_ADD_SHIFT_HOUR_TYPE,
     INITIAL_VALUES_ADD_ROLE,
+    INITIAL_VALUES_ASSIGN_USER_TO_ROLE,
   };
 }
 

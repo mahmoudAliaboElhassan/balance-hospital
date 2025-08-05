@@ -1195,6 +1195,7 @@
     "title": "Management Roles",
     "loading-specific": "Loading role data...",
     "deleteSuccess": "Management Role \"{{name}}\" deleted successfully!",
+    "users": "users",
 
     "search": {
       "placeholder": "Search roles..."
@@ -1224,6 +1225,8 @@
     "actions": {
       "addNew": "Add New Role",
       "add": "Add",
+      "assignUser": "Assign User to Role",
+      "assign": "Assign",
       "view": "View",
       "edit": "Edit",
       "delete": "Delete",
@@ -1293,15 +1296,35 @@
       "history": "Assignment History"
     },
     "analytics": {
-      "totalUsers": "Total Users",
       "activeUsers": "Active Users",
-      "lastAssigned": "Last Assigned",
-      "usageScore": "Usage Score"
+      "recentAssignments": "Recent Assignments",
+      "usagePercentage": "Usage Percentage",
+      "netChange": "Net Change",
+      "recentActivity": "Recent Activity",
+      "assignments": "Assignments",
+      "removals": "Removals",
+      "topAssigners": "Top Assigners",
+      "lastAssigned": "Last assigned",
+      "changeTypeBreakdown": "Change Type Breakdown",
+      "monthlyTrend": "Monthly Trend",
+      "period": "Period",
+      "changeTypes": {
+        "ASSIGNED": "Assigned",
+        "REMOVED": "Removed",
+        "UPDATED": "Updated",
+        "TRANSFERRED": "Transferred"
+      }
     },
     "history": {
+      "reason": "Reason",
       "by": "by",
+      "notes": "Notes",
       "noHistory": "No Assignment History",
-      "noHistoryDescription": "This role has not been assigned to any users yet."
+      "noHistoryDescription": "This role has not been assigned to any users yet.",
+
+      "assigned": "Role Assigned: {{roleName}}",
+      "removed": "Role Removed: {{roleName}}",
+      "modified": "Role Changed: {{oldRoleName}} → {{newRoleName}}"
     },
     "permissions": {
       "core": "Core Management",
@@ -1389,5 +1412,50 @@
   },
 
   "role-deactived-success": "Role deactivated successfully.",
-  "role-activated-success": "Role activated successfully."
+  "role-activated-success": "Role activated successfully.",
+
+  "assignUserRole": {
+    "title": "Assign User to Role",
+    "sections": {
+      "assignmentInfo": "Assignment Information"
+    },
+    "fields": {
+      "selectUser": "Select User",
+      "selectRole": "Select Role",
+      "changeReason": "Change Reason",
+      "notes": "Notes"
+    },
+    "placeholders": {
+      "searchUsers": "Search users by name, mobile, or role...",
+      "selectRole": "Select a role...",
+      "changeReason": "Enter reason for role assignment...",
+      "notes": "Additional notes (optional)..."
+    },
+    "validation": {
+      "userRequired": "Please select a user",
+      "roleRequired": "Please select a role",
+      "changeReasonRequired": "Change reason is required",
+      "changeReasonMin": "Change reason must be at least 3 characters",
+      "changeReasonMax": "Change reason must not exceed 200 characters",
+      "notesMax": "Notes must not exceed 500 characters"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "assign": "Assign Role",
+      "assigning": "Assigning..."
+    },
+    "loading": {
+      "users": "Loading users...",
+      "roles": "Loading roles..."
+    },
+    "success": {
+      "assigned": "User has been successfully assigned to the role"
+    },
+    "error": {
+      "title": "Error"
+    },
+    "noResults": "No users found matching your search",
+    "noUsers": "No users available",
+    "charactersCount": "characters"
+  }
 }

@@ -1206,6 +1206,8 @@
   "managementRoles": {
     "title": "أدوار الإدارة",
     "deleteSuccess": "تم حذف الدور “{{name}}” بنجاح!",
+    "users": "مستخدمين",
+
     "loading-specific": "جاري تحميل بيانات الدور",
     "search": {
       "placeholder": "ابحث في الأدوار..."
@@ -1236,6 +1238,8 @@
       "addNew": "إضافة دور جديد",
       "add": "إضافة",
       "view": "عرض",
+      "assignUser": "تعيين مستخدم لدور",
+      "assign": "تعيين",
       "edit": "تعديل",
       "delete": "حذف",
       "clone": "استنساخ",
@@ -1302,16 +1306,36 @@
       "permissions": "الصلاحيات",
       "history": "سجل التعيينات"
     },
+
     "analytics": {
-      "totalUsers": "إجمالي المستخدمين",
       "activeUsers": "المستخدمون النشطون",
+      "recentAssignments": "التعيينات الحديثة",
+      "usagePercentage": "نسبة الاستخدام",
+      "netChange": "التغيير الصافي",
+      "recentActivity": "النشاط الحديث",
+      "assignments": "التعيينات",
+      "removals": "الإزالات",
+      "topAssigners": "أكثر المعينين",
       "lastAssigned": "آخر تعيين",
-      "usageScore": "درجة الاستخدام"
+      "changeTypeBreakdown": "تفصيل نوع التغيير",
+      "monthlyTrend": "الاتجاه الشهري",
+      "period": "الفترة",
+      "changeTypes": {
+        "ASSIGNED": "معين",
+        "REMOVED": "محذوف",
+        "UPDATED": "محدث",
+        "TRANSFERRED": "منقول"
+      }
     },
     "history": {
+      "reason": "السبب",
       "by": "بواسطة",
-      "noHistory": "لا يوجد سجل للتعيينات",
-      "noHistoryDescription": "لم يتم تعيين هذا الدور لأي مستخدمين بعد."
+      "notes": "ملاحظات",
+      "noHistory": "لا يوجد سجل تعيينات",
+      "assigned": "تم تعيين الدور: {{roleName}}",
+      "removed": "تم إزالة الدور: {{roleName}}",
+      "modified": "تم تغيير الدور: {{oldRoleName}} → {{newRoleName}}",
+      "noHistoryDescription": "لم يتم تعيين هذا الدور لأي مستخدمين حتى الآن."
     },
     "permissions": {
       "core": "إدارة أساسية",
@@ -1397,5 +1421,50 @@
   },
 
   "role-deactived-success": "تم تعطيل الدور بنجاح",
-  "role-activated-success": "تم تفعيل الدور بنجاح"
+  "role-activated-success": "تم تفعيل الدور بنجاح",
+
+  "assignUserRole": {
+    "title": "تعيين مستخدم لدور",
+    "sections": {
+      "assignmentInfo": "معلومات التعيين"
+    },
+    "fields": {
+      "selectUser": "اختر المستخدم",
+      "selectRole": "اختر الدور",
+      "changeReason": "سبب التغيير",
+      "notes": "ملاحظات"
+    },
+    "placeholders": {
+      "searchUsers": "البحث عن المستخدمين بالاسم أو الجوال أو الدور...",
+      "selectRole": "اختر دوراً...",
+      "changeReason": "أدخل سبب تعيين الدور...",
+      "notes": "ملاحظات إضافية (اختيارية)..."
+    },
+    "validation": {
+      "userRequired": "يرجى اختيار مستخدم",
+      "roleRequired": "يرجى اختيار دور",
+      "changeReasonRequired": "سبب التغيير مطلوب",
+      "changeReasonMin": "يجب أن يكون سبب التغيير 3 أحرف على الأقل",
+      "changeReasonMax": "يجب ألا يتجاوز سبب التغيير 200 حرف",
+      "notesMax": "يجب ألا تتجاوز الملاحظات 500 حرف"
+    },
+    "buttons": {
+      "cancel": "إلغاء",
+      "assign": "تعيين الدور",
+      "assigning": "جاري التعيين..."
+    },
+    "loading": {
+      "users": "جاري تحميل المستخدمين...",
+      "roles": "جاري تحميل الأدوار..."
+    },
+    "success": {
+      "assigned": "تم تعيين المستخدم للدور بنجاح"
+    },
+    "error": {
+      "title": "خطأ"
+    },
+    "noResults": "لم يتم العثور على مستخدمين مطابقين لبحثك",
+    "noUsers": "لا توجد مستخدمين متاحين",
+    "charactersCount": "حرف"
+  }
 }

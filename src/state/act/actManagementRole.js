@@ -150,13 +150,13 @@ export const deleteManagementRole = createAsyncThunk(
 // Assign Role to User
 export const assignRoleToUser = createAsyncThunk(
   "managementRolesSlice/assignRoleToUser",
-  async ({ roleId, userId }, thunkAPI) => {
+  async ({ roleId, userId, changeReason, notes }, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
 
     try {
       const res = await axiosInstance.post(
         `/api/v1/management-roles/assign-to-user/${userId}`,
-        { roleId },
+        { roleId, changeReason, notes },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

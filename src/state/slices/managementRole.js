@@ -1,4 +1,3 @@
-// store/slices/managementRolesSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 import {
   getManagementRoles,
@@ -305,7 +304,7 @@ const managementRolesSlice = createSlice({
       .addCase(getRoleAssignmentHistory.fulfilled, (state, action) => {
         state.loading.history = false;
         if (action.payload.success) {
-          state.assignmentHistory = action.payload.data || [];
+          state.assignmentHistory = action.payload.data.items || [];
         }
       })
       .addCase(getRoleAssignmentHistory.rejected, (state, action) => {
@@ -459,6 +458,7 @@ const managementRolesSlice = createSlice({
       })
       .addCase(getRoleAnalytics.fulfilled, (state, action) => {
         state.loading.analytics = false;
+        console.log("state.analytics", action.payload.data.analytics);
         if (action.payload.success) {
           state.analytics = action.payload.data;
         }
