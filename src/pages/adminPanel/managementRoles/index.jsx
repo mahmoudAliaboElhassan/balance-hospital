@@ -230,11 +230,20 @@ function ManagementRoles() {
 
   // Handle delete confirmation
   const handleDeleteClick = async (role) => {
-    setToDelete({
-      id: role.id,
-      name: language === "en" ? role.roleNameEn : role.roleNameAr,
-    });
-    setModalOpen(true);
+    // Check if role can be deleted
+    const result = await dispatch(checkCanDeleteRole(role.id));
+    if (result.payload?.canDelete || result.payload?.success) {
+      setToDelete({
+        id: role.id,
+        name: language === "en" ? role.roleNameEn : role.roleNameAr,
+      });
+      setModalOpen(true);
+    } else {
+      toast.error(
+        t("managementRoles.delete.cannotDelete") ||
+          "This role cannot be deleted as it is assigned to users or is a system role"
+      );
+    }
   };
 
   // Handle activate/deactivate

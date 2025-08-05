@@ -793,7 +793,7 @@ function SpecifiedManagementRole() {
                                 isDark ? "text-gray-400" : "text-gray-500"
                               }`}
                             >
-                              {t("managementRoles.overview.updatedBy") ||
+                              {t("managementRoles.table.updatedBy") ||
                                 "Updated By"}
                             </span>
                             <span
