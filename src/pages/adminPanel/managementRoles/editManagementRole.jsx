@@ -202,28 +202,27 @@ function EditManagementRole() {
   const handleSubmit = async (values, { setSubmitting, setFieldError }) => {
     try {
       //   // Check name uniqueness (excluding current role)
-      //   const uniqueResult = await dispatch(
-      //     checkRoleNameUnique({
-      //       nameAr: values.roleNameAr,
-      //       nameEn: values.roleNameEn,
-      //       excludeId: id,
-      //     })
-      //   );
+      const uniqueResult = await dispatch(
+        checkRoleNameUnique({
+          nameEn: values.roleNameEn,
+          excludeId: id,
+        })
+      );
 
-      //   if (!uniqueResult.payload?.data?.isUnique) {
-      //     setFieldError(
-      //       "roleNameAr",
-      //       t("managementRoleForm.validation.nameExists") ||
-      //         "Role name already exists"
-      //     );
-      //     setFieldError(
-      //       "roleNameEn",
-      //       t("managementRoleForm.validation.nameExists") ||
-      //         "Role name already exists"
-      //     );
-      //     setSubmitting(false);
-      //     return;
-      //   }
+      if (!uniqueResult.payload?.data?.isUnique) {
+        setFieldError(
+          "roleNameAr",
+          t("managementRoleForm.validation.nameExists") ||
+            "Role name already exists"
+        );
+        setFieldError(
+          "roleNameEn",
+          t("managementRoleForm.validation.nameExists") ||
+            "Role name already exists"
+        );
+        setSubmitting(false);
+        return;
+      }
 
       // Update the role
       await dispatch(

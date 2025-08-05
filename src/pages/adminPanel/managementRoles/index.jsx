@@ -231,6 +231,9 @@ function ManagementRoles() {
   // Handle delete confirmation
   const handleDeleteClick = async (role) => {
     // Check if role can be deleted
+
+    toast.info(t("managementRoles.delete.checking"));
+
     const result = await dispatch(checkCanDeleteRole(role.id));
     if (result.payload?.canDelete || result.payload?.success) {
       setToDelete({
@@ -249,16 +252,20 @@ function ManagementRoles() {
   // Handle activate/deactivate
   const handleToggleActive = async (role) => {
     if (role.isActive) {
-      await dispatch(deactivateRole(role.id));
+      dispatch(deactivateRole(role.id)).unwrap().then(()=>{
+        toast.success(t("role-deactived-success"))
+      })
     } else {
-      await dispatch(activateRole(role.id));
+      dispatch(activateRole(role.id)).unwrap().then(() => {
+        toast.success(t("role-activated-success"))
+      });
     }
   };
 
   // Handle clone role
   const handleClone = async (roleId, nameAr, nameEn) => {
     console.log(nameAr, nameEn);
-    await dispatch(
+    dispatch(
       cloneRole({ id: roleId, newRoleNameEn: nameEn, newRoleNameAr: nameAr })
     );
   };

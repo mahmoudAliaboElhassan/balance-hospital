@@ -74,7 +74,7 @@ const initialState = {
 
 // Slice
 const managementRolesSlice = createSlice({
-  name: "managementRoles",
+  name: "managementRolesSlice",
   initialState,
   reducers: {
     // Clear current role
@@ -179,8 +179,6 @@ const managementRolesSlice = createSlice({
       .addCase(createManagementRole.fulfilled, (state, action) => {
         state.loading.create = false;
         if (action.payload.success) {
-          state.success =
-            action.payload.messageEn || "Management role created successfully";
         }
       })
       .addCase(createManagementRole.rejected, (state, action) => {
@@ -200,8 +198,6 @@ const managementRolesSlice = createSlice({
       .addCase(updateManagementRole.fulfilled, (state, action) => {
         state.loading.update = false;
         if (action.payload.success) {
-          state.success =
-            action.payload.messageEn || "Management role updated successfully";
           state.currentRole = action.payload.data;
 
           // Update role in list if it exists
@@ -230,9 +226,6 @@ const managementRolesSlice = createSlice({
       .addCase(deleteManagementRole.fulfilled, (state, action) => {
         state.loading.delete = false;
         if (action.payload.success) {
-          state.success =
-            action.payload.messageEn || "Management role deleted successfully";
-
           // Remove role from list
           state.roles = state.roles.filter(
             (role) => role.id !== action.payload.deletedId
@@ -256,8 +249,6 @@ const managementRolesSlice = createSlice({
       .addCase(assignRoleToUser.fulfilled, (state, action) => {
         state.loading.assign = false;
         if (action.payload.success) {
-          state.success =
-            action.payload.messageEn || "Role assigned to user successfully";
         }
       })
       .addCase(assignRoleToUser.rejected, (state, action) => {
@@ -277,8 +268,6 @@ const managementRolesSlice = createSlice({
       .addCase(removeRoleFromUser.fulfilled, (state, action) => {
         state.loading.assign = false;
         if (action.payload.success) {
-          state.success =
-            action.payload.messageEn || "Role removed from user successfully";
         }
       })
       .addCase(removeRoleFromUser.rejected, (state, action) => {
@@ -393,9 +382,6 @@ const managementRolesSlice = createSlice({
       .addCase(activateRole.fulfilled, (state, action) => {
         state.loading.activate = false;
         if (action.payload.success) {
-          state.success =
-            action.payload.messageEn || "Role activated successfully";
-
           // Update role status in list
           const index = state.roles.findIndex(
             (role) => role.id === action.payload.roleId
@@ -427,9 +413,6 @@ const managementRolesSlice = createSlice({
       .addCase(deactivateRole.fulfilled, (state, action) => {
         state.loading.activate = false;
         if (action.payload.success) {
-          state.success =
-            action.payload.messageEn || "Role deactivated successfully";
-
           // Update role status in list
           const index = state.roles.findIndex(
             (role) => role.id === action.payload.roleId
@@ -461,8 +444,6 @@ const managementRolesSlice = createSlice({
       .addCase(cloneRole.fulfilled, (state, action) => {
         state.loading.clone = false;
         if (action.payload.success) {
-          state.success =
-            action.payload.messageEn || "Role cloned successfully";
         }
       })
       .addCase(cloneRole.rejected, (state, action) => {

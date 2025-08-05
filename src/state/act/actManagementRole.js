@@ -468,15 +468,15 @@ export const checkCanDeleteRole = createAsyncThunk(
   }
 );
 
-// Check Role Name Uniqueness
 export const checkRoleNameUnique = createAsyncThunk(
   "managementRolesSlice/checkRoleNameUnique",
-  async ({ nameAr, nameEn, excludeId }, thunkAPI) => {
+  async ({ nameEn, excludeId }, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
 
     try {
       const queryParams = new URLSearchParams();
       if (nameEn) queryParams.append("roleNameEn", nameEn);
+      if (excludeId) queryParams.append("excludeRoleId", excludeId);
 
       const url = `/api/v1/management-roles/check-name-unique${
         queryParams.toString() ? `?${queryParams.toString()}` : ""
