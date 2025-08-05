@@ -1,266 +1,595 @@
+// store/slices/managementRolesSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 import {
+  getManagementRoles,
+  getManagementRoleById,
+  createManagementRole,
+  updateManagementRole,
+  deleteManagementRole,
+  assignRoleToUser,
+  removeRoleFromUser,
+  getUserRoleHistory,
+  getRoleAssignmentHistory,
+  getAvailableRoles,
   getRoleStatistics,
-  getCategoriesManagersSummary,
-  getCategoriesWithManagers,
-  getCurrentManagers,
-  getDepartmentHeads,
-  getManagerHistory,
-  addManager,
-  removeManager,
-  assignDepartmentHead,
-  removeDepartmentHead,
-  getUsersForManagerAssignment,
+  getRecentChanges,
+  activateRole,
+  deactivateRole,
+  cloneRole,
+  getRoleAnalytics,
+  getRolePermissions,
+  checkCanDeleteRole,
+  checkRoleNameUnique,
 } from "../act/actManagementRole";
 
-// Initial state for role management
-const initialStateRole = {
-  // Loading states
-
-  // Loading states
-  loadingUsersForManagerAssignment: false,
-
-  // Error states
-  usersForManagerAssignmentError: null,
-
-  loadingRoleStatistics: false,
-  loadingCategoriesSummary: false,
-  loadingCategoriesWithManagers: false,
-  loadingCurrentManagers: false,
-  loadingDepartmentHeads: false,
-  loadingManagerHistory: false,
-  loadingAddManager: false,
-  loadingRemoveManager: false,
-  loadingAssignDepartmentHead: false,
-  loadingRemoveDepartmentHead: false,
-  addManagerSuccess: false,
-  addManagerMessage: "",
-  // Data
-  roleStatistics: null,
-  categoriesManagersSummary: null,
-  categoriesWithManagers: [],
-  currentManagers: [],
-  departmentHeads: [],
-  managerHistory: [],
-  pagination: null,
-  users: [],
-  usersForManagerAssignment: [],
-  // Error states
-  roleStatisticsError: null,
-  categoriesSummaryError: null,
-  categoriesWithManagersError: null,
-  currentManagersError: null,
-  departmentHeadsError: null,
-  managerHistoryError: null,
-  addManagerError: null,
-  removeManagerError: null,
-  assignDepartmentHeadError: null,
-  removeDepartmentHeadError: null,
+// Initial State
+const initialState = {
+  roles: [],
+  currentRole: "",
+  statistics: "",
+  recentChanges: [],
+  userHistory: [],
+  assignmentHistory: [],
+  availableRoles: [],
+  analytics: "",
+  permissions: [],
+  canDeleteStatus: "",
+  nameUniqueStatus: "",
+  pagination: {
+    totalCount: 0,
+    pageNumber: 1,
+    pageSize: 10,
+    totalPages: 0,
+    hasNextPage: false,
+    hasPreviousPage: false,
+  },
+  loading: {
+    list: false,
+    details: false,
+    create: false,
+    update: false,
+    delete: false,
+    assign: false,
+    statistics: false,
+    history: false,
+    activate: false,
+    clone: false,
+    analytics: false,
+    permissions: false,
+    canDelete: false,
+    nameUnique: false,
+  },
+  error: "",
+  success: "",
+  filters: {
+    searchTerm: "",
+    isActive: "",
+    isSystemRole: "",
+    hasUsers: "",
+    permissionFilter: "",
+    sortBy: "CreatedAt",
+    sortDirection: "desc",
+  },
 };
 
-export const roleSlice = createSlice({
-  name: "roleSlice",
-  initialState: initialStateRole,
+// Slice
+const managementRolesSlice = createSlice({
+  name: "managementRoles",
+  initialState,
   reducers: {
-    clearAddManagerSuccess: (state) => {
-      state.addManagerSuccess = false;
-      state.addManagerMessage = "";
+    // Clear current role
+    clearCurrentRole: (state) => {
+      state.currentRole = "";
     },
-    clearUsersData: (state) => {
-      state.users = [];
-      state.usersForManagerAssignment = [];
-      state.usersError = null;
-      state.usersForManagerAssignmentError = null;
+
+    // Clear error
+    clearError: (state) => {
+      state.error = "";
     },
-    clearRoleErrors: (state) => {
-      state.roleStatisticsError = null;
-      state.categoriesSummaryError = null;
-      state.categoriesWithManagersError = null;
-      state.currentManagersError = null;
-      state.departmentHeadsError = null;
-      state.managerHistoryError = null;
-      state.addManagerError = null;
-      state.removeManagerError = null;
-      state.assignDepartmentHeadError = null;
-      state.removeDepartmentHeadError = null;
+
+    // Clear success message
+    clearSuccess: (state) => {
+      state.success = "";
     },
-    resetRoleData: (state) => {
-      return initialStateRole;
+
+    // Update filters
+    updateFilters: (state, action) => {
+      state.filters = { ...state.filters, ...action.payload };
+    },
+
+    // Reset filters
+    resetFilters: (state) => {
+      state.filters = initialState.filters;
+    },
+
+    // Update pagination
+    updatePagination: (state, action) => {
+      state.pagination = { ...state.pagination, ...action.payload };
+    },
+
+    // Reset state
+    resetState: (state) => {
+      return initialState;
+    },
+
+    // Clear delete status
+    clearCanDeleteStatus: (state) => {
+      state.canDeleteStatus = "";
+    },
+
+    // Clear name unique status
+    clearNameUniqueStatus: (state) => {
+      state.nameUniqueStatus = "";
     },
   },
   extraReducers: (builder) => {
     builder
+      // Get Management Roles
+      .addCase(getManagementRoles.pending, (state) => {
+        state.loading.list = true;
+        state.error = "";
+      })
+      .addCase(getManagementRoles.fulfilled, (state, action) => {
+        state.loading.list = false;
+        if (action.payload.success) {
+          state.roles = action.payload.data?.items || [];
+          state.pagination = {
+            totalCount: action.payload.data?.totalCount || 0,
+            pageNumber: action.payload.data?.pageNumber || 1,
+            pageSize: action.payload.data?.pageSize || 10,
+            totalPages: action.payload.data?.totalPages || 0,
+            hasNextPage: action.payload.data?.hasNextPage || false,
+            hasPreviousPage: action.payload.data?.hasPreviousPage || false,
+          };
+        }
+      })
+      .addCase(getManagementRoles.rejected, (state, action) => {
+        state.loading.list = false;
+        state.error =
+          action.payload?.messageEn ||
+          action.payload ||
+          "Failed to fetch management roles";
+      })
+
+      // Get Management Role by ID
+      .addCase(getManagementRoleById.pending, (state) => {
+        state.loading.details = true;
+        state.error = "";
+      })
+      .addCase(getManagementRoleById.fulfilled, (state, action) => {
+        state.loading.details = false;
+        if (action.payload.success) {
+          state.currentRole = action.payload.data;
+        }
+      })
+      .addCase(getManagementRoleById.rejected, (state, action) => {
+        state.loading.details = false;
+        state.error =
+          action.payload?.messageEn ||
+          action.payload ||
+          "Failed to fetch management role";
+      })
+
+      // Create Management Role
+      .addCase(createManagementRole.pending, (state) => {
+        state.loading.create = true;
+        state.error = "";
+        state.success = "";
+      })
+      .addCase(createManagementRole.fulfilled, (state, action) => {
+        state.loading.create = false;
+        if (action.payload.success) {
+          state.success =
+            action.payload.messageEn || "Management role created successfully";
+        }
+      })
+      .addCase(createManagementRole.rejected, (state, action) => {
+        state.loading.create = false;
+        state.error =
+          action.payload?.messageEn ||
+          action.payload ||
+          "Failed to create management role";
+      })
+
+      // Update Management Role
+      .addCase(updateManagementRole.pending, (state) => {
+        state.loading.update = true;
+        state.error = "";
+        state.success = "";
+      })
+      .addCase(updateManagementRole.fulfilled, (state, action) => {
+        state.loading.update = false;
+        if (action.payload.success) {
+          state.success =
+            action.payload.messageEn || "Management role updated successfully";
+          state.currentRole = action.payload.data;
+
+          // Update role in list if it exists
+          const index = state.roles.findIndex(
+            (role) => role.id === action.payload.data?.id
+          );
+          if (index !== -1) {
+            state.roles[index] = action.payload.data;
+          }
+        }
+      })
+      .addCase(updateManagementRole.rejected, (state, action) => {
+        state.loading.update = false;
+        state.error =
+          action.payload?.messageEn ||
+          action.payload ||
+          "Failed to update management role";
+      })
+
+      // Delete Management Role
+      .addCase(deleteManagementRole.pending, (state) => {
+        state.loading.delete = true;
+        state.error = "";
+        state.success = "";
+      })
+      .addCase(deleteManagementRole.fulfilled, (state, action) => {
+        state.loading.delete = false;
+        if (action.payload.success) {
+          state.success =
+            action.payload.messageEn || "Management role deleted successfully";
+
+          // Remove role from list
+          state.roles = state.roles.filter(
+            (role) => role.id !== action.payload.deletedId
+          );
+        }
+      })
+      .addCase(deleteManagementRole.rejected, (state, action) => {
+        state.loading.delete = false;
+        state.error =
+          action.payload?.messageEn ||
+          action.payload ||
+          "Failed to delete management role";
+      })
+
+      // Assign Role to User
+      .addCase(assignRoleToUser.pending, (state) => {
+        state.loading.assign = true;
+        state.error = "";
+        state.success = "";
+      })
+      .addCase(assignRoleToUser.fulfilled, (state, action) => {
+        state.loading.assign = false;
+        if (action.payload.success) {
+          state.success =
+            action.payload.messageEn || "Role assigned to user successfully";
+        }
+      })
+      .addCase(assignRoleToUser.rejected, (state, action) => {
+        state.loading.assign = false;
+        state.error =
+          action.payload?.messageEn ||
+          action.payload ||
+          "Failed to assign role to user";
+      })
+
+      // Remove Role from User
+      .addCase(removeRoleFromUser.pending, (state) => {
+        state.loading.assign = true;
+        state.error = "";
+        state.success = "";
+      })
+      .addCase(removeRoleFromUser.fulfilled, (state, action) => {
+        state.loading.assign = false;
+        if (action.payload.success) {
+          state.success =
+            action.payload.messageEn || "Role removed from user successfully";
+        }
+      })
+      .addCase(removeRoleFromUser.rejected, (state, action) => {
+        state.loading.assign = false;
+        state.error =
+          action.payload?.messageEn ||
+          action.payload ||
+          "Failed to remove role from user";
+      })
+
+      // Get User Role History
+      .addCase(getUserRoleHistory.pending, (state) => {
+        state.loading.history = true;
+        state.error = "";
+      })
+      .addCase(getUserRoleHistory.fulfilled, (state, action) => {
+        state.loading.history = false;
+        if (action.payload.success) {
+          state.userHistory = action.payload.data || [];
+        }
+      })
+      .addCase(getUserRoleHistory.rejected, (state, action) => {
+        state.loading.history = false;
+        state.error =
+          action.payload?.messageEn ||
+          action.payload ||
+          "Failed to fetch user role history";
+      })
+
+      // Get Role Assignment History
+      .addCase(getRoleAssignmentHistory.pending, (state) => {
+        state.loading.history = true;
+        state.error = "";
+      })
+      .addCase(getRoleAssignmentHistory.fulfilled, (state, action) => {
+        state.loading.history = false;
+        if (action.payload.success) {
+          state.assignmentHistory = action.payload.data || [];
+        }
+      })
+      .addCase(getRoleAssignmentHistory.rejected, (state, action) => {
+        state.loading.history = false;
+        state.error =
+          action.payload?.messageEn ||
+          action.payload ||
+          "Failed to fetch role assignment history";
+      })
+
+      // Get Available Roles
+      .addCase(getAvailableRoles.pending, (state) => {
+        state.loading.list = true;
+        state.error = "";
+      })
+      .addCase(getAvailableRoles.fulfilled, (state, action) => {
+        state.loading.list = false;
+        if (action.payload.success) {
+          state.availableRoles = action.payload.data || [];
+        }
+      })
+      .addCase(getAvailableRoles.rejected, (state, action) => {
+        state.loading.list = false;
+        state.error =
+          action.payload?.messageEn ||
+          action.payload ||
+          "Failed to fetch available roles";
+      })
+
       // Get Role Statistics
       .addCase(getRoleStatistics.pending, (state) => {
-        state.loadingRoleStatistics = true;
-        state.roleStatisticsError = null;
+        state.loading.statistics = true;
+        state.error = "";
       })
       .addCase(getRoleStatistics.fulfilled, (state, action) => {
-        state.loadingRoleStatistics = false;
-        state.roleStatistics = action.payload.data;
+        state.loading.statistics = false;
+        if (action.payload.success) {
+          state.statistics = action.payload.data;
+        }
       })
       .addCase(getRoleStatistics.rejected, (state, action) => {
-        state.loadingRoleStatistics = false;
-        state.roleStatisticsError = action.payload;
+        state.loading.statistics = false;
+        state.error =
+          action.payload?.messageEn ||
+          action.payload ||
+          "Failed to fetch role statistics";
       })
 
-      // Get Categories Managers Summary
-      .addCase(getCategoriesManagersSummary.pending, (state) => {
-        state.loadingCategoriesSummary = true;
-        state.categoriesSummaryError = null;
+      // Get Recent Changes
+      .addCase(getRecentChanges.pending, (state) => {
+        state.loading.list = true;
+        state.error = "";
       })
-      .addCase(getCategoriesManagersSummary.fulfilled, (state, action) => {
-        state.loadingCategoriesSummary = false;
-        state.categoriesManagersSummary = action.payload.data;
+      .addCase(getRecentChanges.fulfilled, (state, action) => {
+        state.loading.list = false;
+        if (action.payload.success) {
+          state.recentChanges = action.payload.data || [];
+        }
       })
-      .addCase(getCategoriesManagersSummary.rejected, (state, action) => {
-        state.loadingCategoriesSummary = false;
-        state.categoriesSummaryError = action.payload;
-      })
-
-      // Get Categories with Managers
-      .addCase(getCategoriesWithManagers.pending, (state) => {
-        state.loadingCategoriesWithManagers = true;
-        state.categoriesWithManagersError = null;
-      })
-      .addCase(getCategoriesWithManagers.fulfilled, (state, action) => {
-        state.loadingCategoriesWithManagers = false;
-        state.categoriesWithManagers = action.payload.data;
-      })
-      .addCase(getCategoriesWithManagers.rejected, (state, action) => {
-        state.loadingCategoriesWithManagers = false;
-        state.categoriesWithManagersError = action.payload;
+      .addCase(getRecentChanges.rejected, (state, action) => {
+        state.loading.list = false;
+        state.error =
+          action.payload?.messageEn ||
+          action.payload ||
+          "Failed to fetch recent changes";
       })
 
-      // Get Current Managers
-      .addCase(getCurrentManagers.pending, (state) => {
-        state.loadingCurrentManagers = true;
-        state.currentManagersError = null;
+      // Activate Role
+      .addCase(activateRole.pending, (state) => {
+        state.loading.activate = true;
+        state.error = "";
+        state.success = "";
       })
-      .addCase(getCurrentManagers.fulfilled, (state, action) => {
-        state.loadingCurrentManagers = false;
-        state.currentManagers = action.payload.data;
+      .addCase(activateRole.fulfilled, (state, action) => {
+        state.loading.activate = false;
+        if (action.payload.success) {
+          state.success =
+            action.payload.messageEn || "Role activated successfully";
+
+          // Update role status in list
+          const index = state.roles.findIndex(
+            (role) => role.id === action.payload.roleId
+          );
+          if (index !== -1) {
+            state.roles[index].isActive = true;
+          }
+
+          // Update current role if it's the same
+          if (state.currentRole?.id === action.payload.roleId) {
+            state.currentRole.isActive = true;
+          }
+        }
       })
-      .addCase(getCurrentManagers.rejected, (state, action) => {
-        state.loadingCurrentManagers = false;
-        state.currentManagersError = action.payload;
+      .addCase(activateRole.rejected, (state, action) => {
+        state.loading.activate = false;
+        state.error =
+          action.payload?.messageEn ||
+          action.payload ||
+          "Failed to activate role";
       })
 
-      // Get Department Heads
-      .addCase(getDepartmentHeads.pending, (state) => {
-        state.loadingDepartmentHeads = true;
-        state.departmentHeadsError = null;
+      // Deactivate Role
+      .addCase(deactivateRole.pending, (state) => {
+        state.loading.activate = true;
+        state.error = "";
+        state.success = "";
       })
-      .addCase(getDepartmentHeads.fulfilled, (state, action) => {
-        state.loadingDepartmentHeads = false;
-        state.departmentHeads =
-          action.payload.data.items || action.payload.data;
-        state.pagination = action.payload.data.items
-          ? {
-              page: action.payload.data.page,
-              pageSize: action.payload.data.pageSize,
-              totalCount: action.payload.data.totalCount,
-              totalPages: action.payload.data.totalPages,
-              hasPrevious: action.payload.data.hasPrevious,
-              hasNext: action.payload.data.hasNext,
-            }
-          : null;
+      .addCase(deactivateRole.fulfilled, (state, action) => {
+        state.loading.activate = false;
+        if (action.payload.success) {
+          state.success =
+            action.payload.messageEn || "Role deactivated successfully";
+
+          // Update role status in list
+          const index = state.roles.findIndex(
+            (role) => role.id === action.payload.roleId
+          );
+          if (index !== -1) {
+            state.roles[index].isActive = false;
+          }
+
+          // Update current role if it's the same
+          if (state.currentRole?.id === action.payload.roleId) {
+            state.currentRole.isActive = false;
+          }
+        }
       })
-      .addCase(getDepartmentHeads.rejected, (state, action) => {
-        state.loadingDepartmentHeads = false;
-        state.departmentHeadsError = action.payload;
+      .addCase(deactivateRole.rejected, (state, action) => {
+        state.loading.activate = false;
+        state.error =
+          action.payload?.messageEn ||
+          action.payload ||
+          "Failed to deactivate role";
       })
 
-      // Get Manager History
-      .addCase(getManagerHistory.pending, (state) => {
-        state.loadingManagerHistory = true;
-        state.managerHistoryError = null;
+      // Clone Role
+      .addCase(cloneRole.pending, (state) => {
+        state.loading.clone = true;
+        state.error = "";
+        state.success = "";
       })
-      .addCase(getManagerHistory.fulfilled, (state, action) => {
-        state.loadingManagerHistory = false;
-        state.managerHistory = action.payload.data.items || action.payload.data;
+      .addCase(cloneRole.fulfilled, (state, action) => {
+        state.loading.clone = false;
+        if (action.payload.success) {
+          state.success =
+            action.payload.messageEn || "Role cloned successfully";
+        }
       })
-      .addCase(getManagerHistory.rejected, (state, action) => {
-        state.loadingManagerHistory = false;
-        state.managerHistoryError = action.payload;
-      })
-
-      // Add Manager
-      .addCase(addManager.pending, (state) => {
-        state.loadingAddManager = true;
-        state.addManagerError = null;
-        state.addManagerSuccess = false;
-      })
-      .addCase(addManager.fulfilled, (state, action) => {
-        state.loadingAddManager = false;
-        state.addManagerSuccess = true;
-        state.addManagerMessage =
-          action.payload.messageEn ||
-          action.payload.messageAr ||
-          "Manager assigned successfully";
-      })
-      .addCase(addManager.rejected, (state, action) => {
-        state.loadingAddManager = false;
-        state.addManagerError = action.payload;
-        state.addManagerSuccess = false;
+      .addCase(cloneRole.rejected, (state, action) => {
+        state.loading.clone = false;
+        state.error =
+          action.payload?.messageEn || action.payload || "Failed to clone role";
       })
 
-      // Remove Manager
-      .addCase(removeManager.pending, (state) => {
-        state.loadingRemoveManager = true;
-        state.removeManagerError = null;
+      // Get Role Analytics
+      .addCase(getRoleAnalytics.pending, (state) => {
+        state.loading.analytics = true;
+        state.error = "";
       })
-      .addCase(removeManager.fulfilled, (state, action) => {
-        state.loadingRemoveManager = false;
-        // Optionally refresh managers list or remove from current list
+      .addCase(getRoleAnalytics.fulfilled, (state, action) => {
+        state.loading.analytics = false;
+        if (action.payload.success) {
+          state.analytics = action.payload.data;
+        }
       })
-      .addCase(removeManager.rejected, (state, action) => {
-        state.loadingRemoveManager = false;
-        state.removeManagerError = action.payload;
-      })
-
-      // Assign Department Head
-      .addCase(assignDepartmentHead.pending, (state) => {
-        state.loadingAssignDepartmentHead = true;
-        state.assignDepartmentHeadError = null;
-      })
-      .addCase(assignDepartmentHead.fulfilled, (state, action) => {
-        state.loadingAssignDepartmentHead = false;
-        // Optionally refresh department heads list or add to current list
-      })
-      .addCase(assignDepartmentHead.rejected, (state, action) => {
-        state.loadingAssignDepartmentHead = false;
-        state.assignDepartmentHeadError = action.payload;
+      .addCase(getRoleAnalytics.rejected, (state, action) => {
+        state.loading.analytics = false;
+        state.error =
+          action.payload?.messageEn ||
+          action.payload ||
+          "Failed to fetch role analytics";
       })
 
-      // Remove Department Head
-      .addCase(removeDepartmentHead.pending, (state) => {
-        state.loadingRemoveDepartmentHead = true;
-        state.removeDepartmentHeadError = null;
+      // Get Role Permissions
+      .addCase(getRolePermissions.pending, (state) => {
+        state.loading.permissions = true;
+        state.error = "";
       })
-      .addCase(removeDepartmentHead.fulfilled, (state, action) => {
-        state.loadingRemoveDepartmentHead = false;
-        // Optionally refresh department heads list or remove from current list
+      .addCase(getRolePermissions.fulfilled, (state, action) => {
+        state.loading.permissions = false;
+
+        console.log("role permission", action.payload);
+
+        if (action.payload.success) {
+          state.permissions = action.payload.data || [];
+        }
       })
-      .addCase(removeDepartmentHead.rejected, (state, action) => {
-        state.loadingRemoveDepartmentHead = false;
-        state.removeDepartmentHeadError = action.payload;
+      .addCase(getRolePermissions.rejected, (state, action) => {
+        state.loading.permissions = false;
+        state.error =
+          action.payload?.messageEn ||
+          action.payload ||
+          "Failed to fetch role permissions";
       })
-      .addCase(getUsersForManagerAssignment.pending, (state) => {
-        state.loadingUsersForManagerAssignment = true;
-        state.usersForManagerAssignmentError = null;
+
+      // Check Can Delete Role
+      .addCase(checkCanDeleteRole.pending, (state) => {
+        state.loading.canDelete = true;
+        state.error = "";
       })
-      .addCase(getUsersForManagerAssignment.fulfilled, (state, action) => {
-        state.loadingUsersForManagerAssignment = false;
-        state.usersForManagerAssignment = action.payload.data.items || [];
+      .addCase(checkCanDeleteRole.fulfilled, (state, action) => {
+        state.loading.canDelete = false;
+        if (action.payload.success !== undefined) {
+          state.canDeleteStatus = {
+            roleId: action.payload.roleId,
+            canDelete: action.payload.canDelete,
+          };
+        }
       })
-      .addCase(getUsersForManagerAssignment.rejected, (state, action) => {
-        state.loadingUsersForManagerAssignment = false;
-        state.usersForManagerAssignmentError = action.payload;
+      .addCase(checkCanDeleteRole.rejected, (state, action) => {
+        state.loading.canDelete = false;
+        state.error =
+          action.payload?.messageEn ||
+          action.payload ||
+          "Failed to check delete status";
+      })
+
+      // Check Role Name Uniqueness
+      .addCase(checkRoleNameUnique.pending, (state) => {
+        state.loading.nameUnique = true;
+        state.error = "";
+      })
+      .addCase(checkRoleNameUnique.fulfilled, (state, action) => {
+        state.loading.nameUnique = false;
+        if (action.payload.success !== undefined) {
+          state.nameUniqueStatus = action.payload.data;
+        }
+      })
+      .addCase(checkRoleNameUnique.rejected, (state, action) => {
+        state.loading.nameUnique = false;
+        state.error =
+          action.payload?.messageEn ||
+          action.payload ||
+          "Failed to check name uniqueness";
       });
   },
 });
 
-export default roleSlice.reducer;
-export const { clearRoleErrors, resetRoleData, clearUsersData } =
-  roleSlice.actions;
+// Export actions
+export const {
+  clearCurrentRole,
+  clearError,
+  clearSuccess,
+  updateFilters,
+  resetFilters,
+  updatePagination,
+  resetState,
+  clearCanDeleteStatus,
+  clearNameUniqueStatus,
+} = managementRolesSlice.actions;
+
+// Selectors
+export const selectManagementRoles = (state) => state.managementRoles.roles;
+export const selectCurrentRole = (state) => state.managementRoles.currentRole;
+export const selectRoleStatistics = (state) => state.managementRoles.statistics;
+export const selectRecentChanges = (state) =>
+  state.managementRoles.recentChanges;
+export const selectUserHistory = (state) => state.managementRoles.userHistory;
+export const selectAssignmentHistory = (state) =>
+  state.managementRoles.assignmentHistory;
+export const selectAvailableRoles = (state) =>
+  state.managementRoles.availableRoles;
+export const selectRoleAnalytics = (state) => state.managementRoles.analytics;
+export const selectRolePermissions = (state) =>
+  state.managementRoles.permissions;
+export const selectCanDeleteStatus = (state) =>
+  state.managementRoles.canDeleteStatus;
+export const selectNameUniqueStatus = (state) =>
+  state.managementRoles.nameUniqueStatus;
+export const selectLoading = (state) => state.managementRoles.loading;
+export const selectError = (state) => state.managementRoles.error;
+export const selectSuccess = (state) => state.managementRoles.success;
+export const selectFilters = (state) => state.managementRoles.filters;
+export const selectPagination = (state) => state.managementRoles.pagination;
+
+export default managementRolesSlice.reducer;

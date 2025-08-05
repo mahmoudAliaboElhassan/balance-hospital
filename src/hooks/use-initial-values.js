@@ -122,6 +122,25 @@ function UseInitialValues() {
     endTime: "",
     isActive: true,
   };
+
+  const INITIAL_VALUES_ADD_ROLE = {
+    roleNameAr: "",
+    roleNameEn: "",
+    description: "",
+    userCanManageCategory: false,
+    userCanManageRole: false,
+    userCanManageRostors: false,
+    userCanManageUsers: false,
+    userCanContractingType: false,
+    userCanShiftHoursType: false,
+    userCanScientificDegree: false,
+    userCanManageDepartments: false,
+    userCanManageSubDepartments: false,
+    userCanViewReports: false,
+    userCanManageSchedules: false,
+    userCanManageRequests: false,
+  };
+
   return {
     INITIAL_VALUES_LOGIN,
     INITIAL_VALUES_FORGET_PASSWORD,
@@ -137,6 +156,7 @@ function UseInitialValues() {
     INITIAL_VALUES_CONTRACTINGTYPE_FILTERS,
     INITIAL_VALUES_ADD_SCIENTIFIC_DEGREE,
     INITIAL_VALUES_ADD_SHIFT_HOUR_TYPE,
+    INITIAL_VALUES_ADD_ROLE,
   };
 }
 

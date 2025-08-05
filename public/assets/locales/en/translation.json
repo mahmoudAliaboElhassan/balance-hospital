@@ -1174,257 +1174,6 @@
       "message": "An unexpected error occurred"
     }
   },
-  "managementRoles": {
-    "title": "Management Roles",
-    "description": "Manage system roles, assign managers and department heads",
-    "refresh": "Refresh",
-    "backToRoles": "Back to Management Roles",
-    "statistics": {
-      "totalUsers": "Total Users",
-      "totalManagers": "System Managers",
-      "departmentHeads": "Department Heads",
-      "categoriesWithManagers": "Categories with Managers",
-      "total": "Total"
-    },
-    "quickActions": "Quick Actions",
-    "actions": {
-      "assignManager": "Assign Manager",
-      "assignManagerDesc": "Grant manager access to a user",
-      "assignDepartmentHead": "Assign Department Head",
-      "assignDepartmentHeadDesc": "Assign department head to a category",
-      "viewStatistics": "View Statistics",
-      "viewStatisticsDesc": "Detailed role analytics and reports",
-      "manageCategories": "Manage Categories",
-      "manageCategoriesDesc": "View and manage category assignments"
-    },
-    "categoriesOverview": "Categories Overview",
-    "recentActivity": "Recent Activity",
-    "quickStats": "Quick Stats",
-    "viewAll": "View All",
-    "doctors": "doctors",
-    "departments": "departments",
-    "hasManager": "Has Manager",
-    "noManager": "No Manager",
-    "wasAssignedAs": "was assigned as",
-    "wasRemovedFrom": "was removed from",
-    "manager": "Manager",
-    "departmentHead": "Department Head",
-    "activeManagers": "Active Managers",
-    "activeDepartmentHeads": "Active Department Heads",
-    "errors": {
-      "statisticsError": "Error loading statistics",
-      "summaryError": "Error loading summary data",
-      "categoriesError": "Error loading categories"
-    }
-  },
-  "managers": {
-    "title": "System Managers",
-    "assignNew": "Assign New Manager",
-    "assign": "Assign",
-    "loading": "Loading managers...",
-    "noData": "No managers found",
-    "noDataDescription": "No system managers have been assigned yet. Click 'Assign New Manager' to get started.",
-    "assignedOn": "Assigned on",
-    "search": {
-      "placeholder": "Search managers by name, email, or mobile..."
-    },
-    "filters": {
-      "title": "Filters",
-      "clear": "Clear",
-      "itemsPerPage": "Items per page",
-      "perPage": "per page"
-    },
-    "statistics": {
-      "totalManagers": "Total Managers",
-      "activeAssignments": "Active Assignments",
-      "totalAssignments": "Total Assignments"
-    },
-    "table": {
-      "name": "Name",
-      "contact": "Contact Information",
-      "assignedDate": "Assigned Date",
-      "assignedBy": "Assigned By",
-      "actions": "Actions"
-    },
-    "pagination": {
-      "showing": "Showing",
-      "of": "of",
-      "managers": "managers"
-    },
-    "removeModal": {
-      "title": "Remove Manager",
-      "warning": "Warning",
-      "confirmMessage": "Are you sure you want to remove {{name}} from the manager role?",
-      "managerDetails": "Manager Details",
-      "name": "Name",
-      "id": "ID",
-      "reason": "Revocation Reason",
-      "reasonPlaceholder": "Enter the reason for removing this manager...",
-      "reasonRequired": "Please provide a reason for removing this manager.",
-      "reasonTooShort": "Reason must be at least 3 characters long.",
-      "consequences": "What happens when you remove this manager:",
-      "consequence1": "They will lose all manager privileges immediately",
-      "consequence2": "Any pending actions they initiated may be affected",
-      "consequence3": "This action will be recorded in the system logs",
-      "cancel": "Cancel",
-      "confirm": "Remove Manager",
-      "removing": "Removing...",
-      "error": "Failed to remove manager. Please try again."
-    }
-  },
-
-  "assignManager": {
-    "title": "Assign New Manager",
-    "description": "Grant manager privileges to a user",
-    "backToManagers": "Back to Managers",
-    "success": "Manager assigned successfully! Redirecting...",
-
-    "form": {
-      "selectUser": "Select User",
-      "searchUserPlaceholder": "Search users by name, mobile, or ID...",
-      "loadingUsers": "Loading users...",
-      "noUsersFound": "No users found matching your search",
-      "noAvailableUsers": "No users available for assignment",
-      "noUsersAvailableDesc": "All eligible users may already be assigned as managers",
-      "usersAvailable": "{{count}} users available",
-      "selectedUser": "Selected User",
-
-      "notes": "Assignment Notes",
-      "notesPlaceholder": "Enter the reason for assigning this user as manager and any additional notes...",
-      "characters": "characters",
-
-      "whatHappens": "What happens when you assign this manager:",
-      "consequence1": "The user will gain full manager privileges across all categories",
-      "consequence2": "They will be able to manage other users and department heads",
-      "consequence3": "This assignment will be recorded in the system logs",
-
-      "reset": "Reset",
-      "cancel": "Cancel",
-      "assignManager": "Assign Manager",
-      "assigning": "Assigning..."
-    },
-
-    "errors": {
-      "userRequired": "Please select a user to assign as manager",
-      "notesRequired": "Assignment notes are required",
-      "notesTooShort": "Notes must be at least 10 characters long",
-      "notesTooLong": "Notes cannot exceed 500 characters"
-    }
-  },
-
-  "managerHistory": {
-    "title": "Manager History",
-    "backToRoles": "Back to Management Roles",
-    "loading": "Loading history...",
-    "noData": "No history records found",
-    "revocationReason": "Revocation Reason",
-
-    "noDataDescription": "No manager or department head assignments have been recorded yet.",
-    "assignedOn": "Assigned on",
-    "assignedBy": "Assigned by",
-
-    "search": {
-      "placeholder": "Search by user name, ID, or category..."
-    },
-
-    "filters": {
-      "title": "Filters",
-      "clear": "Clear",
-      "userId": "User ID",
-      "userIdPlaceholder": "Enter user ID",
-      "categoryId": "Category ID",
-      "categoryIdPlaceholder": "Enter category ID",
-      "managerType": "Role Type",
-      "allTypes": "All Types",
-      "status": "Status",
-      "allStatuses": "All Statuses",
-      "revocationReason": "Revocation Reason",
-
-      "fromDate": "From Date",
-      "toDate": "To Date",
-      "itemsPerPage": "Items per page",
-      "perPage": "per page"
-    },
-
-    "types": {
-      "manager": "Manager",
-      "departmentHead": "Department Head"
-    },
-
-    "status": {
-      "active": "Active",
-      "ended": "Ended"
-    },
-
-    "duration": {
-      "today": "Today",
-      "days": "days",
-      "months": "months",
-      "years": "years"
-    },
-
-    "table": {
-      "user": "User",
-      "role": "Role",
-      "category": "Category",
-      "assignedDate": "Assigned Date",
-      "duration": "Duration",
-      "status": "Status",
-      "actions": "Actions"
-    },
-
-    "pagination": {
-      "showing": "Showing",
-      "of": "of",
-      "records": "records"
-    }
-  },
-
-  "departmentHeads": {
-    "backToRoles": "Back to Management Roles",
-    "title": "Department Heads",
-    "assignNew": "Assign New Head",
-    "assign": "Assign",
-    "loading": "Loading department heads...",
-    "noData": "No department heads found",
-    "noDataDescription": "No department heads have been assigned yet. Click 'Assign New Head' to get started.",
-    "search": {
-      "placeholder": "Search by name, email, or mobile..."
-    },
-    "filters": {
-      "title": "Filters",
-      "clear": "Clear",
-      "categoryId": "Category ID",
-      "categoryIdPlaceholder": "Enter category ID…",
-      "status": "Status",
-      "allStatuses": "All Statuses",
-      "itemsPerPage": "Items per page",
-      "perPage": "per page"
-    },
-    "status": {
-      "active": "Active",
-      "inactive": "Inactive"
-    },
-    "statistics": {
-      "totalDepartmentHeads": "Total Department Heads",
-      "activeDepartmentHeads": "Active Department Heads",
-      "categoriesWithHeads": "Categories with Heads"
-    },
-    "table": {
-      "user": "User",
-      "category": "Category",
-      "permissions": "Permissions",
-      "assignedDate": "Assigned Date",
-      "status": "Status",
-      "actions": "Actions"
-    },
-    "more": "more",
-    "pagination": {
-      "showing": "Showing",
-      "of": "of",
-      "departmentHeads": "entries"
-    }
-  },
 
   "loginSelection": {
     "welcomeBack": "Welcome Back",
@@ -1442,5 +1191,196 @@
   "create-specific-department": "Create specific department to that category",
   "create-specific-sub-department": "Create specific sub-department to that department",
 
-  "displayRange": "Showing {{start}} - {{end}} of {{total}} items"
+  "managementRoles": {
+    "title": "Management Roles",
+    "loading-specific": "Loading role data...",
+    "deleteSuccess": "Management Role \"{{name}}\" deleted successfully!",
+
+    "search": {
+      "placeholder": "Search roles..."
+    },
+    "filters": {
+      "title": "Filters",
+      "status": "Status",
+      "orderBy": "Sort By",
+      "descending": "Descending",
+      "ascending": "Ascending",
+      "all": "All",
+      "type": "Type",
+      "orderDirection": "Order Direction",
+      "clear": "Clear Filters",
+      "sortBy": {
+        "createdAt": "Created Date",
+        "nameArabic": "Arabic Name",
+        "nameEnglish": "English Name"
+      }
+    },
+    "stats": {
+      "total": "Total Roles",
+      "active": "Active Roles",
+      "system": "System Roles",
+      "custom": "Custom Roles"
+    },
+    "actions": {
+      "addNew": "Add New Role",
+      "add": "Add",
+      "view": "View",
+      "edit": "Edit",
+      "delete": "Delete",
+      "clone": "Clone",
+      "activate": "Activate",
+      "deactivate": "Deactivate"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "type": {
+      "system": "System",
+      "custom": "Custom"
+    },
+    "table": {
+      "nameArabic": "Arabic Name",
+      "nameEnglish": "English Name",
+      "name": "Name",
+      "description": "Description",
+      "type": "Type",
+      "status": "Status",
+      "users": "Users",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "createdBy": "Created By",
+      "actions": "Actions"
+    },
+    "loading": "Loading...",
+    "noData": "No roles found",
+    "pagination": {
+      "itemsPerPage": "items per page",
+      "displayRange": "Showing {{start}}–{{end}} of {{total}} results"
+    },
+    "delete": {
+      "title": "Delete Role",
+      "confirmMessage": "Are you sure you want to delete this role? This action cannot be undone.",
+      "reason": "Reason",
+      "reasonPlaceholder": "Please provide a reason for deleting this role...",
+      "reasonRequired": "Reason is required",
+      "confirm": "Delete Role",
+      "success": "Role \"{{name}}\" deleted successfully",
+      "cannotDelete": "This role cannot be deleted as it is assigned to users or is a system role",
+      "usersWarning": "This role is assigned to {{count}} user(s)",
+      "systemRoleWarning": "Warning: This is a system role. Deleting it may affect system functionality.",
+      "assignedUsersWarning": "Warning: This role is currently assigned to users. They will lose these permissions."
+    },
+    "notFound": "Role Not Found",
+    "notFoundDescription": "The requested role could not be found.",
+    "backToList": "Back to Roles",
+    "loadingHistory": "Loading history...",
+    "overview": {
+      "basicInfo": "Basic Information",
+      "details": "Role Details"
+    },
+    "form": {
+      "roleNameAr": "Arabic Name",
+      "roleNameEn": "English Name",
+      "description": "Description"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "permissions": "Permissions",
+      "history": "Assignment History"
+    },
+    "analytics": {
+      "totalUsers": "Total Users",
+      "activeUsers": "Active Users",
+      "lastAssigned": "Last Assigned",
+      "usageScore": "Usage Score"
+    },
+    "history": {
+      "by": "by",
+      "noHistory": "No Assignment History",
+      "noHistoryDescription": "This role has not been assigned to any users yet."
+    },
+    "permissions": {
+      "core": "Core Management",
+      "manageCategory": "Manage Categories",
+      "manageRole": "Manage Roles",
+      "manageUsers": "Manage Users",
+      "manageRostors": "Manage Rosters",
+      "configuration": "Configuration",
+      "contractingType": "Contracting Types",
+      "shiftHoursType": "Shift Hours Types",
+      "scientificDegree": "Scientific Degrees",
+      "departments": "Department Management",
+      "manageDepartments": "Manage Departments",
+      "manageSubDepartments": "Manage Sub-Departments",
+      "operations": "Operations",
+      "viewReports": "View Reports",
+      "manageSchedules": "Manage Schedules",
+      "manageRequests": "Manage Requests"
+    }
+  },
+
+  "displayRange": "Showing {{start}} - {{end}} of {{total}} items",
+
+  "managementRoleForm": {
+    "title": "Create Management Role",
+    "permissions": {
+      "core": "Core Management",
+      "manageCategory": "Manage Categories",
+      "manageRole": "Manage Roles",
+      "manageUsers": "Manage Users",
+      "manageRostors": "Manage Rosters",
+      "configuration": "Configuration",
+      "contractingType": "Contracting Types",
+      "shiftHoursType": "Shift Hours Types",
+      "scientificDegree": "Scientific Degrees",
+      "departments": "Department Management",
+      "manageDepartments": "Manage Departments",
+      "manageSubDepartments": "Manage Sub-Departments",
+      "operations": "Operations",
+      "viewReports": "View Reports",
+      "manageSchedules": "Manage Schedules",
+      "manageRequests": "Manage Requests"
+    },
+
+    "sections": {
+      "basicInfo": "Basic Information",
+      "permissions": "Permissions"
+    },
+    "fields": {
+      "roleNameAr": "Arabic Name",
+      "roleNameEn": "English Name",
+      "description": "Description"
+    },
+    "placeholders": {
+      "roleNameAr": "Enter Arabic name",
+      "roleNameEn": "Enter English name",
+      "description": "Enter role description"
+    },
+    "charactersCount": "characters",
+    "buttons": {
+      "cancel": "Cancel",
+      "create": "Create Role",
+      "update": "Update Role",
+      "creating": "Creating...",
+      "updating": "Updating..."
+    },
+    "validation": {
+      "nameExists": "Role name already exists",
+      "roleNameArRequired": "Arabic Name is required",
+      "roleNameEnRequired": "English Name i s required",
+      "roleNameArMin": "Arabic name must be at least 2 characters",
+      "roleNameArMax": "Arabic name must be less than 255 characters",
+      "roleNameEnMin": "English name must be at least 2 characters",
+      "roleNameEnMax": "English name must be less than 255 characters",
+      "descriptionMax": "Description must be less than 500 characters"
+    },
+    "success": {
+      "created": "Management role created successfully",
+      "updated": "Management role updated successfully"
+    },
+    "error": {
+      "title": "Error creating role"
+    }
+  }
 }

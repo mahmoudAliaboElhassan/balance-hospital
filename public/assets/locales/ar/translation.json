@@ -1185,259 +1185,6 @@
       "message": "حدث خطأ غير متوقع"
     }
   },
-  "managementRoles": {
-    "title": "أدوار الإدارة",
-    "description": "إدارة أدوار النظام وتعيين المديرين ورؤساء الأقسام",
-    "refresh": "تحديث",
-    "backToRoles": "العودة إلى أدوار الإدارة",
-
-    "statistics": {
-      "totalUsers": "إجمالي المستخدمين",
-      "totalManagers": "مديري النظام",
-      "departmentHeads": "رؤساء الأقسام",
-      "categoriesWithManagers": "الفئات التي لديها مديرين",
-      "total": "الإجمالي"
-    },
-
-    "quickActions": "الإجراءات السريعة",
-    "actions": {
-      "assignManager": "تعيين مدير",
-      "assignManagerDesc": "منح صلاحية المدير لمستخدم",
-      "assignDepartmentHead": "تعيين رئيس قسم",
-      "assignDepartmentHeadDesc": "تعيين رئيس قسم لفئة معينة",
-      "viewStatistics": "عرض الإحصائيات",
-      "viewStatisticsDesc": "تحليلات وتقارير مفصلة للأدوار",
-      "manageCategories": "إدارة الفئات",
-      "manageCategoriesDesc": "عرض وإدارة تعيينات الفئات"
-    },
-
-    "categoriesOverview": "نظرة عامة على الفئات",
-    "recentActivity": "النشاط الأخير",
-    "quickStats": "إحصائيات سريعة",
-    "viewAll": "عرض الكل",
-
-    "doctors": "أطباء",
-    "departments": "أقسام",
-    "hasManager": "يوجد مدير",
-    "noManager": "لا يوجد مدير",
-
-    "wasAssignedAs": "تم تعيينه كـ",
-    "wasRemovedFrom": "تمت إزالته من",
-    "manager": "مدير",
-    "departmentHead": "رئيس قسم",
-
-    "activeManagers": "المديرين النشطين",
-    "activeDepartmentHeads": "رؤساء الأقسام النشطين",
-
-    "errors": {
-      "statisticsError": "خطأ في تحميل الإحصائيات",
-      "summaryError": "خطأ في تحميل بيانات الملخص",
-      "categoriesError": "خطأ في تحميل الفئات"
-    }
-  },
-  "assignManager": {
-    "title": "تعيين مدير جديد",
-    "description": "منح صلاحيات المدير لمستخدم",
-    "backToManagers": "العودة إلى المديرين",
-    "success": "تم تعيين المدير بنجاح! جاري إعادة التوجيه...",
-
-    "form": {
-      "selectUser": "اختيار المستخدم",
-      "searchUserPlaceholder": "البحث عن المستخدمين بالاسم أو الجوال أو المعرف...",
-      "loadingUsers": "جاري تحميل المستخدمين...",
-      "noUsersFound": "لم يتم العثور على مستخدمين مطابقين لبحثك",
-      "noAvailableUsers": "لا يوجد مستخدمين متاحين للتعيين",
-      "noUsersAvailableDesc": "قد يكون جميع المستخدمين المؤهلين معينين بالفعل كمديرين",
-      "usersAvailable": "{{count}} مستخدم متاح",
-      "selectedUser": "المستخدم المحدد",
-
-      "notes": "ملاحظات التعيين",
-      "notesPlaceholder": "أدخل سبب تعيين هذا المستخدم كمدير وأي ملاحظات إضافية...",
-      "characters": "حرف",
-
-      "whatHappens": "ما يحدث عند تعيين هذا المدير:",
-      "consequence1": "سيحصل المستخدم على صلاحيات المدير الكاملة عبر جميع الفئات",
-      "consequence2": "سيكون قادراً على إدارة المستخدمين الآخرين ورؤساء الأقسام",
-      "consequence3": "سيتم تسجيل هذا التعيين في سجلات النظام",
-
-      "reset": "إعادة تعيين",
-      "cancel": "إلغاء",
-      "assignManager": "تعيين مدير",
-      "assigning": "جاري التعيين..."
-    },
-
-    "errors": {
-      "userRequired": "يرجى اختيار مستخدم لتعيينه كمدير",
-      "notesRequired": "ملاحظات التعيين مطلوبة",
-      "notesTooShort": "يجب أن تكون الملاحظات على الأقل 10 أحرف",
-      "notesTooLong": "لا يمكن أن تتجاوز الملاحظات 500 حرف"
-    }
-  },
-  "managers": {
-    "title": "مديرو النظام",
-    "assignNew": "تعيين مدير جديد",
-    "assign": "تعيين",
-    "loading": "جارٍ تحميل المدراء...",
-    "noData": "لم يتم العثور على مدراء",
-    "noDataDescription": "لم يتم تعيين أي من مدراء النظام بعد. انقر على 'تعيين مدير جديد' للبدء.",
-    "assignedOn": "تاريخ التعيين",
-    "search": {
-      "placeholder": "ابحث عن المدراء بالاسم أو البريد الإلكتروني أو الجوال..."
-    },
-    "filters": {
-      "title": "الفلاتر",
-      "clear": "مسح",
-      "itemsPerPage": "العناصر لكل صفحة",
-      "perPage": "لكل صفحة"
-    },
-    "statistics": {
-      "totalManagers": "إجمالي المدراء",
-      "activeAssignments": "التعيينات النشطة",
-      "totalAssignments": "إجمالي التعيينات"
-    },
-    "table": {
-      "name": "الاسم",
-      "contact": "معلومات الاتصال",
-      "assignedDate": "تاريخ التعيين",
-      "assignedBy": "تم التعيين بواسطة",
-      "actions": "الإجراءات"
-    },
-    "pagination": {
-      "showing": "عرض",
-      "of": "من",
-      "managers": "مدراء"
-    },
-    "removeModal": {
-      "title": "إزالة مدير",
-      "warning": "تحذير",
-      "confirmMessage": "هل أنت متأكد أنك تريد إزالة {{name}} من دور المدير؟",
-      "managerDetails": "تفاصيل المدير",
-      "name": "الاسم",
-      "id": "المعرّف",
-      "reason": "سبب الإلغاء",
-      "reasonPlaceholder": "أدخل سبب إزالة هذا المدير...",
-      "reasonRequired": "يرجى تقديم سبب لإزالة هذا المدير.",
-      "reasonTooShort": "يجب ألا يقل السبب عن 3 أحرف.",
-      "consequences": "ما يحدث عند إزالة هذا المدير:",
-      "consequence1": "سيفقد جميع صلاحيات المدير على الفور",
-      "consequence2": "قد تتأثر أي إجراءات معلقة بدأها",
-      "consequence3": "سيتم تسجيل هذا الإجراء في سجلات النظام",
-      "cancel": "إلغاء",
-      "confirm": "إزالة المدير",
-      "removing": "جارٍ الإزالة...",
-      "error": "فشل في إزالة المدير. يرجى المحاولة مرة أخرى."
-    }
-  },
-  "managerHistory": {
-    "title": "تاريخ المديرين",
-    "backToRoles": "العودة إلى أدوار الإدارة",
-    "loading": "جاري تحميل التاريخ...",
-    "noData": "لم يتم العثور على سجلات تاريخية",
-    "noDataDescription": "لم يتم تسجيل أي تعيينات مديرين أو رؤساء أقسام بعد.",
-    "assignedOn": "تم التعيين في",
-    "assignedBy": "تم التعيين بواسطة",
-    "revocationReason": "سبب الإلغاء",
-
-    "search": {
-      "placeholder": "البحث بالاسم أو معرف المستخدم أو الفئة..."
-    },
-
-    "filters": {
-      "title": "المرشحات",
-      "clear": "مسح",
-      "userId": "معرف المستخدم",
-      "userIdPlaceholder": "أدخل معرف المستخدم",
-      "categoryId": "معرف الفئة",
-      "categoryIdPlaceholder": "أدخل معرف الفئة",
-      "managerType": "نوع الدور",
-      "allTypes": "جميع الأنواع",
-      "status": "الحالة",
-      "allStatuses": "جميع الحالات",
-      "fromDate": "من تاريخ",
-      "toDate": "إلى تاريخ",
-      "itemsPerPage": "العناصر لكل صفحة",
-      "perPage": "لكل صفحة"
-    },
-
-    "types": {
-      "manager": "مدير",
-      "departmentHead": "رئيس قسم"
-    },
-
-    "status": {
-      "active": "نشط",
-      "ended": "منتهي"
-    },
-
-    "duration": {
-      "today": "اليوم",
-      "days": "أيام",
-      "months": "أشهر",
-      "years": "سنوات"
-    },
-
-    "table": {
-      "user": "المستخدم",
-      "role": "الدور",
-      "category": "الفئة",
-      "assignedDate": "تاريخ التعيين",
-      "duration": "المدة",
-      "status": "الحالة",
-      "actions": "الإجراءات"
-    },
-
-    "pagination": {
-      "showing": "عرض",
-      "of": "من",
-      "records": "سجل"
-    }
-  },
-
-  "departmentHeads": {
-    "backToRoles": "العودة إلى أدوار الإدارة",
-    "title": "رؤساء الأقسام",
-    "assignNew": "تعيين رئيس جديد",
-    "assign": "تعيين",
-    "loading": "جارٍ تحميل رؤساء الأقسام...",
-    "noData": "لم يتم العثور على رؤساء أقسام",
-    "noDataDescription": "لم يتم تعيين أي رئيس قسم بعد. انقر على 'تعيين رئيس جديد' للبدء.",
-    "search": {
-      "placeholder": "ابحث بالاسم أو البريد الإلكتروني أو الجوال..."
-    },
-    "filters": {
-      "title": "الفلاتر",
-      "clear": "مسح",
-      "categoryId": "معرّف الفئة",
-      "categoryIdPlaceholder": "أدخل معرّف الفئة…",
-      "status": "الحالة",
-      "allStatuses": "كل الحالات",
-      "itemsPerPage": "العناصر لكل صفحة",
-      "perPage": "لكل صفحة"
-    },
-    "status": {
-      "active": "نشط",
-      "inactive": "غير نشط"
-    },
-    "statistics": {
-      "totalDepartmentHeads": "إجمالي رؤساء الأقسام",
-      "activeDepartmentHeads": "رؤساء أقسام نشطون",
-      "categoriesWithHeads": "الفئات مع رؤساء"
-    },
-    "table": {
-      "user": "المستخدم",
-      "category": "الفئة",
-      "permissions": "الصلاحيات",
-      "assignedDate": "تاريخ التعيين",
-      "status": "الحالة",
-      "actions": "الإجراءات"
-    },
-    "more": "المزيد",
-    "pagination": {
-      "showing": "عرض",
-      "of": "من",
-      "departmentHeads": "مدخلات"
-    }
-  },
 
   "loginSelection": {
     "welcomeBack": "مرحبًا بعودتك",
@@ -1454,5 +1201,196 @@
   },
   "create-specific-department": "إنشاء قسم محدد لهذه الفئة",
   "create-specific-sub-department": "إنشاء قسم فرعي لهذا القسم",
-  "displayRange": "عرض {{start}} - {{end}} من {{total}} عنصر"
+  "displayRange": "عرض {{start}} - {{end}} من {{total}} عنصر",
+
+  "managementRoles": {
+    "title": "أدوار الإدارة",
+    "deleteSuccess": "تم حذف الدور “{{name}}” بنجاح!",
+    "loading-specific": "جاري تحميل بيانات الدور",
+    "search": {
+      "placeholder": "ابحث في الأدوار..."
+    },
+    "filters": {
+      "title": "الفلاتر",
+      "status": "الحالة",
+      "orderBy": "ترتيب حسب",
+      "descending": "تنازلي",
+      "ascending": "تصاعدي",
+      "all": "الكل",
+      "type": "النوع",
+      "orderDirection": "اتجاه الترتيب",
+      "clear": "مسح الفلاتر",
+      "sortBy": {
+        "createdAt": "تاريخ الإنشاء",
+        "nameArabic": "الاسم بالعربية",
+        "nameEnglish": "الاسم بالإنجليزية"
+      }
+    },
+    "stats": {
+      "total": "إجمالي الأدوار",
+      "active": "الأدوار النشطة",
+      "system": "أدوار النظام",
+      "custom": "أدوار مخصصة"
+    },
+    "actions": {
+      "addNew": "إضافة دور جديد",
+      "add": "إضافة",
+      "view": "عرض",
+      "edit": "تعديل",
+      "delete": "حذف",
+      "clone": "استنساخ",
+      "activate": "تفعيل",
+      "deactivate": "تعطيل"
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط"
+    },
+    "type": {
+      "system": "نظامي",
+      "custom": "مخصص"
+    },
+    "table": {
+      "nameArabic": "الاسم بالعربية",
+      "nameEnglish": "الاسم بالإنجليزية",
+      "name": "الاسم",
+      "description": "الوصف",
+      "type": "النوع",
+      "status": "الحالة",
+      "users": "المستخدمون",
+      "createdAt": "تاريخ الإنشاء",
+      "updatedAt": "تاريخ آخر تحديث",
+      "createdBy": "أنشأ بواسطة",
+      "actions": "الإجراءات"
+    },
+    "loading": "جاري التحميل...",
+    "noData": "لم يتم العثور على أدوار",
+    "pagination": {
+      "itemsPerPage": "عناصر في الصفحة",
+      "displayRange": "عرض {{start}}–{{end}} من {{total}} نتيجة"
+    },
+    "delete": {
+      "title": "حذف الدور",
+      "confirmMessage": "هل أنت متأكد أنك تريد حذف هذا الدور؟ لا يمكن التراجع عن هذا الإجراء.",
+      "reason": "السبب",
+      "reasonPlaceholder": "يرجى تقديم سبب لحذف هذا الدور...",
+      "reasonRequired": "السبب مطلوب",
+      "confirm": "حذف الدور",
+      "success": "تم حذف الدور \"{{name}}\" بنجاح",
+      "cannotDelete": "لا يمكن حذف هذا الدور لأنه معين لمستخدمين أو دور نظام",
+      "usersWarning": "هذا الدور معين لـ {{count}} مستخدم",
+      "systemRoleWarning": "تحذير: هذا دور نظام. حذفه قد يؤثر على وظائف النظام.",
+      "assignedUsersWarning": "تحذير: هذا الدور معين للمستخدمين حاليًا. سيخسرون هذه الصلاحيات."
+    },
+    "notFound": "الدور غير موجود",
+    "notFoundDescription": "الدور المطلوب غير موجود.",
+    "backToList": "العودة إلى الأدوار",
+    "loadingHistory": "جاري تحميل السجل...",
+    "overview": {
+      "basicInfo": "المعلومات الأساسية",
+      "details": "تفاصيل الدور"
+    },
+    "form": {
+      "roleNameAr": "الاسم بالعربية",
+      "roleNameEn": "الاسم بالإنجليزية",
+      "description": "الوصف"
+    },
+    "tabs": {
+      "overview": "نظرة عامة",
+      "permissions": "الصلاحيات",
+      "history": "سجل التعيينات"
+    },
+    "analytics": {
+      "totalUsers": "إجمالي المستخدمين",
+      "activeUsers": "المستخدمون النشطون",
+      "lastAssigned": "آخر تعيين",
+      "usageScore": "درجة الاستخدام"
+    },
+    "history": {
+      "by": "بواسطة",
+      "noHistory": "لا يوجد سجل للتعيينات",
+      "noHistoryDescription": "لم يتم تعيين هذا الدور لأي مستخدمين بعد."
+    },
+    "permissions": {
+      "core": "إدارة أساسية",
+      "manageCategory": "إدارة الفئات",
+      "manageRole": "إدارة الأدوار",
+      "manageUsers": "إدارة المستخدمين",
+      "manageRostors": "إدارة الجداول",
+      "configuration": "الإعدادات",
+      "contractingType": "أنواع التعاقد",
+      "shiftHoursType": "أنواع ورديات الساعات",
+      "scientificDegree": "الدرجات العلمية",
+      "departments": "إدارة الأقسام",
+      "manageDepartments": "إدارة الأقسام",
+      "manageSubDepartments": "إدارة الأقسام الفرعية",
+      "operations": "العمليات",
+      "viewReports": "عرض التقارير",
+      "manageSchedules": "إدارة الجداول",
+      "manageRequests": "إدارة الطلبات"
+    }
+  },
+
+  "managementRoleForm": {
+    "title": "إنشاء دور إدارة",
+    "editTitle": "تحديث دور إدارة",
+    "permissions": {
+      "core": "الإدارة الأساسية",
+      "manageCategory": "إدارة الفئات",
+      "manageRole": "إدارة الأدوار",
+      "manageUsers": "إدارة المستخدمين",
+      "manageRostors": "إدارة الجداول",
+      "configuration": "الإعدادات",
+      "contractingType": "أنواع التعاقد",
+      "shiftHoursType": "أنواع ورديات الساعات",
+      "scientificDegree": "الدرجات العلمية",
+      "departments": "إدارة الأقسام",
+      "manageDepartments": "إدارة الأقسام",
+      "manageSubDepartments": "إدارة الأقسام الفرعية",
+      "operations": "العمليات",
+      "viewReports": "عرض التقارير",
+      "manageSchedules": "إدارة الجداول",
+      "manageRequests": "إدارة الطلبات"
+    },
+    "sections": {
+      "basicInfo": "المعلومات الأساسية",
+      "permissions": "الصلاحيات"
+    },
+    "fields": {
+      "roleNameAr": "الاسم بالعربية",
+      "roleNameEn": "الاسم بالإنجليزية",
+      "description": "الوصف"
+    },
+    "placeholders": {
+      "roleNameAr": "أدخل الاسم بالعربية",
+      "roleNameEn": "أدخل الاسم بالإنجليزية",
+      "description": "أدخل وصف الدور"
+    },
+    "charactersCount": "حرف",
+    "buttons": {
+      "cancel": "إلغاء",
+      "create": "إنشاء الدور",
+      "creating": "جاري الإنشاء...",
+      "update": "تعديل الدور",
+      "updating": "جاري التعديل..."
+    },
+    "validation": {
+      "roleNameArMin": "يجب أن يكون الاسم بالعربية على الأقل مكونًا من حرفين",
+      "roleNameArMax": "يجب أن يكون الاسم بالعربية أقل من 255 حرفًا",
+      "roleNameEnMin": "يجب أن يكون الاسم بالإنجليزية على الأقل مكونًا من حرفين",
+      "roleNameEnMax": "يجب أن يكون الاسم بالإنجليزية أقل من 255 حرفًا",
+      "descriptionMax": "يجب أن يكون الوصف أقل من 500 حرف",
+      "nameExists": "اسم الدور موجود بالفعل",
+      "roleNameArRequired": "حقل الاسم بالعربية مطلوب",
+      "roleNameEnRequired": "حقل الاسم بالإنجليزية مطلوب"
+    },
+    "success": {
+      "created": "تم إنشاء دور الإدارة بنجاح",
+      "updated": "تم تديث دور الإدارة بنجاح"
+    },
+    "error": {
+      "title": "خطأ في إنشاء الدور",
+      "editTitile": "خطأ في تحديث الدور"
+    }
+  }
 }

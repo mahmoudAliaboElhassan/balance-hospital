@@ -460,6 +460,45 @@ function UseFormValidation() {
 
     isActive: Yup.boolean().required(),
   });
+
+  const VALIDATION_SCHEMA_ADD_ROLE = Yup.object({
+    roleNameAr: Yup.string()
+      .min(
+        2,
+        t("managementRoleForm.validation.roleNameArMin") ||
+          "Arabic name must be at least 2 characters"
+      )
+      .max(
+        255,
+        t("managementRoleForm.validation.roleNameArMax") ||
+          "Arabic name must be less than 255 characters"
+      )
+      .required(
+        t("managementRoleForm.validation.roleNameArRequired") ||
+          "Arabic name is required"
+      ),
+    roleNameEn: Yup.string()
+      .min(
+        2,
+        t("managementRoleForm.validation.roleNameEnMin") ||
+          "English name must be at least 2 characters"
+      )
+      .max(
+        255,
+        t("managementRoleForm.validation.roleNameEnMax") ||
+          "English name must be less than 255 characters"
+      )
+      .required(
+        t("managementRoleForm.validation.roleNameEnRequired") ||
+          "English name is required"
+      ),
+    description: Yup.string().max(
+      500,
+      t("managementRoleForm.validation.descriptionMax") ||
+        "Description must be less than 500 characters"
+    ),
+  });
+
   return {
     VALIDATION_SCHEMA_LOGIN,
     VALIDATION_SCHEMA_RESET_PASSWORD,
@@ -477,6 +516,7 @@ function UseFormValidation() {
     VALIDATION_SCHEMA_EDIT_SCIENTIFIC_DEGREE,
     VALIDATION_SCHEMA_ADD_SCIENTIFIC_DEGREE,
     VALIDATION_SCHEMA_ADD_SHIFT_HOUR_TYPE,
+    VALIDATION_SCHEMA_ADD_ROLE,
   };
 }
 

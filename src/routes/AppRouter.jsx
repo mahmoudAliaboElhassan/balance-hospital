@@ -35,18 +35,17 @@ import CreateShiftHourType from "../pages/adminPanel/shiftHours/createShiftHours
 import SpecificShiftHoursType from "../pages/adminPanel/shiftHours/specificShiftHours";
 import EditShiftHourType from "../pages/adminPanel/shiftHours/editShiftHours";
 import ManagementRoles from "../pages/adminPanel/managementRoles";
-import Managers from "../pages/adminPanel/managementRoles/managers";
-import AssignManager from "../pages/adminPanel/managementRoles/assignManager";
-import ManagerHistory from "../pages/adminPanel/managementRoles/managerHistory ";
-import DepartmentHeads from "../pages/adminPanel/managementRoles/departmentHeads";
+// import Managers from "../pages/adminPanel/managementRoles/managers";
+// import AssignManager from "../pages/adminPanel/managementRoles/assignManager";
+// import ManagerHistory from "../pages/adminPanel/managementRoles/managerHistory ";
+// import DepartmentHeads from "../pages/adminPanel/managementRoles/departmentHeads";
 import LoginSelection from "../pages/auth/loginRoleSelection";
 import CreateDepartmentSpecificCategory from "../pages/adminPanel/department/createDepartmentSpecificCategory";
 import CreateSpecificSubDepartment from "../pages/adminPanel/subDepartment/createSpecificSubDepartment";
 import CreateSubDepartmentSpecificDepartment from "../pages/adminPanel/subDepartment/createSpecificSubDepartment";
-// import CreateScientificDegree from "../pages/adminPanel/scientificDegree/createScientificDegree";
-// import EditScientificDegree from "../pages/adminPanel/scientificDegree/editScientificDegree";
-// import SpecificScientificDegree from "../pages/adminPanel/scientificDegree/specificScientificDegree";
-// // Scientific Degree imports
+import SpecifiedManagementRole from "../pages/adminPanel/managementRoles/specifiedManagementRole";
+import CreateManagementRole from "../pages/adminPanel/managementRoles/createManagementRole";
+import EditManagementRole from "../pages/adminPanel/managementRoles/editManagementRole";
 
 const router = createBrowserRouter([
   {
@@ -329,37 +328,37 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "management-roles/managers",
+            path: "management-roles/role/:id",
             element: (
               <Suspense fallback={<Loader />}>
-                <Managers />
+                <SpecifiedManagementRole />
               </Suspense>
             ),
           },
           {
-            path: "management-roles/managers/assign",
+            path: "management-roles/create",
             element: (
               <Suspense fallback={<Loader />}>
-                <AssignManager />
+                <CreateManagementRole />
               </Suspense>
             ),
           },
           {
-            path: "management-roles/managers/history",
+            path: "management-roles/edit/:id",
             element: (
               <Suspense fallback={<Loader />}>
-                <ManagerHistory />
+                <EditManagementRole />
               </Suspense>
             ),
           },
-          {
-            path: "management-roles/department-heads",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <DepartmentHeads />
-              </Suspense>
-            ),
-          },
+          // {
+          //   path: "management-roles/department-heads",
+          //   element: (
+          //     <Suspense fallback={<Loader />}>
+          //       <DepartmentHeads />
+          //     </Suspense>
+          //   ),
+          // },
           // {
           //   path: "management-roles/department-heads/assign",
           //   element: (
