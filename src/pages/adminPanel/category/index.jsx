@@ -218,16 +218,6 @@ function Category() {
         </div>
       </div>
 
-      {category.description && (
-        <p
-          className={`text-sm text-center mb-3 ${
-            isDark ? "text-gray-300" : "text-gray-600"
-          }`}
-        >
-          {category.description}
-        </p>
-      )}
-
       <div className="flex gap-2 justify-end">
         <Link to={`/admin-panel/category/${category.id}`}>
           <button
@@ -580,15 +570,7 @@ function Category() {
                     >
                       {t("categories.table.nameEnglish")}
                     </th>
-                    <th
-                      className={`${
-                        isRTL ? "text-right" : "text-left"
-                      } p-4 font-semibold ${
-                        isDark ? "text-white" : "text-gray-900"
-                      }`}
-                    >
-                      {t("categories.table.description")}
-                    </th>
+
                     <th
                       className={`${
                         isRTL ? "text-right" : "text-left"
@@ -694,18 +676,7 @@ function Category() {
                         >
                           {category.nameEnglish}
                         </td>
-                        <td
-                          className={`p-4 text-center ${
-                            isDark ? "text-gray-300" : "text-gray-600"
-                          }`}
-                        >
-                          <div
-                            className="max-w-xs truncate"
-                            title={category.description}
-                          >
-                            {category.description}
-                          </div>
-                        </td>
+
                         <td className="p-4 text-center">
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-medium ${
