@@ -51,7 +51,7 @@ function EditManagementRole() {
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   // Validation schema
-  const { VALIDATION_SCHEMA_EDIT_ROLE } = UseFormValidation();
+  const { VALIDATION_SCHEMA_ADD_ROLE } = UseFormValidation();
 
   // Load role data on component mount
   useEffect(() => {
@@ -413,7 +413,7 @@ function EditManagementRole() {
             <div className="p-6">
               <Formik
                 initialValues={initialValues}
-                validationSchema={VALIDATION_SCHEMA_EDIT_ROLE}
+                validationSchema={VALIDATION_SCHEMA_ADD_ROLE}
                 onSubmit={handleSubmit}
                 enableReinitialize={true}
               >
@@ -569,7 +569,14 @@ function EditManagementRole() {
                         {t("managementRoleForm.sections.permissions") ||
                           "Permissions"}
                       </h3>
-
+                      {errors.userCanManageCategory &&
+                        touched.userCanManageCategory && (
+                          <div className="mb-4 p-3 border border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-600 rounded-md">
+                            <p className="text-sm text-red-600 dark:text-red-400">
+                              {errors.userCanManageCategory}
+                            </p>
+                          </div>
+                        )}
                       {permissionGroups.map((group) => (
                         <div
                           key={group.key}

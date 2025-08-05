@@ -1351,6 +1351,9 @@
   "managementRoleForm": {
     "title": "Create Management Role",
     "editTitle": "Edit Management Role",
+    "notFound": "Role not found",
+    "notFoundDescription": "The requested role could not be located.",
+    "backToList": "Back to role list",
     "permissions": {
       "core": "Core Management",
       "manageCategory": "Manage Categories",
@@ -1400,7 +1403,8 @@
       "roleNameArMax": "Arabic name must be less than 255 characters",
       "roleNameEnMin": "English name must be at least 2 characters",
       "roleNameEnMax": "English name must be less than 255 characters",
-      "descriptionMax": "Description must be less than 500 characters"
+      "descriptionMax": "Description must be less than 500 characters",
+      "atLeastOnePermission": "At least one permission must be selected."
     },
     "success": {
       "created": "Management role created successfully",

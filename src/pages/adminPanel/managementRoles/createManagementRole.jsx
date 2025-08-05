@@ -426,7 +426,14 @@ function CreateManagementRole() {
                         {t("managementRoleForm.sections.permissions") ||
                           "Permissions"}
                       </h3>
-
+                      {errors.userCanManageCategory &&
+                        touched.userCanManageCategory && (
+                          <div className="mb-4 p-3 border border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-600 rounded-md">
+                            <p className="text-sm text-red-600 dark:text-red-400">
+                              {errors.userCanManageCategory}
+                            </p>
+                          </div>
+                        )}
                       {permissionGroups.map((group) => (
                         <div
                           key={group.key}

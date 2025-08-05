@@ -1360,6 +1360,9 @@
   "managementRoleForm": {
     "title": "إنشاء دور إدارة",
     "editTitle": "تحديث دور إدارة",
+    "notFound": "الدور غير موجود",
+    "notFoundDescription": "لم يتم العثور على الدور المطلوب.",
+    "backToList": "العودة إلى قائمة الأدوار",
     "permissions": {
       "core": "الإدارة الأساسية",
       "manageCategory": "إدارة الفئات",
@@ -1408,6 +1411,7 @@
       "descriptionMax": "يجب أن يكون الوصف أقل من 500 حرف",
       "nameExists": "اسم الدور موجود بالفعل",
       "roleNameArRequired": "حقل الاسم بالعربية مطلوب",
+      "atLeastOnePermission": "يجب اختيار إذن واحد على الأقل.",
       "roleNameEnRequired": "حقل الاسم بالإنجليزية مطلوب"
     },
     "success": {

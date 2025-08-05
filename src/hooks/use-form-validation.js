@@ -476,6 +476,11 @@ function UseFormValidation() {
       .required(
         t("managementRoleForm.validation.roleNameArRequired") ||
           "Arabic name is required"
+      )
+      .matches(
+        // Arabic script, digits, whitespace, and punctuation
+        /^[\p{Script=Arabic}0-9\s\p{P}]+$/u,
+        t("validation.arabicOnly") // you may want to update this message to "Arabic letters, numbers & punctuation only"
       ),
     roleNameEn: Yup.string()
       .min(
@@ -491,12 +496,54 @@ function UseFormValidation() {
       .required(
         t("managementRoleForm.validation.roleNameEnRequired") ||
           "English name is required"
+      )
+      .matches(
+        // Latin letters, digits, whitespace, and punctuation
+        /^[A-Za-z0-9\s\p{P}]+$/u,
+        t("validation.englishOnly") // you may want to update this message to "English letters, numbers & punctuation only"
       ),
     description: Yup.string().max(
       500,
       t("managementRoleForm.validation.descriptionMax") ||
         "Description must be less than 500 characters"
     ),
+    // Add validation to the first permission field
+    userCanManageCategory: Yup.boolean().test(
+      "at-least-one-permission",
+      t("managementRoleForm.validation.atLeastOnePermission") ||
+        "At least one permission must be selected",
+      function (value) {
+        const { parent } = this;
+        const permissionFields = [
+          "userCanManageCategory",
+          "userCanManageRole",
+          "userCanManageRostors",
+          "userCanManageUsers",
+          "userCanContractingType",
+          "userCanShiftHoursType",
+          "userCanScientificDegree",
+          "userCanManageDepartments",
+          "userCanManageSubDepartments",
+          "userCanViewReports",
+          "userCanManageSchedules",
+          "userCanManageRequests",
+        ];
+
+        return permissionFields.some((field) => parent[field] === true);
+      }
+    ),
+    // Define other boolean fields (optional, but good practice)
+    userCanManageRole: Yup.boolean(),
+    userCanManageRostors: Yup.boolean(),
+    userCanManageUsers: Yup.boolean(),
+    userCanContractingType: Yup.boolean(),
+    userCanShiftHoursType: Yup.boolean(),
+    userCanScientificDegree: Yup.boolean(),
+    userCanManageDepartments: Yup.boolean(),
+    userCanManageSubDepartments: Yup.boolean(),
+    userCanViewReports: Yup.boolean(),
+    userCanManageSchedules: Yup.boolean(),
+    userCanManageRequests: Yup.boolean(),
   });
 
   const VALIDATION_SCHEMA_ASSIGN_USER_TO_ROLE = Yup.object({
