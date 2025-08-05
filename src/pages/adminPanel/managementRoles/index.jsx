@@ -236,7 +236,8 @@ function ManagementRoles() {
 
     toast.info(t("managementRoles.delete.checking"));
 
-    const result = await dispatch(checkCanDeleteRole(role.id));
+    const result = dispatch(checkCanDeleteRole(role.id));
+    console.log("result", result);
     if (result.payload?.canDelete || result.payload?.success) {
       setToDelete({
         id: role.id,
