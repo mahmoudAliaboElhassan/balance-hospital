@@ -121,6 +121,8 @@ function UseInitialValues() {
     startTime: "",
     endTime: "",
     isActive: true,
+    isOvertime: false,
+    description: "hours",
   };
 
   const INITIAL_VALUES_ADD_ROLE = {

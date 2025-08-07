@@ -1120,6 +1120,7 @@
         "hoursCount": "Hours Count is required",
         "startTime": "Start Time is required",
         "endTime": "End Time is required",
+        "hoursMustMatchTimeDifference": "Hours must match the time difference between start and end times.",
         "hints": {
           "code": "Use uppercase letters (A–Z) and digits only",
           "hoursCount": "Value must be between 1 and 24"
@@ -1167,11 +1168,12 @@
       "updated": "Shift hour type updated successfully"
     },
     "error": {
-      "title": "Update Failed",
+      "title": "Add Failed",
+      "edit-title": "Update Failed",
       "loadFailed": "Failed to load shift hour type",
       "notFound": "Shift hour type not found",
       "notFoundMessage": "The requested shift hour type does not exist.",
-      "message": "An unexpected error occurred"
+      "message": "Code may be used before try another"
     }
   },
 

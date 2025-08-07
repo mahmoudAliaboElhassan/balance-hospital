@@ -416,22 +416,15 @@ function UseFormValidation() {
       .required(t("shiftHourTypeForm.form.validation.nameArabic"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(255, t("validation.maxLength", { count: 255 }))
-      .matches(
-        // Arabic script, digits, whitespace, and punctuation
-        /^[\p{Script=Arabic}0-9\s\p{P}]+$/u,
-        t("validation.arabicOnly") // you may want to update this message to "Arabic letters, numbers & punctuation only"
-      ),
+      .matches(/^[\p{Script=Arabic}0-9\s\p{P}]+$/u, t("validation.arabicOnly")),
 
     nameEnglish: Yup.string()
       .trim()
       .required(t("shiftHourTypeForm.form.validation.nameEnglish"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(255, t("validation.maxLength", { count: 255 }))
-      .matches(
-        // Latin letters, digits, whitespace, and punctuation
-        /^[A-Za-z0-9\s\p{P}]+$/u,
-        t("validation.englishOnly") // you may want to update this message to "English letters, numbers & punctuation only"
-      ),
+      .matches(/^[A-Za-z0-9\s\p{P}]+$/u, t("validation.englishOnly")),
+
     code: Yup.string()
       .trim()
       .required(t("shiftHourTypeForm.form.validation.code"))
@@ -448,18 +441,68 @@ function UseFormValidation() {
       .required(t("shiftHourTypeForm.form.validation.hoursCount"))
       .integer(t("validation.integerOnly"))
       .min(1, t("shiftHourTypeForm.form.validation.hints.hoursCount"))
-      .max(24, t("shiftHourTypeForm.form.validation.hints.hoursCount")),
+      .max(24, t("shiftHourTypeForm.form.validation.hints.hoursCount"))
+      .test(
+        "hours-match-time-difference",
+        t("shiftHourTypeForm.form.validation.hoursMustMatchTimeDifference"), // Add appropriate translation
+        function (value) {
+          const { startTime, endTime } = this.parent;
+
+          if (!startTime || !endTime || value === undefined) {
+            return true; // Skip validation if times are not set
+          }
+
+          // Calculate the difference in hours
+          const calculatedHours = calculateHoursDifference(startTime, endTime);
+
+          return value === calculatedHours;
+        }
+      ),
 
     startTime: Yup.string().required(
       t("shiftHourTypeForm.form.validation.startTime")
     ),
 
-    endTime: Yup.string().required(
-      t("shiftHourTypeForm.form.validation.endTime")
-    ),
+    endTime: Yup.string()
+      .required(t("shiftHourTypeForm.form.validation.endTime"))
+      .test(
+        "end-time-after-start",
+        t("shiftHourTypeForm.form.validation.endTimeAfterStart"), // Add appropriate translation
+        function (value) {
+          const { startTime } = this.parent;
+
+          if (!startTime || !value) {
+            return true; // Skip validation if either time is not set
+          }
+
+          // Validate that endTime is after startTime (considering overnight shifts)
+          return true; // Implement your logic here
+        }
+      ),
 
     isActive: Yup.boolean().required(),
   });
+
+  function calculateHoursDifference(startTime, endTime) {
+    // Assuming time format is "HH:mm" (24-hour format)
+    const [startHours, startMinutes] = startTime.split(":").map(Number);
+    const [endHours, endMinutes] = endTime.split(":").map(Number);
+
+    // Convert to minutes since midnight
+    let startTotalMinutes = startHours * 60 + startMinutes;
+    let endTotalMinutes = endHours * 60 + endMinutes;
+
+    // Handle overnight shifts (when end time is less than start time)
+    if (endTotalMinutes < startTotalMinutes) {
+      endTotalMinutes += 24 * 60; // Add 24 hours worth of minutes
+    }
+
+    // Calculate difference in minutes and convert to hours
+    const diffMinutes = endTotalMinutes - startTotalMinutes;
+    const diffHours = Math.round(diffMinutes / 60); // Round to nearest hour
+
+    return diffHours;
+  }
 
   const VALIDATION_SCHEMA_ADD_ROLE = Yup.object({
     roleNameAr: Yup.string()

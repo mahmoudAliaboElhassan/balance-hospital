@@ -108,13 +108,8 @@ function EditShiftHourType() {
         console.error("Shift hour type update error:", error);
 
         Swal.fire({
-          title: t("shiftHourTypeForm.error.title"),
-          text:
-            currentLang === "en"
-              ? error?.response?.data?.messageEn || error?.message
-              : error?.response?.data?.messageAr ||
-                error?.message ||
-                t("shiftHourType.error.message"),
+          title: t("shiftHourTypeForm.error.edit-title"),
+          text: t("shiftHourTypeForm.error.message"),
           icon: "error",
           confirmButtonText: t("common.ok"),
           confirmButtonColor: "#ef4444",
@@ -373,7 +368,7 @@ function EditShiftHourType() {
                 placeholder={t("shiftHourTypeForm.placeholders.hoursCount")}
               />
               <ErrorMessage
-                name="hoursCount"
+                name="hours"
                 component="div"
                 className="mt-1 text-sm text-red-600"
               />

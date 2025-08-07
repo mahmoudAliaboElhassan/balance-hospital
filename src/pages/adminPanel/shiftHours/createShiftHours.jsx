@@ -41,8 +41,8 @@ function CreateShiftHourType() {
     { setSubmitting, resetForm, setFieldError }
   ) => {
     console.log("values", values);
-
-    dispatch(createShiftHoursType(values))
+    const vals = { ...values, hoursCount: values.hours };
+    dispatch(createShiftHoursType(vals))
       .unwrap()
       .then(() => {
         // Success handling
@@ -62,12 +62,7 @@ function CreateShiftHourType() {
 
         Swal.fire({
           title: t("shiftHourTypeForm.error.title"),
-          text:
-            currentLang === "en"
-              ? error?.response?.data?.messageEn || error?.message
-              : error?.response?.data?.messageAr ||
-                error?.message ||
-                t("shiftHourType.error.message"),
+          text: t("shiftHourTypeForm.error.message"),
           icon: "error",
           confirmButtonText: t("common.ok"),
           confirmButtonColor: "#ef4444",
@@ -242,7 +237,7 @@ function CreateShiftHourType() {
                 placeholder={t("shiftHourTypeForm.placeholders.hoursCount")}
               />
               <ErrorMessage
-                name="hoursCount"
+                name="hours"
                 component="div"
                 className="mt-1 text-sm text-red-600"
               />

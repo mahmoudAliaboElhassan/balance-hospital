@@ -230,7 +230,7 @@ function ShiftHours() {
             {t("shiftHoursTypes.table.hours")}:
           </span>
           <span className={`${isDark ? "text-gray-200" : "text-gray-800"}`}>
-            {formatHours(shiftHoursType.hours)}h
+            {formatHours(shiftHoursType.hoursCountCount)}h
           </span>
         </div>
         <div className="flex items-center gap-2">
@@ -766,7 +766,7 @@ function ShiftHours() {
                                 isDark ? "text-gray-300" : "text-gray-900"
                               }`}
                             >
-                              {formatHours(shiftHoursType.hours)}h
+                              {formatHours(shiftHoursType.hoursCount)}h
                             </span>
                           </div>
                         </td>
@@ -936,7 +936,7 @@ function ShiftHours() {
                                 isDark ? "text-gray-300" : "text-gray-900"
                               }`}
                             >
-                              {formatHours(shiftHoursType.hoursCount)}h
+                              {formatHours(shiftHoursType.hoursCountCount)}h
                             </span>
                           </div>
                           <div
