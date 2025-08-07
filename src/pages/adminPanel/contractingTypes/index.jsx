@@ -660,7 +660,7 @@ function ContractingTypes() {
                       isDark ? "text-gray-400" : "text-gray-600"
                     }`}
                   >
-                    {t("contractingTypes.loading")}
+                    {t("gettingData.contractingTypes")}
                   </span>
                 </div>
               </div>
@@ -751,7 +751,7 @@ function ContractingTypes() {
                               isDark ? "text-gray-400" : "text-gray-600"
                             }`}
                           >
-                            {t("contractingTypes.loading")}
+                            {t("gettingData.contractingTypes")}
                           </span>
                         </div>
                       </td>

@@ -599,7 +599,7 @@ function ShiftHours() {
                       isDark ? "text-gray-400" : "text-gray-600"
                     }`}
                   >
-                    {t("shiftHoursTypes.loading")}
+                    {t("gettingData.shiftHourData")}
                   </span>
                 </div>
               </div>
@@ -707,7 +707,7 @@ function ShiftHours() {
                               isDark ? "text-gray-400" : "text-gray-600"
                             }`}
                           >
-                            {t("shiftHoursTypes.loading")}
+                            {t("gettingData.shiftHourData")}
                           </span>
                         </div>
                       </td>
@@ -882,7 +882,7 @@ function ShiftHours() {
                               isDark ? "text-gray-400" : "text-gray-600"
                             }`}
                           >
-                            {t("shiftHoursTypes.loading")}
+                            {t("gettingData.shiftHourData")}
                           </span>
                         </div>
                       </td>
@@ -915,9 +915,9 @@ function ShiftHours() {
                                 isDark ? "text-white" : "text-gray-900"
                               }`}
                             >
-                              {
-                                language === "ar"?
-                                shiftHoursType.nameArabic:shiftHoursType.nameEnglish}
+                              {language === "ar"
+                                ? shiftHoursType.nameArabic
+                                : shiftHoursType.nameEnglish}
                             </div>
                             <div
                               className={`text-xs ${

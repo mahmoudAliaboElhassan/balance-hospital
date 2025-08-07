@@ -506,7 +506,7 @@ function Category() {
                       isDark ? "text-gray-400" : "text-gray-600"
                     }`}
                   >
-                    {t("categories.loading")}
+                    {t("gettingData.categories")}
                   </span>
                 </div>
               </div>
@@ -629,7 +629,7 @@ function Category() {
                               isDark ? "text-gray-400" : "text-gray-600"
                             }`}
                           >
-                            {t("categories.loading")}
+                            {t("gettingData.categories")}
                           </span>
                         </div>
                       </td>
@@ -815,7 +815,7 @@ function Category() {
                               isDark ? "text-gray-400" : "text-gray-600"
                             }`}
                           >
-                            {t("categories.loading")}
+                            {t("gettingData.categories")}
                           </span>
                         </div>
                       </td>

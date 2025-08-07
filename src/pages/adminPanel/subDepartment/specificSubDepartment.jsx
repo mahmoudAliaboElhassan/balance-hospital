@@ -7,6 +7,7 @@ import {
   clearSingleSubDepartmentError,
 } from "../../../state/slices/subDepartment";
 import { useTranslation } from "react-i18next";
+import LoadingGetData from "../../../components/LoadingGetData";
 
 function SpecificSubDepartment() {
   const { id } = useParams();
@@ -112,30 +113,7 @@ function SpecificSubDepartment() {
 
   // Loading Component
   if (loadingGetSingleSubDepartment) {
-    return (
-      <div
-        className={`min-h-screen bg-gradient-to-br ${
-          isDark
-            ? "from-gray-900 via-gray-800 to-gray-900"
-            : "from-blue-50 via-indigo-50 to-purple-50"
-        } p-6 ${isRTL ? "rtl" : "ltr"}`}
-      >
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center p-8">
-            <div className="flex items-center justify-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              <span
-                className={`${isRTL ? "mr-3" : "ml-3"} ${
-                  isDark ? "text-gray-400" : "text-gray-600"
-                }`}
-              >
-                {t("subDepartment.loading")}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <LoadingGetData text={t("gettingData.subDepartmentData")} />;
   }
 
   // Error Component

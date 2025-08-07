@@ -572,8 +572,8 @@
       "title": "فلاتر",
       "department": "القسم",
       "allDepartments": "جميع الأقسام",
-      "category": "الفئة",
-      "allCategories": "جميع الفئات",
+      "category": "التخصص",
+      "allCategories": "جميع التخصصات",
       "status": "الحالة",
       "allStatuses": "جميع الحالات",
       "orderBy": "الترتيب حسب",
@@ -1199,61 +1199,69 @@
     },
     "footerHelp": "تحتاج مساعدة؟ تواصل مع مسؤول النظام"
   },
-  "create-specific-department": "إنشاء قسم محدد لهذه الفئة",
+  "create-specific-department": "إنشاء قسم محدد لهذه التخصص",
   "create-specific-sub-department": "إنشاء قسم فرعي لهذا القسم",
   "displayRange": "عرض {{start}} - {{end}} من {{total}} عنصر",
 
   "managementRoles": {
-    "title": "أدوار الإدارة",
-    "deleteSuccess": "تم حذف الدور “{{name}}” بنجاح!",
-    "users": "مستخدمين",
+    "title": "إدارة الأدوار",
+    "loading-specific": "جاري تحميل بيانات الدور...",
+    "deleteSuccess": "تم حذف الدور \"{{name}}\" بنجاح!",
 
-    "loading-specific": "جاري تحميل بيانات الدور",
     "search": {
-      "placeholder": "ابحث في الأدوار..."
+      "placeholder": "ابحث عن الأدوار...",
+      "users": "ابحث عن المستخدمين..."
     },
+
     "filters": {
-      "title": "الفلاتر",
+      "title": "المرشحات",
       "status": "الحالة",
-      "orderBy": "ترتيب حسب",
+      "orderBy": "الترتيب حسب",
       "descending": "تنازلي",
       "ascending": "تصاعدي",
       "all": "الكل",
       "type": "النوع",
       "orderDirection": "اتجاه الترتيب",
-      "clear": "مسح الفلاتر",
+      "clear": "مسح المرشحات",
       "sortBy": {
         "createdAt": "تاريخ الإنشاء",
         "nameArabic": "الاسم بالعربية",
-        "nameEnglish": "الاسم بالإنجليزية"
+        "nameEnglish": "الاسم بالإنجليزية",
+        "mobile": "الجوال",
+        "primaryCategory": "التخصص الرئيسية"
       }
     },
+
     "stats": {
       "total": "إجمالي الأدوار",
       "active": "الأدوار النشطة",
       "system": "أدوار النظام",
-      "custom": "أدوار مخصصة"
+      "custom": "الأدوار المخصصة"
     },
+
     "actions": {
       "addNew": "إضافة دور جديد",
       "add": "إضافة",
-      "view": "عرض",
-      "assignUser": "تعيين مستخدم لدور",
+      "assignUser": "تعيين مستخدم إلى الدور",
       "assign": "تعيين",
+      "view": "عرض",
       "edit": "تعديل",
       "delete": "حذف",
-      "clone": "استنساخ",
+      "clone": "نسخ",
       "activate": "تفعيل",
       "deactivate": "تعطيل"
     },
+
     "status": {
       "active": "نشط",
       "inactive": "غير نشط"
     },
+
     "type": {
       "system": "نظامي",
       "custom": "مخصص"
     },
+
     "table": {
       "nameArabic": "الاسم بالعربية",
       "nameEnglish": "الاسم بالإنجليزية",
@@ -1262,59 +1270,76 @@
       "type": "النوع",
       "status": "الحالة",
       "users": "المستخدمون",
+      "mobile": "الجوال",
+      "category": "التخصص الرئيسية",
+      "role": "الدور",
       "createdAt": "تاريخ الإنشاء",
-      "updatedAt": "تاريخ آخر تحديث",
-      "createdBy": "أنشأ بواسطة",
-      "updatedBy": "تم تعديله بواسطة",
+      "updatedAt": "تاريخ التحديث",
+      "createdBy": "أنشأه",
+      "updatedBy": "حدّثه",
       "actions": "الإجراءات"
     },
+
     "loading": "جاري التحميل...",
-    "noData": "لم يتم العثور على أدوار",
+    "loadingUsers": "جاري تحميل المستخدمين...",
+    "noData": "لا توجد أدوار",
+
     "pagination": {
-      "itemsPerPage": "عناصر في الصفحة",
-      "displayRange": "عرض {{start}}–{{end}} من {{total}} نتيجة"
+      "itemsPerPage": "عنصر لكل صفحة",
+      "displayRange": "عرض {{start}}–{{end}} من أصل {{total}} نتيجة",
+      "previous": "السابق",
+      "next": "التالي",
+      "showing": "عرض",
+      "to": "إلى",
+      "of": "من",
+      "results": "نتائج"
     },
+
     "delete": {
       "title": "حذف الدور",
-      "checking": "جارٍ التحقق مما إذا كان يمكن حذف الدور، يرجى الانتظار...",
+      "checking": "جاري التحقق مما إذا كان يمكن حذف الدور، يرجى الانتظار...",
       "confirmMessage": "هل أنت متأكد أنك تريد حذف هذا الدور؟ لا يمكن التراجع عن هذا الإجراء.",
       "reason": "السبب",
-      "reasonPlaceholder": "يرجى تقديم سبب لحذف هذا الدور...",
+      "reasonPlaceholder": "يرجى ذكر سبب حذف هذا الدور...",
       "reasonRequired": "السبب مطلوب",
       "confirm": "حذف الدور",
       "success": "تم حذف الدور \"{{name}}\" بنجاح",
-      "cannotDelete": "لا يمكن حذف هذا الدور لأنه معين لمستخدمين أو دور نظام",
-      "usersWarning": "هذا الدور معين لـ {{count}} مستخدم",
-      "systemRoleWarning": "تحذير: هذا دور نظام. حذفه قد يؤثر على وظائف النظام.",
-      "assignedUsersWarning": "تحذير: هذا الدور معين للمستخدمين حاليًا. سيخسرون هذه الصلاحيات."
+      "cannotDelete": "لا يمكن حذف هذا الدور لأنه معين لمستخدمين أو دور نظامي",
+      "usersWarning": "هذا الدور معين لـ {{count}} مستخدم(ين)",
+      "systemRoleWarning": "تحذير: هذا دور نظامي. قد يؤثر حذفه على وظائف النظام.",
+      "assignedUsersWarning": "تحذير: هذا الدور معين حاليًا لمستخدمين. سيفقدون هذه الصلاحيات."
     },
+
     "notFound": "الدور غير موجود",
-    "notFoundDescription": "الدور المطلوب غير موجود.",
+    "notFoundDescription": "لم يتم العثور على الدور المطلوب.",
     "backToList": "العودة إلى الأدوار",
-    "loadingHistory": "جاري تحميل السجل...",
+
     "overview": {
-      "basicInfo": "المعلومات الأساسية",
+      "basicInfo": "معلومات أساسية",
       "details": "تفاصيل الدور"
     },
+
     "form": {
       "roleNameAr": "الاسم بالعربية",
       "roleNameEn": "الاسم بالإنجليزية",
       "description": "الوصف"
     },
+
     "tabs": {
       "overview": "نظرة عامة",
       "permissions": "الصلاحيات",
-      "history": "سجل التعيينات"
+      "history": "سجل التعيينات",
+      "users": "المستخدمون المعينون"
     },
 
     "analytics": {
       "activeUsers": "المستخدمون النشطون",
-      "recentAssignments": "التعيينات الحديثة",
+      "recentAssignments": "التعيينات الأخيرة",
       "usagePercentage": "نسبة الاستخدام",
-      "netChange": "التغيير الصافي",
-      "recentActivity": "النشاط الحديث",
-      "assignments": "التعيينات",
-      "removals": "الإزالات",
+      "netChange": "التغير الصافي",
+      "recentActivity": "النشاط الأخير",
+      "assignments": "تعيينات",
+      "removals": "إزالات",
       "topAssigners": "أكثر المعينين",
       "lastAssigned": "آخر تعيين",
       "changeTypeBreakdown": "تفصيل نوع التغيير",
@@ -1322,41 +1347,61 @@
       "period": "الفترة",
       "changeTypes": {
         "ASSIGNED": "معين",
-        "REMOVED": "محذوف",
-        "UPDATED": "محدث",
+        "REMOVED": "مزال",
+        "UPDATED": "مُحدّث",
         "TRANSFERRED": "منقول"
       }
     },
+
     "history": {
       "reason": "السبب",
       "by": "بواسطة",
       "notes": "ملاحظات",
       "noHistory": "لا يوجد سجل تعيينات",
+      "noHistoryDescription": "لم يتم تعيين هذا الدور لأي مستخدمين حتى الآن.",
       "assigned": "تم تعيين الدور: {{roleName}}",
       "removed": "تم إزالة الدور: {{roleName}}",
-      "modified": "تم تغيير الدور: {{oldRoleName}} → {{newRoleName}}",
-      "noHistoryDescription": "لم يتم تعيين هذا الدور لأي مستخدمين حتى الآن."
+      "modified": "تم تغيير الدور: {{oldRoleName}} → {{newRoleName}}"
     },
+
+    "users": {
+      "noUsers": "لا يوجد مستخدمون",
+      "users": "مستخدمين",
+
+      "delete": {
+        "title": "إزالة مستخدم من الدور",
+        "confirmMessage": "هل أنت متأكد من أنك تريد إزالة هذا المستخدم من الدور؟ لا يمكن التراجع عن هذا الإجراء.",
+        "reason": "السبب",
+        "reasonPlaceholder": "يرجى تقديم سبب لإزالة هذا المستخدم من الدور...",
+        "reasonRequired": "السبب مطلوب",
+        "warning": "تحذير: إزالة هذا المستخدم من الدور ستلغي جميع الصلاحيات المرتبطة فوراً.",
+        "currentRole": "الدور الحالي",
+        "confirm": "إزالة المستخدم"
+      },
+      "removeSuccess": "تم إزالة المستخدم \"{{userName}}\" من الدور \"{{roleName}}\" بنجاح",
+
+      "noUsersDescription": "لم يتم تعيين هذا الدور لأي مستخدمين حتى الآن."
+    },
+
     "permissions": {
-      "core": "إدارة أساسية",
-      "manageCategory": "إدارة الفئات",
+      "core": "الإدارة الأساسية",
+      "manageCategory": "إدارة التخصصات",
       "manageRole": "إدارة الأدوار",
       "manageUsers": "إدارة المستخدمين",
       "manageRostors": "إدارة الجداول",
       "configuration": "الإعدادات",
       "contractingType": "أنواع التعاقد",
-      "shiftHoursType": "أنواع ورديات الساعات",
+      "shiftHoursType": "أنواع الورديات",
       "scientificDegree": "الدرجات العلمية",
       "departments": "إدارة الأقسام",
       "manageDepartments": "إدارة الأقسام",
       "manageSubDepartments": "إدارة الأقسام الفرعية",
       "operations": "العمليات",
       "viewReports": "عرض التقارير",
-      "manageSchedules": "إدارة الجداول",
+      "manageSchedules": "إدارة الجداول الزمنية",
       "manageRequests": "إدارة الطلبات"
     }
   },
-
   "managementRoleForm": {
     "title": "إنشاء دور إدارة",
     "editTitle": "تحديث دور إدارة",
@@ -1365,7 +1410,7 @@
     "backToList": "العودة إلى قائمة الأدوار",
     "permissions": {
       "core": "الإدارة الأساسية",
-      "manageCategory": "إدارة الفئات",
+      "manageCategory": "إدارة التخصصات",
       "manageRole": "إدارة الأدوار",
       "manageUsers": "إدارة المستخدمين",
       "manageRostors": "إدارة الجداول",
@@ -1428,7 +1473,8 @@
   "role-activated-success": "تم تفعيل الدور بنجاح",
 
   "assignUserRole": {
-    "title": "تعيين مستخدم لدور",
+    "title": "تعيين مستخدم إلى دور",
+    "editTitle": "تعديل تعيين الدور للمستخدم",
     "sections": {
       "assignmentInfo": "معلومات التعيين"
     },
@@ -1439,36 +1485,65 @@
       "notes": "ملاحظات"
     },
     "placeholders": {
-      "searchUsers": "البحث عن المستخدمين بالاسم أو الجوال أو الدور...",
-      "selectRole": "اختر دوراً...",
-      "changeReason": "أدخل سبب تعيين الدور...",
-      "notes": "ملاحظات إضافية (اختيارية)..."
+      "searchUsers": "ابحث عن المستخدمين بالاسم أو الجوال أو الدور…",
+      "selectRole": "اختر دوراً…",
+      "changeReason": "أدخل سبب تعيين الدور…",
+      "notes": "ملاحظات إضافية (اختياري)…"
     },
     "validation": {
       "userRequired": "يرجى اختيار مستخدم",
       "roleRequired": "يرجى اختيار دور",
       "changeReasonRequired": "سبب التغيير مطلوب",
-      "changeReasonMin": "يجب أن يكون سبب التغيير 3 أحرف على الأقل",
+      "changeReasonMin": "يجب ألا يقل سبب التغيير عن 3 أحرف",
       "changeReasonMax": "يجب ألا يتجاوز سبب التغيير 200 حرف",
       "notesMax": "يجب ألا تتجاوز الملاحظات 500 حرف"
     },
     "buttons": {
       "cancel": "إلغاء",
       "assign": "تعيين الدور",
-      "assigning": "جاري التعيين..."
+      "assigning": "جاري التعيين…",
+      "updateAssignment": "تحديث التعيين",
+      "updating": "جاري التحديث…"
     },
     "loading": {
-      "users": "جاري تحميل المستخدمين...",
-      "roles": "جاري تحميل الأدوار..."
+      "user-data": "جاري تحميل بيانات تعيين المستخدم",
+      "users": "جاري تحميل المستخدمين…",
+      "roles": "جاري تحميل الأدوار…",
+      "roleData": "جاري تحميل  بيانات الدور…"
     },
+    "currentAssignment": "التعيين الحالي",
+    "current-assignment-role": " معين على الدور ",
+    "currentUser": "الحالي",
     "success": {
-      "assigned": "تم تعيين المستخدم للدور بنجاح"
+      "assigned": "تم تعيين المستخدم إلى الدور بنجاح",
+      "updated": "تم تحديث تعيين الدور بنجاح"
     },
     "error": {
-      "title": "خطأ"
+      "title": "خطأ",
+      "loadFailed": "فشل في تحميل بيانات التعيين الحالية",
+      "editTitle": "خطأ في تحديث تعيين الدور"
     },
-    "noResults": "لم يتم العثور على مستخدمين مطابقين لبحثك",
-    "noUsers": "لا توجد مستخدمين متاحين",
-    "charactersCount": "حرف"
+    "noResults": "لم يتم العثور على مستخدمين مطابقين للبحث",
+    "noUsers": "لا توجد مستخدمين",
+    "charactersCount": "أحرف"
+  },
+
+  "gettingData": {
+    "user-data": "جاري تحميل بيانات تعيين المستخدم",
+    "users": "جاري تحميل المستخدمين…",
+    "roles": "جاري تحميل الأدوار…",
+    "roleData": "جاري تحميل بيانات الدور…",
+    "categories": "جاري تحميل التخصصات",
+    "categoryData": "جاري تحميل بيانات التخصص",
+    "departments": "جاري تحميل الأقسام…",
+    "departmentData": "جاري تحميل بيانات القسم…",
+    "subDepartments": "جاري تحميل الأقسام الفرعية…",
+    "subDepartmentData": "جاري تحميل بيانات القسم الفرعي…",
+    "shiftHours": "جاري تحميل ورديات العمل…",
+    "shiftHourData": "جاري تحميل بيانات الوردية…",
+    "contractingTypes": "جاري تحميل أنواع التعاقد…",
+    "contractingTypeData": "جاري تحميل بيانات نوع التعاقد…",
+    "scientificDegrees": "جاري تحميل الدرجات العلمية…",
+    "scientificDegreeData": "جاري تحميل بيانات الدرجة العلمية…"
   }
 }

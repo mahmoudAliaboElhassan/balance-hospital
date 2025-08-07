@@ -153,14 +153,14 @@ function ManagementRoles() {
     }
   }, [success, dispatch]);
 
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-      dispatch(clearError());
-    }
-  }, [error, dispatch]);
+  // useEffect(() => {
+  //   if (error) {
+  //     toast.error(error);
+  //     dispatch(clearError());
+  //   }
+  // }, [error, dispatch]);
 
-  // Handle search with debounce
+  // Handle search wi th debounce
   const handleSearchChange = useCallback(
     (value) => {
       setSearchInput(value);
@@ -236,20 +236,21 @@ function ManagementRoles() {
 
     toast.info(t("managementRoles.delete.checking"));
 
-    const result = dispatch(checkCanDeleteRole(role.id));
-    console.log("result", result);
-    if (result.payload?.canDelete || result.payload?.success) {
-      setToDelete({
-        id: role.id,
-        name: language === "en" ? role.roleNameEn : role.roleNameAr,
+    dispatch(checkCanDeleteRole(role.id))
+      .unwrap()
+      .then((data) => {
+        console.log("data", data.canDelete.data);
+        const canDelete = data.canDelete.data;
+        if (canDelete.canDelete) {
+          setToDelete({
+            id: role.id,
+            name: language === "en" ? role.roleNameEn : role.roleNameAr,
+          });
+          setModalOpen(true);
+        } else {
+          toast.error(canDelete.reason);
+        }
       });
-      setModalOpen(true);
-    } else {
-      toast.error(
-        t("managementRoles.delete.cannotDelete") ||
-          "This role cannot be deleted as it is assigned to users or is a system role"
-      );
-    }
   };
 
   // Handle activate/deactivate
@@ -791,7 +792,7 @@ function ManagementRoles() {
                       isDark ? "text-gray-400" : "text-gray-600"
                     }`}
                   >
-                    {t("managementRoles.loading") || "Loading..."}
+                    {t("gettingData.roles") || "Loading..."}
                   </span>
                 </div>
               </div>
@@ -903,7 +904,7 @@ function ManagementRoles() {
                               isDark ? "text-gray-400" : "text-gray-600"
                             }`}
                           >
-                            {t("managementRoles.loading") || "Loading..."}
+                            {t("gettingData.roles") || "Loading..."}
                           </span>
                         </div>
                       </td>
@@ -1117,7 +1118,7 @@ function ManagementRoles() {
                               isDark ? "text-gray-400" : "text-gray-600"
                             }`}
                           >
-                            {t("managementRoles.loading") || "Loading..."}
+                            {t("gettingData.roles") || "Loading..."}
                           </span>
                         </div>
                       </td>

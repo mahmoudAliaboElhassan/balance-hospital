@@ -570,7 +570,7 @@ function SubDepartment() {
                       isDark ? "text-gray-400" : "text-gray-600"
                     }`}
                   >
-                    {t("subDepartment.loading")}
+                    {t("gettingData.subDepartments")}
                   </span>
                 </div>
               </div>
@@ -704,7 +704,7 @@ function SubDepartment() {
                               isDark ? "text-gray-400" : "text-gray-600"
                             }`}
                           >
-                            {t("subDepartment.loading")}
+                            {t("gettingData.subDepartments")}
                           </span>
                         </div>
                       </td>
@@ -921,7 +921,7 @@ function SubDepartment() {
                               isDark ? "text-gray-400" : "text-gray-600"
                             }`}
                           >
-                            {t("subDepartment.loading")}
+                            {t("gettingData.subDepartments")}
                           </span>
                         </div>
                       </td>

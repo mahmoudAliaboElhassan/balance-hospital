@@ -103,7 +103,7 @@ function SpecificScientificDegree() {
   };
 
   if (loadingGetSingleScientificDegree) {
-    return <LoadingGetData />;
+    return <LoadingGetData text={t("gettingData.scientificDegreeData")} />;
   }
 
   if (singleScientificDegreeError) {

@@ -146,7 +146,8 @@ function SpecificShiftHoursType() {
     }
   };
 
-  if (loadingGetSingleShiftHoursType) return <LoadingGetData />;
+  if (loadingGetSingleShiftHoursType)
+    return <LoadingGetData text={t("gettingData.shiftHourData")} />;
 
   if (singleShiftHoursTypeError) {
     return (

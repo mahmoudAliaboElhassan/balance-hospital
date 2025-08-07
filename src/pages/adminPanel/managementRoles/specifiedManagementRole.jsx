@@ -23,9 +23,14 @@ import {
   BarChart3,
   History,
   AlertTriangle,
+  Search,
+  Phone,
+  UserCheck,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
-// Import actions
+// Import actions - ADD getRoleUsers to the imports
 import {
   getManagementRoleById,
   getRolePermissions,
@@ -36,9 +41,11 @@ import {
   deactivateRole,
   cloneRole,
   checkCanDeleteRole,
+  getRoleUsers, // ADD THIS IMPORT
+  removeRoleFromUser, // ADD THIS IMPORT
 } from "../../../state/act/actManagementRole";
 
-// Import slice actions and selectors
+// Import slice actions and selectors - ADD new selectors
 import {
   clearError,
   clearSuccess,
@@ -50,11 +57,13 @@ import {
   selectRolePermissions,
   selectAssignmentHistory,
   selectCanDeleteStatus,
+  selectRoleUsers, // ADD THIS
+  selectRoleUsersPagination, // ADD THIS
 } from "../../../state/slices/managementRole.js";
 
 import DeleteRoleModal from "../../../components/DeleteRoleModal";
 import LoadingGetData from "../../../components/LoadingGetData.jsx";
-// import RoleFormModal from "../../../components/RoleFormModal";
+import DeleteUserFromRoleModal from "../../../components/DeleteUserFromRoleModal"; // ADD THIS IMPORT
 
 function SpecifiedManagementRole() {
   const { t, i18n } = useTranslation();
@@ -71,8 +80,8 @@ function SpecifiedManagementRole() {
   const permissions = useSelector(selectRolePermissions);
   const assignmentHistory = useSelector(selectAssignmentHistory);
   const canDeleteStatus = useSelector(selectCanDeleteStatus);
-
-  console.log("assignmentHistory", assignmentHistory);
+  const roleUsers = useSelector(selectRoleUsers); // ADD THIS
+  const roleUsersPagination = useSelector(selectRoleUsersPagination); // ADD THIS
 
   const { mymode } = useSelector((state) => state.mode);
 
@@ -81,6 +90,20 @@ function SpecifiedManagementRole() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [toDelete, setToDelete] = useState({ id: null, name: "" });
+
+  // ADD: Delete user modal state
+  const [showDeleteUserModal, setShowDeleteUserModal] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+
+  // ADD: Users tab state
+  const [usersSearchTerm, setUsersSearchTerm] = useState("");
+  const [usersFilters, setUsersFilters] = useState({
+    isActive: "",
+    sortBy: 0, // NameArabic = 0
+    sortDirection: 0, // Asc = 0
+    page: 1,
+    pageSize: 10,
+  });
 
   // Theme and language
   const isDark = mymode === "dark";
@@ -96,6 +119,21 @@ function SpecifiedManagementRole() {
       dispatch(getRoleAssignmentHistory(id));
     }
   }, [dispatch, id]);
+
+  // ADD: Load users when users tab is active
+  useEffect(() => {
+    if (id && activeTab === "users") {
+      dispatch(
+        getRoleUsers({
+          id,
+          params: {
+            search: usersSearchTerm,
+            ...usersFilters,
+          },
+        })
+      );
+    }
+  }, [dispatch, id, activeTab, usersSearchTerm, usersFilters]);
 
   // Handle success/error messages
   useEffect(() => {
@@ -120,12 +158,12 @@ function SpecifiedManagementRole() {
     }
   }, [success, dispatch, id, navigate]);
 
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-      dispatch(clearError());
-    }
-  }, [error, dispatch]);
+  // useEffect(() => {
+  //   if (error) {
+  //     toast.error(error);
+  //     dispatch(clearError());
+  //   }
+  // }, [error, dispatch]);
 
   // Format date
   const formatDate = (dateString) => {
@@ -141,24 +179,29 @@ function SpecifiedManagementRole() {
   };
 
   // Handle delete confirmation
-  const handleDeleteClick = async () => {
-    if (!currentRole) return;
 
+  const handleDeleteClick = async () => {
     // Check if role can be deleted
-    const result = await dispatch(checkCanDeleteRole(currentRole.id));
-    if (result.payload?.canDelete || result.payload?.success) {
-      setToDelete({
-        id: currentRole.id,
-        name:
-          language === "en" ? currentRole.roleNameEn : currentRole.roleNameAr,
+
+    toast.info(t("managementRoles.delete.checking"));
+
+    dispatch(checkCanDeleteRole(currentRole.id))
+      .unwrap()
+      .then((data) => {
+        const canDelete = data.canDelete.data;
+        if (canDelete.canDelete) {
+          setToDelete({
+            id: currentRole.id,
+            name:
+              language === "en"
+                ? currentRole.roleNameEn
+                : currentRole.roleNameAr,
+          });
+          setShowDeleteModal(true);
+        } else {
+          toast.error(canDelete.reason);
+        }
       });
-      setShowDeleteModal(true);
-    } else {
-      toast.error(
-        t("managementRoles.delete.cannotDelete") ||
-          "This role cannot be deleted as it is assigned to users or is a system role"
-      );
-    }
   };
 
   // Handle activate/deactivate
@@ -182,6 +225,47 @@ function SpecifiedManagementRole() {
         newRoleNameAr: `${currentRole.roleNameAr} (نسخة)`,
       })
     );
+  };
+
+  // ADD: Users search and pagination handlers
+  const handleUsersSearch = (searchTerm) => {
+    setUsersSearchTerm(searchTerm);
+    setUsersFilters((prev) => ({ ...prev, page: 1 }));
+  };
+
+  const handleUsersPageChange = (newPage) => {
+    setUsersFilters((prev) => ({ ...prev, page: newPage }));
+  };
+
+  const handleUsersSortChange = (sortBy, sortDirection) => {
+    setUsersFilters((prev) => ({
+      ...prev,
+      sortBy,
+      sortDirection,
+      page: 1,
+    }));
+  };
+
+  // ADD: Handle delete user from role
+  const handleDeleteUserFromRole = (user) => {
+    setUserToDelete(user);
+    setShowDeleteUserModal(true);
+  };
+
+  // ADD: Handle successful user removal (refresh users list)
+  const handleUserRemovalSuccess = () => {
+    // Refresh users list
+    dispatch(
+      getRoleUsers({
+        id,
+        params: {
+          search: usersSearchTerm,
+          ...usersFilters,
+        },
+      })
+    );
+    // Refresh role data to update user count
+    dispatch(getManagementRoleById(id));
   };
 
   // Permission groups for display
@@ -283,7 +367,7 @@ function SpecifiedManagementRole() {
   ];
 
   if (loading.details) {
-    return <LoadingGetData />;
+    return <LoadingGetData text={t("loading.roleData")} />;
   }
 
   if (!currentRole) {
@@ -334,12 +418,17 @@ function SpecifiedManagementRole() {
         role={currentRole}
       />
 
-      {/* <RoleFormModal
-        isOpen={showEditModal}
-        onClose={() => setShowEditModal(false)}
-        mode="edit"
-        roleData={currentRole}
-      /> */}
+      {/* ADD: Delete User From Role Modal */}
+      <DeleteUserFromRoleModal
+        isOpen={showDeleteUserModal}
+        onClose={() => {
+          setShowDeleteUserModal(false);
+          setUserToDelete(null);
+        }}
+        user={userToDelete}
+        role={currentRole}
+        onSuccess={handleUserRemovalSuccess}
+      />
 
       <div className="p-4 sm:p-6">
         <div className="max-w-7xl mx-auto">
@@ -450,13 +539,13 @@ function SpecifiedManagementRole() {
                 <span className="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
                   <Users size={14} className="inline mr-1" />
                   {currentRole.usersCount}{" "}
-                  {t("managementRoles.users") || "Users"}
+                  {t("managementRoles.users.users") || "Users"}
                 </span>
               )}
             </div>
           </div>
 
-          {/* Statistics Cards */}
+          {/* Statistics Cards - keeping existing code */}
           {analytics && (
             <>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -581,315 +670,10 @@ function SpecifiedManagementRole() {
                   </div>
                 </div>
               </div>
-
-              {/* Assignment vs Removal Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                {/* Recent Activity Breakdown */}
-                <div
-                  className={`p-6 rounded-lg shadow ${
-                    isDark ? "bg-gray-800" : "bg-white"
-                  }`}
-                >
-                  <h3
-                    className={`text-lg font-semibold mb-4 ${
-                      isDark ? "text-white" : "text-gray-900"
-                    }`}
-                  >
-                    {t("managementRoles.analytics.recentActivity") ||
-                      "Recent Activity"}
-                  </h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span
-                        className={`text-sm font-medium ${
-                          isDark ? "text-gray-300" : "text-gray-700"
-                        }`}
-                      >
-                        {t("managementRoles.analytics.assignments") ||
-                          "Assignments"}
-                      </span>
-                      <span className="text-lg font-semibold text-green-600">
-                        +{analytics.RecentAssignments || 0}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span
-                        className={`text-sm font-medium ${
-                          isDark ? "text-gray-300" : "text-gray-700"
-                        }`}
-                      >
-                        {t("managementRoles.analytics.removals") || "Removals"}
-                      </span>
-                      <span className="text-lg font-semibold text-red-600">
-                        -{analytics.RecentRemovals || 0}
-                      </span>
-                    </div>
-                    <div
-                      className={`pt-2 border-t ${
-                        isDark ? "border-gray-700" : "border-gray-200"
-                      }`}
-                    >
-                      <div className="flex justify-between items-center">
-                        <span
-                          className={`text-sm font-semibold ${
-                            isDark ? "text-gray-200" : "text-gray-800"
-                          }`}
-                        >
-                          {t("managementRoles.analytics.netChange") ||
-                            "Net Change"}
-                        </span>
-                        <span
-                          className={`text-lg font-bold ${
-                            analytics.NetChange > 0
-                              ? "text-green-600"
-                              : analytics.NetChange < 0
-                              ? "text-red-600"
-                              : isDark
-                              ? "text-gray-300"
-                              : "text-gray-700"
-                          }`}
-                        >
-                          {analytics.NetChange > 0 ? "+" : ""}
-                          {analytics.NetChange || 0}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Top Assigners */}
-                {analytics.TopAssigners &&
-                  analytics.TopAssigners.length > 0 && (
-                    <div
-                      className={`p-6 rounded-lg shadow ${
-                        isDark ? "bg-gray-800" : "bg-white"
-                      }`}
-                    >
-                      <h3
-                        className={`text-lg font-semibold mb-4 ${
-                          isDark ? "text-white" : "text-gray-900"
-                        }`}
-                      >
-                        {t("managementRoles.analytics.topAssigners") ||
-                          "Top Assigners"}
-                      </h3>
-                      <div className="space-y-3">
-                        {analytics.TopAssigners.slice(0, 3).map(
-                          (assigner, index) => (
-                            <div
-                              key={assigner.userId}
-                              className="flex justify-between items-center"
-                            >
-                              <div>
-                                <p
-                                  className={`text-sm font-medium ${
-                                    isDark ? "text-gray-300" : "text-gray-700"
-                                  }`}
-                                >
-                                  {assigner.userName}
-                                </p>
-                                <p
-                                  className={`text-xs ${
-                                    isDark ? "text-gray-400" : "text-gray-500"
-                                  }`}
-                                >
-                                  {t(
-                                    "managementRoles.analytics.lastAssigned"
-                                  ) || "Last assigned"}
-                                  : {formatDate(assigner.lastAssignmentDate)}
-                                </p>
-                              </div>
-                              <div className="text-right">
-                                <span
-                                  className={`text-lg font-semibold ${
-                                    isDark ? "text-blue-400" : "text-blue-600"
-                                  }`}
-                                >
-                                  {assigner.assignmentCount}
-                                </span>
-                                <p
-                                  className={`text-xs ${
-                                    isDark ? "text-gray-400" : "text-gray-500"
-                                  }`}
-                                >
-                                  {t(
-                                    "managementRoles.analytics.assignments"
-                                  ).toLowerCase() || "assignments"}
-                                </p>
-                              </div>
-                            </div>
-                          )
-                        )}
-                      </div>
-                    </div>
-                  )}
-              </div>
-
-              {/* Change Type Breakdown */}
-              {analytics.ChangeTypeBreakdown &&
-                Object.keys(analytics.ChangeTypeBreakdown).length > 0 && (
-                  <div
-                    className={`p-6 rounded-lg shadow mb-6 ${
-                      isDark ? "bg-gray-800" : "bg-white"
-                    }`}
-                  >
-                    <h3
-                      className={`text-lg font-semibold mb-4 ${
-                        isDark ? "text-white" : "text-gray-900"
-                      }`}
-                    >
-                      {t("managementRoles.analytics.changeTypeBreakdown") ||
-                        "Change Type Breakdown"}
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {Object.entries(analytics.ChangeTypeBreakdown).map(
-                        ([changeType, count]) => (
-                          <div key={changeType} className="text-center">
-                            <div
-                              className={`p-4 rounded-lg ${
-                                changeType === "ASSIGNED"
-                                  ? "bg-green-100 dark:bg-green-900/20"
-                                  : changeType === "REMOVED"
-                                  ? "bg-red-100 dark:bg-red-900/20"
-                                  : "bg-blue-100 dark:bg-blue-900/20"
-                              }`}
-                            >
-                              <p
-                                className={`text-2xl font-bold ${
-                                  changeType === "ASSIGNED"
-                                    ? "text-green-600"
-                                    : changeType === "REMOVED"
-                                    ? "text-red-600"
-                                    : "text-blue-600"
-                                }`}
-                              >
-                                {count}
-                              </p>
-                              <p
-                                className={`text-sm font-medium mt-1 ${
-                                  isDark ? "text-gray-300" : "text-gray-700"
-                                }`}
-                              >
-                                {t(
-                                  `managementRoles.analytics.changeTypes.${changeType}`
-                                ) || changeType.toLowerCase().replace("_", " ")}
-                              </p>
-                            </div>
-                          </div>
-                        )
-                      )}
-                    </div>
-                  </div>
-                )}
-
-              {/* Monthly Trend */}
-              {analytics.MonthlyTrend && analytics.MonthlyTrend.length > 0 && (
-                <div
-                  className={`p-6 rounded-lg shadow mb-6 ${
-                    isDark ? "bg-gray-800" : "bg-white"
-                  }`}
-                >
-                  <h3
-                    className={`text-lg font-semibold mb-4 ${
-                      isDark ? "text-white" : "text-gray-900"
-                    }`}
-                  >
-                    {t("managementRoles.analytics.monthlyTrend") ||
-                      "Monthly Trend"}
-                  </h3>
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full">
-                      <thead>
-                        <tr>
-                          <th
-                            className={`px-4 py-2 text-left text-sm font-medium ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            }`}
-                          >
-                            {t("managementRoles.analytics.period") || "Period"}
-                          </th>
-                          <th
-                            className={`px-4 py-2 text-left text-sm font-medium ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            }`}
-                          >
-                            {t("managementRoles.analytics.assignments") ||
-                              "Assignments"}
-                          </th>
-                          <th
-                            className={`px-4 py-2 text-left text-sm font-medium ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            }`}
-                          >
-                            {t("managementRoles.analytics.removals") ||
-                              "Removals"}
-                          </th>
-                          <th
-                            className={`px-4 py-2 text-left text-sm font-medium ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            }`}
-                          >
-                            {t("managementRoles.analytics.netChange") ||
-                              "Net Change"}
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {analytics.MonthlyTrend.map((trend, index) => {
-                          const netChange =
-                            (trend.assignments || 0) - (trend.removals || 0);
-                          return (
-                            <tr
-                              key={index}
-                              className={`border-b ${
-                                isDark ? "border-gray-700" : "border-gray-200"
-                              }`}
-                            >
-                              <td
-                                className={`px-4 py-2 text-sm ${
-                                  isDark ? "text-gray-300" : "text-gray-900"
-                                }`}
-                              >
-                                {trend.period ||
-                                  trend.month ||
-                                  `Period ${index + 1}`}
-                              </td>
-                              <td
-                                className={`px-4 py-2 text-sm font-semibold text-green-600`}
-                              >
-                                +{trend.assignments || 0}
-                              </td>
-                              <td
-                                className={`px-4 py-2 text-sm font-semibold text-red-600`}
-                              >
-                                -{trend.removals || 0}
-                              </td>
-                              <td
-                                className={`px-4 py-2 text-sm font-semibold ${
-                                  netChange > 0
-                                    ? "text-green-600"
-                                    : netChange < 0
-                                    ? "text-red-600"
-                                    : isDark
-                                    ? "text-gray-300"
-                                    : "text-gray-900"
-                                }`}
-                              >
-                                {netChange > 0 ? "+" : ""}
-                                {netChange}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
             </>
           )}
 
-          {/* Tabs */}
+          {/* Tabs - ADD USERS TAB */}
           <div
             className={`border-b mb-6 ${
               isDark ? "border-gray-700" : "border-gray-200"
@@ -906,6 +690,11 @@ function SpecifiedManagementRole() {
                   key: "permissions",
                   label: t("managementRoles.tabs.permissions") || "Permissions",
                   icon: <Shield size={16} />,
+                },
+                {
+                  key: "users", // ADD THIS TAB
+                  label: t("managementRoles.tabs.users") || "Assigned Users",
+                  icon: <Users size={16} />,
                 },
                 {
                   key: "history",
@@ -938,7 +727,7 @@ function SpecifiedManagementRole() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {activeTab === "overview" && (
               <>
-                {/* Basic Information */}
+                {/* Basic Information - keeping existing code */}
                 <div className="lg:col-span-2">
                   <div
                     className={`rounded-lg shadow border ${
@@ -1015,7 +804,7 @@ function SpecifiedManagementRole() {
                   </div>
                 </div>
 
-                {/* Role Details */}
+                {/* Role Details - keeping existing code */}
                 <div>
                   <div
                     className={`rounded-lg shadow border ${
@@ -1193,6 +982,457 @@ function SpecifiedManagementRole() {
                         </div>
                       ))}
                     </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ADD USERS TAB CONTENT - Use the updated users tab code from artifact above */}
+            {activeTab === "users" && (
+              <div className="lg:col-span-3">
+                <div
+                  className={`rounded-lg shadow border ${
+                    isDark
+                      ? "bg-gray-800 border-gray-700"
+                      : "bg-white border-gray-200"
+                  }`}
+                >
+                  <div className="p-6">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                      <h3
+                        className={`text-lg font-semibold ${
+                          isDark ? "text-white" : "text-gray-900"
+                        }`}
+                      >
+                        {t("managementRoles.tabs.users") || "Assigned Users"}
+                        {roleUsers.length > 0 && (
+                          <span
+                            className={`ml-2 text-sm font-normal ${
+                              isDark ? "text-gray-400" : "text-gray-500"
+                            }`}
+                          >
+                            ({roleUsersPagination.totalCount}{" "}
+                            {t("managementRoles.users.users") || "users"})
+                          </span>
+                        )}
+                      </h3>
+
+                      {/* Search and Filters */}
+                      <div className="flex gap-2 w-full sm:w-auto">
+                        <div className="relative flex-1 sm:w-64">
+                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                          <input
+                            type="text"
+                            placeholder={
+                              t("managementRoles.search.users") ||
+                              "Search users..."
+                            }
+                            value={usersSearchTerm}
+                            onChange={(e) => handleUsersSearch(e.target.value)}
+                            className={`pl-10 pr-4 py-2 w-full rounded-lg border transition-colors ${
+                              isDark
+                                ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400 focus:border-blue-500"
+                                : "border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:border-blue-500"
+                            } focus:outline-none focus:ring-1 focus:ring-blue-500`}
+                          />
+                        </div>
+
+                        <select
+                          value={usersFilters.sortBy}
+                          onChange={(e) =>
+                            handleUsersSortChange(
+                              parseInt(e.target.value),
+                              usersFilters.sortDirection
+                            )
+                          }
+                          className={`px-3 py-2 rounded-lg border transition-colors ${
+                            isDark
+                              ? "border-gray-600 bg-gray-700 text-white focus:border-blue-500"
+                              : "border-gray-300 bg-white text-gray-900 focus:border-blue-500"
+                          } focus:outline-none focus:ring-1 focus:ring-blue-500`}
+                        >
+                          <option value={0}>
+                            {t("managementRoles.filters.sortBy.nameArabic") ||
+                              "Arabic Name"}
+                          </option>
+                          <option value={1}>
+                            {t("managementRoles.filters.sortBy.nameEnglish") ||
+                              "English Name"}
+                          </option>
+                          <option value={2}>
+                            {t("managementRoles.filters.sortBy.mobile") ||
+                              "Mobile"}
+                          </option>
+                          <option value={3}>
+                            {t(
+                              "managementRoles.filters.sortBy.primaryCategory"
+                            ) || "Primary Category"}
+                          </option>
+                        </select>
+
+                        <select
+                          value={usersFilters.sortDirection}
+                          onChange={(e) =>
+                            handleUsersSortChange(
+                              usersFilters.sortBy,
+                              parseInt(e.target.value)
+                            )
+                          }
+                          className={`px-3 py-2 rounded-lg border transition-colors ${
+                            isDark
+                              ? "border-gray-600 bg-gray-700 text-white focus:border-blue-500"
+                              : "border-gray-300 bg-white text-gray-900 focus:border-blue-500"
+                          } focus:outline-none focus:ring-1 focus:ring-blue-500`}
+                        >
+                          <option value={0}>
+                            {t("managementRoles.filters.ascending") ||
+                              "Ascending"}
+                          </option>
+                          <option value={1}>
+                            {t("managementRoles.filters.descending") ||
+                              "Descending"}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {loading.roleUsers ? (
+                      <div className="text-center py-8">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                        <p
+                          className={`mt-2 ${
+                            isDark ? "text-gray-400" : "text-gray-600"
+                          }`}
+                        >
+                          {t("managementRoles.loadingUsers") ||
+                            "Loading users..."}
+                        </p>
+                      </div>
+                    ) : roleUsers && roleUsers.length > 0 ? (
+                      <>
+                        {/* Users Table */}
+                        <div className="overflow-x-auto">
+                          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead
+                              className={isDark ? "bg-gray-700" : "bg-gray-50"}
+                            >
+                              <tr>
+                                <th
+                                  className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                                    isDark ? "text-gray-300" : "text-gray-500"
+                                  }`}
+                                >
+                                  {t("managementRoles.table.users") || "User"}
+                                </th>
+                                <th
+                                  className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                                    isDark ? "text-gray-300" : "text-gray-500"
+                                  }`}
+                                >
+                                  {t("managementRoles.table.mobile") ||
+                                    "Mobile"}
+                                </th>
+                                <th
+                                  className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                                    isDark ? "text-gray-300" : "text-gray-500"
+                                  }`}
+                                >
+                                  {t("managementRoles.table.category") ||
+                                    "Primary Category"}
+                                </th>
+                                <th
+                                  className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                                    isDark ? "text-gray-300" : "text-gray-500"
+                                  }`}
+                                >
+                                  {t("managementRoles.table.role") || "Role"}
+                                </th>
+                                <th
+                                  className={`px-6 py-3 text-center text-xs font-medium uppercase tracking-wider ${
+                                    isDark ? "text-gray-300" : "text-gray-500"
+                                  }`}
+                                >
+                                  {t("managementRoles.table.actions") ||
+                                    "Actions"}
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody
+                              className={`divide-y ${
+                                isDark
+                                  ? "bg-gray-800 divide-gray-700"
+                                  : "bg-white divide-gray-200"
+                              }`}
+                            >
+                              {roleUsers.map((user) => (
+                                <tr
+                                  key={user.id}
+                                  className="hover:bg-gray-50 dark:hover:bg-gray-700"
+                                >
+                                  <td className="px-6 py-4 whitespace-nowrap">
+                                    <div className="flex items-center">
+                                      <div
+                                        className={`flex-shrink-0 h-10 w-10 ${
+                                          isDark ? "bg-gray-600" : "bg-gray-200"
+                                        } rounded-full flex items-center justify-center`}
+                                      >
+                                        <User className="h-5 w-5 text-gray-500" />
+                                      </div>
+                                      <div className="ml-4">
+                                        <div
+                                          className={`text-sm font-medium ${
+                                            isDark
+                                              ? "text-white"
+                                              : "text-gray-900"
+                                          }`}
+                                        >
+                                          {language === "ar"
+                                            ? user.nameArabic
+                                            : user.nameEnglish}
+                                        </div>
+                                        <div
+                                          className={`text-sm ${
+                                            isDark
+                                              ? "text-gray-400"
+                                              : "text-gray-500"
+                                          }`}
+                                        >
+                                          ID: {user.id}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap">
+                                    <div className="flex items-center">
+                                      <Phone className="h-4 w-4 text-gray-400 mr-2" />
+                                      <span
+                                        className={`text-sm ${
+                                          isDark
+                                            ? "text-gray-300"
+                                            : "text-gray-900"
+                                        }`}
+                                      >
+                                        {user.mobile}
+                                      </span>
+                                    </div>
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap">
+                                    <span
+                                      className={`text-sm ${
+                                        isDark
+                                          ? "text-gray-300"
+                                          : "text-gray-900"
+                                      }`}
+                                    >
+                                      {language === "ar"
+                                        ? user.primaryCategoryNameAr
+                                        : user.primaryCategoryNameEn}
+                                    </span>
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap">
+                                    <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                                      {user.role}
+                                    </span>
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                                    <div className="flex gap-2 justify-center">
+                                      <Link
+                                        to={`/admin-panel/management-roles/edit-assign-user-to-role/${user.id}`}
+                                      >
+                                        <button
+                                          className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors cursor-pointer"
+                                          title={
+                                            t("managementRoles.actions.edit") ||
+                                            "Edit"
+                                          }
+                                        >
+                                          <Edit size={16} />
+                                        </button>
+                                      </Link>
+                                      <button
+                                        onClick={() =>
+                                          handleDeleteUserFromRole(user)
+                                        }
+                                        className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors cursor-pointer"
+                                        title={
+                                          t(
+                                            "managementRoles.users.removeUser"
+                                          ) || "Remove User from Role"
+                                        }
+                                      >
+                                        <Trash2 size={16} />
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+
+                        {/* Pagination - keeping existing code */}
+                        {roleUsersPagination.totalPages > 1 && (
+                          <div className="flex items-center justify-between px-6 py-3 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+                            <div className="flex-1 flex justify-between sm:hidden">
+                              <button
+                                onClick={() =>
+                                  handleUsersPageChange(usersFilters.page - 1)
+                                }
+                                disabled={!roleUsersPagination.hasPreviousPage}
+                                className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
+                                  !roleUsersPagination.hasPreviousPage
+                                    ? "text-gray-400 cursor-not-allowed"
+                                    : "text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                                }`}
+                              >
+                                {t("managementRoles.pagination.previous") ||
+                                  "Previous"}
+                              </button>
+                              <button
+                                onClick={() =>
+                                  handleUsersPageChange(usersFilters.page + 1)
+                                }
+                                disabled={!roleUsersPagination.hasNextPage}
+                                className={`ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
+                                  !roleUsersPagination.hasNextPage
+                                    ? "text-gray-400 cursor-not-allowed"
+                                    : "text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                                }`}
+                              >
+                                {t("managementRoles.pagination.next") || "Next"}
+                              </button>
+                            </div>
+                            <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                              <div>
+                                <p
+                                  className={`text-sm ${
+                                    isDark ? "text-gray-400" : "text-gray-700"
+                                  }`}
+                                >
+                                  {t("managementRoles.pagination.showing")}{" "}
+                                  <span className="font-medium">
+                                    {roleUsersPagination.startIndex ||
+                                      (usersFilters.page - 1) *
+                                        usersFilters.pageSize +
+                                        1}
+                                  </span>{" "}
+                                  {t("managementRoles.pagination.to")}{" "}
+                                  <span className="font-medium">
+                                    {roleUsersPagination.endIndex ||
+                                      Math.min(
+                                        usersFilters.page *
+                                          usersFilters.pageSize,
+                                        roleUsersPagination.totalCount
+                                      )}
+                                  </span>{" "}
+                                  {t("managementRoles.pagination.of")}{" "}
+                                  <span className="font-medium">
+                                    {roleUsersPagination.totalCount}
+                                  </span>{" "}
+                                  {t("managementRoles.pagination.results")}
+                                </p>
+                              </div>
+                              <div>
+                                <nav
+                                  className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+                                  aria-label="Pagination"
+                                >
+                                  <button
+                                    onClick={() =>
+                                      handleUsersPageChange(
+                                        usersFilters.page - 1
+                                      )
+                                    }
+                                    disabled={
+                                      !roleUsersPagination.hasPreviousPage
+                                    }
+                                    className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 text-sm font-medium ${
+                                      !roleUsersPagination.hasPreviousPage
+                                        ? "text-gray-400 cursor-not-allowed"
+                                        : "text-gray-500 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                                    }`}
+                                  >
+                                    <ChevronLeft className="h-5 w-5" />
+                                  </button>
+
+                                  {Array.from(
+                                    {
+                                      length: Math.min(
+                                        5,
+                                        roleUsersPagination.totalPages
+                                      ),
+                                    },
+                                    (_, i) => {
+                                      const pageNum = usersFilters.page - 2 + i;
+                                      if (
+                                        pageNum < 1 ||
+                                        pageNum > roleUsersPagination.totalPages
+                                      )
+                                        return null;
+                                      return (
+                                        <button
+                                          key={pageNum}
+                                          onClick={() =>
+                                            handleUsersPageChange(pageNum)
+                                          }
+                                          className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                                            pageNum === usersFilters.page
+                                              ? "z-10 bg-blue-50 border-blue-500 text-blue-600 dark:bg-blue-900 dark:text-blue-300"
+                                              : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                                          }`}
+                                        >
+                                          {pageNum}
+                                        </button>
+                                      );
+                                    }
+                                  )}
+
+                                  <button
+                                    onClick={() =>
+                                      handleUsersPageChange(
+                                        usersFilters.page + 1
+                                      )
+                                    }
+                                    disabled={!roleUsersPagination.hasNextPage}
+                                    className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 text-sm font-medium ${
+                                      !roleUsersPagination.hasNextPage
+                                        ? "text-gray-400 cursor-not-allowed"
+                                        : "text-gray-500 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                                    }`}
+                                  >
+                                    <ChevronRight className="h-5 w-5" />
+                                  </button>
+                                </nav>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div className="text-center py-8">
+                        <UserCheck
+                          className={`mx-auto h-12 w-12 mb-4 ${
+                            isDark ? "text-gray-400" : "text-gray-500"
+                          }`}
+                        />
+                        <p
+                          className={`text-lg font-medium mb-2 ${
+                            isDark ? "text-white" : "text-gray-900"
+                          }`}
+                        >
+                          {t("managementRoles.users.noUsers") ||
+                            "No Users Assigned"}
+                        </p>
+                        <p
+                          className={`${
+                            isDark ? "text-gray-400" : "text-gray-500"
+                          }`}
+                        >
+                          {t("managementRoles.users.noUsersDescription") ||
+                            "This role has not been assigned to any users yet."}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

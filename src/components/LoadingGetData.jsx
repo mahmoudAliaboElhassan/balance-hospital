@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-function LoadingGetData() {
+function LoadingGetData({ text }) {
   const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-6">
@@ -18,7 +18,7 @@ function LoadingGetData() {
             ></div>
           </div>
           <p className="text-center mt-4 text-gray-600 dark:text-gray-300 text-lg font-medium">
-            {t("loading")}
+            {text ? text : t("loading")}
           </p>
         </div>
       </div>

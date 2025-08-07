@@ -28,7 +28,7 @@
       "match": "Passwords must match",
       "confirmRequired": "Please confirm your password"
     },
-    "tokenRequired": "Token is required"
+    "tokenRequired": "Verification Code is required"
   },
   "reset_password": "Reset Password",
   "choose_method": "Choose how you'd like to reset your password",
@@ -1195,11 +1195,12 @@
     "title": "Management Roles",
     "loading-specific": "Loading role data...",
     "deleteSuccess": "Management Role \"{{name}}\" deleted successfully!",
-    "users": "users",
 
     "search": {
-      "placeholder": "Search roles..."
+      "placeholder": "Search roles...",
+      "users": "Search users..."
     },
+
     "filters": {
       "title": "Filters",
       "status": "Status",
@@ -1213,15 +1214,19 @@
       "sortBy": {
         "createdAt": "Created Date",
         "nameArabic": "Arabic Name",
-        "nameEnglish": "English Name"
+        "nameEnglish": "English Name",
+        "mobile": "Mobile",
+        "primaryCategory": "Primary Category"
       }
     },
+
     "stats": {
       "total": "Total Roles",
       "active": "Active Roles",
       "system": "System Roles",
       "custom": "Custom Roles"
     },
+
     "actions": {
       "addNew": "Add New Role",
       "add": "Add",
@@ -1234,14 +1239,17 @@
       "activate": "Activate",
       "deactivate": "Deactivate"
     },
+
     "status": {
       "active": "Active",
       "inactive": "Inactive"
     },
+
     "type": {
       "system": "System",
       "custom": "Custom"
     },
+
     "table": {
       "nameArabic": "Arabic Name",
       "nameEnglish": "English Name",
@@ -1250,19 +1258,31 @@
       "type": "Type",
       "status": "Status",
       "users": "Users",
+      "mobile": "Mobile",
+      "category": "Primary Category",
+      "role": "Role",
       "createdAt": "Created At",
       "updatedAt": "Updated At",
       "createdBy": "Created By",
       "updatedBy": "Updated By",
-
       "actions": "Actions"
     },
+
     "loading": "Loading...",
+    "loadingUsers": "Loading users...",
     "noData": "No roles found",
+
     "pagination": {
       "itemsPerPage": "items per page",
-      "displayRange": "Showing {{start}}–{{end}} of {{total}} results"
+      "displayRange": "Showing {{start}}–{{end}} of {{total}} results",
+      "previous": "Previous",
+      "next": "Next",
+      "showing": "Showing",
+      "to": "to",
+      "of": "of",
+      "results": "results"
     },
+
     "delete": {
       "title": "Delete Role",
       "checking": "Checking if role can be deleted, please wait...",
@@ -1277,24 +1297,29 @@
       "systemRoleWarning": "Warning: This is a system role. Deleting it may affect system functionality.",
       "assignedUsersWarning": "Warning: This role is currently assigned to users. They will lose these permissions."
     },
+
     "notFound": "Role Not Found",
     "notFoundDescription": "The requested role could not be found.",
     "backToList": "Back to Roles",
-    "loadingHistory": "Loading history...",
+
     "overview": {
       "basicInfo": "Basic Information",
       "details": "Role Details"
     },
+
     "form": {
       "roleNameAr": "Arabic Name",
       "roleNameEn": "English Name",
       "description": "Description"
     },
+
     "tabs": {
       "overview": "Overview",
       "permissions": "Permissions",
-      "history": "Assignment History"
+      "history": "Assignment History",
+      "users": "Assigned Users"
     },
+
     "analytics": {
       "activeUsers": "Active Users",
       "recentAssignments": "Recent Assignments",
@@ -1315,17 +1340,43 @@
         "TRANSFERRED": "Transferred"
       }
     },
+
     "history": {
       "reason": "Reason",
       "by": "by",
       "notes": "Notes",
       "noHistory": "No Assignment History",
       "noHistoryDescription": "This role has not been assigned to any users yet.",
-
       "assigned": "Role Assigned: {{roleName}}",
       "removed": "Role Removed: {{roleName}}",
       "modified": "Role Changed: {{oldRoleName}} → {{newRoleName}}"
     },
+
+    "users": {
+      "noUsers": "No Users Assigned",
+      "users": "Users",
+
+      "delete": {
+        "title": "Remove User from Role",
+        "confirmMessage": "Are you sure you want to remove this user from the role? This action cannot be undone.",
+        "reason": "Reason",
+        "reasonPlaceholder": "Please provide a reason for removing this user from the role...",
+        "reasonRequired": "Reason is required",
+        "warning": "Warning: Removing this user from the role will revoke all associated permissions immediately.",
+        "currentRole": "Current Role",
+        "confirm": "Remove User"
+      },
+      "removeSuccess": "User \"{{userName}}\" removed from role \"{{roleName}}\" successfully",
+      "table": {
+        "description": "Description",
+        "usersCount": "Users",
+        "createdAt": "Created",
+        "status": "Status"
+      },
+
+      "noUsersDescription": "This role has not been assigned to any users yet."
+    },
+
     "permissions": {
       "core": "Core Management",
       "manageCategory": "Manage Categories",
@@ -1345,7 +1396,6 @@
       "manageRequests": "Manage Requests"
     }
   },
-
   "displayRange": "Showing {{start}} - {{end}} of {{total}} items",
 
   "managementRoleForm": {
@@ -1420,6 +1470,7 @@
 
   "assignUserRole": {
     "title": "Assign User to Role",
+    "editTitle": "Edit User Role Assignment",
     "sections": {
       "assignmentInfo": "Assignment Information"
     },
@@ -1446,20 +1497,48 @@
     "buttons": {
       "cancel": "Cancel",
       "assign": "Assign Role",
-      "assigning": "Assigning..."
+      "assigning": "Assigning...",
+      "updateAssignment": "Update Assignment",
+      "updating": "Updating..."
     },
     "loading": {
+      "user-data": "Loading assignment User data...",
       "users": "Loading users...",
       "roles": "Loading roles..."
     },
+    "currentAssignment": "Current Assignment",
+    "current-assignment-role": " is assigned the role ",
+    "currentUser": "Current",
     "success": {
-      "assigned": "User has been successfully assigned to the role"
+      "assigned": "User has been successfully assigned to the role",
+      "updated": "User role assignment has been successfully updated"
     },
     "error": {
-      "title": "Error"
+      "title": "Error",
+      "loadFailed": "Failed to load current assignment data",
+      "editTitle": "Error updating role assignment"
     },
     "noResults": "No users found matching your search",
     "noUsers": "No users available",
     "charactersCount": "characters"
+  },
+
+  "gettingData": {
+    "user-data": "Loading user assignment data",
+    "users": "Loading users…",
+    "roles": "Loading roles…",
+    "roleData": "Loading role data…",
+    "categories": "Loading categories…",
+    "categoryData": "Loading category data…",
+    "departments": "Loading departments…",
+    "departmentData": "Loading department data…",
+    "subDepartments": "Loading sub-departments…",
+    "subDepartmentData": "Loading sub-department data…",
+    "shiftHours": "Loading shift hours…",
+    "shiftHourData": "Loading shift hour data…",
+    "contractingTypes": "Loading contracting types…",
+    "contractingTypeData": "Loading contracting type data…",
+    "scientificDegrees": "Loading scientific degrees…",
+    "scientificDegreeData": "Loading scientific degree data…"
   }
 }

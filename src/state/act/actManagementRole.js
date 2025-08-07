@@ -176,17 +176,16 @@ export const assignRoleToUser = createAsyncThunk(
 // Remove Role from User
 export const removeRoleFromUser = createAsyncThunk(
   "managementRolesSlice/removeRoleFromUser",
-  async ({ roleId, userId }, thunkAPI) => {
+  async ({ removeReason, userId }, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
 
     try {
       const res = await axiosInstance.delete(
-        `/api/v1/management-roles/remove-from-user/${userId}`,
+        `/api/v1/management-roles/remove-from-user/${userId}?removeReason=${removeReason}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          data: { roleId },
         }
       );
       console.log("Role removed from user successfully:", res);
@@ -491,6 +490,47 @@ export const checkRoleNameUnique = createAsyncThunk(
       return res.data;
     } catch (error) {
       console.log("Error checking role name uniqueness:", error);
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+// Add this action to your existing actManagementRole.js file
+
+// Get Role Users with Query Parameters
+export const getRoleUsers = createAsyncThunk(
+  "managementRolesSlice/getRoleUsers",
+  async ({ id, params = {} }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+
+    try {
+      const queryParams = new URLSearchParams();
+
+      // Add parameters if they exist
+      if (params.search) queryParams.append("search", params.search);
+      if (params.isActive !== undefined)
+        queryParams.append("isActive", params.isActive);
+      if (params.page) queryParams.append("page", params.page);
+      if (params.pageSize) queryParams.append("pageSize", params.pageSize);
+      if (params.sortBy !== undefined)
+        queryParams.append("sortBy", params.sortBy);
+      if (params.sortDirection !== undefined)
+        queryParams.append("sortDirection", params.sortDirection);
+
+      // Construct the URL with query parameters
+      const url = `/api/v1/management-roles/${id}/users${
+        queryParams.toString() ? `?${queryParams.toString()}` : ""
+      }`;
+
+      const res = await axiosInstance.get(url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      console.log("Role users fetched successfully:", res);
+      return res.data;
+    } catch (error) {
+      console.log("Error fetching role users:", error);
       return rejectWithValue(error.response?.data || error.message);
     }
   }

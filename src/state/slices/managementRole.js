@@ -14,6 +14,7 @@ import {
   getRecentChanges,
   activateRole,
   deactivateRole,
+  getRoleUsers,
   cloneRole,
   getRoleAnalytics,
   getRolePermissions,
@@ -24,6 +25,16 @@ import {
 // Initial State
 const initialState = {
   roles: [],
+  roleUsers: [], // Add this
+  roleUsersPagination: {
+    // Add this
+    totalCount: 0,
+    pageNumber: 1,
+    pageSize: 10,
+    totalPages: 0,
+    hasNextPage: false,
+    hasPreviousPage: false,
+  },
   currentRole: "",
   statistics: "",
   recentChanges: [],
@@ -48,6 +59,8 @@ const initialState = {
     create: false,
     update: false,
     delete: false,
+    roleUsers: false, // Add this
+
     assign: false,
     statistics: false,
     history: false,
@@ -532,6 +545,31 @@ const managementRolesSlice = createSlice({
           action.payload?.messageEn ||
           action.payload ||
           "Failed to check name uniqueness";
+      })
+      .addCase(getRoleUsers.pending, (state) => {
+        state.loading.roleUsers = true;
+        state.error = "";
+      })
+      .addCase(getRoleUsers.fulfilled, (state, action) => {
+        state.loading.roleUsers = false;
+        if (action.payload.success) {
+          state.roleUsers = action.payload.data?.items || [];
+          state.roleUsersPagination = {
+            totalCount: action.payload.data?.totalCount || 0,
+            pageNumber: action.payload.data?.page || 1,
+            pageSize: action.payload.data?.pageSize || 10,
+            totalPages: action.payload.data?.totalPages || 0,
+            hasNextPage: action.payload.data?.hasNext || false,
+            hasPreviousPage: action.payload.data?.hasPrevious || false,
+          };
+        }
+      })
+      .addCase(getRoleUsers.rejected, (state, action) => {
+        state.loading.roleUsers = false;
+        state.error =
+          action.payload?.messageEn ||
+          action.payload ||
+          "Failed to fetch role users";
       });
   },
 });
@@ -572,5 +610,7 @@ export const selectError = (state) => state.managementRoles.error;
 export const selectSuccess = (state) => state.managementRoles.success;
 export const selectFilters = (state) => state.managementRoles.filters;
 export const selectPagination = (state) => state.managementRoles.pagination;
-
+export const selectRoleUsers = (state) => state.managementRoles.roleUsers;
+export const selectRoleUsersPagination = (state) =>
+  state.managementRoles.roleUsersPagination;
 export default managementRolesSlice.reducer;

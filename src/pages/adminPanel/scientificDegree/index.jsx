@@ -649,7 +649,7 @@ function ScientificDegrees() {
                       isDark ? "text-gray-400" : "text-gray-600"
                     }`}
                   >
-                    {t("scientificDegrees.loading")}
+                    {t("gettingData.scientificDegrees")}
                   </span>
                 </div>
               </div>
@@ -739,7 +739,7 @@ function ScientificDegrees() {
                               isDark ? "text-gray-400" : "text-gray-600"
                             }`}
                           >
-                            {t("scientificDegrees.loading")}
+                            {t("gettingData.scientificDegrees")}
                           </span>
                         </div>
                       </td>

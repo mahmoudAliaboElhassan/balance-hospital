@@ -47,6 +47,7 @@ import SpecifiedManagementRole from "../pages/adminPanel/managementRoles/specifi
 import CreateManagementRole from "../pages/adminPanel/managementRoles/createManagementRole";
 import EditManagementRole from "../pages/adminPanel/managementRoles/editManagementRole";
 import AssignUserToRole from "../pages/adminPanel/managementRoles/assignUser";
+import EditAssignUserToRole from "../pages/adminPanel/managementRoles/editAssignUserToRole";
 
 const router = createBrowserRouter([
   {
@@ -360,14 +361,14 @@ const router = createBrowserRouter([
               </Suspense>
             ),
           },
-          // {
-          //   path: "management-roles/department-heads/assign",
-          //   element: (
-          //     <Suspense fallback={<Loader />}>
-          //       <AssignDepartmentHead />
-          //     </Suspense>
-          //   ),
-          // },
+          {
+            path: "management-roles/edit-assign-user-to-role/:id",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <EditAssignUserToRole />
+              </Suspense>
+            ),
+          },
           // {
           //   path: "management-roles/statistics",
           //   element: (
