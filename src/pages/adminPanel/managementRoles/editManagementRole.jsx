@@ -23,6 +23,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import UseFormValidation from "../../../hooks/use-form-validation";
+import LoadingGetData from "../../../components/LoadingGetData";
 
 function EditManagementRole() {
   const { t, i18n } = useTranslation();
@@ -270,21 +271,7 @@ function EditManagementRole() {
 
   // Loading state
   if (loading.details) {
-    return (
-      <div
-        className={`min-h-screen flex items-center justify-center ${
-          isDark ? "bg-gray-900" : "bg-gray-50"
-        }`}
-        dir={isRTL ? "rtl" : "ltr"}
-      >
-        <div className="flex items-center space-x-3">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <span className={isDark ? "text-gray-300" : "text-gray-600"}>
-            {t("managementRoles.loading-specific") || "Loading role details..."}
-          </span>
-        </div>
-      </div>
-    );
+    return <LoadingGetData text={t("gettingData.roleData")} />;
   }
 
   // Error state or role not found

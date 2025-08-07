@@ -12,6 +12,7 @@ import {
   clearUpdateSuccess,
   resetUpdateForm,
 } from "../../../state/slices/subDepartment";
+import LoadingGetData from "../../../components/LoadingGetData";
 
 function EditSubDepartment() {
   const { t, i18n } = useTranslation();
@@ -134,29 +135,7 @@ function EditSubDepartment() {
 
   // Loading state
   if (loadingGetSingleSubDepartment) {
-    return (
-      <div
-        className={`min-h-screen ${isDark ? "bg-gray-900" : "bg-gray-50"}`}
-        dir={isRTL ? "rtl" : "ltr"}
-      >
-        <div className="p-4 sm:p-6">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center p-8">
-              <div className="flex items-center justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                <span
-                  className={`${isRTL ? "mr-3" : "ml-3"} ${
-                    isDark ? "text-gray-400" : "text-gray-600"
-                  }`}
-                >
-                  {t("subDepartment.loading")}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <LoadingGetData text={t("gettingData.subDepartmentData")} />;
   }
 
   // Error state

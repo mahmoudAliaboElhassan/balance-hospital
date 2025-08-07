@@ -103,7 +103,7 @@ function EditCategory() {
 
   // Show loading state while fetching category
   if (loadingGetSingleCategory) {
-    return <LoadingGetData />;
+    return <LoadingGetData text={t("gettingData.categoryData")} />;
   }
 
   // Show error state if category not found

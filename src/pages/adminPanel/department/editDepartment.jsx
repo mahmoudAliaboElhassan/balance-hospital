@@ -38,7 +38,7 @@ function EditDepartment() {
   }, [dispatch, id]);
 
   if (loadingGetSingleDepartment || loadingGetCategories)
-    return <LoadingGetData />;
+    return <LoadingGetData text={t("gettingData.departmentData")} />;
 
   if (singleDepartmentError)
     return (

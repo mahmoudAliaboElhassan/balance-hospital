@@ -129,7 +129,7 @@ function EditShiftHourType() {
 
   // Handle loading state
   if (loadingGetSingleShiftHoursType) {
-    return <LoadingGetData />;
+    return <LoadingGetData text={t("gettingData.shiftHourData")} />;
   }
 
   // Handle error state

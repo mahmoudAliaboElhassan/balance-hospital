@@ -104,7 +104,8 @@ function EditContractingType() {
     }
   };
 
-  if (loadingGetSingleContractingType) return <LoadingGetData />;
+  if (loadingGetSingleContractingType)
+    return <LoadingGetData text={t("gettingData.contractingTypeData")} />;
 
   if (singleContractingTypeError) {
     return (
