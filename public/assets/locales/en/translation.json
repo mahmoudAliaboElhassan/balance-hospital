@@ -1091,6 +1091,7 @@
       "basicInfo": "Basic Information",
       "createdAt": "Created At",
       "createdBy": "Created By",
+      "updatedBy": "Updated By",
       "updatedAt": "Updated At",
       "timeInfo": "Time Information",
       "timeline": "Timeline",

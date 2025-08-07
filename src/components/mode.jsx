@@ -51,7 +51,7 @@ function Mode() {
       className="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500 dark:focus:ring-gray-400 transition-colors duration-300 cursor-pointer"
       aria-label="Toggle theme"
     >
-      {mymode === "dark" ? (
+      {mymode === "light" ? (
         <SunIcon className="h-5 w-5" />
       ) : (
         <MoonIcon className="h-5 w-5" />
