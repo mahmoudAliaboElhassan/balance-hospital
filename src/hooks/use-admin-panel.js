@@ -12,12 +12,12 @@ function UseAdminPanel() {
       icon: "📂",
       path: "/admin-panel/categories",
     },
-    {
-      id: 2,
-      name: t("adminPanel.pendingDoctorRequests"),
-      icon: "👨‍⚕️", // ← swapped in Lucide icon
-      path: "/admin-panel/category/doctors/pendig-doctors",
-    },
+    // {
+    //   id: 2,
+    //   name: t("adminPanel.pendingDoctorRequests"),
+    //   icon: "👨‍⚕️", // ← swapped in Lucide icon
+    //   path: "/admin-panel/category/doctors/pendig-doctors",
+    // },
     {
       id: 3,
       name: t("adminPanel.departments"),

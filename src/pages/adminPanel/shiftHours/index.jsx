@@ -936,7 +936,7 @@ function ShiftHours() {
                                 isDark ? "text-gray-300" : "text-gray-900"
                               }`}
                             >
-                              {formatHours(shiftHoursType.hours)}h
+                              {formatHours(shiftHoursType.hoursCount)}h
                             </span>
                           </div>
                           <div
