@@ -1236,7 +1236,7 @@ function SpecifiedManagementRole() {
                                   </td>
                                   <td className="px-6 py-4 whitespace-nowrap text-center">
                                     <div className="flex gap-2 justify-center">
-                                      {/* <Link
+                                      <Link
                                         to={`/admin-panel/management-roles/edit-assign-user-to-role/${user.id}`}
                                       >
                                         <button
@@ -1248,7 +1248,7 @@ function SpecifiedManagementRole() {
                                         >
                                           <Edit size={16} />
                                         </button>
-                                      </Link> */}
+                                      </Link>
                                       <button
                                         onClick={() =>
                                           handleDeleteUserFromRole(user)

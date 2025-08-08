@@ -535,3 +535,26 @@ export const getRoleUsers = createAsyncThunk(
     }
   }
 );
+
+export const getUserRoleAssignment = createAsyncThunk(
+  "managementRolesSlice/getUserRoleAssignment",
+  async ({ userId }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+
+    try {
+      const res = await axiosInstance.get(
+        `/api/v1/management-roles/user/${userId}/role`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log("User role assignment fetched successfully:", res);
+      return res.data;
+    } catch (error) {
+      console.log("Error fetching user role assignment:", error);
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);

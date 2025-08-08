@@ -1478,6 +1478,9 @@
   "assignUserRole": {
     "title": "تعيين مستخدم إلى دور",
     "editTitle": "تعديل تعيين الدور للمستخدم",
+    "currentRole": "الدور الحالي",
+    "by": "آخر التعيين بواسطة",
+    "lastChanged": "آخر تعديل",
     "sections": {
       "assignmentInfo": "معلومات التعيين"
     },
@@ -1547,6 +1550,7 @@
     "contractingTypes": "جاري تحميل أنواع التعاقد…",
     "contractingTypeData": "جاري تحميل بيانات نوع التعاقد…",
     "scientificDegrees": "جاري تحميل الدرجات العلمية…",
-    "scientificDegreeData": "جاري تحميل بيانات الدرجة العلمية…"
+    "scientificDegreeData": "جاري تحميل بيانات الدرجة العلمية…",
+    "userRole": "جاري تحميل بيانات دور المستخدم…"
   }
 }

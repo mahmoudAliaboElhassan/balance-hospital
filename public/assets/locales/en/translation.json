@@ -1474,6 +1474,10 @@
   "assignUserRole": {
     "title": "Assign User to Role",
     "editTitle": "Edit User Role Assignment",
+    "currentRole": "Current Role",
+    "by": "Last Assign By",
+    "lastChanged": "Last Changed",
+
     "sections": {
       "assignmentInfo": "Assignment Information"
     },
@@ -1542,6 +1546,7 @@
     "contractingTypes": "Loading contracting types…",
     "contractingTypeData": "Loading contracting type data…",
     "scientificDegrees": "Loading scientific degrees…",
-    "scientificDegreeData": "Loading scientific degree data…"
+    "scientificDegreeData": "Loading scientific degree data…",
+    "userRole": "Loading User Role Data data…"
   }
 }

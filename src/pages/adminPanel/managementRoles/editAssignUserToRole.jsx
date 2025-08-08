@@ -12,6 +12,9 @@ import {
   selectLoading as selectRoleLoading,
   selectError as selectRoleError,
   selectSuccess as selectRoleSuccess,
+  selectUserRoleAssignment,
+  selectUserRoleAssignmentLoading,
+  selectUserRoleAssignmentError,
   clearError as clearRoleError,
   clearSuccess as clearRoleSuccess,
 } from "../../../state/slices/managementRole";
@@ -25,7 +28,7 @@ import {
 import {
   assignRoleToUser,
   getAvailableRoles,
-  //   getUserRoleAssignment, // Assuming this action exists to fetch current assignment
+  getUserRoleAssignment,
 } from "../../../state/act/actManagementRole";
 import {
   ArrowLeft,
@@ -34,6 +37,7 @@ import {
   Shield,
   ChevronDown,
   Edit,
+  AlertCircle,
 } from "lucide-react";
 import i18next from "i18next";
 import UseInitialValues from "../../../hooks/use-initial-values";
@@ -56,8 +60,7 @@ function EditAssignUserToRole() {
   const [userSearchTerm, setUserSearchTerm] = useState("");
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [currentAssignment, setCurrentAssignment] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [initialValuesSet, setInitialValuesSet] = useState(false);
 
   // Redux selectors
   const availableRoles = useSelector(selectAvailableRoles);
@@ -65,11 +68,17 @@ function EditAssignUserToRole() {
   const roleError = useSelector(selectRoleError);
   const roleSuccess = useSelector(selectRoleSuccess);
 
+  const userRoleAssignment = useSelector(selectUserRoleAssignment);
+  const userRoleAssignmentLoading = useSelector(
+    selectUserRoleAssignmentLoading
+  );
+  const userRoleAssignmentError = useSelector(selectUserRoleAssignmentError);
+
   const users = useSelector(selectUsers);
   const usersLoading = useSelector(selectUsersLoading);
   const usersError = useSelector(selectUsersError);
 
-  // Initial values - will be updated when current assignment is loaded
+  // Default initial values
   const { INITIAL_VALUES_ASSIGN_USER_TO_ROLE } = UseInitialValues();
 
   // Validation schema using Yup
@@ -79,37 +88,8 @@ function EditAssignUserToRole() {
   useEffect(() => {
     dispatch(getAvailableRoles());
     dispatch(getUserSummaries({ page: 1, pageSize: 50 }));
-
-    // Load current user assignment data
-    // loadCurrentAssignment();
+    dispatch(getUserRoleAssignment({ userId }));
   }, [dispatch, userId]);
-
-  // Load current assignment data
-  //   const loadCurrentAssignment = async () => {
-  //     try {
-  //       setLoading(true);
-  //       // Assuming you have an action to get user role assignment by userId
-  //       const response = await dispatch(getUserRoleAssignment(userId)).unwrap();
-  //       setCurrentAssignment(response);
-
-  //       // Set selected user data
-  //       if (response.user) {
-  //         setSelectedUser(response.user);
-  //         setUserSearchTerm(
-  //           `${response.user.nameEnglish} (${response.user.mobile})`
-  //         );
-  //       }
-  //     } catch (error) {
-  //       console.error("Failed to load current assignment:", error);
-  //       toast.error(
-  //         t("assignUserRole.error.loadFailed") ||
-  //           "Failed to load current assignment data"
-  //       );
-  //       navigate("/admin-panel/management-roles");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
 
   // Handle user search with debouncing
   useEffect(() => {
@@ -129,6 +109,17 @@ function EditAssignUserToRole() {
 
     return () => clearTimeout(delayDebounceFn);
   }, [userSearchTerm, dispatch]);
+
+  // Set initial user when role assignment data is loaded
+  useEffect(() => {
+    if (userRoleAssignment && users.length > 0) {
+      const user = users.find((u) => u.id === userId);
+      if (user) {
+        setSelectedUser(user);
+        setUserSearchTerm(`${user.nameEnglish} (${user.mobile})`);
+      }
+    }
+  }, [userRoleAssignment, users, userId]);
 
   // Handle success
   useEffect(() => {
@@ -209,7 +200,6 @@ function EditAssignUserToRole() {
           navigate("/admin-panel/management-roles");
         });
 
-      // Success is handled in useEffect
       resetForm();
     } catch (error) {
       console.error("Role assignment update error:", error);
@@ -245,29 +235,99 @@ function EditAssignUserToRole() {
     );
   });
 
-  // Prepare initial values with current assignment data
-  //   const getInitialValues = () => {
-  //     if (currentAssignment) {
-  //       return {
-  //         userId: currentAssignment.user?.id || userId,
-  //         roleId: currentAssignment.roleId || "",
-  //         changeReason: "", // New reason for the change
-  //         notes: currentAssignment.notes || "",
-  //       };
-  //     }
-  //     return {
-  //       ...INITIAL_VALUES_ASSIGN_USER_TO_ROLE,
-  //       userId: userId, // Pre-fill with userId from params
-  //     };
-  //   };
+  // Get initial values with current assignment data
+  const getInitialValues = () => {
+    if (userRoleAssignment) {
+      return {
+        userId: userId,
+        roleId: userRoleAssignment.roleId || "",
+        changeReason: "",
+        notes: userRoleAssignment.notes || "",
+      };
+    }
+    return {
+      ...INITIAL_VALUES_ASSIGN_USER_TO_ROLE,
+      userId: userId,
+    };
+  };
 
-  if (loading) {
+  // Show loading if still fetching initial data
+  if (
+    userRoleAssignmentLoading ||
+    (roleLoading.list && availableRoles.length === 0)
+  ) {
     return (
       <LoadingGetData
-        text={
-          t("assignUserRole.loading.user-data") || "Loading assignment data..."
-        }
+        text={t("gettingData.userRole") || "Loading user role data..."}
       />
+    );
+  }
+
+  // Handle error loading user role assignment
+  if (userRoleAssignmentError) {
+    return (
+      <div
+        className={`min-h-screen ${isDark ? "bg-gray-900" : "bg-gray-50"}`}
+        dir={isRTL ? "rtl" : "ltr"}
+      >
+        <div className="p-4 sm:p-6">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center gap-4 mb-6">
+              <button
+                onClick={() => navigate("/admin-panel/management-roles")}
+                className={`p-2 rounded-lg border transition-colors ${
+                  isDark
+                    ? "border-gray-600 hover:bg-gray-700 text-gray-300"
+                    : "border-gray-300 hover:bg-gray-50 text-gray-700"
+                }`}
+              >
+                <ArrowLeft size={20} />
+              </button>
+            </div>
+
+            <div
+              className={`rounded-lg shadow border p-6 ${
+                isDark
+                  ? "bg-gray-800 border-gray-700"
+                  : "bg-white border-gray-200"
+              }`}
+            >
+              <div className="text-center">
+                <AlertCircle
+                  className={`mx-auto h-12 w-12 ${
+                    isDark ? "text-red-400" : "text-red-500"
+                  }`}
+                />
+                <h3
+                  className={`mt-4 text-lg font-medium ${
+                    isDark ? "text-white" : "text-gray-900"
+                  }`}
+                >
+                  {t("assignUserRole.error.loadTitle") ||
+                    "Failed to Load User Data"}
+                </h3>
+                <p
+                  className={`mt-2 text-sm ${
+                    isDark ? "text-gray-400" : "text-gray-500"
+                  }`}
+                >
+                  {userRoleAssignmentError ||
+                    t("assignUserRole.error.loadMessage") ||
+                    "Unable to load user role assignment data"}
+                </p>
+                <div className="mt-6">
+                  <button
+                    onClick={() => navigate("/admin-panel/management-roles")}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                  >
+                    {t("common.goBack") || "Go Back"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     );
   }
 
@@ -314,7 +374,7 @@ function EditAssignUserToRole() {
             </div>
 
             {/* Current Assignment Info */}
-            {currentAssignment && (
+            {userRoleAssignment && userRoleAssignment.roleId && (
               <div
                 className={`p-4 rounded-lg border-l-4 border-blue-500 ${
                   isDark ? "bg-blue-900/20" : "bg-blue-50"
@@ -335,29 +395,68 @@ function EditAssignUserToRole() {
                       "Current Assignment"}
                   </span>
                 </div>
-                <p
+                <div
                   className={`text-sm ${
                     isDark ? "text-blue-200" : "text-blue-700"
                   }`}
                 >
-                  <strong>{currentAssignment.user?.nameEnglish}</strong> is
-                  {t("assignUserRole.current-assignment-role")}{" "}
-                  <strong>
-                    {currentLang === "ar"
-                      ? currentAssignment.role?.roleNameAr
-                      : currentAssignment.role?.roleNameEn}
-                  </strong>
-                  {currentAssignment.assignedDate && (
-                    <span>
-                      {" "}
-                      since{" "}
+                  <p>
+                    <strong>
+                      {t("assignUserRole.currentRole") || "Current Role"}:
+                    </strong>{" "}
+                    {userRoleAssignment.roleName}
+                  </p>
+                  {userRoleAssignment.lastChangedAt && (
+                    <p className="mt-1">
+                      <strong>
+                        {t("assignUserRole.lastChanged") || "Last Changed"}:
+                      </strong>{" "}
                       {new Date(
-                        currentAssignment.assignedDate
+                        userRoleAssignment.lastChangedAt
                       ).toLocaleDateString(
                         currentLang === "ar" ? "ar-EG" : "en-US"
                       )}
-                    </span>
+                      {userRoleAssignment.lastChangedByName && (
+                        <div>
+                          {" "}
+                          {t("assignUserRole.by") || "by"}{" "}
+                          {userRoleAssignment.lastChangedByName}
+                        </div>
+                      )}
+                    </p>
                   )}
+                </div>
+              </div>
+            )}
+
+            {/* No current assignment info */}
+            {userRoleAssignment && !userRoleAssignment.roleId && (
+              <div
+                className={`p-4 rounded-lg border-l-4 border-yellow-500 ${
+                  isDark ? "bg-yellow-900/20" : "bg-yellow-50"
+                }`}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <AlertCircle
+                    className={`w-4 h-4 ${
+                      isDark ? "text-yellow-400" : "text-yellow-600"
+                    }`}
+                  />
+                  <span
+                    className={`text-sm font-medium ${
+                      isDark ? "text-yellow-300" : "text-yellow-800"
+                    }`}
+                  >
+                    {t("assignUserRole.noCurrentRole") || "No Current Role"}
+                  </span>
+                </div>
+                <p
+                  className={`text-sm ${
+                    isDark ? "text-yellow-200" : "text-yellow-700"
+                  }`}
+                >
+                  {t("assignUserRole.noCurrentRoleMessage") ||
+                    "This user does not currently have a management role assigned."}
                 </p>
               </div>
             )}
@@ -373,7 +472,7 @@ function EditAssignUserToRole() {
           >
             <div className="p-6">
               <Formik
-                // initialValues={getInitialValues()}
+                initialValues={getInitialValues()}
                 validationSchema={VALIDATION_SCHEMA_ASSIGN_USER_TO_ROLE}
                 onSubmit={handleSubmit}
                 enableReinitialize
@@ -429,311 +528,73 @@ function EditAssignUserToRole() {
                           "Update Assignment Information"}
                       </h3>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* User Selection - Show current user but allow change */}
-                        <div className="space-y-2">
-                          <label
-                            className={`block text-sm font-medium ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            }`}
-                          >
-                            {t("assignUserRole.fields.selectUser") ||
-                              "Select User"}{" "}
-                            <span className="text-red-500">*</span>
-                          </label>
-                          <div className="relative" ref={dropdownRef}>
-                            <div className="relative">
-                              <input
-                                type="text"
-                                value={userSearchTerm}
-                                onChange={(e) =>
-                                  handleUserSearchChange(e, setFieldValue)
-                                }
-                                onFocus={() => setShowUserDropdown(true)}
-                                placeholder={
-                                  t(
-                                    "assignUserRole.placeholders.searchUsers"
-                                  ) ||
-                                  "Search users by name, mobile, or role..."
-                                }
-                                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                                  isRTL ? "pr-10" : "pl-10"
-                                } ${
-                                  isDark
-                                    ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
-                                    : "bg-white border-gray-300 text-gray-900 placeholder-gray-400"
-                                } ${
-                                  errors.userId && touched.userId
-                                    ? "border-red-500 bg-red-50 dark:bg-red-900/20"
-                                    : ""
-                                }`}
-                                autoComplete="off"
-                              />
-                              <div
-                                className={`absolute top-2.5 ${
-                                  isRTL ? "right-3" : "left-3"
-                                }`}
-                              >
-                                <Search
-                                  size={16}
-                                  className={
-                                    isDark ? "text-gray-400" : "text-gray-500"
-                                  }
-                                />
-                              </div>
-
-                              {/* Loading indicator for user search */}
-                              {usersLoading.list && (
-                                <div
-                                  className={`absolute top-2.5 ${
-                                    isRTL ? "left-3" : "right-3"
-                                  }`}
-                                >
-                                  <svg
-                                    className="animate-spin h-5 w-5 text-gray-400"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <circle
-                                      className="opacity-25"
-                                      cx="12"
-                                      cy="12"
-                                      r="10"
-                                      stroke="currentColor"
-                                      strokeWidth="4"
-                                    ></circle>
-                                    <path
-                                      className="opacity-75"
-                                      fill="currentColor"
-                                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                    ></path>
-                                  </svg>
-                                </div>
-                              )}
-                            </div>
-
-                            <ErrorMessage
-                              name="userId"
-                              component="div"
-                              className="mt-1 text-sm text-red-600"
-                            />
-
-                            {/* User Dropdown */}
-                            {showUserDropdown && (
-                              <div
-                                className={`absolute z-20 w-full mt-1 border rounded-md shadow-lg max-h-60 overflow-auto ${
-                                  isDark
-                                    ? "bg-gray-700 border-gray-600"
-                                    : "bg-white border-gray-300"
-                                }`}
-                              >
-                                {usersLoading.list ? (
-                                  <div
-                                    className={`p-4 text-center ${
-                                      isDark ? "text-gray-400" : "text-gray-500"
-                                    }`}
-                                  >
-                                    <svg
-                                      className="animate-spin mx-auto h-6 w-6 text-gray-400"
-                                      fill="none"
-                                      viewBox="0 0 24 24"
-                                    >
-                                      <circle
-                                        className="opacity-25"
-                                        cx="12"
-                                        cy="12"
-                                        r="10"
-                                        stroke="currentColor"
-                                        strokeWidth="4"
-                                      ></circle>
-                                      <path
-                                        className="opacity-75"
-                                        fill="currentColor"
-                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                      ></path>
-                                    </svg>
-                                    <p className="mt-2">
-                                      {t("assignUserRole.loading.users") ||
-                                        "Loading users..."}
-                                    </p>
-                                  </div>
-                                ) : filteredUsers.length > 0 ? (
-                                  filteredUsers.map((user) => (
-                                    <div
-                                      key={user.id}
-                                      onClick={() =>
-                                        handleUserSelect(user, setFieldValue)
-                                      }
-                                      className={`p-3 cursor-pointer border-b last:border-b-0 transition-colors ${
-                                        user.id === values.userId
-                                          ? isDark
-                                            ? "bg-blue-900/30 border-blue-700"
-                                            : "bg-blue-50 border-blue-200"
-                                          : isDark
-                                          ? "hover:bg-gray-600 border-gray-600"
-                                          : "hover:bg-gray-50 border-gray-100"
-                                      }`}
-                                    >
-                                      <div className="flex items-center gap-3">
-                                        <div
-                                          className={`p-1.5 rounded-full ${
-                                            user.id === values.userId
-                                              ? isDark
-                                                ? "bg-blue-800"
-                                                : "bg-blue-200"
-                                              : isDark
-                                              ? "bg-gray-600"
-                                              : "bg-gray-100"
-                                          }`}
-                                        >
-                                          <User
-                                            size={14}
-                                            className={
-                                              user.id === values.userId
-                                                ? isDark
-                                                  ? "text-blue-300"
-                                                  : "text-blue-700"
-                                                : isDark
-                                                ? "text-gray-400"
-                                                : "text-gray-500"
-                                            }
-                                          />
-                                        </div>
-                                        <div>
-                                          <div
-                                            className={`text-sm font-medium ${
-                                              user.id === values.userId
-                                                ? isDark
-                                                  ? "text-blue-300"
-                                                  : "text-blue-700"
-                                                : isDark
-                                                ? "text-white"
-                                                : "text-gray-900"
-                                            }`}
-                                          >
-                                            {user.nameEnglish}
-                                            {user.id === values.userId && (
-                                              <span
-                                                className={`ml-2 text-xs px-1.5 py-0.5 rounded ${
-                                                  isDark
-                                                    ? "bg-blue-800 text-blue-200"
-                                                    : "bg-blue-100 text-blue-600"
-                                                }`}
-                                              >
-                                                {t(
-                                                  "assignUserRole.currentUser"
-                                                ) || "Current"}
-                                              </span>
-                                            )}
-                                          </div>
-                                          <div
-                                            className={`text-xs mt-1 ${
-                                              isDark
-                                                ? "text-gray-400"
-                                                : "text-gray-500"
-                                            }`}
-                                          >
-                                            {user.nameArabic &&
-                                              `${user.nameArabic} • `}
-                                            {user.mobile} • {user.role}
-                                          </div>
-                                          {user.primaryCategoryNameEn && (
-                                            <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-                                              {user.primaryCategoryNameEn}
-                                            </div>
-                                          )}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  ))
-                                ) : (
-                                  <div
-                                    className={`p-4 text-center ${
-                                      isDark ? "text-gray-400" : "text-gray-500"
-                                    }`}
-                                  >
-                                    {userSearchTerm
-                                      ? t("assignUserRole.noResults") ||
-                                        "No users found matching your search"
-                                      : t("assignUserRole.noUsers") ||
-                                        "No users available"}
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Role Selection */}
-                        <div className="space-y-2">
-                          <label
-                            htmlFor="roleId"
-                            className={`block text-sm font-medium ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            }`}
-                          >
-                            {t("assignUserRole.fields.selectRole") ||
-                              "Select New Role"}{" "}
-                            <span className="text-red-500">*</span>
-                          </label>
-                          <div className="relative">
-                            <Field
-                              as="select"
-                              id="roleId"
-                              name="roleId"
-                              disabled={roleLoading.list}
-                              className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors appearance-none ${
-                                isRTL ? "pr-10" : "pl-3 pr-10"
-                              } ${
-                                isDark
-                                  ? "bg-gray-700 border-gray-600 text-white"
-                                  : "bg-white border-gray-300 text-gray-900"
-                              } ${
-                                errors.roleId && touched.roleId
-                                  ? "border-red-500 bg-red-50 dark:bg-red-900/20"
-                                  : ""
-                              }`}
-                            >
-                              <option value="">
-                                {roleLoading.list
-                                  ? t("assignUserRole.loading.roles") ||
-                                    "Loading roles..."
-                                  : t(
-                                      "assignUserRole.placeholders.selectRole"
-                                    ) || "Select a new role..."}
-                              </option>
-                              {availableRoles.map((role) => (
-                                <option key={role.id} value={role.id}>
-                                  {i18next.language === "en"
-                                    ? role.roleNameEn
-                                    : role.roleNameAr}
-                                  {currentAssignment?.roleId === role.id &&
-                                    ` (${
-                                      t("assignUserRole.currentRole") ||
-                                      "Current"
-                                    })`}
-                                </option>
-                              ))}
-                            </Field>
-                            <div
-                              className={`absolute top-2.5 pointer-events-none ${
-                                isRTL ? "left-3" : "right-3"
-                              }`}
-                            >
-                              <ChevronDown
-                                size={16}
-                                className={
-                                  isDark ? "text-gray-400" : "text-gray-500"
-                                }
-                              />
-                            </div>
-                          </div>
-                          <ErrorMessage
+                      {/* Role Selection */}
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="roleId"
+                          className={`block text-sm font-medium ${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          }`}
+                        >
+                          {t("assignUserRole.fields.selectRole") ||
+                            "Select New Role"}{" "}
+                          <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative">
+                          <Field
+                            as="select"
+                            id="roleId"
                             name="roleId"
-                            component="div"
-                            className="mt-1 text-sm text-red-600"
-                          />
+                            disabled={roleLoading.list}
+                            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors appearance-none ${
+                              isRTL ? "pr-10" : "pl-3 pr-10"
+                            } ${
+                              isDark
+                                ? "bg-gray-700 border-gray-600 text-white"
+                                : "bg-white border-gray-300 text-gray-900"
+                            } ${
+                              errors.roleId && touched.roleId
+                                ? "border-red-500 bg-red-50 dark:bg-red-900/20"
+                                : ""
+                            }`}
+                          >
+                            <option value="">
+                              {roleLoading.list
+                                ? t("assignUserRole.loading.roles") ||
+                                  "Loading roles..."
+                                : t("assignUserRole.placeholders.selectRole") ||
+                                  "Select a new role..."}
+                            </option>
+                            {availableRoles.map((role) => (
+                              <option key={role.id} value={role.id}>
+                                {i18next.language === "en"
+                                  ? role.roleNameEn
+                                  : role.roleNameAr}
+                                {userRoleAssignment?.roleId === role.id &&
+                                  ` (${
+                                    t("assignUserRole.currentRole") || "Current"
+                                  })`}
+                              </option>
+                            ))}
+                          </Field>
+                          <div
+                            className={`absolute top-2.5 pointer-events-none ${
+                              isRTL ? "left-3" : "right-3"
+                            }`}
+                          >
+                            <ChevronDown
+                              size={16}
+                              className={
+                                isDark ? "text-gray-400" : "text-gray-500"
+                              }
+                            />
+                          </div>
                         </div>
+                        <ErrorMessage
+                          name="roleId"
+                          component="div"
+                          className="mt-1 text-sm text-red-600"
+                        />
                       </div>
 
                       {/* Change Reason */}

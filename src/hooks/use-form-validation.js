@@ -597,10 +597,10 @@ function UseFormValidation() {
       t("assignUserRole.validation.roleRequired") || "Please select a role"
     ),
     changeReason: Yup.string()
-      //   .required(
-      //     t("assignUserRole.validation.changeReasonRequired") ||
-      //       "Change reason is required"
-      //   )
+      .required(
+        t("assignUserRole.validation.changeReasonRequired") ||
+          "Change reason is required"
+      )
       .min(
         3,
         t("assignUserRole.validation.changeReasonMin") ||

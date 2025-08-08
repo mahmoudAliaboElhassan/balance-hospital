@@ -20,12 +20,20 @@ import {
   getRolePermissions,
   checkCanDeleteRole,
   checkRoleNameUnique,
+  getUserRoleAssignment,
 } from "../act/actManagementRole";
 
 // Initial State
 const initialState = {
   roles: [],
   roleUsers: [], // Add this
+
+  userRoleAssignment: {
+    data: null,
+    loading: false,
+    error: null,
+  },
+
   roleUsersPagination: {
     // Add this
     totalCount: 0,
@@ -570,6 +578,21 @@ const managementRolesSlice = createSlice({
           action.payload?.messageEn ||
           action.payload ||
           "Failed to fetch role users";
+      })
+      .addCase(getUserRoleAssignment.pending, (state) => {
+        state.userRoleAssignment.loading = true;
+        state.userRoleAssignment.error = null;
+      })
+      .addCase(getUserRoleAssignment.fulfilled, (state, action) => {
+        state.userRoleAssignment.loading = false;
+        state.userRoleAssignment.data = action.payload.data;
+        state.userRoleAssignment.error = null;
+      })
+      .addCase(getUserRoleAssignment.rejected, (state, action) => {
+        state.userRoleAssignment.loading = false;
+        state.userRoleAssignment.error =
+          action.payload?.message || action.error.message;
+        state.userRoleAssignment.data = null;
       });
   },
 });
@@ -613,4 +636,12 @@ export const selectPagination = (state) => state.managementRoles.pagination;
 export const selectRoleUsers = (state) => state.managementRoles.roleUsers;
 export const selectRoleUsersPagination = (state) =>
   state.managementRoles.roleUsersPagination;
+
+export const selectUserRoleAssignment = (state) =>
+  state.managementRoles.userRoleAssignment.data;
+export const selectUserRoleAssignmentLoading = (state) =>
+  state.managementRoles.userRoleAssignment.loading;
+export const selectUserRoleAssignmentError = (state) =>
+  state.managementRoles.userRoleAssignment.error;
+
 export default managementRolesSlice.reducer;
