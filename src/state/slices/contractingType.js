@@ -8,6 +8,7 @@ import {
   getContractingTypesForSignup,
 } from "../act/actContractingType";
 import i18next from "i18next";
+import "../../translation/i18n";
 
 // Initial state
 const initialState = {

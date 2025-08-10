@@ -1198,7 +1198,7 @@
     "title": "Management Roles",
     "loading-specific": "Loading role data...",
     "deleteSuccess": "Management Role \"{{name}}\" deleted successfully!",
-
+    "fetchError": "Failed to fetch role statistics",
     "search": {
       "placeholder": "Search roles...",
       "users": "Search users..."
@@ -1548,5 +1548,51 @@
     "scientificDegrees": "Loading scientific degrees…",
     "scientificDegreeData": "Loading scientific degree data…",
     "userRole": "Loading User Role Data data…"
+  },
+
+  "error": {
+    "status": "System Status",
+    "status.maintenance": "Under Maintenance",
+    "status.detected": "Error Detected",
+    "technicalDetails": "Technical Details",
+    "404": {
+      "title": "Patient Record Not Found",
+      "message": "The medical record or page you are looking for could not be located in our system."
+    },
+    "500": {
+      "title": "System Health Check Failed",
+      "message": "Our medical system is experiencing technical difficulties. Please try again in a few moments."
+    },
+    "403": {
+      "title": "Access Authorization Required",
+      "message": "You do not have the necessary medical clearance to access this section."
+    },
+    "401": {
+      "title": "Authentication Required",
+      "message": "Please log in to access the medical system."
+    },
+    "network": {
+      "title": "Connection to Medical Network Lost",
+      "message": "Unable to connect to the hospital database. Please check your connection."
+    },
+    "maintenance": {
+      "title": "System Under Maintenance",
+      "message": "Our medical systems are currently being updated to serve you better."
+    },
+    "details": {
+      "errorType": "Error Type",
+      "errorStatus": "Error Status",
+      "httpStatus": "HTTP Status",
+      "statusText": "Status Text",
+      "message": "Message",
+      "name": "Name",
+      "data": "Data",
+      "stackTrace": "Stack Trace"
+    },
+    "actions": {
+      "retry": "Retry Connection",
+      "goBack": "Go Back",
+      "dashboard": "Dashboard"
+    }
   }
 }

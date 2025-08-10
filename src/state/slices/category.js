@@ -11,6 +11,7 @@ import {
   approveDoctorRequest, // Add the new action import
 } from "../act/actCategory";
 import i18next from "i18next";
+import "../../translation/i18n";
 
 const { initialStateCategories } = UseInitialStates();
 

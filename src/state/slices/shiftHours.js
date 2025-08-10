@@ -275,10 +275,7 @@ export const shiftHoursTypeSlice = createSlice({
       .addCase(getShiftHoursTypes.rejected, (state, action) => {
         state.loadingGetShiftHoursTypes = false;
         state.error = {
-          message:
-            action.payload?.messageEn ||
-            action.payload?.messageAr ||
-            i18next.t("shiftHoursTypes.fetchError"),
+          message: i18next.t("shiftHoursTypes.fetchError"),
           errors: action.payload?.errors || [],
           timestamp: new Date().toISOString(),
         };
@@ -304,10 +301,7 @@ export const shiftHoursTypeSlice = createSlice({
         state.loadingGetSingleShiftHoursType = false;
         state.selectedShiftHoursType = null;
         state.singleShiftHoursTypeError = {
-          message:
-            action.payload?.messageEn ||
-            action.payload?.messageAr ||
-            i18next.t("shiftHoursTypes.fetchError"),
+          message: i18next.t("shiftHoursTypes.fetchError"),
           errors: action.payload?.errors || [],
           status: action.payload?.status || 500,
           timestamp: new Date().toISOString(),
@@ -359,10 +353,7 @@ export const shiftHoursTypeSlice = createSlice({
         state.loadingCreateShiftHoursType = false;
         state.createSuccess = false;
         state.createError = {
-          message:
-            action.payload?.messageEn ||
-            action.payload?.messageAr ||
-            i18next.t("shiftHoursTypes.error.createFailed"),
+          message: i18next.t("shiftHoursTypes.error.createFailed"),
           errors: action.payload?.errors || [],
           timestamp: new Date().toISOString(),
         };
@@ -420,10 +411,7 @@ export const shiftHoursTypeSlice = createSlice({
         state.loadingUpdateShiftHoursType = false;
         state.updateSuccess = false;
         state.updateError = {
-          message:
-            action.payload?.messageEn ||
-            action.payload?.messageAr ||
-            i18next.t("shiftHoursTypes.error.updateFailed"),
+          message: i18next.t("shiftHoursTypes.error.updateFailed"),
           errors: action.payload?.errors || [],
           timestamp: new Date().toISOString(),
         };
@@ -483,10 +471,7 @@ export const shiftHoursTypeSlice = createSlice({
         state.loadingDeleteShiftHoursType = false;
         state.deleteSuccess = false;
         state.deleteError = {
-          message:
-            action.payload?.messageEn ||
-            action.payload?.messageAr ||
-            i18next.t("shiftHoursTypes.error.deleteFailed"),
+          message: i18next.t("shiftHoursTypes.error.deleteFailed"),
           errors: action.payload?.errors || [],
           timestamp: new Date().toISOString(),
         };

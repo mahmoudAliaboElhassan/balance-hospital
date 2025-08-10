@@ -22,6 +22,8 @@ import {
   checkRoleNameUnique,
   getUserRoleAssignment,
 } from "../act/actManagementRole";
+import "../../translation/i18n";
+import i18next from "i18next";
 
 // Initial State
 const initialState = {
@@ -165,10 +167,7 @@ const managementRolesSlice = createSlice({
       })
       .addCase(getManagementRoles.rejected, (state, action) => {
         state.loading.list = false;
-        state.error =
-          action.payload?.messageEn ||
-          action.payload ||
-          "Failed to fetch management roles";
+        state.error = "Failed to fetch management roles";
       })
 
       // Get Management Role by ID
@@ -349,10 +348,7 @@ const managementRolesSlice = createSlice({
       })
       .addCase(getAvailableRoles.rejected, (state, action) => {
         state.loading.list = false;
-        state.error =
-          action.payload?.messageEn ||
-          action.payload ||
-          "Failed to fetch available roles";
+        state.error = i18next.t("managementRoles.fetchError");
       })
 
       // Get Role Statistics
@@ -368,10 +364,7 @@ const managementRolesSlice = createSlice({
       })
       .addCase(getRoleStatistics.rejected, (state, action) => {
         state.loading.statistics = false;
-        state.error =
-          action.payload?.messageEn ||
-          action.payload ||
-          "Failed to fetch role statistics";
+        state.error = i18next.t("managementRoles.fetchError");
       })
 
       // Get Recent Changes

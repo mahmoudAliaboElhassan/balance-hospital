@@ -8,6 +8,7 @@ import {
   deleteDepartment,
 } from "../act/actDepartment";
 import i18next from "i18next";
+import "../../translation/i18n";
 
 const { initialStateDepartments } = UseInitialStates();
 

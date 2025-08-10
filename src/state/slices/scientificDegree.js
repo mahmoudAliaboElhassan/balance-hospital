@@ -169,10 +169,7 @@ export const scientificDegreeSlice = createSlice({
         state.scientificDegrees = [];
         state.pagination = null;
         state.error = {
-          message:
-            action.payload?.messageEn ||
-            action.payload?.messageAr ||
-            i18next.t("scientificDegrees.fetchError"),
+          message: i18next.t("scientificDegrees.fetchError"),
           errors: action.payload?.errors || [],
           timestamp: new Date().toISOString(),
         };
