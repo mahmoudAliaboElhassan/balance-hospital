@@ -109,6 +109,7 @@
     }
   },
   "adminPanel": {
+    "dashboard": "لوحة التحكم",
     "categories": "التخصصات",
     "pendingDoctorRequests": "طلبات الأطباء المعلقة",
     "departments": "الأقسام",

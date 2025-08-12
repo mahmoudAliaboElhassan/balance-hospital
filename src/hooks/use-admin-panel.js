@@ -6,18 +6,19 @@ function UseAdminPanel() {
   const { t } = useTranslation();
 
   const adminPanelRoutes = [
+    // {
+    //   id: 0,
+    //   name: t("adminPanel.dashboard"),
+    //   icon: "📊",
+    //   path: "/admin-panel/dashboard",
+    // },
     {
       id: 1,
       name: t("adminPanel.categories"),
       icon: "📂",
       path: "/admin-panel/categories",
     },
-    // {
-    //   id: 2,
-    //   name: t("adminPanel.pendingDoctorRequests"),
-    //   icon: "👨‍⚕️", // ← swapped in Lucide icon
-    //   path: "/admin-panel/category/doctors/pendig-doctors",
-    // },
+
     {
       id: 3,
       name: t("adminPanel.departments"),

@@ -107,6 +107,7 @@
     }
   },
   "adminPanel": {
+    "dashboard": "Dashboard",
     "categories": "Categories",
     "pendingDoctorRequests": "Pending Doctor Requests",
     "departments": "Departments",

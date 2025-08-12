@@ -1,398 +1,273 @@
-import { Suspense } from "react";
+import React, { Suspense, lazy } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import RootLayout from "../pages/rootLayout";
-import ErrorPage from "../pages/error";
 import Loader from "../components/Loader";
-import Home from "../pages/home";
-import Login from "../pages/auth/login";
-import SignUp from "../pages/auth/signup";
-import ForgetPassword from "../pages/auth/forgetPassword";
-import ResetPassword from "../pages/auth/resetPassword";
-import AdminPanel from "../pages/adminPanel";
-import Category from "../pages/adminPanel/category";
-import Department from "../pages/adminPanel/department";
-import CreateCategory from "../pages/adminPanel/category/createCategory";
-import SpecificCategory from "../pages/adminPanel/category/specificCategory";
-import EditCategory from "../pages/adminPanel/category/editCategory";
-import CreateDepartment from "../pages/adminPanel/department/createDepartment";
-import EditDepartment from "../pages/adminPanel/department/editDepartment";
-import SpecificDepartment from "../pages/adminPanel/department/specificDepartment";
-import SubDepartment from "../pages/adminPanel/subDepartment";
-import CreateSubDepartment from "../pages/adminPanel/subDepartment/createSubDepartment";
-import EditSubDepartment from "../pages/adminPanel/subDepartment/editSubDepartment";
-import SpecificSubDepartment from "../pages/adminPanel/subDepartment/specificSubDepartment";
-import PendingDoctorRequests from "../pages/adminPanel/category/pendingDoctors";
-import ContractingTypes from "../pages/adminPanel/contractingTypes";
-import CreateContractingType from "../pages/adminPanel/contractingTypes/createContractingType";
-import EditContractingType from "../pages/adminPanel/contractingTypes/editContractingType";
-import SpecificContractingType from "../pages/adminPanel/contractingTypes/specificContractingType";
-import ScientificDegrees from "../pages/adminPanel/scientificDegree";
-import CreateScientificDegree from "../pages/adminPanel/scientificDegree/createScientificDegree";
-import EditScientificDegree from "../pages/adminPanel/scientificDegree/editScientificDegree";
-import SpecificScientificDegree from "../pages/adminPanel/scientificDegree/specificScientificDegree";
-import ShiftHours from "../pages/adminPanel/shiftHours";
-import CreateShiftHourType from "../pages/adminPanel/shiftHours/createShiftHours";
-import SpecificShiftHoursType from "../pages/adminPanel/shiftHours/specificShiftHours";
-import EditShiftHourType from "../pages/adminPanel/shiftHours/editShiftHours";
-import ManagementRoles from "../pages/adminPanel/managementRoles";
-// import Managers from "../pages/adminPanel/managementRoles/managers";
-// import AssignManager from "../pages/adminPanel/managementRoles/assignManager";
-// import ManagerHistory from "../pages/adminPanel/managementRoles/managerHistory ";
-// import DepartmentHeads from "../pages/adminPanel/managementRoles/departmentHeads";
-import LoginSelection from "../pages/auth/loginRoleSelection";
-import CreateDepartmentSpecificCategory from "../pages/adminPanel/department/createDepartmentSpecificCategory";
-import CreateSpecificSubDepartment from "../pages/adminPanel/subDepartment/createSpecificSubDepartment";
-import CreateSubDepartmentSpecificDepartment from "../pages/adminPanel/subDepartment/createSpecificSubDepartment";
-import SpecifiedManagementRole from "../pages/adminPanel/managementRoles/specifiedManagementRole";
-import CreateManagementRole from "../pages/adminPanel/managementRoles/createManagementRole";
-import EditManagementRole from "../pages/adminPanel/managementRoles/editManagementRole";
-import AssignUserToRole from "../pages/adminPanel/managementRoles/assignUser";
-import EditAssignUserToRole from "../pages/adminPanel/managementRoles/editAssignUserToRole";
+
+// Lazy pages/layouts
+const RootLayout = lazy(() => import("../pages/rootLayout"));
+const ErrorPage = lazy(() => import("../pages/error"));
+
+const Home = lazy(() => import("../pages/home"));
+const Login = lazy(() => import("../pages/auth/login"));
+const SignUp = lazy(() => import("../pages/auth/signup"));
+const ForgetPassword = lazy(() => import("../pages/auth/forgetPassword"));
+const ResetPassword = lazy(() => import("../pages/auth/resetPassword"));
+const LoginSelection = lazy(() => import("../pages/auth/loginRoleSelection"));
+
+const AdminPanel = lazy(() => import("../pages/adminPanel"));
+const Category = lazy(() => import("../pages/adminPanel/category"));
+const CreateCategory = lazy(() =>
+  import("../pages/adminPanel/category/createCategory")
+);
+const SpecificCategory = lazy(() =>
+  import("../pages/adminPanel/category/specificCategory")
+);
+const EditCategory = lazy(() =>
+  import("../pages/adminPanel/category/editCategory")
+);
+const PendingDoctorRequests = lazy(() =>
+  import("../pages/adminPanel/category/pendingDoctors")
+);
+
+const Department = lazy(() => import("../pages/adminPanel/department"));
+const CreateDepartment = lazy(() =>
+  import("../pages/adminPanel/department/createDepartment")
+);
+const EditDepartment = lazy(() =>
+  import("../pages/adminPanel/department/editDepartment")
+);
+const SpecificDepartment = lazy(() =>
+  import("../pages/adminPanel/department/specificDepartment")
+);
+const CreateDepartmentSpecificCategory = lazy(() =>
+  import("../pages/adminPanel/department/createDepartmentSpecificCategory")
+);
+
+const SubDepartment = lazy(() => import("../pages/adminPanel/subDepartment"));
+const CreateSubDepartment = lazy(() =>
+  import("../pages/adminPanel/subDepartment/createSubDepartment")
+);
+const EditSubDepartment = lazy(() =>
+  import("../pages/adminPanel/subDepartment/editSubDepartment")
+);
+const SpecificSubDepartment = lazy(() =>
+  import("../pages/adminPanel/subDepartment/specificSubDepartment")
+);
+const CreateSubDepartmentSpecificDepartment = lazy(() =>
+  import("../pages/adminPanel/subDepartment/createSpecificSubDepartment")
+);
+// If you really need both names pointing to the same file, keep this line as well:
+// const CreateSpecificSubDepartment = lazy(() => import("../pages/adminPanel/subDepartment/createSpecificSubDepartment"));
+
+const ContractingTypes = lazy(() =>
+  import("../pages/adminPanel/contractingTypes")
+);
+const CreateContractingType = lazy(() =>
+  import("../pages/adminPanel/contractingTypes/createContractingType")
+);
+const EditContractingType = lazy(() =>
+  import("../pages/adminPanel/contractingTypes/editContractingType")
+);
+const SpecificContractingType = lazy(() =>
+  import("../pages/adminPanel/contractingTypes/specificContractingType")
+);
+
+const ScientificDegrees = lazy(() =>
+  import("../pages/adminPanel/scientificDegree")
+);
+const CreateScientificDegree = lazy(() =>
+  import("../pages/adminPanel/scientificDegree/createScientificDegree")
+);
+const EditScientificDegree = lazy(() =>
+  import("../pages/adminPanel/scientificDegree/editScientificDegree")
+);
+const SpecificScientificDegree = lazy(() =>
+  import("../pages/adminPanel/scientificDegree/specificScientificDegree")
+);
+
+const ShiftHours = lazy(() => import("../pages/adminPanel/shiftHours"));
+const CreateShiftHourType = lazy(() =>
+  import("../pages/adminPanel/shiftHours/createShiftHours")
+);
+const SpecificShiftHoursType = lazy(() =>
+  import("../pages/adminPanel/shiftHours/specificShiftHours")
+);
+const EditShiftHourType = lazy(() =>
+  import("../pages/adminPanel/shiftHours/editShiftHours")
+);
+
+const ManagementRoles = lazy(() =>
+  import("../pages/adminPanel/managementRoles")
+);
+const SpecifiedManagementRole = lazy(() =>
+  import("../pages/adminPanel/managementRoles/specifiedManagementRole")
+);
+const CreateManagementRole = lazy(() =>
+  import("../pages/adminPanel/managementRoles/createManagementRole")
+);
+const EditManagementRole = lazy(() =>
+  import("../pages/adminPanel/managementRoles/editManagementRole")
+);
+const AssignUserToRole = lazy(() =>
+  import("../pages/adminPanel/managementRoles/assignUser")
+);
+const EditAssignUserToRole = lazy(() =>
+  import("../pages/adminPanel/managementRoles/editAssignUserToRole")
+);
+
+// Helper to wrap lazies with a shared fallback
+const withSuspense = (Comp) => (
+  <Suspense fallback={<Loader />}>
+    <Comp />
+  </Suspense>
+);
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <RootLayout />,
-    errorElement: <ErrorPage />,
+    element: withSuspense(RootLayout),
+    errorElement: withSuspense(ErrorPage),
     children: [
+      { index: true, element: withSuspense(Home) },
+      { path: "login", element: withSuspense(Login) },
+      { path: "role-select", element: withSuspense(LoginSelection) },
+      { path: "signup", element: withSuspense(SignUp) },
+      { path: "forget-password", element: withSuspense(ForgetPassword) },
+      { path: "reset-password", element: withSuspense(ResetPassword) },
+
       {
-        index: true,
-        element: (
-          <Suspense fallback={<Loader />}>
-            <Home />
-          </Suspense>
-        ),
-      },
-      {
-        path: "/login",
-        element: (
-          <Suspense fallback={<Loader />}>
-            <Login />
-          </Suspense>
-        ),
-      },
-      {
-        path: "/role-select",
-        element: (
-          <Suspense fallback={<Loader />}>
-            <LoginSelection />
-          </Suspense>
-        ),
-      },
-      {
-        path: "/signup",
-        element: (
-          <Suspense fallback={<Loader />}>
-            <SignUp />
-          </Suspense>
-        ),
-      },
-      {
-        path: "/forget-password",
-        element: (
-          <Suspense fallback={<Loader />}>
-            <ForgetPassword />
-          </Suspense>
-        ),
-      },
-      {
-        path: "/reset-password",
-        element: (
-          <Suspense fallback={<Loader />}>
-            <ResetPassword />
-          </Suspense>
-        ),
-      },
-      {
-        path: "/admin-panel",
-        element: (
-          <Suspense fallback={<Loader />}>
-            <AdminPanel />
-          </Suspense>
-        ),
+        path: "admin-panel",
+        element: withSuspense(AdminPanel),
         children: [
-          {
-            index: true,
-            element: <Category />,
-          },
-          {
-            path: "categories",
-            element: <Category />,
-          },
-          {
-            path: "category/create",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <CreateCategory />
-              </Suspense>
-            ),
-          },
-          {
-            path: "category/:catId",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <SpecificCategory />
-              </Suspense>
-            ),
-          },
-          {
-            path: "category/edit/:catId",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <EditCategory />
-              </Suspense>
-            ),
-          },
+          { index: true, element: withSuspense(Category) },
+          { path: "categories", element: withSuspense(Category) },
+
+          { path: "category/create", element: withSuspense(CreateCategory) },
+          { path: "category/:catId", element: withSuspense(SpecificCategory) },
+          { path: "category/edit/:catId", element: withSuspense(EditCategory) },
           {
             path: "category/doctors/pendig-doctors",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <PendingDoctorRequests />
-              </Suspense>
-            ),
+            element: withSuspense(PendingDoctorRequests),
           },
-          {
-            path: "departments",
-            element: <Department />,
-          },
+
+          { path: "departments", element: withSuspense(Department) },
           {
             path: "department/create",
-            element: <CreateDepartment />,
+            element: withSuspense(CreateDepartment),
           },
           {
             path: "department/edit/:depId",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <EditDepartment />
-              </Suspense>
-            ),
+            element: withSuspense(EditDepartment),
           },
           {
             path: "department/:depId",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <SpecificDepartment />
-              </Suspense>
-            ),
+            element: withSuspense(SpecificDepartment),
           },
           {
             path: "department/create-specific",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <CreateDepartmentSpecificCategory />
-              </Suspense>
-            ),
+            element: withSuspense(CreateDepartmentSpecificCategory),
           },
+
           {
             path: "sub-department/create-specific",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <CreateSubDepartmentSpecificDepartment />
-              </Suspense>
-            ),
+            element: withSuspense(CreateSubDepartmentSpecificDepartment),
           },
-          {
-            path: "sub-departments",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <SubDepartment />
-              </Suspense>
-            ),
-          },
+          { path: "sub-departments", element: withSuspense(SubDepartment) },
           {
             path: "sub-departments/create",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <CreateSubDepartment />
-              </Suspense>
-            ),
+            element: withSuspense(CreateSubDepartment),
           },
           {
             path: "sub-departments/edit/:id",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <EditSubDepartment />
-              </Suspense>
-            ),
+            element: withSuspense(EditSubDepartment),
           },
           {
             path: "sub-departments/:id",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <SpecificSubDepartment />
-              </Suspense>
-            ),
+            element: withSuspense(SpecificSubDepartment),
           },
 
           {
             path: "contracting-types",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <ContractingTypes />
-              </Suspense>
-            ),
+            element: withSuspense(ContractingTypes),
           },
           {
             path: "contracting-types/create",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <CreateContractingType />
-              </Suspense>
-            ),
+            element: withSuspense(CreateContractingType),
           },
           {
             path: "contracting-types/edit/:id",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <EditContractingType />
-              </Suspense>
-            ),
+            element: withSuspense(EditContractingType),
           },
           {
             path: "contracting-types/:id",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <SpecificContractingType />
-              </Suspense>
-            ),
+            element: withSuspense(SpecificContractingType),
           },
-          // Scientific Degrees routes
+
           {
             path: "scientific-degrees",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <ScientificDegrees />
-              </Suspense>
-            ),
+            element: withSuspense(ScientificDegrees),
           },
           {
             path: "scientific-degrees/create",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <CreateScientificDegree />
-              </Suspense>
-            ),
+            element: withSuspense(CreateScientificDegree),
           },
           {
             path: "scientific-degrees/edit/:id",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <EditScientificDegree />
-              </Suspense>
-            ),
+            element: withSuspense(EditScientificDegree),
           },
           {
             path: "scientific-degrees/:id",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <SpecificScientificDegree />
-              </Suspense>
-            ),
+            element: withSuspense(SpecificScientificDegree),
           },
-          {
-            path: "shift-hours-types",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <ShiftHours />
-              </Suspense>
-            ),
-          },
+
+          { path: "shift-hours-types", element: withSuspense(ShiftHours) },
           {
             path: "shift-hours-types/create",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <CreateShiftHourType />
-              </Suspense>
-            ),
+            element: withSuspense(CreateShiftHourType),
           },
           {
             path: "shift-hours-types/:id",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <SpecificShiftHoursType />
-              </Suspense>
-            ),
+            element: withSuspense(SpecificShiftHoursType),
           },
           {
             path: "shift-hours-types/edit/:id",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <EditShiftHourType />
-              </Suspense>
-            ),
+            element: withSuspense(EditShiftHourType),
           },
-          {
-            path: "management-roles",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <ManagementRoles />
-              </Suspense>
-            ),
-          },
+
+          { path: "management-roles", element: withSuspense(ManagementRoles) },
           {
             path: "management-roles/role/:id",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <SpecifiedManagementRole />
-              </Suspense>
-            ),
+            element: withSuspense(SpecifiedManagementRole),
           },
           {
             path: "management-roles/create",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <CreateManagementRole />
-              </Suspense>
-            ),
+            element: withSuspense(CreateManagementRole),
           },
           {
             path: "management-roles/edit/:id",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <EditManagementRole />
-              </Suspense>
-            ),
+            element: withSuspense(EditManagementRole),
           },
           {
             path: "management-roles/assign-user-to-role",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <AssignUserToRole />
-              </Suspense>
-            ),
+            element: withSuspense(AssignUserToRole),
           },
           {
             path: "management-roles/edit-assign-user-to-role/:id",
-            element: (
-              <Suspense fallback={<Loader />}>
-                <EditAssignUserToRole />
-              </Suspense>
-            ),
+            element: withSuspense(EditAssignUserToRole),
           },
-          // {
-          //   path: "management-roles/statistics",
-          //   element: (
-          //     <Suspense fallback={<Loader />}>
-          //       <RoleStatistics />
-          //     </Suspense>
-          //   ),
-          // },
-          // {
-          //   path: "management-roles/categories-managers",
-          //   element: (
-          //     <Suspense fallback={<Loader />}>
-          //       <CategoriesManagers />
-          //     </Suspense>
-          //   ),
-          // },
+
+          // Future:
+          // { path: "management-roles/statistics", element: withSuspense(RoleStatistics) },
+          // { path: "management-roles/categories-managers", element: withSuspense(CategoriesManagers) },
         ],
       },
     ],
   },
 ]);
 
-const AppRouter = () => {
-  return <RouterProvider router={router} />;
-};
+const AppRouter = () => (
+  <Suspense fallback={<Loader />}>
+    <RouterProvider router={router} />
+  </Suspense>
+);
 
 export default AppRouter;
