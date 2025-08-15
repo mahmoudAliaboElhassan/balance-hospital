@@ -115,7 +115,8 @@
     "managementRoles": "Management Roles",
     "scientificDegrees": "Scientific Degrees",
     "contractTypes": "Contract Types",
-    "shiftHours": "Shift Hours"
+    "shiftHours": "Shift Hours",
+    "roster": "Staff Roster"
   },
   "categories": {
     "title": "Categories",
@@ -1031,6 +1032,10 @@
     "add": "Add",
     "loading": "Loading shift hours types...",
     "noData": "No data available",
+    "yes": "Yes",
+    "no": "No",
+    "overtime": "Overtime",
+    "regular": "Regular",
     "search": {
       "placeholder": "Search..."
     },
@@ -1066,7 +1071,6 @@
       "nameArabic": "Name (Arabic)",
       "nameEnglish": "Name (English)",
       "name": "Name",
-
       "code": "Code",
       "hours": "Hours",
       "period": "Period",
@@ -1105,7 +1109,9 @@
       "period": "Period",
       "hoursCount": "Hours Count",
       "startTime": "Start Time",
-      "endTime": "End Time"
+      "endTime": "End Time",
+      "description": "Description",
+      "isOvertime": "Is OverTime"
     },
     "hours": "hours"
   },
@@ -1142,14 +1148,17 @@
       "period": "Period",
       "hoursCount": "Hours Count",
       "startTime": "Start Time",
+      "description": "Description",
       "endTime": "End Time",
-      "isActive": "Is Active"
+      "isActive": "Is Active",
+      "isOvertime": "Is OverTime"
     },
     "placeholders": {
       "nameArabic": "Enter Arabic name",
       "nameEnglish": "Enter English name",
       "code": "Enter code",
       "period": "Select period",
+      "description": "Write Shift Hour Description",
       "hoursCount": "e.g. 8",
       "startTime": "Select start time",
       "endTime": "Select end time"

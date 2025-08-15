@@ -298,24 +298,74 @@ function CreateShiftHourType() {
               />
             </div>
 
-            {/* Is Active */}
-            <div
-              className={`flex items-center ${isRTL ? "flex-row-reverse" : ""}`}
-            >
-              <Field
-                type="checkbox"
-                id="isActive"
-                name="isActive"
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
+            {/* Description */}
+            <div>
               <label
-                htmlFor="isActive"
-                className={`block text-sm text-gray-700 ${
-                  isRTL ? "ml-2" : "mr-2"
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                {t("shiftHourTypeForm.fields.description")}
+              </label>
+              <Field
+                as="textarea"
+                id="description"
+                name="description"
+                rows="3"
+                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none ${
+                  errors.description && touched.description
+                    ? "border-red-500 bg-red-50"
+                    : "border-gray-300"
+                }`}
+                placeholder={t("shiftHourTypeForm.placeholders.description")}
+              />
+              <ErrorMessage
+                name="description"
+                component="div"
+                className="mt-1 text-sm text-red-600"
+              />
+            </div>
+
+            {/* Checkboxes Container */}
+            <div className="space-y-4">
+              {/* Is Active */}
+              <div
+                className={`flex items-center ${
+                  isRTL ? "flex-row-reverse" : ""
                 }`}
               >
-                {t("shiftHourTypeForm.fields.isActive")}
-              </label>
+                <Field
+                  type="checkbox"
+                  id="isActive"
+                  name="isActive"
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label
+                  htmlFor="isActive"
+                  className={`text-sm text-gray-700 ${isRTL ? "mr-2" : "ml-2"}`}
+                >
+                  {t("shiftHourTypeForm.fields.isActive")}
+                </label>
+              </div>
+
+              {/* Is Overtime */}
+              <div
+                className={`flex items-center ${
+                  isRTL ? "flex-row-reverse" : ""
+                }`}
+              >
+                <Field
+                  type="checkbox"
+                  id="isOvertime"
+                  name="isOvertime"
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label
+                  htmlFor="isOvertime"
+                  className={`text-sm text-gray-700 ${isRTL ? "mr-2" : "ml-2"}`}
+                >
+                  {t("shiftHourTypeForm.fields.isOvertime")}
+                </label>
+              </div>
             </div>
 
             {/* Submit Button */}

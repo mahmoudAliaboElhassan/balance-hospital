@@ -29,6 +29,7 @@ import { Link } from "react-router-dom";
 import LoadingGetData from "../../../components/LoadingGetData";
 import { getShiftHoursTypes } from "../../../state/act/actShiftHours";
 import DeleteShiftHoursTypeModal from "../../../components/DeleteShiftHoursTypeModal";
+import "../../../styles/general.css";
 
 function ShiftHours() {
   const { t, i18n } = useTranslation();

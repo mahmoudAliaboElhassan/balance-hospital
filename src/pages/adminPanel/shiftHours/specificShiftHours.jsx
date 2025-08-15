@@ -26,6 +26,7 @@ import {
   Sunset,
   Timer,
   MapPin,
+  AlertTriangle,
 } from "lucide-react";
 
 function SpecificShiftHoursType() {
@@ -420,7 +421,7 @@ function SpecificShiftHoursType() {
                   </div>
                 </div>
 
-                <div className="md:col-span-2">
+                <div>
                   <label
                     className={`block text-sm font-medium ${
                       isDark ? "text-gray-300" : "text-gray-500"
@@ -451,6 +452,72 @@ function SpecificShiftHoursType() {
                       : t("shiftHoursTypes.status.inactive")}
                   </span>
                 </div>
+
+                <div>
+                  <label
+                    className={`block text-sm font-medium ${
+                      isDark ? "text-gray-300" : "text-gray-500"
+                    } mb-2`}
+                  >
+                    {t("shiftHoursTypes.form.isOvertime")}
+                  </label>
+                  <span
+                    className={`inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full ${
+                      selectedShiftHoursType.isOvertime
+                        ? "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300"
+                        : "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300"
+                    }`}
+                  >
+                    {selectedShiftHoursType.isOvertime ? (
+                      <AlertTriangle
+                        size={14}
+                        className={`${isRTL ? "ml-1" : "mr-1"}`}
+                      />
+                    ) : (
+                      <CheckCircle
+                        size={14}
+                        className={`${isRTL ? "ml-1" : "mr-1"}`}
+                      />
+                    )}
+                    {selectedShiftHoursType.isOvertime
+                      ? t("shiftHoursTypes.overtime")
+                      : t("shiftHoursTypes.regular")}
+                  </span>
+                </div>
+
+                {selectedShiftHoursType.description && (
+                  <div className="md:col-span-2">
+                    <label
+                      className={`block text-sm font-medium ${
+                        isDark ? "text-gray-300" : "text-gray-500"
+                      } mb-2`}
+                    >
+                      {t("shiftHoursTypes.form.description")}
+                    </label>
+                    <div
+                      className={`p-3 ${
+                        isDark ? "bg-gray-700" : "bg-gray-50"
+                      } rounded-lg border ${
+                        isDark ? "border-gray-600" : "border-gray-200"
+                      }`}
+                    >
+                      <div className="flex items-start">
+                        <FileText
+                          className={`h-5 w-5 ${
+                            isDark ? "text-gray-400" : "text-gray-500"
+                          } ${isRTL ? "ml-2" : "mr-2"} mt-0.5 flex-shrink-0`}
+                        />
+                        <p
+                          className={`text-sm ${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          } leading-relaxed`}
+                        >
+                          {selectedShiftHoursType.description}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -681,6 +748,38 @@ function SpecificShiftHoursType() {
                     }`}
                   >
                     {selectedShiftHoursType.period}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 rounded-lg">
+                  <div className="flex items-center">
+                    <AlertTriangle
+                      className={`h-5 w-5 ${
+                        isDark ? "text-orange-400" : "text-orange-600"
+                      } ${isRTL ? "ml-2" : "mr-2"}`}
+                    />
+                    <span
+                      className={`text-sm font-medium ${
+                        isDark ? "text-gray-300" : "text-gray-700"
+                      }`}
+                    >
+                      {t("shiftHoursTypes.form.isOvertime")}
+                    </span>
+                  </div>
+                  <span
+                    className={`text-sm font-bold px-2 py-1 rounded ${
+                      selectedShiftHoursType.isOvertime
+                        ? isDark
+                          ? "bg-orange-900/40 text-orange-300"
+                          : "bg-orange-200 text-orange-800"
+                        : isDark
+                        ? "bg-gray-900/40 text-gray-300"
+                        : "bg-gray-200 text-gray-800"
+                    }`}
+                  >
+                    {selectedShiftHoursType.isOvertime
+                      ? t("shiftHoursTypes.yes")
+                      : t("shiftHoursTypes.no")}
                   </span>
                 </div>
               </div>

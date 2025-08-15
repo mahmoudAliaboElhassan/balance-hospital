@@ -122,7 +122,7 @@ function UseInitialValues() {
     endTime: "",
     isActive: true,
     isOvertime: false,
-    description: "hours",
+    description: "",
   };
 
   const INITIAL_VALUES_ADD_ROLE = {

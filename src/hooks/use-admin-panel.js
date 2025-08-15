@@ -1,5 +1,3 @@
-// hooks/use-admin-panel.js
-import { UserCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 function UseAdminPanel() {
@@ -55,6 +53,12 @@ function UseAdminPanel() {
       name: t("adminPanel.shiftHours"),
       icon: "⏰",
       path: "/admin-panel/shift-hours-types",
+    },
+    {
+      id: 9,
+      name: t("adminPanel.roster"),
+      icon: "🗓️",
+      path: "/admin-panel/roster",
     },
   ];
 

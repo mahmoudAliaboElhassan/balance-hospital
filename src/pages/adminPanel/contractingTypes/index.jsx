@@ -29,6 +29,7 @@ import {
 } from "../../../state/slices/contractingType";
 import { Link } from "react-router-dom";
 import DeleteContractingTypeModal from "../../../components/DeleteContractingType";
+import "../../../styles/general.css";
 
 function ContractingTypes() {
   const { t, i18n } = useTranslation();

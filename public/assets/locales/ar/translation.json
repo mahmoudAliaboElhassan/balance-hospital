@@ -117,7 +117,8 @@
     "managementRoles": "أدوار الإدارة",
     "scientificDegrees": "الدرجات العلمية",
     "contractTypes": "أنواع العقود",
-    "shiftHours": "ساعات المناوبة"
+    "shiftHours": "ساعات المناوبة",
+    "roster": "جدول المناوبات"
   },
   "categories": {
     "title": "التخصصات",
@@ -1036,9 +1037,12 @@
     "title": "أنواع ساعات الدوام",
     "addNew": "إضافة نوع ساعات دوام جديد",
     "add": "إضافة",
-
+    "overtime": "ساعات إضافية",
+    "regular": "دوام عادي",
     "loading": "جاري تحميل أنواع ساعات الدوام...",
     "noData": "لا توجد بيانات",
+    "yes": "نعم",
+    "no": "لا",
     "search": {
       "placeholder": "ابحث..."
     },
@@ -1116,7 +1120,9 @@
       "period": "الفترة",
       "hoursCount": "عدد الساعات",
       "startTime": "وقت البداية",
-      "endTime": "وقت النهاية"
+      "endTime": "وقت النهاية",
+      "isOvertime": "الوقت الإضافي",
+      "description": "الوصف"
     },
     "hours": "ساعة"
   },
@@ -1152,9 +1158,11 @@
       "code": "الرمز",
       "period": "الفترة",
       "hoursCount": "عدد الساعات",
+      "description": "وصف الورديه",
       "startTime": "وقت البدء",
       "endTime": "وقت الانتهاء",
-      "isActive": "نشط"
+      "isActive": "نشط",
+      "isOvertime": "وقت إضافي"
     },
     "placeholders": {
       "nameArabic": "أدخل الاسم بالعربية",
@@ -1162,6 +1170,7 @@
       "code": "أدخل الرمز",
       "period": "اختر الفترة",
       "hoursCount": "مثلاً 8",
+      "description": "أدخل وصف الورديه",
       "startTime": "اختر وقت البدء",
       "endTime": "اختر وقت الانتهاء"
     },
