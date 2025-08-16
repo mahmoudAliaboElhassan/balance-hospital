@@ -1,11 +1,16 @@
 import { Outlet } from "react-router-dom";
 import Header from "../../components/Header";
-import { useSelector } from "react-redux";
-import { ToastContainer } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { toast, ToastContainer } from "react-toastify";
+import { useEffect } from "react";
+import { logOut } from "../../state/slices/auth";
 
 function RootLayout() {
   const { mymode } = useSelector((state) => state.mode);
+  const { expiresAt } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   console.log("Current mode:", mymode);
+
   // Define color schemes for light and dark modes
   const colorSchemes = {
     light: {
@@ -52,6 +57,67 @@ function RootLayout() {
     "--color-header-bg": currentTheme.headerBg,
     "--color-footer-bg": currentTheme.footerBg,
   };
+
+  useEffect(() => {
+    if (!expiresAt) {
+      console.log("No expiration time found");
+      return;
+    }
+
+    const checkTokenExpiration = () => {
+      const currentTime = new Date();
+      const expirationTime = new Date(expiresAt);
+
+      // Format times for logging
+      const currentTimeFormatted = currentTime.toISOString();
+      const expirationTimeFormatted = expirationTime.toISOString();
+
+      console.log("🕒 Token Expiration Check:");
+      console.log("  Current Time:    ", currentTimeFormatted);
+      console.log("  Expiration Time: ", expirationTimeFormatted);
+      console.log(
+        "  Time Difference: ",
+        Math.round((expirationTime - currentTime) / 1000),
+        "seconds"
+      );
+
+      // Check if token has expired
+      if (currentTime >= expirationTime) {
+        console.log("❌ Token has expired, logging out user");
+
+        // Show notification to user
+        toast.error(t("session-expired"), {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+
+        // Dispatch logout action
+        dispatch(logOut());
+      } else {
+        const timeUntilExpiry = Math.round(
+          (expirationTime - currentTime) / 1000
+        );
+
+        console.log("✅ Token is still valid for", timeUntilExpiry, "seconds");
+      }
+    };
+
+    // Check immediately
+    checkTokenExpiration();
+
+    // Set up interval to check every minute
+    const intervalId = setInterval(checkTokenExpiration, 6000); // Check every 60 seconds
+
+    // Cleanup interval on component unmount or expiresAt change
+    return () => {
+      console.log("🧹 Cleaning up token expiration check interval");
+      clearInterval(intervalId);
+    };
+  }, [expiresAt, dispatch]);
 
   return (
     <div

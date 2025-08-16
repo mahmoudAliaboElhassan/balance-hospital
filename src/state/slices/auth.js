@@ -15,8 +15,11 @@ export const authSlice = createSlice({
   reducers: {
     logOut: (state) => {
       localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      localStorage.removeItem("expiresAt");
       state.token = "";
       state.role = "";
+      state.expiresAt = "";
     },
   },
   extraReducers: (builder) => {
@@ -30,6 +33,8 @@ export const authSlice = createSlice({
         state.token = action.payload.data.accessToken;
         localStorage.setItem("role", action.payload.data.user.role);
         state.role = action.payload.data.user.role;
+        localStorage.setItem("expiresAt", action.payload.data.expiresAt);
+        state.expiresAt = action.payload.data.expiresAt;
       })
       .addCase(logIn.rejected, (state, action) => {
         state.loadingAuth = false;

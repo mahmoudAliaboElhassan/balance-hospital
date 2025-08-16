@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Loader from "../components/Loader";
+import HospitalRosterForm from "../pages/roster";
 
 // Lazy pages/layouts
 const RootLayout = lazy(() => import("../pages/rootLayout"));
@@ -253,6 +254,10 @@ const router = createBrowserRouter([
           {
             path: "management-roles/edit-assign-user-to-role/:id",
             element: withSuspense(EditAssignUserToRole),
+          },
+          {
+            path: "roster/",
+            element: withSuspense(HospitalRosterForm),
           },
 
           // Future:

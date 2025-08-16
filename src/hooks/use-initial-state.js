@@ -14,6 +14,10 @@ function UseInitialStates() {
       typeof window !== "undefined" ? localStorage.getItem("role") || "" : "",
     user: null,
     loadingAuth: false,
+    expiresAt:
+      typeof window !== "undefined"
+        ? localStorage.getItem("expiresAt") || ""
+        : "",
   };
 
   const initialStateCategories = {

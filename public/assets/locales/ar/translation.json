@@ -543,6 +543,8 @@
     "cancel": "إلغاء",
     "confirm": "تأكيد",
     "save": "حفظ",
+    "previous": "السابق",
+    "next": "التالي",
     "edit": "تعديل",
     "delete": "حذف",
     "view": "عرض",
@@ -1609,5 +1611,39 @@
       "goBack": "العودة",
       "dashboard": "لوحة التحكم"
     }
+  },
+  "session-expired": "انتهت جلستك. يرجى تسجيل الدخول مرة أخرى.",
+
+  "roster": {
+    "setup": "إعداد الروستر",
+    "selectDepartmentDetails": "اختر تفاصيل القسم والتخصص",
+    "mainSpecialty": "التخصص الرئيسي",
+    "selectSpecialty": "اختر التخصص",
+    "department": "القسم",
+    "selectDepartment": "اختر القسم",
+    "scientificDegree": "الدرجة العلمية",
+    "selectScientificDegree": "اختر الدرجة العلمية",
+    "shiftHours": "ساعات المناوبة",
+    "selectShiftHours": "اختر ساعات المناوبة",
+    "contractingType": "نوع التعاقد",
+    "selectContractingType": "اختر نوع التعاقد",
+    "timePeriod": "الفترة الزمنية",
+    "selectDateRange": "اختر من تاريخ إلى تاريخ",
+    "fromDate": "من تاريخ",
+    "toDate": "إلى تاريخ",
+    "selectionSummary": "ملخص الاختيارات",
+    "specialty": "التخصص",
+    "departmentDetails": "تفاصيل القسم",
+    "specifyDoctorCount": "تحديد عدد الأطباء",
+    "enterDoctorCountPerDay": "أدخل عدد الأطباء المطلوب لكل يوم",
+    "day": "اليوم",
+    "date": "التاريخ",
+    "doctorCount": "عدد الأطباء",
+    "totalDoctorsRequired": "إجمالي الأطباء المطلوبين",
+    "doctor": "طبيب",
+    "during": "خلال",
+    "days": "أيام",
+    "saveRoster": "حفظ الروستر",
+    "savedSuccess": "تم حفظ الروستر بنجاح!"
   }
 }

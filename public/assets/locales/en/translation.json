@@ -753,6 +753,8 @@
     "delete": "Delete",
     "view": "View",
     "add": "Add",
+    "previous": "Previous",
+    "next": "Next",
     "search": "Search",
     "filter": "Filter",
     "clear": "Clear",
@@ -1604,5 +1606,39 @@
       "goBack": "Go Back",
       "dashboard": "Dashboard"
     }
+  },
+
+  "session-expired": "Your session has expired. Please log in again.",
+
+  "roster": {
+    "setup": "Roster Setup",
+    "selectDepartmentDetails": "Select department and specialty details",
+    "mainSpecialty": "Main Specialty",
+    "selectSpecialty": "Select specialty",
+    "department": "Department",
+    "selectDepartment": "Select department",
+    "scientificDegree": "Scientific Degree",
+    "selectScientificDegree": "Select scientific degree",
+    "shiftHours": "Shift Hours",
+    "selectShiftHours": "Select shift hours",
+    "contractingType": "Contracting Type",
+    "selectContractingType": "Select contracting type",
+    "timePeriod": "Time Period",
+    "selectDateRange": "Select date range",
+    "fromDate": "From Date",
+    "toDate": "To Date",
+    "selectionSummary": "Selection Summary",
+    "specialty": "Specialty",
+    "departmentDetails": "Department Details",
+    "specifyDoctorCount": "Specify Doctor Count",
+    "enterDoctorCountPerDay": "Enter required doctors per day",
+    "day": "Day",
+    "date": "Date",
+    "doctorCount": "Doctor Count",
+    "totalDoctorsRequired": "Total Doctors Required",
+    "doctor": "doctor",
+    "during": "during",
+    "days": "days",
+    "saveRoster": "Save Roster"
   }
 }
