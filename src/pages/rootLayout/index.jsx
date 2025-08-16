@@ -4,12 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
 import { useEffect } from "react";
 import { logOut } from "../../state/slices/auth";
+import { useTranslation } from "react-i18next";
 
 function RootLayout() {
   const { mymode } = useSelector((state) => state.mode);
   const { expiresAt } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   console.log("Current mode:", mymode);
+  const { t } = useTranslation();
 
   // Define color schemes for light and dark modes
   const colorSchemes = {
