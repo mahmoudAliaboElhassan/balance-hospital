@@ -606,8 +606,8 @@ function ManagementRoles() {
                       ? "bg-blue-50 border-blue-300 text-blue-700 dark:bg-blue-900 dark:border-blue-600 dark:text-blue-300"
                       : `hover:bg-gray-50 dark:hover:bg-gray-700 ${
                           isDark
-                            ? "border-gray-600 text-gray-300"
-                            : "border-gray-300 text-gray-700"
+                            ? "border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white hover:border-gray-500"
+                            : "border-gray-300 text-gray-700 hover:bg-gray-100 hover:text-gray-200 hover:border-gray-400"
                         }`
                   }`}
                 >
