@@ -1050,7 +1050,7 @@ function Department() {
                   <span
                     className={`${isDark ? "text-gray-400" : "text-gray-600"}`}
                   >
-                    {t("departmentHeads.pagination.displayRange", {
+                    {t("displayRange", {
                       start: (pagination.page - 1) * pagination.pageSize + 1,
                       end: Math.min(
                         pagination.page * pagination.pageSize,

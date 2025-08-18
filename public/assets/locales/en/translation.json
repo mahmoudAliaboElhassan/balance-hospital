@@ -263,6 +263,13 @@
         "title": "Description",
         "noDescription": "No description available"
       },
+
+      "departments": {
+        "title": "Departments",
+        "count": "departments",
+        "noDepartments": "No departments found",
+        "createFirst": "Create your first department for this category"
+      },
       "chief": {
         "title": "Chief"
       },
@@ -457,6 +464,7 @@
       "doctors": "Doctors",
       "pendingRequests": "Pending Requests"
     },
+
     "status": {
       "active": "Active",
       "inactive": "Inactive"
@@ -493,10 +501,13 @@
       "noCategoryInfo": "No category information available"
     },
     "statistics": {
-      "totalEmployees": "Total Employees",
-      "activeEmployees": "Active Employees",
-      "subDepartments": "Sub-departments",
-      "totalBudget": "Total Budget"
+      "totalDoctors": "Total Doctors",
+      "activeDoctors": "Active Doctors",
+      "totalSubDepartments": "Total Sub Departments",
+      "activeSubDepartments": "Active Sub Departments",
+      "pendingRequests": "Pending Requests",
+      "schedulesThisMonth": "Schedules This Month",
+      "completedSchedulesThisMonth": "Completed Schedules This Month"
     },
     "error": {
       "title": "Error",

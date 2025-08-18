@@ -6,9 +6,19 @@ import {
   clearSingleCategory,
   clearSingleCategoryError,
 } from "../../../state/slices/category";
+import { getDepartments } from "../../../state/act/actDepartment";
 import LoadingGetData from "../../../components/LoadingGetData";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
+import {
+  Building,
+  Users,
+  MapPin,
+  Calendar,
+  Eye,
+  Edit,
+  Trash2,
+} from "lucide-react";
 
 const SpecificCategory = () => {
   const { catId: id } = useParams();
@@ -17,6 +27,11 @@ const SpecificCategory = () => {
 
   const { selectedCategory, loadingGetSingleCategory, singleCategoryError } =
     useSelector((state) => state.category);
+
+  // Get departments from the department slice
+  const { departments, loadingGetDepartments } = useSelector(
+    (state) => state.department
+  );
 
   // Get mode and translation function
   const { mymode } = useSelector((state) => state.mode);
@@ -32,6 +47,8 @@ const SpecificCategory = () => {
       // Clear previous data before fetching
       dispatch(clearSingleCategory());
       dispatch(getCategoryById({ categoryId: id }));
+      // Fetch departments for this specific category
+      dispatch(getDepartments({ categoryId: id }));
     }
 
     // Cleanup on unmount
@@ -94,6 +111,144 @@ const SpecificCategory = () => {
       navigate("/admin-panel/department/create-specific");
     }
   };
+
+  // Department Card Component
+  const DepartmentCard = ({ department }) => (
+    <div
+      className={`p-6 rounded-xl border transition-all duration-200 hover:shadow-lg ${
+        isDark
+          ? "bg-gray-800 border-gray-700 hover:border-gray-600"
+          : "bg-white border-gray-200 hover:border-gray-300"
+      }`}
+    >
+      <div className="flex justify-between items-start mb-4">
+        <div className="flex-1">
+          <h3
+            className={`font-bold text-lg mb-1 ${
+              isDark ? "text-white" : "text-gray-900"
+            }`}
+          >
+            {currentLang === "en"
+              ? department.nameEnglish
+              : department.nameArabic}
+          </h3>
+          <p
+            className={`text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}
+          >
+            {currentLang === "en"
+              ? department.nameArabic
+              : department.nameEnglish}
+          </p>
+        </div>
+        <span
+          className={`px-3 py-1 rounded-full text-xs font-medium ${
+            department.isActive
+              ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
+              : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+          }`}
+        >
+          {department.isActive
+            ? t("department.status.active")
+            : t("department.status.inactive")}
+        </span>
+      </div>
+
+      {department.location && (
+        <div className="flex items-center gap-2 mb-3">
+          <MapPin size={16} className="text-gray-500" />
+          <span
+            className={`text-sm ${isDark ? "text-gray-300" : "text-gray-600"}`}
+          >
+            {department.location}
+          </span>
+        </div>
+      )}
+
+      <div className="grid grid-cols-3 gap-4 mb-4">
+        <div className="text-center">
+          <div className="flex items-center justify-center mb-1">
+            <Building size={16} className="text-blue-500" />
+          </div>
+          <div
+            className={`text-sm font-medium ${
+              isDark ? "text-white" : "text-gray-900"
+            }`}
+          >
+            {department.subDepartmentsCount || 0}
+          </div>
+          <div
+            className={`text-xs ${isDark ? "text-gray-400" : "text-gray-500"}`}
+          >
+            {t("department.table.subDepartments")}
+          </div>
+        </div>
+        <div className="text-center">
+          <div className="flex items-center justify-center mb-1">
+            <Users size={16} className="text-green-500" />
+          </div>
+          <div
+            className={`text-sm font-medium ${
+              isDark ? "text-white" : "text-gray-900"
+            }`}
+          >
+            {department.doctorsCount || 0}
+          </div>
+          <div
+            className={`text-xs ${isDark ? "text-gray-400" : "text-gray-500"}`}
+          >
+            {t("department.table.doctors")}
+          </div>
+        </div>
+        <div className="text-center">
+          <div className="flex items-center justify-center mb-1">
+            <Calendar size={16} className="text-purple-500" />
+          </div>
+          <div
+            className={`text-sm font-medium ${
+              isDark ? "text-white" : "text-gray-900"
+            }`}
+          >
+            {department.pendingRequestsCount || 0}
+          </div>
+          <div
+            className={`text-xs ${isDark ? "text-gray-400" : "text-gray-500"}`}
+          >
+            {t("department.table.pendingRequests")}
+          </div>
+        </div>
+      </div>
+
+      <div
+        className={`flex items-center justify-between pt-4 border-t ${
+          isDark ? "border-gray-700" : "border-gray-200"
+        }`}
+      >
+        <div
+          className={`text-xs ${isDark ? "text-gray-400" : "text-gray-500"}`}
+        >
+          {formatDate(department.createdAt)}
+        </div>
+        <div className="flex gap-2">
+          <Link to={`/admin-panel/department/${department.id}`}>
+            <button
+              className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
+              title={t("department.actions.view")}
+            >
+              <Eye size={16} />
+            </button>
+          </Link>
+          <Link to={`/admin-panel/department/edit/${department.id}`}>
+            <button
+              className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition-colors"
+              title={t("department.actions.edit")}
+            >
+              <Edit size={16} />
+            </button>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
 
   // Loading Component
   if (loadingGetSingleCategory) {
@@ -261,13 +416,6 @@ const SpecificCategory = () => {
                 <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
                   {getCategoryName()}
                 </h1>
-                {/* <p
-                  className={`text-xl ${
-                    isDark ? "text-gray-300" : "text-gray-600"
-                  }`}
-                >
-                  {getCategorySecondaryName()}
-                </p> */}
               </div>
 
               <div
@@ -380,6 +528,94 @@ const SpecificCategory = () => {
                 {selectedCategory.description ||
                   t("specificCategory.sections.description.noDescription")}
               </p>
+            </div>
+
+            {/* Departments Section */}
+            <div
+              className={`${
+                isDark ? "bg-gray-800" : "bg-white"
+              } rounded-2xl shadow-xl p-6`}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h2
+                  className={`text-2xl font-bold ${
+                    isDark ? "text-white" : "text-gray-900"
+                  } flex items-center`}
+                >
+                  <div
+                    className={`w-8 h-8 ${
+                      isDark ? "bg-green-900/30" : "bg-green-100"
+                    } rounded-lg flex items-center justify-center ${
+                      isRTL ? "mr-3" : "ml-3"
+                    }`}
+                  >
+                    <Building
+                      className={`w-4 h-4 ${
+                        isDark ? "text-green-400" : "text-green-600"
+                      }`}
+                    />
+                  </div>
+                  {t("specificCategory.sections.departments.title")}
+                </h2>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    isDark
+                      ? "bg-blue-900/30 text-blue-400"
+                      : "bg-blue-100 text-blue-800"
+                  }`}
+                >
+                  {departments?.length || 0}{" "}
+                  {t("specificCategory.sections.departments.count")}
+                </span>
+              </div>
+
+              {loadingGetDepartments ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                  <p
+                    className={`${isDark ? "text-gray-400" : "text-gray-600"}`}
+                  >
+                    {t("department.loading")}
+                  </p>
+                </div>
+              ) : departments && departments.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {departments.map((department) => (
+                    <DepartmentCard
+                      key={department.id}
+                      department={department}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <div
+                    className={`w-16 h-16 ${
+                      isDark ? "bg-gray-700" : "bg-gray-100"
+                    } rounded-full flex items-center justify-center mx-auto mb-4`}
+                  >
+                    <Building
+                      className={`w-8 h-8 ${
+                        isDark ? "text-gray-500" : "text-gray-400"
+                      }`}
+                    />
+                  </div>
+                  <p
+                    className={`text-lg font-medium ${
+                      isDark ? "text-gray-300" : "text-gray-600"
+                    } mb-2`}
+                  >
+                    {t("specificCategory.sections.departments.noDepartments")}
+                  </p>
+                  <p
+                    className={`text-sm ${
+                      isDark ? "text-gray-400" : "text-gray-500"
+                    }`}
+                  >
+                    {t("specificCategory.sections.departments.createFirst")}
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Chief Card - if exists */}

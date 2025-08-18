@@ -1,13 +1,15 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { getDepartmentById } from "../../../state/act/actDepartment";
+import { getSubDepartments } from "../../../state/act/actSubDepartment";
 import {
   clearSingleDepartment,
   clearSingleDepartmentError,
 } from "../../../state/slices/department";
 import LoadingGetData from "../../../components/LoadingGetData";
 import { useTranslation } from "react-i18next";
+import { Edit, Eye } from "lucide-react";
 
 function SpecificDepartment() {
   const { depId: id } = useParams();
@@ -19,6 +21,11 @@ function SpecificDepartment() {
     loadingGetSingleDepartment,
     singleDepartmentError,
   } = useSelector((state) => state.department);
+
+  // Get sub-departments
+  const { subDepartments, loadingGetSubDepartments } = useSelector(
+    (state) => state.subDepartment
+  );
 
   // Get categories for displaying category name
   const { categories } = useSelector((state) => state.category);
@@ -45,6 +52,17 @@ function SpecificDepartment() {
       dispatch(clearSingleDepartmentError());
     };
   }, [dispatch, id]);
+
+  // Fetch sub-departments for this specific department
+  useEffect(() => {
+    if (selectedDepartment?.id) {
+      dispatch(
+        getSubDepartments({
+          departmentId: selectedDepartment.id,
+        })
+      );
+    }
+  }, [dispatch, selectedDepartment?.id]);
 
   // Handle error cases
   useEffect(() => {
@@ -95,10 +113,10 @@ function SpecificDepartment() {
   const getCategoryName = () => {
     if (!selectedDepartment?.category && !categories) return "";
 
-    if (selectedDepartment?.category) {
+    if (selectedDepartment?.categoryNameArabic) {
       return currentLang === "en"
-        ? selectedDepartment.category.nameEnglish
-        : selectedDepartment.category.nameArabic;
+        ? selectedDepartment.categoryNameArabic
+        : selectedDepartment.categoryNameEnglish;
     }
 
     // Fallback to find category from categories list
@@ -303,13 +321,6 @@ function SpecificDepartment() {
                 <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
                   {getDepartmentName()}
                 </h1>
-                {/* <p
-                  className={`text-xl ${
-                    isDark ? "text-gray-300" : "text-gray-600"
-                  }`}
-                >
-                  {getDepartmentSecondaryName()}
-                </p> */}
                 <p
                   className={`text-lg ${
                     isDark ? "text-gray-400" : "text-gray-500"
@@ -486,6 +497,322 @@ function SpecificDepartment() {
               </div>
             </div>
 
+            {/* Sub-Departments Section */}
+            <div
+              className={`${
+                isDark ? "bg-gray-800" : "bg-white"
+              } rounded-2xl shadow-xl p-6`}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h2
+                  className={`text-2xl font-bold ${
+                    isDark ? "text-white" : "text-gray-900"
+                  } flex items-center`}
+                >
+                  <div
+                    className={`w-8 h-8 ${
+                      isDark ? "bg-indigo-900/30" : "bg-indigo-100"
+                    } rounded-lg flex items-center justify-center ${
+                      isRTL ? "mr-3" : "ml-3"
+                    }`}
+                  >
+                    <svg
+                      className={`w-4 h-4 ${
+                        isDark ? "text-indigo-400" : "text-indigo-600"
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                      />
+                    </svg>
+                  </div>
+                  {t("department.details.subDepartments") || "Sub Departments"}
+                  <span
+                    className={`${
+                      isRTL ? "mr-2" : "ml-2"
+                    } px-2 py-1 rounded-full text-sm font-medium ${
+                      isDark
+                        ? "bg-indigo-900/30 text-indigo-400"
+                        : "bg-indigo-100 text-indigo-800"
+                    }`}
+                  >
+                    {subDepartments?.length || 0}
+                  </span>
+                </h2>
+              </div>
+
+              {loadingGetSubDepartments ? (
+                <div className="text-center p-8">
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                    <span
+                      className={`${isRTL ? "mr-3" : "ml-3"} ${
+                        isDark ? "text-gray-400" : "text-gray-600"
+                      }`}
+                    >
+                      {t("gettingData.subDepartments") ||
+                        "Loading sub departments..."}
+                    </span>
+                  </div>
+                </div>
+              ) : !subDepartments || subDepartments.length === 0 ? (
+                <div className="text-center p-8">
+                  <div
+                    className={`w-16 h-16 ${
+                      isDark ? "bg-gray-700" : "bg-gray-100"
+                    } rounded-full flex items-center justify-center mx-auto mb-4`}
+                  >
+                    <svg
+                      className={`w-8 h-8 ${
+                        isDark ? "text-gray-500" : "text-gray-400"
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                      />
+                    </svg>
+                  </div>
+                  <p
+                    className={`text-lg font-medium ${
+                      isDark ? "text-gray-300" : "text-gray-600"
+                    } mb-2`}
+                  >
+                    {t("subDepartment.empty.title") || "No Sub Departments"}
+                  </p>
+                  <p
+                    className={`${
+                      isDark ? "text-gray-400" : "text-gray-500"
+                    } text-sm`}
+                  >
+                    {t("subDepartment.empty.description") ||
+                      "This department doesn't have any sub-departments yet."}
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {subDepartments.map((subDepartment) => (
+                    <div
+                      key={subDepartment.id}
+                      className={`p-4 rounded-xl border transition-all duration-200 hover:shadow-lg ${
+                        isDark
+                          ? "border-gray-700 bg-gray-750 hover:bg-gray-700"
+                          : "border-gray-200 bg-gray-50 hover:bg-white"
+                      }`}
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <h3
+                            className={`font-semibold text-lg ${
+                              isDark ? "text-white" : "text-gray-900"
+                            } mb-1 leading-tight`}
+                            dir={currentLang === "ar" ? "rtl" : "ltr"}
+                          >
+                            {currentLang === "en"
+                              ? subDepartment.nameEnglish
+                              : subDepartment.nameArabic}
+                          </h3>
+                          {currentLang === "en" && subDepartment.nameArabic && (
+                            <p
+                              className={`text-sm ${
+                                isDark ? "text-gray-400" : "text-gray-500"
+                              }`}
+                              dir="rtl"
+                            >
+                              {subDepartment.nameArabic}
+                            </p>
+                          )}
+                          {currentLang === "ar" &&
+                            subDepartment.nameEnglish && (
+                              <p
+                                className={`text-sm ${
+                                  isDark ? "text-gray-400" : "text-gray-500"
+                                }`}
+                                dir="ltr"
+                              >
+                                {subDepartment.nameEnglish}
+                              </p>
+                            )}
+                        </div>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
+                            isRTL ? "mr-2" : "ml-2"
+                          } ${
+                            subDepartment.isActive
+                              ? `bg-green-100 text-green-800 ${
+                                  isDark
+                                    ? "dark:bg-green-900/30 dark:text-green-400"
+                                    : ""
+                                }`
+                              : `bg-red-100 text-red-800 ${
+                                  isDark
+                                    ? "dark:bg-red-900/30 dark:text-red-400"
+                                    : ""
+                                }`
+                          }`}
+                        >
+                          {subDepartment.isActive
+                            ? t("subDepartment.status.active")
+                            : t("subDepartment.status.inactive")}
+                        </span>
+                      </div>
+
+                      {subDepartment.location && (
+                        <div className="flex items-center gap-2 mb-3">
+                          <svg
+                            className={`w-4 h-4 ${
+                              isDark ? "text-gray-500" : "text-gray-400"
+                            }`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                          </svg>
+                          <span
+                            className={`text-sm ${
+                              isDark ? "text-gray-300" : "text-gray-600"
+                            } truncate`}
+                            title={subDepartment.location}
+                          >
+                            {subDepartment.location}
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="grid grid-cols-2 gap-3 text-sm mb-4">
+                        {subDepartment.doctorsCount !== undefined && (
+                          <div className="flex items-center gap-2">
+                            <svg
+                              className={`w-4 h-4 ${
+                                isDark ? "text-gray-500" : "text-gray-400"
+                              }`}
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+                              />
+                            </svg>
+                            <span
+                              className={`${
+                                isDark ? "text-gray-300" : "text-gray-700"
+                              }`}
+                            >
+                              {subDepartment.doctorsCount || 0}{" "}
+                              {t("subDepartment.table.doctors")}
+                            </span>
+                          </div>
+                        )}
+                        {subDepartment.pendingRequestsCount !== undefined && (
+                          <div className="flex items-center gap-2">
+                            <svg
+                              className={`w-4 h-4 ${
+                                isDark ? "text-gray-500" : "text-gray-400"
+                              }`}
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                            <span
+                              className={`${
+                                isDark ? "text-gray-300" : "text-gray-700"
+                              }`}
+                            >
+                              {subDepartment.pendingRequestsCount || 0}{" "}
+                              {t("subDepartment.table.pendingRequests")}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex items-center justify-between pt-3 border-t border-gray-200 dark:border-gray-600">
+                        <div className="flex items-center gap-2">
+                          <svg
+                            className={`w-4 h-4 ${
+                              isDark ? "text-gray-500" : "text-gray-400"
+                            }`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
+                          </svg>
+                          <span
+                            className={`text-xs ${
+                              isDark ? "text-gray-400" : "text-gray-500"
+                            }`}
+                          >
+                            {formatDate(subDepartment.createdAt)}
+                          </span>
+                        </div>
+                        <div className="flex gap-2">
+                          <Link
+                            to={`/admin-panel/sub-departments/${subDepartment.id}`}
+                          >
+                            <button
+                              className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
+                              title={t("department.actions.view")}
+                            >
+                              <Eye size={16} />
+                            </button>
+                          </Link>
+                          <Link
+                            to={`/admin-panel/sub-departments/edit/${subDepartment.id}`}
+                          >
+                            <button
+                              className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition-colors"
+                              title={t("department.actions.edit")}
+                            >
+                              <Edit size={16} />
+                            </button>
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {/* Description Card */}
             {selectedDepartment.description && (
               <div
@@ -593,170 +920,483 @@ function SpecificDepartment() {
 
           {/* Statistics Sidebar */}
           <div className="space-y-6">
-            {/* Statistics Cards */}
-            <div
-              className={`${
-                isDark ? "bg-gray-800" : "bg-white"
-              } rounded-2xl shadow-xl p-6`}
-            >
-              <h2
-                className={`text-xl font-bold ${
-                  isDark ? "text-white" : "text-gray-900"
-                } mb-6`}
+            <div className="space-y-6">
+              <div
+                className={`${
+                  isDark ? "bg-gray-800" : "bg-white"
+                } rounded-2xl shadow-xl p-6`}
               >
-                {t("department.details.statistics")}
-              </h2>
+                <h2
+                  className={`text-xl font-bold ${
+                    isDark ? "text-white" : "text-gray-900"
+                  } mb-6`}
+                >
+                  {t("department.details.statistics")}
+                </h2>
 
-              <div className="space-y-4">
-                {selectedDepartment.statistics?.totalEmployees !==
-                  undefined && (
-                  <div
-                    className={`flex items-center justify-between p-4 ${
-                      isDark ? "bg-blue-900/20" : "bg-blue-50"
-                    } rounded-xl`}
-                  >
-                    <div className="flex items-center">
-                      <div
-                        className={`w-10 h-10 ${
-                          isDark ? "bg-blue-900/30" : "bg-blue-100"
-                        } rounded-lg flex items-center justify-center ${
-                          isRTL ? "mr-3" : "ml-3"
-                        }`}
-                      >
-                        <svg
-                          className={`w-5 h-5 ${
-                            isDark ? "text-blue-400" : "text-blue-600"
+                <div className="space-y-4">
+                  {/* Total Doctors */}
+                  {selectedDepartment.statistics?.totalDoctors !==
+                    undefined && (
+                    <div
+                      className={`flex items-center justify-between p-4 ${
+                        isDark ? "bg-blue-900/20" : "bg-blue-50"
+                      } rounded-xl`}
+                    >
+                      <div className="flex items-center">
+                        <div
+                          className={`w-10 h-10 ${
+                            isDark ? "bg-blue-900/30" : "bg-blue-100"
+                          } rounded-lg flex items-center justify-center ${
+                            isRTL ? "mr-3" : "ml-3"
                           }`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
-                          />
-                        </svg>
+                          <svg
+                            className={`w-5 h-5 ${
+                              isDark ? "text-blue-400" : "text-blue-600"
+                            }`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+                            />
+                          </svg>
+                        </div>
+                        <span
+                          className={`${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          } font-medium`}
+                        >
+                          {t("department.statistics.totalDoctors")}
+                        </span>
                       </div>
                       <span
-                        className={`${
-                          isDark ? "text-gray-300" : "text-gray-700"
-                        } font-medium`}
-                      >
-                        {t("department.statistics.totalEmployees")}
-                      </span>
-                    </div>
-                    <span
-                      className={`text-2xl font-bold ${
-                        isDark ? "text-blue-400" : "text-blue-600"
-                      }`}
-                    >
-                      {selectedDepartment.statistics.totalEmployees}
-                    </span>
-                  </div>
-                )}
-
-                {selectedDepartment.statistics?.activeEmployees !==
-                  undefined && (
-                  <div
-                    className={`flex items-center justify-between p-4 ${
-                      isDark ? "bg-green-900/20" : "bg-green-50"
-                    } rounded-xl`}
-                  >
-                    <div className="flex items-center">
-                      <div
-                        className={`w-10 h-10 ${
-                          isDark ? "bg-green-900/30" : "bg-green-100"
-                        } rounded-lg flex items-center justify-center ${
-                          isRTL ? "mr-3" : "ml-3"
+                        className={`text-2xl font-bold ${
+                          isDark ? "text-blue-400" : "text-blue-600"
                         }`}
                       >
-                        <svg
-                          className={`w-5 h-5 ${
-                            isDark ? "text-green-400" : "text-green-600"
-                          }`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                      </div>
-                      <span
-                        className={`${
-                          isDark ? "text-gray-300" : "text-gray-700"
-                        } font-medium`}
-                      >
-                        {t("department.statistics.activeEmployees")}
+                        {selectedDepartment.statistics.totalDoctors}
                       </span>
                     </div>
-                    <span
-                      className={`text-2xl font-bold ${
-                        isDark ? "text-green-400" : "text-green-600"
-                      }`}
-                    >
-                      {selectedDepartment.statistics.activeEmployees}
-                    </span>
-                  </div>
-                )}
+                  )}
 
-                {selectedDepartment.statistics?.subDepartments !==
-                  undefined && (
-                  <div
-                    className={`flex items-center justify-between p-4 ${
-                      isDark ? "bg-purple-900/20" : "bg-purple-50"
-                    } rounded-xl`}
-                  >
-                    <div className="flex items-center">
-                      <div
-                        className={`w-10 h-10 ${
-                          isDark ? "bg-purple-900/30" : "bg-purple-100"
-                        } rounded-lg flex items-center justify-center ${
-                          isRTL ? "mr-3" : "ml-3"
+                  {/* Active Doctors */}
+                  {selectedDepartment.statistics?.activeDoctors !==
+                    undefined && (
+                    <div
+                      className={`flex items-center justify-between p-4 ${
+                        isDark ? "bg-green-900/20" : "bg-green-50"
+                      } rounded-xl`}
+                    >
+                      <div className="flex items-center">
+                        <div
+                          className={`w-10 h-10 ${
+                            isDark ? "bg-green-900/30" : "bg-green-100"
+                          } rounded-lg flex items-center justify-center ${
+                            isRTL ? "mr-3" : "ml-3"
+                          }`}
+                        >
+                          <svg
+                            className={`w-5 h-5 ${
+                              isDark ? "text-green-400" : "text-green-600"
+                            }`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                        </div>
+                        <span
+                          className={`${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          } font-medium`}
+                        >
+                          {t("department.statistics.activeDoctors")}
+                        </span>
+                      </div>
+                      <span
+                        className={`text-2xl font-bold ${
+                          isDark ? "text-green-400" : "text-green-600"
                         }`}
                       >
-                        <svg
-                          className={`w-5 h-5 ${
-                            isDark ? "text-purple-400" : "text-purple-600"
-                          }`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                          />
-                        </svg>
-                      </div>
-                      <span
-                        className={`${
-                          isDark ? "text-gray-300" : "text-gray-700"
-                        } font-medium`}
-                      >
-                        {t("department.statistics.subDepartments")}
+                        {selectedDepartment.statistics.activeDoctors}
                       </span>
                     </div>
-                    <span
-                      className={`text-2xl font-bold ${
-                        isDark ? "text-purple-400" : "text-purple-600"
-                      }`}
+                  )}
+
+                  {/* Total Sub Departments */}
+                  {selectedDepartment.statistics?.totalSubDepartments !==
+                    undefined && (
+                    <div
+                      className={`flex items-center justify-between p-4 ${
+                        isDark ? "bg-purple-900/20" : "bg-purple-50"
+                      } rounded-xl`}
                     >
-                      {selectedDepartment.statistics.subDepartments}
-                    </span>
-                  </div>
-                )}
+                      <div className="flex items-center">
+                        <div
+                          className={`w-10 h-10 ${
+                            isDark ? "bg-purple-900/30" : "bg-purple-100"
+                          } rounded-lg flex items-center justify-center ${
+                            isRTL ? "mr-3" : "ml-3"
+                          }`}
+                        >
+                          <svg
+                            className={`w-5 h-5 ${
+                              isDark ? "text-purple-400" : "text-purple-600"
+                            }`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                            />
+                          </svg>
+                        </div>
+                        <span
+                          className={`${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          } font-medium`}
+                        >
+                          {t("department.statistics.totalSubDepartments")}
+                        </span>
+                      </div>
+                      <span
+                        className={`text-2xl font-bold ${
+                          isDark ? "text-purple-400" : "text-purple-600"
+                        }`}
+                      >
+                        {selectedDepartment.statistics.totalSubDepartments}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Active Sub Departments */}
+                  {selectedDepartment.statistics?.activeSubDepartments !==
+                    undefined && (
+                    <div
+                      className={`flex items-center justify-between p-4 ${
+                        isDark ? "bg-indigo-900/20" : "bg-indigo-50"
+                      } rounded-xl`}
+                    >
+                      <div className="flex items-center">
+                        <div
+                          className={`w-10 h-10 ${
+                            isDark ? "bg-indigo-900/30" : "bg-indigo-100"
+                          } rounded-lg flex items-center justify-center ${
+                            isRTL ? "mr-3" : "ml-3"
+                          }`}
+                        >
+                          <svg
+                            className={`w-5 h-5 ${
+                              isDark ? "text-indigo-400" : "text-indigo-600"
+                            }`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </div>
+                        <span
+                          className={`${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          } font-medium`}
+                        >
+                          {t("department.statistics.activeSubDepartments")}
+                        </span>
+                      </div>
+                      <span
+                        className={`text-2xl font-bold ${
+                          isDark ? "text-indigo-400" : "text-indigo-600"
+                        }`}
+                      >
+                        {selectedDepartment.statistics.activeSubDepartments}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Pending Requests */}
+                  {selectedDepartment.statistics?.pendingRequests !==
+                    undefined && (
+                    <div
+                      className={`flex items-center justify-between p-4 ${
+                        isDark ? "bg-orange-900/20" : "bg-orange-50"
+                      } rounded-xl`}
+                    >
+                      <div className="flex items-center">
+                        <div
+                          className={`w-10 h-10 ${
+                            isDark ? "bg-orange-900/30" : "bg-orange-100"
+                          } rounded-lg flex items-center justify-center ${
+                            isRTL ? "mr-3" : "ml-3"
+                          }`}
+                        >
+                          <svg
+                            className={`w-5 h-5 ${
+                              isDark ? "text-orange-400" : "text-orange-600"
+                            }`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                        </div>
+                        <span
+                          className={`${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          } font-medium`}
+                        >
+                          {t("department.statistics.pendingRequests")}
+                        </span>
+                      </div>
+                      <span
+                        className={`text-2xl font-bold ${
+                          isDark ? "text-orange-400" : "text-orange-600"
+                        }`}
+                      >
+                        {selectedDepartment.statistics.pendingRequests}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Schedules This Month */}
+                  {selectedDepartment.statistics?.schedulesThisMonth !==
+                    undefined && (
+                    <div
+                      className={`flex items-center justify-between p-4 ${
+                        isDark ? "bg-cyan-900/20" : "bg-cyan-50"
+                      } rounded-xl`}
+                    >
+                      <div className="flex items-center">
+                        <div
+                          className={`w-10 h-10 ${
+                            isDark ? "bg-cyan-900/30" : "bg-cyan-100"
+                          } rounded-lg flex items-center justify-center ${
+                            isRTL ? "mr-3" : "ml-3"
+                          }`}
+                        >
+                          <svg
+                            className={`w-5 h-5 ${
+                              isDark ? "text-cyan-400" : "text-cyan-600"
+                            }`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
+                          </svg>
+                        </div>
+                        <span
+                          className={`${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          } font-medium`}
+                        >
+                          {t("department.statistics.schedulesThisMonth")}
+                        </span>
+                      </div>
+                      <span
+                        className={`text-2xl font-bold ${
+                          isDark ? "text-cyan-400" : "text-cyan-600"
+                        }`}
+                      >
+                        {selectedDepartment.statistics.schedulesThisMonth}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Completed Schedules This Month */}
+                  {selectedDepartment.statistics
+                    ?.completedSchedulesThisMonth !== undefined && (
+                    <div
+                      className={`flex items-center justify-between p-4 ${
+                        isDark ? "bg-emerald-900/20" : "bg-emerald-50"
+                      } rounded-xl`}
+                    >
+                      <div className="flex items-center">
+                        <div
+                          className={`w-10 h-10 ${
+                            isDark ? "bg-emerald-900/30" : "bg-emerald-100"
+                          } rounded-lg flex items-center justify-center ${
+                            isRTL ? "mr-3" : "ml-3"
+                          }`}
+                        >
+                          <svg
+                            className={`w-5 h-5 ${
+                              isDark ? "text-emerald-400" : "text-emerald-600"
+                            }`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                        </div>
+                        <span
+                          className={`${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          } font-medium`}
+                        >
+                          {t(
+                            "department.statistics.completedSchedulesThisMonth"
+                          )}
+                        </span>
+                      </div>
+                      <span
+                        className={`text-2xl font-bold ${
+                          isDark ? "text-emerald-400" : "text-emerald-600"
+                        }`}
+                      >
+                        {
+                          selectedDepartment.statistics
+                            .completedSchedulesThisMonth
+                        }
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
 
+              {/* Metadata Card */}
+              <div
+                className={`${
+                  isDark ? "bg-gray-800" : "bg-white"
+                } rounded-2xl shadow-xl p-6`}
+              >
+                <h2
+                  className={`text-xl font-bold ${
+                    isDark ? "text-white" : "text-gray-900"
+                  } mb-6`}
+                >
+                  {t("department.details.information")}
+                </h2>
+
+                <div className="space-y-4 text-sm">
+                  <div
+                    className={`border-b ${
+                      isDark ? "border-gray-700" : "border-gray-200"
+                    } pb-3`}
+                  >
+                    <div
+                      className={`${
+                        isDark ? "text-gray-400" : "text-gray-500"
+                      } mb-1`}
+                    >
+                      {t("department.details.createdAt")}
+                    </div>
+                    <div
+                      className={`${
+                        isDark ? "text-white" : "text-gray-900"
+                      } font-medium`}
+                    >
+                      {formatDate(selectedDepartment.createdAt)}
+                    </div>
+                  </div>
+
+                  {selectedDepartment.createdByName && (
+                    <div
+                      className={`border-b ${
+                        isDark ? "border-gray-700" : "border-gray-200"
+                      } pb-3`}
+                    >
+                      <div
+                        className={`${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        } mb-1`}
+                      >
+                        {t("department.details.createdBy")}
+                      </div>
+                      <div
+                        className={`${
+                          isDark ? "text-white" : "text-gray-900"
+                        } font-medium`}
+                      >
+                        {selectedDepartment.createdByName}
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedDepartment.updatedAt && (
+                    <>
+                      <div
+                        className={`border-b ${
+                          isDark ? "border-gray-700" : "border-gray-200"
+                        } pb-3`}
+                      >
+                        <div
+                          className={`${
+                            isDark ? "text-gray-400" : "text-gray-500"
+                          } mb-1`}
+                        >
+                          {t("department.details.updatedAt")}
+                        </div>
+                        <div
+                          className={`${
+                            isDark ? "text-white" : "text-gray-900"
+                          } font-medium`}
+                        >
+                          {formatDate(selectedDepartment.updatedAt)}
+                        </div>
+                      </div>
+
+                      {selectedDepartment.updatedByName && (
+                        <div>
+                          <div
+                            className={`${
+                              isDark ? "text-gray-400" : "text-gray-500"
+                            } mb-1`}
+                          >
+                            {t("department.details.updatedBy")}
+                          </div>
+                          <div
+                            className={`${
+                              isDark ? "text-white" : "text-gray-900"
+                            } font-medium`}
+                          >
+                            {selectedDepartment.updatedByName}
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>{" "}
             {/* Metadata Card */}
             <div
               className={`${

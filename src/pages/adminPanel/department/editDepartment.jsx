@@ -76,7 +76,7 @@ function EditDepartment() {
     location: selectedDepartment.location || "",
     isActive: selectedDepartment.isActive,
   };
-
+  console.log("Initial values", initialValues);
   const handleSubmit = (values, { setSubmitting }) => {
     dispatch(updateDepartment({ id, departmentData: values }))
       .unwrap()

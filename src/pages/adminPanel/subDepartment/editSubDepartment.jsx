@@ -13,6 +13,7 @@ import {
   resetUpdateForm,
 } from "../../../state/slices/subDepartment";
 import LoadingGetData from "../../../components/LoadingGetData";
+import { toast } from "react-toastify";
 
 function EditSubDepartment() {
   const { t, i18n } = useTranslation();
@@ -129,7 +130,27 @@ function EditSubDepartment() {
         ...formData,
         departmentId: parseInt(formData.departmentId),
       };
-      dispatch(updateSubDepartment({ id, subDepartmentData: submitData }));
+      dispatch(updateSubDepartment({ id, subDepartmentData: submitData }))
+        .unwrap()
+        .then(() => {
+          toast.success(t("subDepartmentForm.success.updated"), {
+            position: "top-right",
+            autoClose: 3000,
+          });
+          navigate("/admin-panel/sub-departments");
+        })
+        .catch((error) => {
+          Swal.fire({
+            title: t("subDepartmentForm.error.title"),
+            text:
+              currentLang === "en"
+                ? error?.messageEn || error?.message
+                : error?.messageAr || error?.message,
+            icon: "error",
+            confirmButtonText: t("common.ok"),
+          });
+        })
+        .finally(() => setSubmitting(false));
     }
   };
 

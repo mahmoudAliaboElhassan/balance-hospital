@@ -265,6 +265,12 @@
         "title": "الوصف",
         "noDescription": "لا يوجد وصف"
       },
+      "departments": {
+        "title": "الأقسام",
+        "count": "قسم",
+        "noDepartments": "لم يتم العثور على أقسام",
+        "createFirst": "أنشئ أول قسم لهذه الفئة"
+      },
       "chief": {
         "title": "الرئيس"
       },
@@ -493,10 +499,13 @@
       "noCategoryInfo": "لا توجد معلومات عن التخصص"
     },
     "statistics": {
-      "totalEmployees": "إجمالي الموظفين",
-      "activeEmployees": "الموظفون النشطون",
-      "subDepartments": "الأقسام الفرعية",
-      "totalBudget": "إجمالي الميزانية"
+      "totalDoctors": "إجمالي الأطباء",
+      "activeDoctors": "الأطباء النشطون",
+      "totalSubDepartments": "إجمالي الأقسام الفرعية",
+      "activeSubDepartments": "الأقسام الفرعية النشطة",
+      "pendingRequests": "الطلبات المعلقة",
+      "schedulesThisMonth": "جداول هذا الشهر",
+      "completedSchedulesThisMonth": "الجداول المكتملة هذا الشهر"
     },
     "error": {
       "title": "خطأ",
