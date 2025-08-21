@@ -9,6 +9,7 @@ import contractingTypeSlice from "./slices/contractingType";
 import scientificDegreeSlice from "./slices/scientificDegree";
 import managementRolesSlice from "./slices/managementRole";
 import usersSlice from "./slices/user";
+import rosterManagementSlice from "./slices/roster";
 
 export const store = configureStore({
   reducer: {
@@ -22,5 +23,6 @@ export const store = configureStore({
     shiftHour: shiftHoursTypeSlice,
     managementRoles: managementRolesSlice,
     users: usersSlice,
+    rosterManagement: rosterManagementSlice,
   },
 });

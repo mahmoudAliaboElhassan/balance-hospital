@@ -58,7 +58,7 @@ function UseAdminPanel() {
       id: 9,
       name: t("adminPanel.roster"),
       icon: "🗓️",
-      path: "/admin-panel/roster",
+      path: "/admin-panel/rosters",
     },
   ];
 

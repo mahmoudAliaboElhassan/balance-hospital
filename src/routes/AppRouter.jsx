@@ -1,7 +1,7 @@
 import React, { Suspense, lazy } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Loader from "../components/Loader";
-import HospitalRosterForm from "../pages/roster";
+import HospitalRosterForm from "../pages/adminPanel/roster";
 
 // Lazy pages/layouts
 const RootLayout = lazy(() => import("../pages/rootLayout"));
@@ -113,6 +113,22 @@ const AssignUserToRole = lazy(() =>
 );
 const EditAssignUserToRole = lazy(() =>
   import("../pages/adminPanel/managementRoles/editAssignUserToRole")
+);
+
+const RosterManagement = lazy(() => import("../pages/adminPanel/roster"));
+const CreateRoster = lazy(() =>
+  import("../pages/adminPanel/roster/createRoster")
+);
+const EditRoster = lazy(() => import("../pages/adminPanel/roster/editRoster"));
+const ViewRoster = lazy(() => import("../pages/adminPanel/roster/viewRoster"));
+const RosterSchedule = lazy(() =>
+  import("../pages/adminPanel/roster/rosterSchedule")
+);
+const RosterRequests = lazy(() =>
+  import("../pages/adminPanel/roster/rosterRequests")
+);
+const RosterAnalytics = lazy(() =>
+  import("../pages/adminPanel/roster/rosterAnalytics")
 );
 
 // Helper to wrap lazies with a shared fallback
@@ -255,11 +271,25 @@ const router = createBrowserRouter([
             path: "management-roles/edit-assign-user-to-role/:id",
             element: withSuspense(EditAssignUserToRole),
           },
+          { path: "rosters", element: withSuspense(RosterManagement) },
+          { path: "rosters/create", element: withSuspense(CreateRoster) },
+          { path: "rosters/edit/:id", element: withSuspense(EditRoster) },
+          { path: "rosters/:id", element: withSuspense(ViewRoster) },
           {
-            path: "roster/",
-            element: withSuspense(HospitalRosterForm),
+            path: "rosters/:id/schedule",
+            element: withSuspense(RosterSchedule),
+          },
+          {
+            path: "rosters/:id/requests",
+            element: withSuspense(RosterRequests),
+          },
+          {
+            path: "rosters/:id/analytics",
+            element: withSuspense(RosterAnalytics),
           },
 
+          // Hospital Roster Form Route
+          { path: "hospital-roster", element: <HospitalRosterForm /> },
           // Future:
           // { path: "management-roles/statistics", element: withSuspense(RoleStatistics) },
           // { path: "management-roles/categories-managers", element: withSuspense(CategoriesManagers) },
