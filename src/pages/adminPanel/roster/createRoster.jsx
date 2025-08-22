@@ -27,7 +27,7 @@ import {
 } from "../../../state/act/actRosterManagement";
 import { clearError, clearSuccess } from "../../../state/slices/roster";
 
-import { getCategories } from "../../../state/act/actCategory";
+import { getCategoryTypes } from "../../../state/act/actCategory";
 import { getDepartments } from "../../../state/act/actDepartment";
 import { getSubDepartments } from "../../../state/act/actSubDepartment";
 import { getShiftHoursTypes } from "../../../state/act/actShiftHours";
@@ -60,8 +60,10 @@ const CreateRoster = () => {
   const { mymode } = useSelector((state) => state.mode);
   const isDark = mymode === "dark";
 
+  const [loadingSubDepartment, setLoadingSubDepartment] = useState(0);
+
   // Configuration data
-  const { categories, loadingGetCategories } = useSelector(
+  const { categoryTypes, loadingGetCategoryTypes } = useSelector(
     (state) => state.category
   );
   const { departments, loadingGetDepartments } = useSelector(
@@ -76,7 +78,7 @@ const CreateRoster = () => {
 
   // Load initial data
   useEffect(() => {
-    dispatch(getCategories());
+    dispatch(getCategoryTypes());
     if (rosterType === "complete") {
       dispatch(getShiftHoursTypes());
       dispatch(getContractingTypes());
@@ -129,9 +131,9 @@ const CreateRoster = () => {
     }
   }, [createError, dispatch, t]);
 
-  // Show loading screen for initial categories loading
-  if (loadingGetCategories) {
-    return <LoadingGetData text={t("gettingData.categories")} />;
+  // Show loading screen for initial categoryTypes loading
+  if (loadingGetCategoryTypes) {
+    return <LoadingGetData text={t("gettingData.category")} />;
   }
 
   // Get current year and next 5 years
@@ -277,6 +279,7 @@ const CreateRoster = () => {
   };
 
   const handleSubmit = async (values, { setSubmitting }) => {
+    console.log("values", values);
     try {
       if (rosterType === "basic") {
         await dispatch(createBasicRoster(values)).unwrap();
@@ -318,8 +321,13 @@ const CreateRoster = () => {
   // Handle department change
   const handleDepartmentChange = (departmentId, index, setFieldValue) => {
     setFieldValue(`departments.${index}.departmentId`, departmentId);
-    // Clear subdepartment when department changes
+    // const departmentFiltered = departmentsByCategory.filter(
+    //   (dep) => dep.id != departmentId
+    // );
+    // setDepartmentsByCategory(departmentFiltered);
     setFieldValue(`departments.${index}.subDepartmentId`, "");
+    setLoadingSubDepartment(index);
+    dispatch(getSubDepartments({ departmentId }));
   };
 
   const monthNames = isRTL
@@ -594,7 +602,7 @@ const CreateRoster = () => {
                             <option value="">
                               {t("roster.form.selectCategory")}
                             </option>
-                            {categories.map((category) => (
+                            {categoryTypes.map((category) => (
                               <option key={category.id} value={category.id}>
                                 {isRTL
                                   ? category.nameArabic
@@ -962,7 +970,8 @@ const CreateRoster = () => {
                                       {t("roster.form.subDepartment")}
                                     </label>
 
-                                    {loadingGetSubDepartments ? (
+                                    {loadingGetSubDepartments &&
+                                    loadingSubDepartment == index ? (
                                       <DropdownLoader
                                         text={t("common.loading")}
                                       />
