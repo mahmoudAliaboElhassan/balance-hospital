@@ -21,11 +21,8 @@ import {
   X,
 } from "lucide-react";
 
-import {
-  createBasicRoster,
-  createCompleteRoster,
-} from "../../../state/act/actRosterManagement";
-import { clearError, clearSuccess } from "../../../state/slices/roster";
+import { createBasicRoster } from "../../../state/act/actRosterManagement";
+// import { clearError, clearSuccess } from "../../../state/slices/roster";
 
 import { getCategoryTypes } from "../../../state/act/actCategory";
 import { getDepartments } from "../../../state/act/actDepartment";
@@ -116,7 +113,7 @@ const CreateRoster = () => {
     if (success.create) {
       toast.success(t("roster.success.created"));
       navigate("/admin-panel/rosters");
-      dispatch(clearSuccess());
+      //   dispatch(clearSuccess());
     }
   }, [success.create, dispatch, navigate, t]);
 
@@ -127,7 +124,7 @@ const CreateRoster = () => {
           createError.message ||
           t("roster.error.createFailed")
       );
-      dispatch(clearError());
+      //   dispatch(clearError());
     }
   }, [createError, dispatch, t]);
 
@@ -283,8 +280,6 @@ const CreateRoster = () => {
     try {
       if (rosterType === "basic") {
         await dispatch(createBasicRoster(values)).unwrap();
-      } else {
-        await dispatch(createCompleteRoster(values)).unwrap();
       }
     } catch (error) {
       // Error handling is done in useEffect

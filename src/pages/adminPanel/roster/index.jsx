@@ -23,11 +23,11 @@ import {
 } from "lucide-react";
 
 import {
-  getRosters,
-  updateRosterStatus,
+  getRosterList,
+  //   updateRosterStatus,
   exportRoster,
 } from "../../../state/act/actRosterManagement";
-import { clearError, clearSuccess } from "../../../state/slices/roster";
+// import { clearError, clearSuccess } from "../../../state/slices/roster";
 import { getCategories } from "../../../state/act/actCategory";
 
 const RosterManagement = () => {
@@ -64,7 +64,7 @@ const RosterManagement = () => {
 
   // Load initial data
   useEffect(() => {
-    dispatch(getRosters(filters));
+    dispatch(getRosterList(filters));
     dispatch(getCategories());
   }, [dispatch]);
 
@@ -76,7 +76,7 @@ const RosterManagement = () => {
       setSelectedRoster(null);
       setStatusReason("");
       dispatch(clearSuccess());
-      dispatch(getRosters(filters)); // Refresh list
+      dispatch(getRosterList(filters)); // Refresh list
     }
   }, [success.update, dispatch, t, filters]);
 
@@ -92,7 +92,7 @@ const RosterManagement = () => {
   const handleSearch = () => {
     const newFilters = { ...filters, page: 1 };
     setFilters(newFilters);
-    dispatch(getRosters(newFilters));
+    dispatch(getRosterList(newFilters));
   };
 
   const handleFilterChange = (field, value) => {
@@ -102,7 +102,7 @@ const RosterManagement = () => {
   const handlePageChange = (page) => {
     const newFilters = { ...filters, page };
     setFilters(newFilters);
-    dispatch(getRosters(newFilters));
+    dispatch(getRosterList(newFilters));
   };
 
   const handleStatusChange = async (roster, newStatus) => {
@@ -116,20 +116,6 @@ const RosterManagement = () => {
         t("roster.validation.reasonRequired") || "Reason is required"
       );
       return;
-    }
-
-    try {
-      await dispatch(
-        updateRosterStatus({
-          id: selectedRoster.id,
-          status: selectedRoster.newStatus,
-          reason: statusReason,
-        })
-      ).unwrap();
-    } catch (error) {
-      toast.error(
-        error.messageAr || error.message || t("roster.error.statusUpdateFailed")
-      );
     }
   };
 
@@ -261,20 +247,11 @@ const RosterManagement = () => {
           </div>
           <div className="flex flex-col sm:flex-row gap-3 mt-4 sm:mt-0">
             <button
-              onClick={() => navigate("/admin-panel/rosters/create?type=basic")}
+              onClick={() => navigate("/admin-panel/rosters/create")}
               className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
             >
               <Plus size={16} className={isRTL ? "ml-2" : "mr-2"} />
               {t("roster.actions.createBasic")}
-            </button>
-            <button
-              onClick={() =>
-                navigate("/admin-panel/rosters/create?type=complete")
-              }
-              className="inline-flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
-            >
-              <Plus size={16} className={isRTL ? "ml-2" : "mr-2"} />
-              {t("roster.actions.createComplete")}
             </button>
           </div>
         </div>
@@ -448,22 +425,11 @@ const RosterManagement = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
-                onClick={() =>
-                  navigate("/admin-panel/rosters/create?type=basic")
-                }
+                onClick={() => navigate("/admin-panel/rosters/create")}
                 className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 <Plus size={16} className={isRTL ? "ml-2" : "mr-2"} />
                 {t("roster.actions.createBasic")}
-              </button>
-              <button
-                onClick={() =>
-                  navigate("/admin-panel/rosters/create?type=complete")
-                }
-                className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-              >
-                <Plus size={16} className={isRTL ? "ml-2" : "mr-2"} />
-                {t("roster.actions.createComplete")}
               </button>
             </div>
           </div>
