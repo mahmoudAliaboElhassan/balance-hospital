@@ -150,6 +150,33 @@ function UseInitialValues() {
     notes: "",
   };
 
+  const currentDate = new Date();
+  const nextMonth = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth() + 1,
+    1
+  );
+
+  const INITIAL_VALUES_CREATE_BASIC_ROASTER = {
+    categoryId: "",
+    title: "",
+    description: "",
+    month: nextMonth.getMonth() + 1,
+    year: nextMonth.getFullYear(),
+    submissionDeadline: "",
+    departments: [
+      {
+        departmentId: "",
+        subDepartmentId: "",
+        notes: "",
+      },
+    ],
+    allowSwapRequests: true,
+    allowLeaveRequests: true,
+    // maxConsecutiveDays: 7,
+    // minRestDaysBetween: 1,
+  };
+
   return {
     INITIAL_VALUES_LOGIN,
     INITIAL_VALUES_FORGET_PASSWORD,
@@ -167,6 +194,7 @@ function UseInitialValues() {
     INITIAL_VALUES_ADD_SHIFT_HOUR_TYPE,
     INITIAL_VALUES_ADD_ROLE,
     INITIAL_VALUES_ASSIGN_USER_TO_ROLE,
+    INITIAL_VALUES_CREATE_BASIC_ROASTER,
   };
 }
 

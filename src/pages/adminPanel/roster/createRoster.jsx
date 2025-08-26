@@ -30,18 +30,20 @@ import { getSubDepartments } from "../../../state/act/actSubDepartment";
 import { getShiftHoursTypes } from "../../../state/act/actShiftHours";
 import { getContractingTypes } from "../../../state/act/actContractingType";
 import LoadingGetData from "../../../components/LoadingGetData";
+import Swal from "sweetalert2";
+import UseInitialValues from "../../../hooks/use-initial-values";
+import UseFormValidation from "../../../hooks/use-form-validation";
 
 const CreateRoster = () => {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const isRTL = i18n.language === "ar";
-
+  const currentLang = i18n.language;
+  const isRTL = currentLang === "ar";
   const rosterType = searchParams.get("type") || "basic"; // basic or complete
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = rosterType === "complete" ? 4 : 2;
-
   // State for cascading dropdowns
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [departmentsByCategory, setDepartmentsByCategory] = useState([]);
@@ -49,7 +51,9 @@ const CreateRoster = () => {
     {}
   );
 
-  // Redux state
+  const { VALIDATION_SCHEMA_CREATE_BASIC_ROASTER } = UseFormValidation();
+  const { INITIAL_VALUES_CREATE_BASIC_ROASTER } = UseInitialValues();
+
   const { loading, success, error, createError } = useSelector(
     (state) => state.rosterManagement
   );
@@ -69,9 +73,6 @@ const CreateRoster = () => {
   const { subDepartments, loadingGetSubDepartments } = useSelector(
     (state) => state.subDepartment
   );
-
-  const { shiftHoursTypes } = useSelector((state) => state.shiftHour);
-  const { contractingTypes } = useSelector((state) => state.contractingType);
 
   // Load initial data
   useEffect(() => {
@@ -130,7 +131,7 @@ const CreateRoster = () => {
 
   // Show loading screen for initial categoryTypes loading
   if (loadingGetCategoryTypes) {
-    return <LoadingGetData text={t("gettingData.category")} />;
+    return <LoadingGetData text={t("gettingData.categories")} />;
   }
 
   // Get current year and next 5 years
@@ -138,154 +139,71 @@ const CreateRoster = () => {
   const years = Array.from({ length: 7 }, (_, i) => currentYear + i);
 
   // Validation schemas
-  const basicRosterSchema = Yup.object().shape({
-    categoryId: Yup.number().required(t("roster.validation.categoryRequired")),
-    title: Yup.string()
-      .required(t("roster.validation.titleRequired"))
-      .min(3, t("roster.validation.titleMinLength"))
-      .max(255, t("roster.validation.titleMaxLength")),
-    description: Yup.string().max(
-      1000,
-      t("roster.validation.descriptionMaxLength")
-    ),
-    month: Yup.number()
-      .min(1, t("roster.validation.monthInvalid"))
-      .max(12, t("roster.validation.monthInvalid"))
-      .required(t("roster.validation.monthRequired")),
-    year: Yup.number()
-      .min(currentYear, t("roster.validation.yearInvalid"))
-      .max(currentYear + 6, t("roster.validation.yearInvalid"))
-      .required(t("roster.validation.yearRequired")),
-    submissionDeadline: Yup.date()
-      .required(t("roster.validation.deadlineRequired"))
-      .min(new Date(), t("roster.validation.deadlineFuture")),
-    departments: Yup.array()
-      .min(1, t("roster.validation.departmentsRequired"))
-      .of(
-        Yup.object().shape({
-          departmentId: Yup.number().required(
-            t("roster.validation.departmentRequired")
-          ),
-          notes: Yup.string().max(500, t("roster.validation.notesMaxLength")),
-        })
-      ),
-    maxConsecutiveDays: Yup.number()
-      .min(1, t("roster.validation.maxConsecutiveDaysMin"))
-      .max(14, t("roster.validation.maxConsecutiveDaysMax"))
-      .required(),
-    minRestDaysBetween: Yup.number()
-      .min(0, t("roster.validation.minRestDaysMin"))
-      .max(7, t("roster.validation.minRestDaysMax"))
-      .required(),
-  });
 
-  const completeRosterSchema = basicRosterSchema.shape({
-    departments: Yup.array()
-      .min(1, t("roster.validation.departmentsRequired"))
-      .of(
-        Yup.object().shape({
-          departmentId: Yup.number().required(
-            t("roster.validation.departmentRequired")
-          ),
-          notes: Yup.string().max(500, t("roster.validation.notesMaxLength")),
-          workingHours: Yup.array()
-            .min(1, t("roster.validation.workingHoursRequired"))
-            .of(
-              Yup.object().shape({
-                dayOfWeek: Yup.number()
-                  .min(0, t("roster.validation.dayOfWeekInvalid"))
-                  .max(6, t("roster.validation.dayOfWeekInvalid"))
-                  .required(t("roster.validation.dayOfWeekRequired")),
-                shiftHoursTypeId: Yup.number().required(
-                  t("roster.validation.shiftTypeRequired")
-                ),
-                requiredDoctors: Yup.number()
-                  .min(1, t("roster.validation.requiredDoctorsMin"))
-                  .max(50, t("roster.validation.requiredDoctorsMax"))
-                  .required(t("roster.validation.requiredDoctorsRequired")),
-                maxDoctors: Yup.number()
-                  .min(1, t("roster.validation.maxDoctorsMin"))
-                  .max(50, t("roster.validation.maxDoctorsMax"))
-                  .nullable(),
-                contractingRequirements: Yup.array()
-                  .min(1, t("roster.validation.contractingRequired"))
-                  .of(
-                    Yup.object().shape({
-                      contractingTypeId: Yup.number().required(
-                        t("roster.validation.contractingTypeRequired")
-                      ),
-                      requiredCount: Yup.number()
-                        .min(1, t("roster.validation.requiredCountMin"))
-                        .max(50, t("roster.validation.requiredCountMax"))
-                        .required(t("roster.validation.requiredCountRequired")),
-                      maxCount: Yup.number()
-                        .min(1, t("roster.validation.maxCountMin"))
-                        .max(50, t("roster.validation.maxCountMax"))
-                        .nullable(),
-                      allocationPercentage: Yup.number()
-                        .min(0, t("roster.validation.allocationPercentageMin"))
-                        .max(
-                          100,
-                          t("roster.validation.allocationPercentageMax")
-                        )
-                        .nullable(),
-                    })
-                  ),
-              })
-            ),
-        })
-      ),
-  });
-
-  const validationSchema =
-    rosterType === "complete" ? completeRosterSchema : basicRosterSchema;
-
-  // Initial values
-  const getInitialValues = () => {
-    const currentDate = new Date();
-    const nextMonth = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth() + 1,
-      1
-    );
-
-    const baseValues = {
-      categoryId: "",
-      title: "",
-      description: "",
-      month: nextMonth.getMonth() + 1,
-      year: nextMonth.getFullYear(),
-      submissionDeadline: "",
-      departments: [
-        {
-          departmentId: "",
-          subDepartmentId: "",
-          notes: "",
-          ...(rosterType === "complete" && {
-            workingHours: [],
-          }),
-        },
-      ],
-      allowSwapRequests: true,
-      allowLeaveRequests: true,
-      maxConsecutiveDays: 7,
-      minRestDaysBetween: 1,
+  const cleanDepartmentData = (department, rosterType) => {
+    const cleanedDepartment = {
+      departmentId: parseInt(department.departmentId),
     };
 
-    return baseValues;
+    // Only add subDepartmentId if it's not empty
+    if (
+      department.subDepartmentId &&
+      department.subDepartmentId.toString().trim() !== ""
+    ) {
+      cleanedDepartment.subDepartmentId = parseInt(department.subDepartmentId);
+    }
+
+    // Only add notes if it's not empty
+    if (department.notes && department.notes.trim() !== "") {
+      cleanedDepartment.notes = department.notes.trim();
+    }
+
+    return cleanedDepartment;
   };
 
   const handleSubmit = async (values, { setSubmitting }) => {
     console.log("values", values);
-    try {
-      if (rosterType === "basic") {
-        await dispatch(createBasicRoster(values)).unwrap();
-      }
-    } catch (error) {
-      // Error handling is done in useEffect
-    } finally {
-      setSubmitting(false);
-    }
+
+    const cleanedValues = {
+      ...values,
+      categoryId: parseInt(values.categoryId),
+      month: parseInt(values.month),
+      departments: values.departments.map((department) =>
+        cleanDepartmentData(department, rosterType)
+      ),
+    };
+
+    console.log("Cleaned values", cleanedValues);
+    setSubmitting(true);
+
+    dispatch(createBasicRoster(cleanedValues))
+      .unwrap()
+      .then(() => {
+        setSubmitting(false);
+        toast.success(t("roster.success.created"), {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      })
+      .catch((error) => {
+        // Error handling is done in useEffect
+        setSubmitting(false);
+
+        Swal.fire({
+          title: t("roster.error.createFailed"),
+          text: error.errors[0],
+
+          icon: "error",
+          confirmButtonText: t("common.ok"),
+          confirmButtonColor: "#ef4444",
+          background: "#ffffff",
+          color: "#111827",
+        });
+      });
   };
 
   // Handle category change
@@ -397,7 +315,9 @@ const CreateRoster = () => {
     }
   };
 
-  const nextStep = () => {
+  const nextStep = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     setCurrentStep((prev) => Math.min(prev + 1, totalSteps));
   };
 
@@ -540,8 +460,8 @@ const CreateRoster = () => {
         >
           <div className="p-6">
             <Formik
-              initialValues={getInitialValues()}
-              validationSchema={validationSchema}
+              initialValues={INITIAL_VALUES_CREATE_BASIC_ROASTER}
+              validationSchema={VALIDATION_SCHEMA_CREATE_BASIC_ROASTER}
               onSubmit={handleSubmit}
               enableReinitialize={true}
             >
@@ -1238,7 +1158,7 @@ const CreateRoster = () => {
                         </div>
 
                         {/* Max Consecutive Days */}
-                        <div>
+                        {/* <div>
                           <label
                             className={`block text-sm font-medium ${
                               isDark ? "text-gray-300" : "text-gray-700"
@@ -1274,10 +1194,10 @@ const CreateRoster = () => {
                             component="div"
                             className="text-red-500 text-xs mt-1"
                           />
-                        </div>
+                        </div> */}
 
                         {/* Min Rest Days Between */}
-                        <div>
+                        {/* <div>
                           <label
                             className={`block text-sm font-medium ${
                               isDark ? "text-gray-300" : "text-gray-700"
@@ -1313,7 +1233,7 @@ const CreateRoster = () => {
                             component="div"
                             className="text-red-500 text-xs mt-1"
                           />
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   )}
@@ -1368,13 +1288,13 @@ const CreateRoster = () => {
                       ) : (
                         <button
                           type="submit"
-                          disabled={isSubmitting || loading.create}
+                          disabled={isSubmitting || loading.createBasic}
                           className={`inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed`}
                         >
-                          {isSubmitting || loading.create ? (
+                          {isSubmitting || loading.createBasic ? (
                             <>
                               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                              {t("common.creating")}
+                              {t("roster.actions.creating")}
                             </>
                           ) : (
                             <>
@@ -1382,9 +1302,7 @@ const CreateRoster = () => {
                                 size={16}
                                 className={isRTL ? "ml-2" : "mr-2"}
                               />
-                              {rosterType === "basic"
-                                ? t("roster.actions.createBasic")
-                                : t("roster.actions.createComplete")}
+                              {t("roster.actions.createBasic")}
                             </>
                           )}
                         </button>

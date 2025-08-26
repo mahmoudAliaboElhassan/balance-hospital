@@ -1570,7 +1570,9 @@
     "contractingTypeData": "Loading contracting type data…",
     "scientificDegrees": "Loading scientific degrees…",
     "scientificDegreeData": "Loading scientific degree data…",
-    "userRole": "Loading User Role Data data…"
+    "userRole": "Loading User Role Data data…",
+    "rosters": "Loading Rosters Data data…",
+    "roster": "Loading Roster Data data…"
   },
 
   "error": {
@@ -1631,14 +1633,20 @@
       "createComplete": "Create Complete Roster",
       "view": "View Details",
       "edit": "Edit Roster",
+      "addNew": "Add New Roster",
+      "add": "Add",
+      "creating": "Creating Roster...",
       "delete": "Delete Roster",
       "export": "Export Roster",
       "publish": "Publish",
       "close": "Close",
-      "archive": "Archive"
+      "archive": "Archive",
+      "update": "Update",
+      "updating": "Updating..."
     },
     "status": {
       "draft": "Draft",
+      "draftPartial": "Draft (Partial)",
       "published": "Published",
       "closed": "Closed",
       "archived": "Archived"
@@ -1649,7 +1657,23 @@
       "category": "Category",
       "allCategories": "All Categories",
       "status": "Status",
-      "allStatuses": "All Statuses",
+      "title": "Filters",
+      "all": "All",
+      "allYears": "All Years",
+      "orderBy": "Sort By",
+      "clear": "Clear Filters",
+      "orderDirection": "Sort Direction",
+      "ascending": "Ascending",
+      "descending": "Descending",
+      "sortBy": {
+        "createdAt": "Creation Date",
+        "nameArabic": "Arabic Name",
+        "nameEnglish": "English Name",
+        "code": "Code",
+        "title": "Title",
+        "year": "Year",
+        "month": "Month"
+      },
       "month": "Month",
       "allMonths": "All Months",
       "year": "Year",
@@ -1678,6 +1702,8 @@
       "selectCategory": "Select Category",
       "month": "Month",
       "year": "Year",
+      "selectCategoryFirst": "Please select a category first",
+      "selectCategoryFirstDescription": "You need to choose a category before proceeding with this action",
       "submissionDeadline": "Submission Deadline",
       "submissionDeadlineHelp": "Last date and time for doctors to submit their preferences",
       "departments": "Departments",
@@ -1718,7 +1744,12 @@
       "createBasicRoster": "Create Basic Roster",
       "createCompleteRoster": "Create Complete Roster",
       "basicRosterInfo": "Basic roster creation allows you to set up the main structure. You can add working hours and contracting requirements later.",
-      "completeRosterInfo": "Complete roster creation includes all configurations including working hours and contracting requirements."
+      "completeRosterInfo": "Complete roster creation includes all configurations including working hours and contracting requirements.",
+      "updateRoster": "Update Roster",
+      "updateRosterInfo": "Update the basic data and roster settings.",
+      "categoryReadOnly": "Category cannot be changed after creation.",
+      "monthReadOnly": "Month cannot be changed after creation.",
+      "yearReadOnly": "Year cannot be changed after creation."
     },
     "days": {
       "sunday": "Sunday",
@@ -1747,6 +1778,7 @@
       "titleRequired": "Roster title is required",
       "titleMinLength": "Title must be at least 3 characters",
       "titleMaxLength": "Title cannot exceed 255 characters",
+      "descriptionMaxLength": "Description cannot exceed 1000 characters",
       "categoryRequired": "Category selection is required",
       "monthRequired": "Month is required",
       "monthInvalid": "Month must be between 1 and 12",
@@ -1798,7 +1830,8 @@
       "statusUpdateFailed": "Failed to update roster status",
       "invalidData": "Invalid data provided",
       "networkError": "Network error occurred",
-      "permissionDenied": "Permission denied"
+      "permissionDenied": "Permission denied",
+      "notFound": "Roster not found"
     }
   }
 }

@@ -617,7 +617,71 @@ function UseFormValidation() {
         "Notes must not exceed 500 characters"
     ),
   });
+  const currentYear = new Date().getFullYear();
 
+  const VALIDATION_SCHEMA_UPDATE_BASIC_ROASTER = Yup.object().shape({
+    categoryId: Yup.number().required(t("roster.validation.categoryRequired")),
+    title: Yup.string()
+      .required(t("roster.validation.titleRequired"))
+      .min(3, t("roster.validation.titleMinLength"))
+      .max(255, t("roster.validation.titleMaxLength")),
+    description: Yup.string().max(
+      1000,
+      t("roster.validation.descriptionMaxLength")
+    ),
+    month: Yup.number()
+      .min(1, t("roster.validation.monthInvalid"))
+      .max(12, t("roster.validation.monthInvalid"))
+      .required(t("roster.validation.monthRequired")),
+    year: Yup.number()
+      .min(currentYear, t("roster.validation.yearInvalid"))
+      .max(currentYear + 6, t("roster.validation.yearInvalid"))
+      .required(t("roster.validation.yearRequired")),
+    submissionDeadline: Yup.date()
+      .required(t("roster.validation.deadlineRequired"))
+      .min(new Date(), t("roster.validation.deadlineFuture")),
+  });
+
+  const VALIDATION_SCHEMA_CREATE_BASIC_ROASTER = Yup.object().shape({
+    categoryId: Yup.number().required(t("roster.validation.categoryRequired")),
+    title: Yup.string()
+      .required(t("roster.validation.titleRequired"))
+      .min(3, t("roster.validation.titleMinLength"))
+      .max(255, t("roster.validation.titleMaxLength")),
+    description: Yup.string().max(
+      1000,
+      t("roster.validation.descriptionMaxLength")
+    ),
+    month: Yup.number()
+      .min(1, t("roster.validation.monthInvalid"))
+      .max(12, t("roster.validation.monthInvalid"))
+      .required(t("roster.validation.monthRequired")),
+    year: Yup.number()
+      .min(currentYear, t("roster.validation.yearInvalid"))
+      .max(currentYear + 6, t("roster.validation.yearInvalid"))
+      .required(t("roster.validation.yearRequired")),
+    submissionDeadline: Yup.date()
+      .required(t("roster.validation.deadlineRequired"))
+      .min(new Date(), t("roster.validation.deadlineFuture")),
+    departments: Yup.array()
+      .min(1, t("roster.validation.departmentsRequired"))
+      .of(
+        Yup.object().shape({
+          departmentId: Yup.number().required(
+            t("roster.validation.departmentRequired")
+          ),
+          notes: Yup.string().max(500, t("roster.validation.notesMaxLength")),
+        })
+      ),
+    // maxConsecutiveDays: Yup.number()
+    //   .min(1, t("roster.validation.maxConsecutiveDaysMin"))
+    //   .max(14, t("roster.validation.maxConsecutiveDaysMax"))
+    //   .required(),
+    // minRestDaysBetween: Yup.number()
+    //   .min(0, t("roster.validation.minRestDaysMin"))
+    //   .max(7, t("roster.validation.minRestDaysMax"))
+    //   .required(),
+  });
   return {
     VALIDATION_SCHEMA_LOGIN,
     VALIDATION_SCHEMA_RESET_PASSWORD,
@@ -637,6 +701,8 @@ function UseFormValidation() {
     VALIDATION_SCHEMA_ADD_SHIFT_HOUR_TYPE,
     VALIDATION_SCHEMA_ADD_ROLE,
     VALIDATION_SCHEMA_ASSIGN_USER_TO_ROLE,
+    VALIDATION_SCHEMA_CREATE_BASIC_ROASTER,
+    VALIDATION_SCHEMA_UPDATE_BASIC_ROASTER,
   };
 }
 

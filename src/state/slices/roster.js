@@ -57,6 +57,7 @@ import {
   exportRoster,
   duplicateRoster,
 } from "../act/actRosterManagement";
+import i18next from "i18next";
 
 // ===================================================================
 // INITIAL STATE (الحالة الأولية)
@@ -178,6 +179,7 @@ const initialState = {
       month: null,
       year: null,
       departmentId: null,
+      search: null,
     },
   },
 };
@@ -202,6 +204,14 @@ const rosterManagementSlice = createSlice({
       if (state.errors[errorType] !== undefined) {
         state.errors[errorType] = null;
       }
+    },
+
+    setCurrentPage: (state, action) => {
+      state.filters.page = action.payload;
+    },
+    setPageSize: (state, action) => {
+      state.filters.pageSize = action.payload;
+      state.filters.page = 1;
     },
 
     // ===== SUCCESS STATE MANAGEMENT (إدارة حالات النجاح) =====
@@ -760,10 +770,13 @@ const rosterManagementSlice = createSlice({
       .addCase(getRosterList.fulfilled, (state, action) => {
         state.loading.fetch = false;
         state.rosterList = action.payload?.data || [];
+        console.log("roster list", state.rosterList);
       })
       .addCase(getRosterList.rejected, (state, action) => {
         state.loading.fetch = false;
-        state.errors.general = action.payload;
+        state.errors.general =
+          // action.payload?.message ||
+          i18next.t("roster.error.fetchFailed");
       });
 
     // Get Rosters Paged
@@ -797,7 +810,9 @@ const rosterManagementSlice = createSlice({
       })
       .addCase(getRostersPaged.rejected, (state, action) => {
         state.loading.fetch = false;
-        state.errors.general = action.payload;
+        state.errors.general =
+          // action.payload?.message ||
+          i18next.t("roster.error.fetchFailed");
       });
 
     // Get Roster by ID
@@ -812,7 +827,8 @@ const rosterManagementSlice = createSlice({
       })
       .addCase(getRosterById.rejected, (state, action) => {
         state.loading.fetch = false;
-        state.errors.general = action.payload;
+        state.errors.general =
+          action.payload || i18next.t("roster.error.fetchFailed");
       });
 
     // Search Colleagues
@@ -1039,7 +1055,8 @@ export const {
   setSelectedShiftId,
   setFilters,
   clearFilters,
-
+  setCurrentPage,
+  setPageSize,
   // Roster Operations
   updateRosterInList,
   removeRosterFromList,
