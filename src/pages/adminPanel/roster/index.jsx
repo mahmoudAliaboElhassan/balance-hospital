@@ -750,19 +750,19 @@ function Roster() {
                           <div className="flex gap-1 justify-center">
                             <Link to={`/admin-panel/rosters/${roster.id}`}>
                               <button className="p-1 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded transition-colors cursor-pointer">
-                                <Eye size={14} />
+                                <Eye size={16} />
                               </button>
                             </Link>
                             <Link
                               to={`/admin-panel/rosters/${roster.id}/add-doctors`}
                             >
                               <button className="p-1 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900 rounded transition-colors cursor-pointer">
-                                <UserPlus size={14} />
+                                <UserPlus size={16} />
                               </button>
                             </Link>
                             <Link to={`/admin-panel/rosters/${roster.id}/edit`}>
                               <button className="p-1 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded transition-colors cursor-pointer">
-                                <Edit size={14} />
+                                <Edit size={16} />
                               </button>
                             </Link>
                             <button
@@ -775,7 +775,7 @@ function Roster() {
                                 setModalOpen(true);
                               }}
                             >
-                              <Trash2 size={14} />
+                              <Trash2 size={16} />
                             </button>
                           </div>
                         </td>
