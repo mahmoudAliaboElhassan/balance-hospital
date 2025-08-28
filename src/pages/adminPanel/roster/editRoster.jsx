@@ -63,7 +63,7 @@ const UpdateRoster = () => {
 
   useEffect(() => {
     if (rosterId) {
-      dispatch(getRosterById(rosterId));
+      dispatch(getRosterById({ rosterId }));
     }
   }, [dispatch, rosterId]);
 
@@ -99,7 +99,7 @@ const UpdateRoster = () => {
               className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               <ArrowLeft size={16} className={isRTL ? "ml-2" : "mr-2"} />
-              {t("common.backToList")}
+              {t("common.goBack")}
             </Link>
           </div>
         </div>
@@ -149,11 +149,16 @@ const UpdateRoster = () => {
       .toString()
       .padStart(2, "0")}-${values.endDay.toString().padStart(2, "0")}`;
 
+    console.log("startDate", startDate);
+    console.log("endDate", endDate);
+
     const cleanedValues = {
       title: values.title,
       description: values.description || null,
       startDate: startDate,
       endDate: endDate,
+      month: values.month,
+      year: values.year,
       submissionDeadline: formattedDeadline,
       allowSwapRequests: values.allowSwapRequests,
       allowLeaveRequests: values.allowLeaveRequests,
@@ -456,7 +461,7 @@ const UpdateRoster = () => {
                           />
                         </div>
 
-                        {/* Month (Read Only) */}
+                        {/* Month */}
                         <div>
                           <label
                             className={`block text-sm font-medium ${
@@ -465,27 +470,29 @@ const UpdateRoster = () => {
                           >
                             {t("roster.form.month")} *
                           </label>
-                          <div
+                          <Field
+                            as="select"
+                            name="month"
                             className={`w-full px-3 py-2 border rounded-lg ${
                               isDark
-                                ? "bg-gray-600 border-gray-600 text-gray-300"
-                                : "bg-gray-100 border-gray-300 text-gray-600"
-                            } cursor-not-allowed`}
+                                ? "bg-gray-700 border-gray-600 text-white"
+                                : "bg-white border-gray-300 text-gray-900"
+                            } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                           >
-                            {selectedRoster?.month
-                              ? monthNames[selectedRoster.month - 1]
-                              : t("common.loading")}
-                          </div>
-                          <p
-                            className={`text-xs ${
-                              isDark ? "text-gray-400" : "text-gray-500"
-                            } mt-1`}
-                          >
-                            {t("roster.form.monthReadOnly")}
-                          </p>
+                            {monthNames.map((month, index) => (
+                              <option key={index + 1} value={index + 1}>
+                                {month}
+                              </option>
+                            ))}
+                          </Field>
+                          <ErrorMessage
+                            name="month"
+                            component="div"
+                            className="text-red-500 text-xs mt-1"
+                          />
                         </div>
 
-                        {/* Year (Read Only) */}
+                        {/* Year */}
                         <div>
                           <label
                             className={`block text-sm font-medium ${
@@ -494,22 +501,26 @@ const UpdateRoster = () => {
                           >
                             {t("roster.form.year")} *
                           </label>
-                          <div
+                          <Field
+                            as="select"
+                            name="year"
                             className={`w-full px-3 py-2 border rounded-lg ${
                               isDark
-                                ? "bg-gray-600 border-gray-600 text-gray-300"
-                                : "bg-gray-100 border-gray-300 text-gray-600"
-                            } cursor-not-allowed`}
+                                ? "bg-gray-700 border-gray-600 text-white"
+                                : "bg-white border-gray-300 text-gray-900"
+                            } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                           >
-                            {selectedRoster?.year || t("common.loading")}
-                          </div>
-                          <p
-                            className={`text-xs ${
-                              isDark ? "text-gray-400" : "text-gray-500"
-                            } mt-1`}
-                          >
-                            {t("roster.form.yearReadOnly")}
-                          </p>
+                            {years.map((year) => (
+                              <option key={year} value={year}>
+                                {year}
+                              </option>
+                            ))}
+                          </Field>
+                          <ErrorMessage
+                            name="year"
+                            component="div"
+                            className="text-red-500 text-xs mt-1"
+                          />
                         </div>
                         <div>
                           <label
