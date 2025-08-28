@@ -629,6 +629,21 @@ function UseFormValidation() {
       1000,
       t("roster.validation.descriptionMaxLength")
     ),
+    startDay: Yup.number()
+      .min(1, t("roster.validation.dayMin"))
+      .max(30, t("roster.validation.dayMax"))
+      .required(t("roster.validation.required")),
+    endDay: Yup.number()
+      .min(1, t("roster.validation.dayMin"))
+      .max(30, t("roster.validation.dayMax"))
+      .required(t("roster.validation.required"))
+      .test(
+        "endAfterStart",
+        t("roster.validation.endDayAfterStartDay"),
+        function (value) {
+          return value >= this.parent.startDay;
+        }
+      ),
     month: Yup.number()
       .min(1, t("roster.validation.monthInvalid"))
       .max(12, t("roster.validation.monthInvalid"))
@@ -652,6 +667,21 @@ function UseFormValidation() {
       1000,
       t("roster.validation.descriptionMaxLength")
     ),
+    startDay: Yup.number()
+      .min(1, t("roster.validation.dayMin"))
+      .max(30, t("roster.validation.dayMax"))
+      .required(t("roster.validation.required")),
+    endDay: Yup.number()
+      .min(1, t("roster.validation.dayMin"))
+      .max(30, t("roster.validation.dayMax"))
+      .required(t("roster.validation.required"))
+      .test(
+        "endAfterStart",
+        t("roster.validation.endDayAfterStartDay"),
+        function (value) {
+          return value >= this.parent.startDay;
+        }
+      ),
     month: Yup.number()
       .min(1, t("roster.validation.monthInvalid"))
       .max(12, t("roster.validation.monthInvalid"))

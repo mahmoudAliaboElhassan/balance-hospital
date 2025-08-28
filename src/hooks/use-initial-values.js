@@ -161,6 +161,8 @@ function UseInitialValues() {
     categoryId: "",
     title: "",
     description: "",
+    startDay: 1,
+    endDay: 30,
     month: nextMonth.getMonth() + 1,
     year: nextMonth.getFullYear(),
     submissionDeadline: "",

@@ -174,7 +174,7 @@
       "delete": "Delete"
     },
     "pagination": {
-      "showing": "Showing {{start}} - {{end}} of {{total}} items",
+      "showing": "Showing {{start}} - {{end}} of {{total}} Items",
       "itemsPerPage": "items per page",
       "previous": "Previous",
       "next": "Next"
@@ -1628,13 +1628,68 @@
     "subtitle": "Manage hospital staff rosters and schedules",
     "noRosters": "No rosters found. Create your first roster to get started.",
     "createFirstRoster": "Create your first roster to start scheduling doctors and departments.",
+    "departments": "Departments",
+    "dayss": "Days",
+    "updateStatusFor": "Update Status for ",
+    "completion": "Completion",
+    "phaseOne": {
+      "title": "Department Shifts Setup",
+      "subtitle": "Configure department shifts",
+
+      "rosterId": "Roster ID",
+      "fields": {
+        "shifts": "Shifts",
+        "shiftType": "Shift Type",
+        "departmentId": "Department ID",
+        "overwriteExistingHelp": "If enabled, existing shifts for this department will be replaced.",
+        "notes": "Notes",
+        "reason": "Reason",
+        "overwriteExisting": "Overwrite existing shifts for this department"
+      },
+      "placeholders": {
+        "selectShiftType": "Select a shift type",
+        "notes": "Enter optional notes (max 500 characters)",
+        "departmentId": "Enter department ID",
+        "updateReason": "Enter the reason for the update"
+      },
+      "buttons": {
+        "addShift": "Add Shift",
+        "removeShift": "Remove Shift",
+        "cancel": "Cancel",
+        "adding": "Adding...",
+        "save": "Save",
+        "saving": "Saving...",
+        "addShifts": "Add Shifts"
+      },
+      "shiftNumber": "Shift {{number}}",
+      "charactersCount": "characters",
+      "loading": {
+        "shiftTypes": "Loading shift types..."
+      },
+      "validation": {
+        "departmentRequired": "Department is required",
+        "shiftTypeRequired": "Shift type is required",
+        "notesMaxLength": "Notes cannot exceed 500 characters",
+        "atLeastOneShift": "At least one shift must be added"
+      },
+      "success": {
+        "shiftsAdded": "Shifts added successfully"
+      },
+      "error": {
+        "title": "Failed to add shifts",
+        "message": "An error occurred while adding department shifts"
+      }
+    },
     "actions": {
       "createBasic": "Create Basic Roster",
       "createComplete": "Create Complete Roster",
       "view": "View Details",
       "edit": "Edit Roster",
       "addNew": "Add New Roster",
+      "cancel": "Cancel",
       "add": "Add",
+      "create": "Create Roster",
+      "updateStatus": "Update Status",
       "creating": "Creating Roster...",
       "delete": "Delete Roster",
       "export": "Export Roster",
@@ -1642,11 +1697,14 @@
       "close": "Close",
       "archive": "Archive",
       "update": "Update",
-      "updating": "Updating..."
+      "updating": "Updating...",
+      "addDoctors": "Add Doctors"
     },
     "status": {
       "draft": "Draft",
+      "draftBasic": "Draft (Basic)",
       "draftPartial": "Draft (Partial)",
+      "draftReady": "Ready for Publish",
       "published": "Published",
       "closed": "Closed",
       "archived": "Archived"
@@ -1672,7 +1730,8 @@
         "code": "Code",
         "title": "Title",
         "year": "Year",
-        "month": "Month"
+        "month": "Month",
+        "completion": "Completion"
       },
       "month": "Month",
       "allMonths": "All Months",
@@ -1690,7 +1749,9 @@
       "departments": "Departments",
       "createdBy": "Created By",
       "createdAt": "Created Date",
-      "updatedAt": "Last Updated"
+      "created": "Created Date",
+      "updatedAt": "Last Updated",
+      "completion": "Completion"
     },
     "form": {
       "basicInfo": "Basic Information",
@@ -1749,7 +1810,9 @@
       "updateRosterInfo": "Update the basic data and roster settings.",
       "categoryReadOnly": "Category cannot be changed after creation.",
       "monthReadOnly": "Month cannot be changed after creation.",
-      "yearReadOnly": "Year cannot be changed after creation."
+      "yearReadOnly": "Year cannot be changed after creation.",
+      "startDate": "Start Date",
+      "endDate": "End Date"
     },
     "days": {
       "sunday": "Sunday",
@@ -1774,6 +1837,7 @@
       "november": "November",
       "december": "December"
     },
+
     "validation": {
       "titleRequired": "Roster title is required",
       "titleMinLength": "Title must be at least 3 characters",
@@ -1809,7 +1873,13 @@
       "maxConsecutiveDaysMin": "Maximum consecutive days must be at least 1",
       "maxConsecutiveDaysMax": "Maximum consecutive days cannot exceed 14",
       "minRestDaysMin": "Minimum rest days must be at least 0",
-      "minRestDaysMax": "Minimum rest days cannot exceed 7"
+      "minRestDaysMax": "Minimum rest days cannot exceed 7",
+
+      "dayMin": "Day must be at least 1",
+      "dayMax": "Day cannot exceed 30",
+      "required": "This field is required",
+      "endDayAfterStartDay": "End day must be greater than or equal to start day",
+      "notesMaxLength": "Notes cannot exceed 500 characters"
     },
     "success": {
       "created": "Roster created successfully",
@@ -1831,7 +1901,11 @@
       "invalidData": "Invalid data provided",
       "networkError": "Network error occurred",
       "permissionDenied": "Permission denied",
-      "notFound": "Roster not found"
+      "notFound": "Roster not found",
+      "updateStatusFailed": "Failed to update roster status"
+    },
+    "pagination": {
+      "itemsPerPage": "Items per page"
     }
   }
 }

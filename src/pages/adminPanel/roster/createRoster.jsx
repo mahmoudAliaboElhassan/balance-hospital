@@ -113,7 +113,6 @@ const CreateRoster = () => {
   useEffect(() => {
     if (success.create) {
       toast.success(t("roster.success.created"));
-      navigate("/admin-panel/rosters");
       //   dispatch(clearSuccess());
     }
   }, [success.create, dispatch, navigate, t]);
@@ -164,13 +163,34 @@ const CreateRoster = () => {
   const handleSubmit = async (values, { setSubmitting }) => {
     console.log("values", values);
 
+    // Combine startDay and endDay with month/year to create full dates
+    const year = parseInt(values.year);
+    const month = parseInt(values.month);
+    const startDay = parseInt(values.startDay);
+    const endDay = parseInt(values.endDay);
+
+    // Create full date strings (YYYY-MM-DD format)
+    const startDate = `${year}-${month.toString().padStart(2, "0")}-${startDay
+      .toString()
+      .padStart(2, "0")}`;
+    const endDate = `${year}-${month.toString().padStart(2, "0")}-${endDay
+      .toString()
+      .padStart(2, "0")}`;
+
     const cleanedValues = {
-      ...values,
       categoryId: parseInt(values.categoryId),
-      month: parseInt(values.month),
+      month: month,
+      year: year,
+      startDate: startDate,
+      endDate: endDate,
+      title: values.title,
+      description: values.description || "",
+      submissionDeadline: values.submissionDeadline,
       departments: values.departments.map((department) =>
         cleanDepartmentData(department, rosterType)
       ),
+      allowSwapRequests: values.allowSwapRequests || false,
+      allowLeaveRequests: values.allowLeaveRequests || false,
     };
 
     console.log("Cleaned values", cleanedValues);
@@ -188,6 +208,9 @@ const CreateRoster = () => {
           pauseOnHover: true,
           draggable: true,
         });
+        navigate(
+          `/admin-panel/rosters/${localStorage.getItem("rosterId")}/phase1`
+        );
       })
       .catch((error) => {
         // Error handling is done in useEffect
@@ -619,6 +642,79 @@ const CreateRoster = () => {
                           </Field>
                           <ErrorMessage
                             name="year"
+                            component="div"
+                            className="text-red-500 text-xs mt-1"
+                          />
+                        </div>
+
+                        <div>
+                          <label
+                            className={`block text-sm font-medium ${
+                              isDark ? "text-gray-300" : "text-gray-700"
+                            } mb-2`}
+                          >
+                            {t("roster.form.startDate")} *
+                          </label>
+                          <Field
+                            as="select"
+                            name="startDay"
+                            className={`w-full px-3 py-2 border rounded-lg ${
+                              isDark
+                                ? "bg-gray-700 border-gray-600 text-white"
+                                : "bg-white border-gray-300 text-gray-900"
+                            } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                              errors.startDay && touched.startDay
+                                ? "border-red-500"
+                                : ""
+                            }`}
+                          >
+                            {Array.from({ length: 30 }, (_, i) => i + 1).map(
+                              (day) => (
+                                <option key={day} value={day}>
+                                  {day}
+                                </option>
+                              )
+                            )}
+                          </Field>
+                          <ErrorMessage
+                            name="startDay"
+                            component="div"
+                            className="text-red-500 text-xs mt-1"
+                          />
+                        </div>
+
+                        {/* End Day */}
+                        <div>
+                          <label
+                            className={`block text-sm font-medium ${
+                              isDark ? "text-gray-300" : "text-gray-700"
+                            } mb-2`}
+                          >
+                            {t("roster.form.endDate")} *
+                          </label>
+                          <Field
+                            as="select"
+                            name="endDay"
+                            className={`w-full px-3 py-2 border rounded-lg ${
+                              isDark
+                                ? "bg-gray-700 border-gray-600 text-white"
+                                : "bg-white border-gray-300 text-gray-900"
+                            } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                              errors.endDay && touched.endDay
+                                ? "border-red-500"
+                                : ""
+                            }`}
+                          >
+                            {Array.from({ length: 30 }, (_, i) => i + 1).map(
+                              (day) => (
+                                <option key={day} value={day}>
+                                  {day}
+                                </option>
+                              )
+                            )}
+                          </Field>
+                          <ErrorMessage
+                            name="endDay"
                             component="div"
                             className="text-red-500 text-xs mt-1"
                           />

@@ -6,6 +6,7 @@ import {
   createShiftHoursType,
   updateShiftHoursType,
   deleteShiftHoursType,
+  getActiveShiftHoursTypes,
 } from "../act/actShiftHours";
 import UseInitialStates from "../../hooks/use-initial-state";
 
@@ -273,6 +274,44 @@ export const shiftHoursTypeSlice = createSlice({
         }
       })
       .addCase(getShiftHoursTypes.rejected, (state, action) => {
+        state.loadingGetShiftHoursTypes = false;
+        state.error = {
+          message: i18next.t("shiftHoursTypes.fetchError"),
+          errors: action.payload?.errors || [],
+          timestamp: new Date().toISOString(),
+        };
+      })
+      .addCase(getActiveShiftHoursTypes.pending, (state) => {
+        state.loadingGetShiftHoursTypes = true;
+        state.error = null;
+      })
+      .addCase(getActiveShiftHoursTypes.fulfilled, (state, action) => {
+        state.loadingGetShiftHoursTypes = false;
+        state.error = null;
+
+        const response = action.payload;
+        if (response.success) {
+          // Store server-filtered data
+          state.allShiftHoursTypes = response.data || [];
+          state.message = response.messageAr || response.messageEn;
+          state.timestamp = response.timestamp;
+
+          // Apply client-side search filtering and pagination
+          const searchFiltered = filterDataBySearch(
+            state.allShiftHoursTypes,
+            state.filters.search
+          );
+          const result = paginateData(
+            searchFiltered,
+            state.filters.page,
+            state.filters.pageSize
+          );
+
+          state.shiftHoursTypes = result.data;
+          state.pagination = result.pagination;
+        }
+      })
+      .addCase(getActiveShiftHoursTypes.rejected, (state, action) => {
         state.loadingGetShiftHoursTypes = false;
         state.error = {
           message: i18next.t("shiftHoursTypes.fetchError"),

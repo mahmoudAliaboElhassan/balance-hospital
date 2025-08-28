@@ -117,6 +117,7 @@ const UpdateRoster = () => {
     const submissionDeadline = selectedRoster.submissionDeadline
       ? new Date(selectedRoster.submissionDeadline).toISOString().slice(0, 16)
       : "";
+    console.log("selectedRoster", selectedRoster.endDate.split("-")[2]);
 
     return {
       categoryId: selectedRoster.categoryId?.toString() || "",
@@ -125,6 +126,8 @@ const UpdateRoster = () => {
       month: selectedRoster.month || new Date().getMonth() + 1,
       year: selectedRoster.year || new Date().getFullYear(),
       submissionDeadline: submissionDeadline,
+      startDay: selectedRoster.startDate.split("-")[2] || 1,
+      endDay: selectedRoster.endDate.split("-")[2] || 1,
       allowSwapRequests: selectedRoster.allowSwapRequests ?? true,
       allowLeaveRequests: selectedRoster.allowLeaveRequests ?? true,
     };
@@ -139,9 +142,18 @@ const UpdateRoster = () => {
       formattedDeadline = date.toISOString().split("T")[0];
     }
 
+    const startDate = `${values.year}-${values.month
+      .toString()
+      .padStart(2, "0")}-${values.startDay.toString().padStart(2, "0")}`;
+    const endDate = `${values.year}-${values.month
+      .toString()
+      .padStart(2, "0")}-${values.endDay.toString().padStart(2, "0")}`;
+
     const cleanedValues = {
       title: values.title,
       description: values.description || null,
+      startDate: startDate,
+      endDate: endDate,
       submissionDeadline: formattedDeadline,
       allowSwapRequests: values.allowSwapRequests,
       allowLeaveRequests: values.allowLeaveRequests,
@@ -499,7 +511,78 @@ const UpdateRoster = () => {
                             {t("roster.form.yearReadOnly")}
                           </p>
                         </div>
+                        <div>
+                          <label
+                            className={`block text-sm font-medium ${
+                              isDark ? "text-gray-300" : "text-gray-700"
+                            } mb-2`}
+                          >
+                            {t("roster.form.startDate")} *
+                          </label>
+                          <Field
+                            as="select"
+                            name="startDay"
+                            className={`w-full px-3 py-2 border rounded-lg ${
+                              isDark
+                                ? "bg-gray-700 border-gray-600 text-white"
+                                : "bg-white border-gray-300 text-gray-900"
+                            } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                              errors.startDay && touched.startDay
+                                ? "border-red-500"
+                                : ""
+                            }`}
+                          >
+                            {Array.from({ length: 30 }, (_, i) => i + 1).map(
+                              (day) => (
+                                <option key={day} value={day}>
+                                  {day}
+                                </option>
+                              )
+                            )}
+                          </Field>
+                          <ErrorMessage
+                            name="startDay"
+                            component="div"
+                            className="text-red-500 text-xs mt-1"
+                          />
+                        </div>
 
+                        {/* End Day */}
+                        <div>
+                          <label
+                            className={`block text-sm font-medium ${
+                              isDark ? "text-gray-300" : "text-gray-700"
+                            } mb-2`}
+                          >
+                            {t("roster.form.endDate")} *
+                          </label>
+                          <Field
+                            as="select"
+                            name="endDay"
+                            className={`w-full px-3 py-2 border rounded-lg ${
+                              isDark
+                                ? "bg-gray-700 border-gray-600 text-white"
+                                : "bg-white border-gray-300 text-gray-900"
+                            } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                              errors.endDay && touched.endDay
+                                ? "border-red-500"
+                                : ""
+                            }`}
+                          >
+                            {Array.from({ length: 30 }, (_, i) => i + 1).map(
+                              (day) => (
+                                <option key={day} value={day}>
+                                  {day}
+                                </option>
+                              )
+                            )}
+                          </Field>
+                          <ErrorMessage
+                            name="endDay"
+                            component="div"
+                            className="text-red-500 text-xs mt-1"
+                          />
+                        </div>
                         {/* Submission Deadline */}
                         <div className="md:col-span-2">
                           <label

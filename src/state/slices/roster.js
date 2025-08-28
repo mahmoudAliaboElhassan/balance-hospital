@@ -56,6 +56,7 @@ import {
   // Export & Additional
   exportRoster,
   duplicateRoster,
+  updateRosterStatus,
 } from "../act/actRosterManagement";
 import i18next from "i18next";
 
@@ -176,6 +177,7 @@ const initialState = {
     filters: {
       categoryId: null,
       status: null,
+      page: 1,
       month: null,
       year: null,
       departmentId: null,
@@ -207,11 +209,11 @@ const rosterManagementSlice = createSlice({
     },
 
     setCurrentPage: (state, action) => {
-      state.filters.page = action.payload;
+      state.ui.filters.page = action.payload;
     },
     setPageSize: (state, action) => {
-      state.filters.pageSize = action.payload;
-      state.filters.page = 1;
+      state.ui.filters.pageSize = action.payload;
+      state.ui.filters.page = 1;
     },
 
     // ===== SUCCESS STATE MANAGEMENT (إدارة حالات النجاح) =====
@@ -385,6 +387,8 @@ const rosterManagementSlice = createSlice({
         state.loading.createBasic = false;
         state.success.createBasic = true;
         state.ui.currentPhase = 2; // Move to next phase
+        console.log("action.payload", action.payload);
+        localStorage.setItem("rosterId", action.payload.data.rosterId);
 
         if (action.payload?.data) {
           state.rosters.unshift(action.payload.data);
@@ -423,6 +427,16 @@ const rosterManagementSlice = createSlice({
       .addCase(addDepartmentShifts.rejected, (state, action) => {
         state.loading.addShifts = false;
         state.errors.shifts = action.payload;
+      });
+    builder
+      .addCase(updateRosterStatus.pending, (state) => {
+        state.loading.update = true;
+      })
+      .addCase(updateRosterStatus.fulfilled, (state, action) => {
+        state.loading.update = false;
+      })
+      .addCase(updateRosterStatus.rejected, (state, action) => {
+        state.loading.update = false;
       });
 
     // Get Department Shifts
@@ -787,26 +801,11 @@ const rosterManagementSlice = createSlice({
       })
       .addCase(getRostersPaged.fulfilled, (state, action) => {
         state.loading.fetch = false;
-        state.rosters = action.payload?.data?.items || [];
-
-        if (action.payload?.data) {
-          const {
-            totalCount,
-            page,
-            pageSize,
-            totalPages,
-            hasNextPage,
-            hasPreviousPage,
-          } = action.payload.data;
-          state.pagination = {
-            currentPage: page || 1,
-            pageSize: pageSize || 10,
-            totalPages: totalPages || 0,
-            totalItems: totalCount || 0,
-            hasNextPage: hasNextPage || false,
-            hasPreviousPage: hasPreviousPage || false,
-          };
-        }
+        state.rosterList = action.payload?.data.data || [];
+        state.pagination.totalPages = action.payload.data.totalPages;
+        state.pagination.totalItems = action.payload.data.totalCount;
+        console.log("roster list", state.rosterList);
+        console.log("totalItems", state.pagination.totalItems);
       })
       .addCase(getRostersPaged.rejected, (state, action) => {
         state.loading.fetch = false;

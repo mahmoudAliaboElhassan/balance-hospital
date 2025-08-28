@@ -16,6 +16,10 @@ import {
   X,
   UserPlus,
   FileText,
+  Calendar,
+  Users,
+  Clock,
+  BarChart3,
 } from "lucide-react";
 import {
   clearAllErrors,
@@ -24,41 +28,107 @@ import {
   setCurrentPage,
   setFilters,
   setPageSize,
+  setPagination,
 } from "../../../state/slices/roster";
 import { Link, useNavigate } from "react-router-dom";
-// import DeleteRosterModal from "../../../components/DeleteRosterModal";
-import { getRosterList } from "../../../state/act/actRosterManagement";
+import { getRostersPaged } from "../../../state/act/actRosterManagement";
+import ModalUpdateRosterStatus from "../../../components/ModalUpdateRosterStatus";
 
 function Roster() {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [toDelete, setToDelete] = useState({ id: null, title: "" });
-  const { rosterList, pagination, loading, errors } = useSelector(
+  const navigate = useNavigate();
+
+  const [statusModalOpen, setStatusModalOpen] = useState(false);
+  const [statusToUpdate, setStatusToUpdate] = useState({
+    id: null,
+    title: "",
+    currentStatus: "",
+  });
+  const [searchInput, setSearchInput] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
+  const [showMobileTable, setShowMobileTable] = useState(false);
+  const [searchTimeout, setSearchTimeout] = useState(null);
+
+  const { rosterList, pagination, loading, errors, ui } = useSelector(
     (state) => state.rosterManagement
   );
   const { mymode } = useSelector((state) => state.mode);
 
-  const [searchInput, setSearchInput] = useState(selectFilters.search || "");
-  const [showFilters, setShowFilters] = useState(false);
-  const [showMobileTable, setShowMobileTable] = useState(false);
-
-  // Debounced search
-  const [searchTimeout, setSearchTimeout] = useState(null);
-
   // Check if we're in dark mode
   const isDark = mymode === "dark";
-
   // Check if current language is RTL
   const language = i18n.language;
   const isRTL = language === "ar";
 
+  // Initialize search input from filters
+  useEffect(() => {
+    setSearchInput(ui.filters.search || "");
+  }, [ui.filters.search]);
+
   // Fetch roster when filters change
   useEffect(() => {
-    dispatch(getRosterList(selectFilters));
-  }, [dispatch, selectFilters]);
+    const params = {
+      // page: pagination.currentPage || 1,
+      pageSize: pagination.pageSize || 10,
+      ...ui.filters,
+    };
 
-  const navigate = useNavigate();
+    // Remove null/undefined values
+    Object.keys(params).forEach((key) => {
+      if (
+        params[key] === null ||
+        params[key] === undefined ||
+        params[key] === ""
+      ) {
+        delete params[key];
+      }
+    });
+
+    dispatch(getRostersPaged(params));
+  }, [dispatch, ui.filters, pagination.currentPage, pagination.pageSize]);
+
+  // Handle status update
+  const handleStatusUpdate = async (newStatus) => {
+    try {
+      // TODO: Dispatch your status update action here
+      // await dispatch(updateRosterStatus({ id: statusToUpdate.id, status: newStatus }));
+      console.log(
+        "Updating status for roster:",
+        statusToUpdate.id,
+        "to:",
+        newStatus
+      );
+
+      // Refresh the roster list
+      const params = {
+        page: pagination.currentPage || 1,
+        pageSize: pagination.pageSize || 10,
+        ...ui.filters,
+      };
+      dispatch(getRostersPaged(params));
+
+      setStatusModalOpen(false);
+      setStatusToUpdate({ id: null, title: "", currentStatus: "" });
+    } catch (error) {
+      console.error("Failed to update status:", error);
+    }
+  };
+
+  const getStatusColor = (status) => {
+    const statusColors = {
+      DRAFT_PARTIAL:
+        "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
+      DRAFT: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300",
+      PUBLISHED:
+        "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
+      ARCHIVED: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
+    };
+    return (
+      statusColors[status] ||
+      "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300"
+    );
+  };
 
   // Handle search with debounce
   const handleSearchChange = useCallback(
@@ -70,7 +140,8 @@ function Roster() {
       }
 
       const timeout = setTimeout(() => {
-        dispatch(setFilters({ search: value, page: 1 }));
+        dispatch(setFilters({ searchTerm: value }));
+        dispatch(setCurrentPage(1));
       }, 500);
 
       setSearchTimeout(timeout);
@@ -80,7 +151,8 @@ function Roster() {
 
   // Handle filter changes
   const handleFilterChange = (key, value) => {
-    dispatch(setFilters({ [key]: value, page: 1 }));
+    dispatch(setFilters({ [key]: value }));
+    dispatch(setCurrentPage(1));
   };
 
   // Handle pagination
@@ -139,19 +211,48 @@ function Roster() {
     return `${months[month - 1]} ${year}`;
   };
 
-  // Get status color
-  const getStatusColor = (status) => {
-    const statusColors = {
-      DRAFT_PARTIAL:
-        "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
-      DRAFT: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300",
-      PUBLISHED:
-        "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
-      ARCHIVED: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
+  // Get status color and display name
+  const getStatusInfo = (status) => {
+    const statusMap = {
+      DRAFT_BASIC: {
+        color: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300",
+        name: t("roster.status.draftBasic"),
+      },
+      DRAFT_PARTIAL: {
+        color:
+          "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
+        name: t("roster.status.draftPartial"),
+      },
+      DRAFT: {
+        color: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
+        name: t("roster.status.draft"),
+      },
+      DRAFT_READY: {
+        color:
+          "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
+        name: t("roster.status.draftReady"),
+      },
+      PUBLISHED: {
+        color:
+          "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
+        name: t("roster.status.published"),
+      },
+      CLOSED: {
+        color:
+          "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300",
+        name: t("roster.status.closed"),
+      },
+      ARCHIVED: {
+        color: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
+        name: t("roster.status.archived"),
+      },
     };
+
     return (
-      statusColors[status] ||
-      "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300"
+      statusMap[status] || {
+        color: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300",
+        name: status,
+      }
     );
   };
 
@@ -159,7 +260,7 @@ function Roster() {
   const getPageNumbers = () => {
     const pages = [];
     const totalPages = pagination?.totalPages || 1;
-    const currentPage = pagination?.page || 1;
+    const currentPage = pagination?.currentPage || 1;
 
     const maxPages = window.innerWidth < 768 ? 3 : 5;
     let startPage = Math.max(1, currentPage - Math.floor(maxPages / 2));
@@ -177,103 +278,163 @@ function Roster() {
   };
 
   // Mobile card component for each roster
-  const RosterCard = ({ roster }) => (
-    <div
-      className={`p-4 rounded-lg border mb-3 ${
-        isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
-      }`}
-    >
-      <div className="flex justify-between items-start mb-3">
-        <div className="flex-1">
-          <h3
-            className={`font-semibold text-lg mb-1 ${
-              isDark ? "text-white" : "text-gray-900"
+  const RosterCard = ({ roster }) => {
+    const statusInfo = getStatusInfo(roster.status);
+
+    return (
+      <div
+        className={`p-4 rounded-lg border mb-3 ${
+          isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+        }`}
+      >
+        <div className="flex justify-between items-start mb-3">
+          <div className="flex-1">
+            <h3
+              className={`font-semibold text-lg mb-1 ${
+                isDark ? "text-white" : "text-gray-900"
+              }`}
+            >
+              {roster.title}
+            </h3>
+            <p
+              className={`text-sm mb-2 ${
+                isDark ? "text-gray-300" : "text-gray-600"
+              }`}
+            >
+              {formatMonthYear(roster.month, roster.year)}
+            </p>
+            <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
+              <Users size={12} />
+              <span>
+                {roster.departmentsCount} {t("roster.departments")}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <Calendar size={12} />
+              <span>
+                {roster.totalDays} {t("roster.dayss")}
+              </span>
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              setStatusToUpdate({
+                id: roster.id,
+                title: roster.title,
+                currentStatus: roster.status,
+              });
+              setStatusModalOpen(true);
+            }}
+            className={`px-2 py-1 rounded-full text-xs font-medium transition-colors hover:opacity-80 cursor-pointer ${statusInfo.color}`}
+            title={t("roster.actions.updateStatus")}
+          >
+            {statusInfo.name}
+          </button>
+        </div>
+
+        <div className="flex items-center justify-between mb-3">
+          <div className="text-sm">
+            <span
+              className={`font-medium ${
+                isDark ? "text-gray-300" : "text-gray-700"
+              }`}
+            >
+              {t("roster.completion")}:
+            </span>
+            <span
+              className={`ml-2 ${isDark ? "text-gray-200" : "text-gray-800"}`}
+            >
+              {roster.completionPercentage}%
+            </span>
+          </div>
+          <div className="text-sm">
+            <span
+              className={`font-medium ${
+                isDark ? "text-gray-300" : "text-gray-700"
+              }`}
+            >
+              {roster.categoryName}
+            </span>
+          </div>
+        </div>
+
+        <div className="text-sm mb-3">
+          <span
+            className={`font-medium ${
+              isDark ? "text-gray-300" : "text-gray-700"
             }`}
           >
-            {roster.title}
-          </h3>
-          <p
-            className={`text-sm ${isDark ? "text-gray-300" : "text-gray-600"}`}
+            {t("roster.table.createdAt")}:
+          </span>
+          <span
+            className={`ml-2 ${isDark ? "text-gray-200" : "text-gray-800"}`}
           >
-            {formatMonthYear(roster.month, roster.year)}
-          </p>
+            {formatDate(roster.createdAt)}
+          </span>
         </div>
-        <span
-          className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-            roster.status
-          )}`}
-        >
-          {roster.statusDisplayName}
-        </span>
-      </div>
 
-      <div className="text-sm mb-3">
-        <span
-          className={`font-medium ${
-            isDark ? "text-gray-300" : "text-gray-700"
-          }`}
-        >
-          {t("roster.table.createdAt")}:
-        </span>
-        <span className={`mr-2 ${isDark ? "text-gray-200" : "text-gray-800"}`}>
-          {formatDate(roster.createdAt)}
-        </span>
+        <div className="flex gap-2 justify-end">
+          <Link to={`/admin-panel/rosters/${roster.id}`}>
+            <button
+              className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors"
+              title={t("roster.actions.view")}
+            >
+              <Eye size={16} />
+            </button>
+          </Link>
+          <Link to={`/admin-panel/rosters/${roster.id}/add-doctors`}>
+            <button
+              className="p-2 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900 rounded-lg transition-colors"
+              title={t("roster.actions.addDoctors")}
+            >
+              <UserPlus size={16} />
+            </button>
+          </Link>
+          <button
+            className="p-2 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900 rounded-lg transition-colors"
+            title={t("roster.actions.updateStatus")}
+            onClick={() => {
+              setStatusToUpdate({
+                id: roster.id,
+                title: roster.title,
+                currentStatus: roster.status,
+              });
+              setStatusModalOpen(true);
+            }}
+          >
+            <BarChart3 size={16} />
+          </button>
+          <Link to={`/admin-panel/rosters/${roster.id}/edit`}>
+            <button
+              className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors"
+              title={t("roster.actions.edit")}
+            >
+              <Edit size={16} />
+            </button>
+          </Link>
+          <button
+            className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors"
+            title={t("roster.actions.delete")}
+            onClick={() => {
+              setToDelete({
+                id: roster.id,
+                title: roster.title,
+              });
+              setModalOpen(true);
+            }}
+          >
+            <Trash2 size={16} />
+          </button>
+        </div>
       </div>
-
-      <div className="flex gap-2 justify-end">
-        <Link to={`/admin-panel/rosters/${roster.id}`}>
-          <button
-            className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors cursor-pointer"
-            title={t("roster.actions.view")}
-          >
-            <Eye size={16} />
-          </button>
-        </Link>
-        <Link to={`/admin-panel/rosters/${roster.id}/add-doctors`}>
-          <button
-            className="p-2 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900 rounded-lg transition-colors cursor-pointer"
-            title={t("roster.actions.addDoctors")}
-          >
-            <UserPlus size={16} />
-          </button>
-        </Link>
-        <Link to={`/admin-panel/rosters/${roster.id}/edit`}>
-          <button
-            className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors cursor-pointer"
-            title={t("roster.actions.edit")}
-          >
-            <Edit size={16} />
-          </button>
-        </Link>
-        <button
-          className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors cursor-pointer"
-          title={t("roster.actions.delete")}
-          onClick={() => {
-            setToDelete({
-              id: roster.id,
-              title: roster.title,
-            });
-            setModalOpen(true);
-          }}
-        >
-          <Trash2 size={16} />
-        </button>
-      </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div
       className={`min-h-screen ${isDark ? "bg-gray-900" : "bg-gray-50"}`}
       dir={isRTL ? "rtl" : "ltr"}
     >
-      {/* <DeleteRosterModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        rosterId={toDelete.id}
-        info={toDelete}
-        rosterTitle={toDelete.title}
-      /> */}
       <div className="p-4 sm:p-6">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
@@ -288,7 +449,7 @@ function Roster() {
               </h1>
               <div className="flex gap-2 w-full sm:w-auto">
                 <Link to="/admin-panel/rosters/create">
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors flex-1 sm:flex-none justify-center cursor-pointer">
+                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors flex-1 sm:flex-none justify-center">
                     <Plus size={20} />
                     <span className="hidden sm:inline">
                       {t("roster.actions.addNew")}
@@ -296,10 +457,9 @@ function Roster() {
                     <span className="sm:hidden">{t("roster.actions.add")}</span>
                   </button>
                 </Link>
-                {/* Mobile table toggle */}
                 <button
                   onClick={() => setShowMobileTable(!showMobileTable)}
-                  className={`md:hidden px-3 py-2 rounded-lg border transition-colors cursor-pointer ${
+                  className={`md:hidden px-3 py-2 rounded-lg border transition-colors ${
                     showMobileTable
                       ? "bg-blue-50 border-blue-300 text-blue-700 dark:bg-blue-900 dark:border-blue-600 dark:text-blue-300"
                       : `border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 ${
@@ -318,7 +478,7 @@ function Roster() {
                   <span>{errors.general}</span>
                   <button
                     onClick={() => dispatch(clearAllErrors())}
-                    className="text-red-500 hover:text-red-700 cursor-pointer"
+                    className="text-red-500 hover:text-red-700"
                   >
                     ×
                   </button>
@@ -363,7 +523,7 @@ function Roster() {
                 </div>
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2 justify-center sm:justify-start cursor-pointer ${
+                  className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2 justify-center sm:justify-start ${
                     showFilters
                       ? "bg-blue-50 border-blue-300 text-blue-700 dark:bg-blue-900 dark:border-blue-600 dark:text-blue-300"
                       : `hover:bg-gray-50 dark:hover:bg-gray-700 ${
@@ -394,7 +554,7 @@ function Roster() {
                       {t("roster.filters.status")}
                     </label>
                     <select
-                      value={selectFilters.status || "all"}
+                      value={ui.filters.status || "all"}
                       onChange={(e) => {
                         const value =
                           e.target.value === "all" ? null : e.target.value;
@@ -407,12 +567,21 @@ function Roster() {
                       }`}
                     >
                       <option value="all">{t("roster.filters.all")}</option>
+                      <option value="DRAFT_BASIC">
+                        {t("roster.status.draftBasic")}
+                      </option>
                       <option value="DRAFT_PARTIAL">
                         {t("roster.status.draftPartial")}
                       </option>
                       <option value="DRAFT">{t("roster.status.draft")}</option>
+                      <option value="DRAFT_READY">
+                        {t("roster.status.draftReady")}
+                      </option>
                       <option value="PUBLISHED">
                         {t("roster.status.published")}
+                      </option>
+                      <option value="CLOSED">
+                        {t("roster.status.closed")}
                       </option>
                       <option value="ARCHIVED">
                         {t("roster.status.archived")}
@@ -429,7 +598,7 @@ function Roster() {
                       {t("roster.filters.year")}
                     </label>
                     <select
-                      value={selectFilters.year || "all"}
+                      value={ui.filters.year || "all"}
                       onChange={(e) => {
                         const value =
                           e.target.value === "all"
@@ -460,37 +629,33 @@ function Roster() {
                         isDark ? "text-gray-300" : "text-gray-700"
                       }`}
                     >
-                      {t("roster.filters.orderBy")}
+                      {t("roster.filters.month")}
                     </label>
                     <select
-                      value={selectFilters.orderBy || "createdAt"}
-                      onChange={(e) =>
-                        handleFilterChange("orderBy", e.target.value)
-                      }
+                      value={ui.filters.month || "all"}
+                      onChange={(e) => {
+                        const value =
+                          e.target.value === "all"
+                            ? null
+                            : parseInt(e.target.value);
+                        handleFilterChange("month", value);
+                      }}
                       className={`w-full p-2 border rounded-lg ${
                         isDark
                           ? "border-gray-600 bg-gray-700 text-white"
                           : "border-gray-300 bg-white text-gray-900"
                       }`}
                     >
-                      <option value="nameArabic">
-                        {t("roster.filters.sortBy.nameArabic")}
+                      <option value="all">
+                        {t("roster.filters.allMonths")}
                       </option>
-                      <option value="nameEnglish">
-                        {t("roster.filters.sortBy.nameEnglish")}
-                      </option>
-                      <option value="createdAt">
-                        {t("roster.filters.sortBy.createdAt")}
-                      </option>
-                      <option value="title">
-                        {t("roster.filters.sortBy.title")}
-                      </option>
-                      <option value="year">
-                        {t("roster.filters.sortBy.year")}
-                      </option>
-                      <option value="month">
-                        {t("roster.filters.sortBy.month")}
-                      </option>
+                      {Array.from({ length: 12 }, (_, i) => i + 1).map(
+                        (month) => (
+                          <option key={month} value={month}>
+                            {formatMonthYear(month, 2025).split(" ")[0]}
+                          </option>
+                        )
+                      )}
                     </select>
                   </div>
 
@@ -500,15 +665,12 @@ function Roster() {
                         isDark ? "text-gray-300" : "text-gray-700"
                       }`}
                     >
-                      {t("roster.filters.orderDirection")}
+                      {t("roster.filters.orderBy")}
                     </label>
                     <select
-                      value={(selectFilters.orderDesc || false).toString()}
+                      value={ui.filters.orderBy || "createdAt"}
                       onChange={(e) =>
-                        handleFilterChange(
-                          "orderDesc",
-                          e.target.value === "true"
-                        )
+                        handleFilterChange("orderBy", e.target.value)
                       }
                       className={`w-full p-2 border rounded-lg ${
                         isDark
@@ -516,11 +678,20 @@ function Roster() {
                           : "border-gray-300 bg-white text-gray-900"
                       }`}
                     >
-                      <option value="true">
-                        {t("roster.filters.descending")}
+                      <option value="title">
+                        {t("roster.filters.sortBy.title")}
                       </option>
-                      <option value="false">
-                        {t("roster.filters.ascending")}
+                      <option value="createdAt">
+                        {t("roster.filters.sortBy.createdAt")}
+                      </option>
+                      <option value="year">
+                        {t("roster.filters.sortBy.year")}
+                      </option>
+                      <option value="month">
+                        {t("roster.filters.sortBy.month")}
+                      </option>
+                      <option value="completionPercentage">
+                        {t("roster.filters.sortBy.completion")}
                       </option>
                     </select>
                   </div>
@@ -528,7 +699,7 @@ function Roster() {
                   <div className="sm:col-span-2 lg:col-span-4">
                     <button
                       onClick={() => dispatch(clearFilters())}
-                      className={`px-4 py-2 rounded-lg border transition-colors cursor-pointer ${
+                      className={`px-4 py-2 rounded-lg border transition-colors ${
                         isDark
                           ? "border-gray-600 text-gray-300 hover:bg-gray-700"
                           : "border-gray-300 text-gray-700 hover:bg-gray-50"
@@ -562,7 +733,7 @@ function Roster() {
                 <div
                   className={`w-16 h-16 ${
                     isDark ? "bg-gray-700" : "bg-gray-100"
-                  } rounded-full  mx-auto mb-4`}
+                  } rounded-full flex items-center justify-center mx-auto mb-4`}
                 >
                   <FileText
                     size={32}
@@ -600,7 +771,7 @@ function Roster() {
             )}
           </div>
 
-          {/* Desktop Table View */}
+          {/* // Desktop Table View */}
           <div
             className={`hidden md:block ${showMobileTable ? "md:hidden" : ""} ${
               isDark
@@ -627,7 +798,24 @@ function Roster() {
                     >
                       {t("roster.table.title")}
                     </th>
-
+                    <th
+                      className={`${
+                        isRTL ? "text-right" : "text-left"
+                      } p-4 font-semibold ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
+                    >
+                      {t("roster.table.period")}
+                    </th>
+                    <th
+                      className={`${
+                        isRTL ? "text-right" : "text-left"
+                      } p-4 font-semibold ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
+                    >
+                      {t("roster.table.category")}
+                    </th>
                     <th
                       className={`${
                         isRTL ? "text-right" : "text-left"
@@ -644,6 +832,24 @@ function Roster() {
                         isDark ? "text-white" : "text-gray-900"
                       }`}
                     >
+                      {t("roster.table.completion")}
+                    </th>
+                    <th
+                      className={`${
+                        isRTL ? "text-right" : "text-left"
+                      } p-4 font-semibold ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
+                    >
+                      {t("roster.table.created")}
+                    </th>
+                    <th
+                      className={`${
+                        isRTL ? "text-right" : "text-left"
+                      } p-4 font-semibold ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
+                    >
                       {t("roster.table.actions")}
                     </th>
                   </tr>
@@ -651,7 +857,7 @@ function Roster() {
                 <tbody>
                   {loading?.fetch ? (
                     <tr>
-                      <td colSpan="4" className="text-center p-8">
+                      <td colSpan="7" className="text-center p-8">
                         <div className="flex items-center justify-center">
                           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                           <span
@@ -666,11 +872,11 @@ function Roster() {
                     </tr>
                   ) : rosterList.length === 0 ? (
                     <tr>
-                      <div className="text-center p-12">
+                      <td colSpan="7" className="text-center p-12">
                         <div
                           className={`w-16 h-16 ${
                             isDark ? "bg-gray-700" : "bg-gray-100"
-                          } rounded-full   mx-auto mb-4`}
+                          } rounded-full flex items-center justify-center mx-auto mb-4`}
                         >
                           <FileText
                             size={32}
@@ -693,34 +899,30 @@ function Roster() {
                         >
                           {t("roster.createFirstRoster")}
                         </p>
-                        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                          <button
-                            onClick={() =>
-                              navigate("/admin-panel/rosters/create")
-                            }
-                            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                          >
-                            <Plus
-                              size={16}
-                              className={isRTL ? "ml-2" : "mr-2"}
-                            />
-                            {t("roster.actions.createBasic")}
-                          </button>
-                        </div>
-                      </div>
+                        <button
+                          onClick={() =>
+                            navigate("/admin-panel/rosters/create")
+                          }
+                          className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                        >
+                          <Plus size={16} className={isRTL ? "ml-2" : "mr-2"} />
+                          {t("roster.actions.createBasic")}
+                        </button>
+                      </td>
                     </tr>
                   ) : (
-                    rosterList.map((roster) => (
-                      <tr
-                        key={roster.id}
-                        className={`border-b transition-colors ${
-                          isDark
-                            ? "border-gray-700 hover:bg-gray-750"
-                            : "border-gray-200 hover:bg-gray-50"
-                        }`}
-                      >
-                        <td className="p-2 text-center">
-                          <div>
+                    rosterList.map((roster) => {
+                      const statusInfo = getStatusInfo(roster.status);
+                      return (
+                        <tr
+                          key={roster.id}
+                          className={`border-b transition-colors ${
+                            isDark
+                              ? "border-gray-700 hover:bg-gray-750"
+                              : "border-gray-200 hover:bg-gray-50"
+                          }`}
+                        >
+                          <td className="p-4">
                             <div
                               className={`font-semibold ${
                                 isDark ? "text-white" : "text-gray-900"
@@ -728,66 +930,152 @@ function Roster() {
                             >
                               {roster.title}
                             </div>
+                          </td>
+                          <td className="p-4">
                             <div
-                              className={`text-xs ${
-                                isDark ? "text-gray-400" : "text-gray-500"
+                              className={`${
+                                isDark ? "text-gray-300" : "text-gray-700"
                               }`}
                             >
                               {formatMonthYear(roster.month, roster.year)}
                             </div>
-                          </div>
-                        </td>
-                        <td className="p-2 text-center">
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                              roster.status
-                            )}`}
-                          >
-                            {roster.statusDisplayName}
-                          </span>
-                        </td>
-                        <td className="p-2 text-center">
-                          <div className="flex gap-1 justify-center">
-                            <Link to={`/admin-panel/rosters/${roster.id}`}>
-                              <button className="p-1 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded transition-colors cursor-pointer">
-                                <Eye size={16} />
-                              </button>
-                            </Link>
-                            <Link
-                              to={`/admin-panel/rosters/${roster.id}/add-doctors`}
+                            <div
+                              className={`text-sm ${
+                                isDark ? "text-gray-400" : "text-gray-500"
+                              }`}
                             >
-                              <button className="p-1 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900 rounded transition-colors cursor-pointer">
-                                <UserPlus size={16} />
-                              </button>
-                            </Link>
-                            <Link to={`/admin-panel/rosters/${roster.id}/edit`}>
-                              <button className="p-1 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded transition-colors cursor-pointer">
-                                <Edit size={16} />
-                              </button>
-                            </Link>
+                              {roster.totalDays} {t("roster.dayss")}
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            <div
+                              className={`${
+                                isDark ? "text-gray-300" : "text-gray-700"
+                              }`}
+                            >
+                              {roster.categoryName}
+                            </div>
+                            <div
+                              className={`text-sm ${
+                                isDark ? "text-gray-400" : "text-gray-500"
+                              }`}
+                            >
+                              {roster.departmentsCount}{" "}
+                              {t("roster.departments")}
+                            </div>
+                          </td>
+                          <td className="p-4">
                             <button
-                              className="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded transition-colors cursor-pointer"
                               onClick={() => {
-                                setToDelete({
+                                setStatusToUpdate({
                                   id: roster.id,
                                   title: roster.title,
+                                  currentStatus: roster.status,
                                 });
-                                setModalOpen(true);
+                                setStatusModalOpen(true);
                               }}
+                              className={`px-3 py-1 rounded-full text-xs font-medium transition-colors hover:opacity-80 cursor-pointer ${statusInfo.color}`}
+                              title={t("roster.actions.updateStatus")}
                             >
-                              <Trash2 size={16} />
+                              {statusInfo.name}
                             </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
+                          </td>
+                          <td className="p-4">
+                            <div className="flex items-center gap-2">
+                              <div
+                                className={`w-12 bg-gray-200 dark:bg-gray-700 rounded-full h-2`}
+                              >
+                                <div
+                                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                                  style={{
+                                    width: `${roster.completionPercentage}%`,
+                                  }}
+                                ></div>
+                              </div>
+                              <span
+                                className={`text-sm ${
+                                  isDark ? "text-gray-300" : "text-gray-700"
+                                }`}
+                              >
+                                {roster.completionPercentage}%
+                              </span>
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            <div
+                              className={`${
+                                isDark ? "text-gray-300" : "text-gray-700"
+                              }`}
+                            >
+                              {formatDate(roster.createdAt)}
+                            </div>
+                            <div
+                              className={`text-sm ${
+                                isDark ? "text-gray-400" : "text-gray-500"
+                              }`}
+                            >
+                              {roster.createdByName}
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            <div className="flex gap-1">
+                              <Link to={`/admin-panel/rosters/${roster.id}`}>
+                                <button className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors">
+                                  <Eye size={16} />
+                                </button>
+                              </Link>
+                              <Link
+                                to={`/admin-panel/rosters/${roster.id}/add-doctors`}
+                              >
+                                <button className="p-2 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900 rounded-lg transition-colors">
+                                  <UserPlus size={16} />
+                                </button>
+                              </Link>
+                              <button
+                                className="p-2 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900 rounded-lg transition-colors"
+                                title={t("roster.actions.updateStatus")}
+                                onClick={() => {
+                                  setStatusToUpdate({
+                                    id: roster.id,
+                                    title: roster.title,
+                                    currentStatus: roster.status,
+                                  });
+                                  setStatusModalOpen(true);
+                                }}
+                              >
+                                <BarChart3 size={16} />
+                              </button>
+                              <Link
+                                to={`/admin-panel/rosters/${roster.id}/edit`}
+                              >
+                                <button className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors">
+                                  <Edit size={16} />
+                                </button>
+                              </Link>
+                              <button
+                                className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors"
+                                onClick={() => {
+                                  setToDelete({
+                                    id: roster.id,
+                                    title: roster.title,
+                                  });
+                                  setModalOpen(true);
+                                }}
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
                   )}
                 </tbody>
               </table>
             </div>
           </div>
 
-          {/* Mobile Table View (when toggled) */}
+          {/*   Mobile Table View (when toggled) */}
           <div
             className={`md:hidden ${showMobileTable ? "block" : "hidden"} ${
               isDark
@@ -806,27 +1094,28 @@ function Roster() {
                     }`}
                   >
                     <th
-                      className={`text-center ${
-                        isRTL ? "text-right" : "text-left"
-                      } p-2 font-semibold ${
+                      className={`text-center p-2 font-semibold ${
                         isDark ? "text-white" : "text-gray-900"
                       }`}
                     >
                       {t("roster.table.title")}
                     </th>
                     <th
-                      className={`text-center ${
-                        isRTL ? "text-right" : "text-left"
-                      } p-2 font-semibold ${
+                      className={`text-center p-2 font-semibold ${
                         isDark ? "text-white" : "text-gray-900"
                       }`}
                     >
                       {t("roster.table.status")}
                     </th>
                     <th
-                      className={`text-center ${
-                        isRTL ? "text-right" : "text-left"
-                      } p-2 font-semibold ${
+                      className={`text-center p-2 font-semibold ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
+                    >
+                      {t("roster.table.completion")}
+                    </th>
+                    <th
+                      className={`text-center p-2 font-semibold ${
                         isDark ? "text-white" : "text-gray-900"
                       }`}
                     >
@@ -837,7 +1126,7 @@ function Roster() {
                 <tbody>
                   {loading.fetch ? (
                     <tr>
-                      <td colSpan="3" className="text-center p-8">
+                      <td colSpan="4" className="text-center p-8">
                         <div className="flex items-center justify-center">
                           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
                           <span
@@ -851,113 +1140,162 @@ function Roster() {
                       </td>
                     </tr>
                   ) : rosterList.length === 0 ? (
-                    <div className="text-center p-12">
-                      <div
-                        className={`w-16 h-16 ${
-                          isDark ? "bg-gray-700" : "bg-gray-100"
-                        } rounded-full mx-auto mb-4`}
-                      >
-                        <FileText
-                          size={32}
-                          className={`${
-                            isDark ? "text-gray-600" : "text-gray-400"
-                          }`}
-                        />
-                      </div>
-                      <h3
-                        className={`text-lg font-medium ${
-                          isDark ? "text-white" : "text-gray-900"
-                        } mb-2`}
-                      >
-                        {t("roster.noRosters")}
-                      </h3>
-                      <p
-                        className={`${
-                          isDark ? "text-gray-400" : "text-gray-500"
-                        } mb-6`}
-                      >
-                        {t("roster.createFirstRoster")}
-                      </p>
-                      <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    <tr>
+                      <td colSpan="4" className="text-center p-8">
+                        <div
+                          className={`w-12 h-12 ${
+                            isDark ? "bg-gray-700" : "bg-gray-100"
+                          } rounded-full flex items-center justify-center mx-auto mb-3`}
+                        >
+                          <FileText
+                            size={24}
+                            className={`${
+                              isDark ? "text-gray-600" : "text-gray-400"
+                            }`}
+                          />
+                        </div>
+                        <h3
+                          className={`text-base font-medium ${
+                            isDark ? "text-white" : "text-gray-900"
+                          } mb-2`}
+                        >
+                          {t("roster.noRosters")}
+                        </h3>
+                        <p
+                          className={`text-sm ${
+                            isDark ? "text-gray-400" : "text-gray-500"
+                          } mb-4`}
+                        >
+                          {t("roster.createFirstRoster")}
+                        </p>
                         <button
                           onClick={() =>
                             navigate("/admin-panel/rosters/create")
                           }
-                          className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                          className="inline-flex items-center px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
                         >
-                          <Plus size={16} className={isRTL ? "ml-2" : "mr-2"} />
-                          {t("roster.actions.createBasic")}
+                          <Plus size={14} className={isRTL ? "ml-1" : "mr-1"} />
+                          {t("roster.actions.create")}
                         </button>
-                      </div>
-                    </div>
+                      </td>
+                    </tr>
                   ) : (
-                    rosterList.map((roster) => (
-                      <tr
-                        key={roster.id}
-                        className={`border-b transition-colors ${
-                          isDark
-                            ? "border-gray-700 hover:bg-gray-750"
-                            : "border-gray-200 hover:bg-gray-50"
-                        }`}
-                      >
-                        <td className="p-2 text-center">
-                          <div>
+                    rosterList.map((roster) => {
+                      const statusInfo = getStatusInfo(roster.status);
+                      return (
+                        <tr
+                          key={roster.id}
+                          className={`border-b transition-colors ${
+                            isDark
+                              ? "border-gray-700 hover:bg-gray-750"
+                              : "border-gray-200 hover:bg-gray-50"
+                          }`}
+                        >
+                          <td className="p-2">
                             <div
-                              className={`font-semibold ${
+                              className={`font-semibold text-xs ${
                                 isDark ? "text-white" : "text-gray-900"
                               }`}
                             >
                               {roster.title}
                             </div>
                             <div
-                              className={`text-xs ${
+                              className={`text-xs mt-1 ${
                                 isDark ? "text-gray-400" : "text-gray-500"
                               }`}
                             >
                               {formatMonthYear(roster.month, roster.year)}
                             </div>
-                          </div>
-                        </td>
-                        <td className="p-2 text-center">
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                              roster.status
-                            )}`}
-                          >
-                            {roster.statusDisplayName}
-                          </span>
-                        </td>
-                        <td className="p-2 text-center">
-                          <div className="flex gap-1">
-                            <Link to={`/admin-panel/rosters/${roster.id}`}>
-                              <button className="p-1 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded transition-colors cursor-pointer">
-                                <Eye size={14} />
-                              </button>
-                            </Link>
-                            <Link to={`/admin-panel/rosters/${roster.id}/edit`}>
-                              <button className="p-1 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded transition-colors cursor-pointer">
-                                <Edit size={14} />
-                              </button>
-                            </Link>
-                            <button
-                              className="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded transition-colors cursor-pointer"
-                              onClick={() => {
-                                setToDelete({
-                                  id: roster.id,
-                                  name:
-                                    language == "en"
-                                      ? roster.nameEnglish
-                                      : roster.nameArabic,
-                                });
-                                setModalOpen(true);
-                              }}
+                            <div
+                              className={`text-xs ${
+                                isDark ? "text-gray-400" : "text-gray-500"
+                              }`}
                             >
-                              <Trash2 size={14} />
+                              {roster.categoryName}
+                            </div>
+                          </td>
+                          <td className="p-2 text-center">
+                            <button
+                              onClick={() => {
+                                setStatusToUpdate({
+                                  id: roster.id,
+                                  title: roster.title,
+                                  currentStatus: roster.status,
+                                });
+                                setStatusModalOpen(true);
+                              }}
+                              className={`px-2 py-1 rounded-full text-xs font-medium transition-colors hover:opacity-80 cursor-pointer ${statusInfo.color}`}
+                              title={t("roster.actions.updateStatus")}
+                            >
+                              {statusInfo.name}
                             </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
+                          </td>
+                          <td className="p-2 text-center">
+                            <div className="flex items-center justify-center gap-1">
+                              <div
+                                className={`w-8 bg-gray-200 dark:bg-gray-700 rounded-full h-1.5`}
+                              >
+                                <div
+                                  className="bg-blue-600 h-1.5 rounded-full transition-all duration-300"
+                                  style={{
+                                    width: `${roster.completionPercentage}%`,
+                                  }}
+                                ></div>
+                              </div>
+                              <span
+                                className={`text-xs ${
+                                  isDark ? "text-gray-300" : "text-gray-700"
+                                }`}
+                              >
+                                {roster.completionPercentage}%
+                              </span>
+                            </div>
+                          </td>
+                          <td className="p-2">
+                            <div className="flex gap-1 justify-center">
+                              <Link to={`/admin-panel/rosters/${roster.id}`}>
+                                <button className="p-1 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded transition-colors">
+                                  <Eye size={14} />
+                                </button>
+                              </Link>
+                              <button
+                                className="p-1 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900 rounded transition-colors"
+                                title={t("roster.actions.updateStatus")}
+                                onClick={() => {
+                                  setStatusToUpdate({
+                                    id: roster.id,
+                                    title: roster.title,
+                                    currentStatus: roster.status,
+                                  });
+                                  setStatusModalOpen(true);
+                                }}
+                              >
+                                <BarChart3 size={14} />
+                              </button>
+                              <Link
+                                to={`/admin-panel/rosters/${roster.id}/edit`}
+                              >
+                                <button className="p-1 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded transition-colors">
+                                  <Edit size={14} />
+                                </button>
+                              </Link>
+                              <button
+                                className="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded transition-colors"
+                                onClick={() => {
+                                  setToDelete({
+                                    id: roster.id,
+                                    title: roster.title,
+                                  });
+                                  setModalOpen(true);
+                                }}
+                              >
+                                <Trash2 size={14} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
                   )}
                 </tbody>
               </table>
@@ -979,10 +1317,11 @@ function Roster() {
                     className={`${isDark ? "text-gray-400" : "text-gray-600"}`}
                   >
                     {t("displayRange", {
-                      start: (pagination.page - 1) * pagination.pageSize + 1,
+                      start:
+                        (pagination.currentPage - 1) * pagination.pageSize + 1,
                       end: Math.min(
-                        pagination.page * pagination.pageSize,
-                        pagination.totalCount
+                        pagination.currentPage * pagination.pageSize,
+                        pagination.totalItems
                       ),
                       total: pagination.totalCount,
                     })}
@@ -1056,10 +1395,18 @@ function Roster() {
               </div>
             </div>
           )}
+
+          {/* Status Update Modal */}
+          {statusModalOpen && (
+            <ModalUpdateRosterStatus
+              setStatusModalOpen={setStatusModalOpen}
+              statusToUpdate={statusToUpdate}
+              setStatusToUpdate={setStatusToUpdate}
+            />
+          )}
         </div>
       </div>
     </div>
   );
 }
-
 export default Roster;
