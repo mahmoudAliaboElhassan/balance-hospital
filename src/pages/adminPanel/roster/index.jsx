@@ -26,6 +26,7 @@ import {
   clearFilters,
   selectFilters,
   setCurrentPage,
+  // setCurrentPage,
   setFilters,
   setPageSize,
   setPagination,
@@ -69,7 +70,7 @@ function Roster() {
   // Fetch roster when filters change
   useEffect(() => {
     const params = {
-      // page: pagination.currentPage || 1,
+      page: pagination.currentPage || 1,
       pageSize: pagination.pageSize || 10,
       ...ui.filters,
     };
@@ -87,48 +88,6 @@ function Roster() {
 
     dispatch(getRostersPaged(params));
   }, [dispatch, ui.filters, pagination.currentPage, pagination.pageSize]);
-
-  // Handle status update
-  const handleStatusUpdate = async (newStatus) => {
-    try {
-      // TODO: Dispatch your status update action here
-      // await dispatch(updateRosterStatus({ id: statusToUpdate.id, status: newStatus }));
-      console.log(
-        "Updating status for roster:",
-        statusToUpdate.id,
-        "to:",
-        newStatus
-      );
-
-      // Refresh the roster list
-      const params = {
-        page: pagination.currentPage || 1,
-        pageSize: pagination.pageSize || 10,
-        ...ui.filters,
-      };
-      dispatch(getRostersPaged(params));
-
-      setStatusModalOpen(false);
-      setStatusToUpdate({ id: null, title: "", currentStatus: "" });
-    } catch (error) {
-      console.error("Failed to update status:", error);
-    }
-  };
-
-  const getStatusColor = (status) => {
-    const statusColors = {
-      DRAFT_PARTIAL:
-        "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
-      DRAFT: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300",
-      PUBLISHED:
-        "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
-      ARCHIVED: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
-    };
-    return (
-      statusColors[status] ||
-      "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300"
-    );
-  };
 
   // Handle search with debounce
   const handleSearchChange = useCallback(
@@ -157,6 +116,8 @@ function Roster() {
 
   // Handle pagination
   const handlePageChange = (newPage) => {
+    console.log("pagination.currentPage", pagination.currentPage);
+    console.log("newPage", newPage);
     dispatch(setCurrentPage(newPage));
   };
 
@@ -1353,7 +1314,7 @@ function Roster() {
 
                 <div className="flex items-center gap-1 sm:gap-2">
                   <button
-                    onClick={() => handlePageChange(pagination.page - 1)}
+                    onClick={() => handlePageChange(ui.filters.page - 1)}
                     disabled={!pagination.hasPreviousPage}
                     className={`p-2 rounded-lg border transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer ${
                       isDark
@@ -1369,7 +1330,7 @@ function Roster() {
                       key={pageNum}
                       onClick={() => handlePageChange(pageNum)}
                       className={`px-2 sm:px-3 py-2 rounded-lg transition-colors text-sm cursor-pointer ${
-                        pageNum === pagination.page
+                        pageNum == ui.filters.page
                           ? "bg-blue-600 text-white"
                           : isDark
                           ? "border border-gray-600 hover:bg-gray-700 text-gray-300"
@@ -1381,7 +1342,7 @@ function Roster() {
                   ))}
 
                   <button
-                    onClick={() => handlePageChange(pagination.page + 1)}
+                    onClick={() => handlePageChange(ui.filters.page + 1)}
                     disabled={!pagination.hasNextPage}
                     className={`p-2 rounded-lg border transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer ${
                       isDark

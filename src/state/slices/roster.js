@@ -802,8 +802,17 @@ const rosterManagementSlice = createSlice({
       .addCase(getRostersPaged.fulfilled, (state, action) => {
         state.loading.fetch = false;
         state.rosterList = action.payload?.data.data || [];
-        state.pagination.totalPages = action.payload.data.totalPages;
-        state.pagination.totalItems = action.payload.data.totalCount;
+
+        state.pagination = {
+          totalCount: action.payload.data.totalCount,
+          page: action.payload.data.page,
+          pageSize: action.payload.data.pageSize,
+          totalPages: action.payload.data.totalPages,
+          hasNextPage: action.payload.data.hasNextPage,
+          hasPreviousPage: action.payload.data.hasPreviousPage,
+          totalItems: action.payload.data.totalCount,
+        };
+
         console.log("roster list", state.rosterList);
         console.log("totalItems", state.pagination.totalItems);
       })
