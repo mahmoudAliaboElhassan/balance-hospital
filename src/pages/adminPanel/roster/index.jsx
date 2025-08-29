@@ -300,20 +300,6 @@ function Roster() {
                 isDark ? "text-gray-300" : "text-gray-700"
               }`}
             >
-              {t("roster.completion")}:
-            </span>
-            <span
-              className={`ml-2 ${isDark ? "text-gray-200" : "text-gray-800"}`}
-            >
-              {roster.completionPercentage}%
-            </span>
-          </div>
-          <div className="text-sm">
-            <span
-              className={`font-medium ${
-                isDark ? "text-gray-300" : "text-gray-700"
-              }`}
-            >
               {roster.categoryName}
             </span>
           </div>
@@ -373,19 +359,6 @@ function Roster() {
               <Edit size={16} />
             </button>
           </Link>
-          <button
-            className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors"
-            title={t("roster.actions.delete")}
-            onClick={() => {
-              setToDelete({
-                id: roster.id,
-                title: roster.title,
-              });
-              setModalOpen(true);
-            }}
-          >
-            <Trash2 size={16} />
-          </button>
         </div>
       </div>
     );
@@ -786,15 +759,7 @@ function Roster() {
                     >
                       {t("roster.table.status")}
                     </th>
-                    <th
-                      className={`${
-                        isRTL ? "text-right" : "text-left"
-                      } p-4 font-semibold ${
-                        isDark ? "text-white" : "text-gray-900"
-                      }`}
-                    >
-                      {t("roster.table.completion")}
-                    </th>
+
                     <th
                       className={`${
                         isRTL ? "text-right" : "text-left"
@@ -941,27 +906,7 @@ function Roster() {
                               {statusInfo.name}
                             </button>
                           </td>
-                          <td className="p-4">
-                            <div className="flex items-center gap-2">
-                              <div
-                                className={`w-12 bg-gray-200 dark:bg-gray-700 rounded-full h-2`}
-                              >
-                                <div
-                                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                                  style={{
-                                    width: `${roster.completionPercentage}%`,
-                                  }}
-                                ></div>
-                              </div>
-                              <span
-                                className={`text-sm ${
-                                  isDark ? "text-gray-300" : "text-gray-700"
-                                }`}
-                              >
-                                {roster.completionPercentage}%
-                              </span>
-                            </div>
-                          </td>
+
                           <td className="p-4">
                             <div
                               className={`${
@@ -1013,18 +958,6 @@ function Roster() {
                                   <Edit size={16} />
                                 </button>
                               </Link>
-                              <button
-                                className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors"
-                                onClick={() => {
-                                  setToDelete({
-                                    id: roster.id,
-                                    title: roster.title,
-                                  });
-                                  setModalOpen(true);
-                                }}
-                              >
-                                <Trash2 size={16} />
-                              </button>
                             </div>
                           </td>
                         </tr>
@@ -1068,13 +1001,7 @@ function Roster() {
                     >
                       {t("roster.table.status")}
                     </th>
-                    <th
-                      className={`text-center p-2 font-semibold ${
-                        isDark ? "text-white" : "text-gray-900"
-                      }`}
-                    >
-                      {t("roster.table.completion")}
-                    </th>
+
                     <th
                       className={`text-center p-2 font-semibold ${
                         isDark ? "text-white" : "text-gray-900"
@@ -1191,27 +1118,7 @@ function Roster() {
                               {statusInfo.name}
                             </button>
                           </td>
-                          <td className="p-2 text-center">
-                            <div className="flex items-center justify-center gap-1">
-                              <div
-                                className={`w-8 bg-gray-200 dark:bg-gray-700 rounded-full h-1.5`}
-                              >
-                                <div
-                                  className="bg-blue-600 h-1.5 rounded-full transition-all duration-300"
-                                  style={{
-                                    width: `${roster.completionPercentage}%`,
-                                  }}
-                                ></div>
-                              </div>
-                              <span
-                                className={`text-xs ${
-                                  isDark ? "text-gray-300" : "text-gray-700"
-                                }`}
-                              >
-                                {roster.completionPercentage}%
-                              </span>
-                            </div>
-                          </td>
+
                           <td className="p-2">
                             <div className="flex gap-1 justify-center">
                               <Link to={`/admin-panel/rosters/${roster.id}`}>
@@ -1240,18 +1147,6 @@ function Roster() {
                                   <Edit size={14} />
                                 </button>
                               </Link>
-                              <button
-                                className="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded transition-colors"
-                                onClick={() => {
-                                  setToDelete({
-                                    id: roster.id,
-                                    title: roster.title,
-                                  });
-                                  setModalOpen(true);
-                                }}
-                              >
-                                <Trash2 size={14} />
-                              </button>
                             </div>
                           </td>
                         </tr>

@@ -14,10 +14,6 @@ import {
   deleteDepartmentShift,
 
   // Phase 3: Contracting Requirements
-  addContractingRequirements,
-  getContractingRequirements,
-  updateContractingRequirements,
-  getAvailableContractingTypes,
 
   // Phase 4: Working Hours
   addWorkingHours,
@@ -57,6 +53,11 @@ import {
   exportRoster,
   duplicateRoster,
   updateRosterStatus,
+  getRosterDepartments,
+  getShiftContractingTypes,
+  addShiftContractingTypes,
+  deleteShiftContractingType,
+  updateShiftContractingType,
 } from "../act/actRosterManagement";
 import i18next from "i18next";
 
@@ -71,6 +72,9 @@ const initialState = {
   rosterList: [], // للقائمة المبسطة
 
   // ===== DEPARTMENT SHIFTS (شفتات الأقسام) =====
+
+  rosterDepartments: [], // Add this line
+
   departmentShifts: [],
   selectedDepartmentShifts: null,
 
@@ -103,7 +107,7 @@ const initialState = {
     hasNextPage: false,
     hasPreviousPage: false,
   },
-
+  shiftContractingTypes: {},
   // ===== LOADING STATES (حالات التحميل) =====
   loading: {
     // Phase Operations
@@ -111,6 +115,10 @@ const initialState = {
     addShifts: false,
     addContracting: false,
     addWorkingHours: false,
+    getShiftContractingTypes: false,
+    addShiftContractingTypes: false,
+    updateShiftContractingType: false,
+    deleteShiftContractingType: false,
     applyTemplate: false,
     markReady: false,
     publish: false,
@@ -200,7 +208,9 @@ const rosterManagementSlice = createSlice({
         state.errors[key] = null;
       });
     },
-
+    clearRosterDepartments: (state) => {
+      state.rosterDepartments = [];
+    },
     clearSpecificError: (state, action) => {
       const errorType = action.payload;
       if (state.errors[errorType] !== undefined) {
@@ -400,6 +410,21 @@ const rosterManagementSlice = createSlice({
         state.errors.create = action.payload;
       });
 
+    builder
+      .addCase(getRosterDepartments.pending, (state) => {
+        state.loading.fetch = true;
+        state.errors.general = null;
+      })
+      .addCase(getRosterDepartments.fulfilled, (state, action) => {
+        state.loading.fetch = false;
+        state.rosterDepartments = action.payload?.data || [];
+      })
+      .addCase(getRosterDepartments.rejected, (state, action) => {
+        state.loading.fetch = false;
+        state.errors.general =
+          action.payload || i18next.t("roster.error.fetchFailed");
+      });
+
     // ===================================================================
     // PHASE 2: DEPARTMENT SHIFTS (المرحلة 2: شفتات الأقسام)
     // ===================================================================
@@ -462,12 +487,11 @@ const rosterManagementSlice = createSlice({
       })
       .addCase(deleteDepartmentShift.fulfilled, (state, action) => {
         state.loading.delete = false;
-
-        if (action.payload?.data?.id) {
-          rosterManagementSlice.caseReducers.removeShiftFromList(state, {
-            payload: action.payload.data.id,
-          });
-        }
+        console.log("action.payload", action.payload);
+        console.log("action.meta.args", action.meta.arg);
+        state.selectedDepartmentShifts = state.selectedDepartmentShifts.filter(
+          (dep) => dep.id !== action.meta.arg
+        );
       })
       .addCase(deleteDepartmentShift.rejected, (state, action) => {
         state.loading.delete = false;
@@ -478,77 +502,64 @@ const rosterManagementSlice = createSlice({
     // PHASE 3: CONTRACTING REQUIREMENTS (المرحلة 3: متطلبات التعاقد)
     // ===================================================================
 
-    // Add Contracting Requirements
     builder
-      .addCase(addContractingRequirements.pending, (state) => {
-        state.loading.addContracting = true;
-        state.errors.contracting = null;
-        state.success.addContracting = false;
+      .addCase(getShiftContractingTypes.pending, (state) => {
+        state.loading.getShiftContractingTypes = true;
       })
-      .addCase(addContractingRequirements.fulfilled, (state, action) => {
-        state.loading.addContracting = false;
-        state.success.addContracting = true;
-
-        if (action.payload?.data) {
-          state.contractingRequirements.push(
-            ...(Array.isArray(action.payload.data)
-              ? action.payload.data
-              : [action.payload.data])
-          );
+      .addCase(getShiftContractingTypes.fulfilled, (state, action) => {
+        state.loading.getShiftContractingTypes = false;
+        const response = action.payload;
+        if (response.success) {
+          const shiftId = action.meta.arg.departmentShiftId;
+          state.shiftContractingTypes[shiftId] = response.data;
         }
       })
-      .addCase(addContractingRequirements.rejected, (state, action) => {
-        state.loading.addContracting = false;
-        state.errors.contracting = action.payload;
-      });
-
-    // Get Contracting Requirements
-    builder
-      .addCase(getContractingRequirements.pending, (state) => {
-        state.loading.fetch = true;
-        state.errors.contracting = null;
+      .addCase(getShiftContractingTypes.rejected, (state, action) => {
+        state.loading.getShiftContractingTypes = false;
+        // Handle error
       })
-      .addCase(getContractingRequirements.fulfilled, (state, action) => {
-        state.loading.fetch = false;
-        state.contractingRequirements = action.payload?.data || [];
-      })
-      .addCase(getContractingRequirements.rejected, (state, action) => {
-        state.loading.fetch = false;
-        state.errors.contracting = action.payload;
-      });
 
-    // Update Contracting Requirements
-    builder
-      .addCase(updateContractingRequirements.pending, (state) => {
-        state.loading.update = true;
-        state.errors.contracting = null;
+      .addCase(addShiftContractingTypes.pending, (state) => {
+        state.loading.addShiftContractingTypes = true;
       })
-      .addCase(updateContractingRequirements.fulfilled, (state, action) => {
-        state.loading.update = false;
-        state.success.update = true;
+      .addCase(addShiftContractingTypes.fulfilled, (state, action) => {
+        state.loading.addShiftContractingTypes = false;
+        // Success handled in component
+      })
+      .addCase(addShiftContractingTypes.rejected, (state, action) => {
+        state.loading.addShiftContractingTypes = false;
+        // Handle error
+      })
+      .addCase(updateShiftContractingType.pending, (state) => {
+        state.loading.updateShiftContractingType = true;
+      })
+      .addCase(updateShiftContractingType.fulfilled, (state, action) => {
+        state.loading.updateShiftContractingType = false;
+        // Success handled in component
+      })
+      .addCase(updateShiftContractingType.rejected, (state, action) => {
+        state.loading.updateShiftContractingType = false;
+        // Handle error
+      })
 
-        if (action.payload?.data) {
-          state.contractingRequirements = action.payload.data;
+      .addCase(deleteShiftContractingType.pending, (state) => {
+        state.loading.deleteShiftContractingType = true;
+      })
+      .addCase(deleteShiftContractingType.fulfilled, (state, action) => {
+        state.loading.deleteShiftContractingType = false;
+        const response = action.payload;
+        if (response.success) {
+          // Remove from all shifts that might contain this contracting type
+          Object.keys(state.shiftContractingTypes).forEach((shiftId) => {
+            state.shiftContractingTypes[shiftId] = state.shiftContractingTypes[
+              shiftId
+            ].filter((ct) => ct.id !== response.deletedId);
+          });
         }
       })
-      .addCase(updateContractingRequirements.rejected, (state, action) => {
-        state.loading.update = false;
-        state.errors.contracting = action.payload;
-      });
-
-    // Get Available Contracting Types
-    builder
-      .addCase(getAvailableContractingTypes.pending, (state) => {
-        state.loading.fetch = true;
-        state.errors.general = null;
-      })
-      .addCase(getAvailableContractingTypes.fulfilled, (state, action) => {
-        state.loading.fetch = false;
-        state.availableContractingTypes = action.payload?.data || [];
-      })
-      .addCase(getAvailableContractingTypes.rejected, (state, action) => {
-        state.loading.fetch = false;
-        state.errors.general = action.payload;
+      .addCase(deleteShiftContractingType.rejected, (state, action) => {
+        state.loading.deleteShiftContractingType = false;
+        // Handle error
       });
 
     // ===================================================================

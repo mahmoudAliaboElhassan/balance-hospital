@@ -88,6 +88,7 @@ function EditShiftHourType() {
         hours: selectedShiftHoursType.hours || "",
         startTime: selectedShiftHoursType.startTime || "",
         endTime: selectedShiftHoursType.endTime || "",
+        description: selectedShiftHoursType.description || "",
         isActive:
           selectedShiftHoursType.isActive !== undefined
             ? selectedShiftHoursType.isActive
@@ -448,7 +449,31 @@ function EditShiftHourType() {
                 {t("shiftHourTypeForm.fields.isActive")}
               </label>
             </div>
-
+            <div>
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                {t("shiftHourTypeForm.fields.description")}
+              </label>
+              <Field
+                as="textarea"
+                id="description"
+                name="description"
+                rows="3"
+                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none ${
+                  errors.description && touched.description
+                    ? "border-red-500 bg-red-50"
+                    : "border-gray-300"
+                }`}
+                placeholder={t("shiftHourTypeForm.placeholders.description")}
+              />
+              <ErrorMessage
+                name="description"
+                component="div"
+                className="mt-1 text-sm text-red-600"
+              />
+            </div>
             {/* Submit Button */}
             <div
               className={`flex justify-end space-x-3 pt-4 ${

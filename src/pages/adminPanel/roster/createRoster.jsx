@@ -208,9 +208,7 @@ const CreateRoster = () => {
           pauseOnHover: true,
           draggable: true,
         });
-        navigate(
-          `/admin-panel/rosters/${localStorage.getItem("rosterId")}/phase1`
-        );
+        navigate(`/admin-panel/rosters/departments`);
       })
       .catch((error) => {
         // Error handling is done in useEffect

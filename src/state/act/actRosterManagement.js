@@ -66,10 +66,10 @@ export const createBasicRoster = createAsyncThunk(
  */
 export const addDepartmentShifts = createAsyncThunk(
   "rosterManagement/addDepartmentShifts",
-  async ({ rosterId, shiftsData }, { rejectWithValue }) => {
+  async ({ rosterDepartmentId, shiftsData }, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.post(
-        `/api/v1/RosterManagement/roster-departments/${rosterId}/shifts`,
+        `/api/v1/RosterManagement/roster-departments/${rosterDepartmentId}/shifts`,
         shiftsData,
         { headers: getAuthHeaders() }
       );
@@ -86,10 +86,10 @@ export const addDepartmentShifts = createAsyncThunk(
  */
 export const getDepartmentShifts = createAsyncThunk(
   "rosterManagement/getDepartmentShifts",
-  async ({ rosterId, departmentId }, { rejectWithValue }) => {
+  async ({ rosterDepartmentId }, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get(
-        `/api/v1/RosterManagement/${rosterId}/departments/${departmentId}/shifts`,
+        `/api/v1/RosterManagement/roster-departments/${rosterDepartmentId}/shifts`,
         { headers: getAuthHeaders() }
       );
       return res.data;
@@ -105,10 +105,10 @@ export const getDepartmentShifts = createAsyncThunk(
  */
 export const deleteDepartmentShift = createAsyncThunk(
   "rosterManagement/deleteDepartmentShift",
-  async (shiftId, { rejectWithValue }) => {
+  async (departmentShiftId, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.delete(
-        `/api/v1/RosterManagement/department-shifts/${shiftId}`,
+        `/api/v1/RosterManagement/department-shifts/${departmentShiftId}`,
         { headers: getAuthHeaders() }
       );
       return res.data;
@@ -126,76 +126,103 @@ export const deleteDepartmentShift = createAsyncThunk(
  * Add contracting requirements to department shift
  * إضافة متطلبات التعاقد لشفت قسم
  */
-export const addContractingRequirements = createAsyncThunk(
-  "rosterManagement/addContractingRequirements",
-  async ({ shiftId, requirements }, { rejectWithValue }) => {
+
+export const getShiftContractingTypes = createAsyncThunk(
+  "rosterManagement/getShiftContractingTypes",
+  async ({ departmentShiftId }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+
+    try {
+      const res = await axiosInstance.get(
+        `/api/v1/RosterManagement/department-shifts/${departmentShiftId}/contracting-types`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log("Shift contracting types fetched successfully:", res);
+      return res.data;
+    } catch (error) {
+      console.log("Error fetching shift contracting types:", error);
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+// Add contracting types to a department shift
+export const addShiftContractingTypes = createAsyncThunk(
+  "rosterManagement/addShiftContractingTypes",
+  async ({ departmentShiftId, contractingTypesData }, thunkAPI) => {
+    console.log("contractingTypesData", contractingTypesData);
+    const { rejectWithValue } = thunkAPI;
+
     try {
       const res = await axiosInstance.post(
-        `/api/v1/RosterManagement/department-shifts/${shiftId}/contracting-types`,
-        requirements,
-        { headers: getAuthHeaders() }
+        `/api/v1/RosterManagement/department-shifts/${departmentShiftId}/contracting-types`,
+        contractingTypesData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
+      console.log("Shift contracting types added successfully:", res);
       return res.data;
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      console.log("Error adding shift contracting types:", error);
+      return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
 
-/**
- * Get contracting requirements for department shift
- * الحصول على متطلبات التعاقد لشفت قسم
- */
-export const getContractingRequirements = createAsyncThunk(
-  "rosterManagement/getContractingRequirements",
-  async (shiftId, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.get(
-        `/api/v1/RosterManagement/department-shifts/${shiftId}/contracting-requirements`,
-        { headers: getAuthHeaders() }
-      );
-      return res.data;
-    } catch (error) {
-      return handleError(error, rejectWithValue);
-    }
-  }
-);
+// Update shift contracting type
+export const updateShiftContractingType = createAsyncThunk(
+  "rosterManagement/updateShiftContractingType",
+  async ({ shiftContractingTypeId, updateData }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
 
-/**
- * Update contracting requirements for department shift
- * تحديث متطلبات التعاقد لشفت قسم
- */
-export const updateContractingRequirements = createAsyncThunk(
-  "rosterManagement/updateContractingRequirements",
-  async ({ shiftId, requirements }, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.put(
-        `/api/v1/RosterManagement/department-shifts/${shiftId}/contracting-requirements`,
-        requirements,
-        { headers: getAuthHeaders() }
+        `/api/v1/RosterManagement/shift-contracting-types/${shiftContractingTypeId}`,
+        updateData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
+      console.log("Shift contracting type updated successfully:", res);
       return res.data;
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      console.log("Error updating shift contracting type:", error);
+      return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
 
-/**
- * Get available contracting types
- * الحصول على أنواع التعاقدات المتاحة
- */
-export const getAvailableContractingTypes = createAsyncThunk(
-  "rosterManagement/getAvailableContractingTypes",
-  async (_, { rejectWithValue }) => {
+// Delete shift contracting type
+export const deleteShiftContractingType = createAsyncThunk(
+  "rosterManagement/deleteShiftContractingType",
+  async ({ contractingId }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+
     try {
-      const res = await axiosInstance.get(
-        `/api/v1/RosterManagement/available-contracting-types`,
-        { headers: getAuthHeaders() }
+      const res = await axiosInstance.delete(
+        `/api/v1/RosterManagement/shift-contracting-types/${contractingId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
       );
-      return res.data;
+      console.log("Shift contracting type deleted successfully:", res);
+      return { ...res.data, deletedId: contractingId };
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      console.log("Error deleting shift contracting type:", error);
+      return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
@@ -711,6 +738,20 @@ export const duplicateRoster = createAsyncThunk(
       const res = await axiosInstance.post(
         `/api/v1/RosterManagement/${rosterId}/duplicate`,
         duplicateData,
+        { headers: getAuthHeaders() }
+      );
+      return res.data;
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+export const getRosterDepartments = createAsyncThunk(
+  "rosterManagement/getRosterDepartments",
+  async ({ rosterId }, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.get(
+        `/api/v1/RosterManagement/${rosterId}/departments`,
         { headers: getAuthHeaders() }
       );
       return res.data;

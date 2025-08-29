@@ -24,6 +24,9 @@ export const getShiftHoursTypes = createAsyncThunk(
       if (filters.minHours) {
         queryParams.append("minHoursCount", filters.minHours);
       }
+      if (filters.isActive) {
+        queryParams.append("isActive", filters.isActive);
+      }
 
       if (filters.maxHours) {
         queryParams.append("maxHoursCount", filters.maxHours);

@@ -178,6 +178,27 @@ function UseInitialValues() {
     // maxConsecutiveDays: 7,
     // minRestDaysBetween: 1,
   };
+  const INITIAL_VALUES_ADD_SHIFTS_DEPARTMENT = {
+    shifts: [
+      {
+        shiftHoursTypeId: "",
+        notes: "",
+      },
+    ],
+    overwriteExisting: false,
+  };
+
+  const INITIAL_VALUES_ADD_CONTRACTING_TYPES = {
+    contractingTypes: [
+      {
+        contractingTypeId: "",
+        defaultRequiredDoctors: 1,
+        defaultMaxDoctors: 1,
+        notes: "",
+      },
+    ],
+    overwriteExisting: false,
+  };
 
   return {
     INITIAL_VALUES_LOGIN,
@@ -197,6 +218,8 @@ function UseInitialValues() {
     INITIAL_VALUES_ADD_ROLE,
     INITIAL_VALUES_ASSIGN_USER_TO_ROLE,
     INITIAL_VALUES_CREATE_BASIC_ROASTER,
+    INITIAL_VALUES_ADD_SHIFTS_DEPARTMENT,
+    INITIAL_VALUES_ADD_CONTRACTING_TYPES,
   };
 }
 

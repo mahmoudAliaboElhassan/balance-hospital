@@ -1572,7 +1572,8 @@
     "scientificDegreeData": "Loading scientific degree data…",
     "userRole": "Loading User Role Data data…",
     "rosters": "Loading Rosters Data data…",
-    "roster": "Loading Roster Data data…"
+    "roster": "Loading Roster Data data…",
+    "rosterDepartments": "Loading Roster Department data…"
   },
 
   "error": {
@@ -1632,6 +1633,87 @@
     "dayss": "Days",
     "updateStatusFor": "Update Status for ",
     "completion": "Completion",
+
+    "contractingTypes": {
+      "title": "Contracting Types Management",
+      "editTitle": "Edit Contracting Type",
+
+      "subtitle": "Define required contracting types for the shift",
+      "noContractingTypes": "No contracting types added",
+      "contractingTypeNumber": "Contracting Type #{number}",
+      "charactersCount": "characters",
+      "viewContractingTypes": "View Contracting Types",
+      "addContractingTypes": "Add Contracting Types",
+      "fields": {
+        "contractingTypes": "Contracting Types",
+        "contractingType": "Contracting Type",
+        "defaultRequired": "Default Required Doctors",
+        "defaultMax": "Default Maximum Doctors",
+        "notes": "Notes",
+        "overwriteExisting": "Overwrite Existing",
+        "overwriteExistingHelp": "Existing contracting types will be replaced with the new ones"
+      },
+      "placeholders": {
+        "selectContractingType": "Select contracting type",
+        "notes": "Additional notes about this contracting type..."
+      },
+      "buttons": {
+        "addContractingType": "Add Contracting Type",
+        "remove": "Remove",
+        "cancel": "Cancel",
+        "addContractingTypes": "Add Contracting Types",
+        "adding": "Adding..."
+      },
+      "success": {
+        "added": "Contracting types added successfully",
+        "updated": "Contracting type updated successfully"
+      },
+      "error": {
+        "title": "Error Adding Contracting Types",
+        "removeTitle": "Failed to remove contracting type",
+        "updateTitle": "Failed to update contracting type",
+        "updateMessage": "An error occurred while updating the contracting type",
+        "removeMessage": "An error occurred while removing the contracting type",
+        "message": "An error occurred while adding contracting types. Please try again."
+      },
+      "validation": {
+        "atLeastOneRequired": "At least one contracting type is required",
+        "contractingTypeRequired": "Contracting type is required",
+        "minRequired": "Minimum is 1 doctor",
+        "maxRequired": "Maximum is 50 doctors",
+        "defaultRequiredRequired": "Default required doctors is required",
+        "defaultMaxRequired": "Default maximum doctors is required",
+        "minValue": "Value must be at least 1",
+        "requiredDoctorsRequired": "Required doctors count is required",
+        "minMax": "Minimum is 1 doctor",
+        "maxMax": "Maximum is 50 doctors",
+        "maxGreaterThanRequired": "Maximum must be greater than or equal to required",
+        "maxDoctorsRequired": "Maximum doctors count is required",
+        "notesMaxLength": "Notes must not exceed 500 characters"
+      }
+    },
+
+    "departmentss": {
+      "title": "Roster Departments",
+      "subtitle": "Manage and configure shifts for each department in this roster.",
+      "nextPhase": "Go to Phase 2",
+      "createdAt": "Created At",
+      "addShiftHours": "Add Shift Hours",
+      "department": "Department",
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "configured": "Configured",
+      "yes": "Yes",
+      "no": "No",
+      "shifts": "Shifts",
+      "notes": "Notes",
+      "createdBy": "Created by",
+      "delete": "Delete",
+      "viewShifts": "View Shifts",
+      "noDepartments": "No departments added yet",
+      "noDepartmentsMessage": "Add departments in the basic roster setup to configure shifts here."
+    },
     "phaseOne": {
       "title": "Department Shifts Setup",
       "subtitle": "Configure department shifts",
@@ -1884,6 +1966,7 @@
     "success": {
       "created": "Roster created successfully",
       "updated": "Roster updated successfully",
+      "removeContracting": "Contracting removed successfully",
       "deleted": "Roster deleted successfully",
       "published": "Roster published successfully",
       "closed": "Roster closed successfully",
@@ -1895,6 +1978,7 @@
       "createFailed": "Failed to create roster",
       "updateFailed": "Failed to update roster",
       "deleteFailed": "Failed to delete roster",
+      "removeDepartment": "Department removed successfully",
       "fetchFailed": "Failed to fetch rosters",
       "exportFailed": "Failed to export roster",
       "statusUpdateFailed": "Failed to update roster status",

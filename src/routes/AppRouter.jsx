@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Loader from "../components/Loader";
+import RosterDepartments from "../pages/adminPanel/roster/rosterDepartments";
 
 // Lazy pages/layouts
 const RootLayout = lazy(() => import("../pages/rootLayout"));
@@ -355,6 +356,10 @@ const router = createBrowserRouter([
           { path: "rosters/:rosterId/edit", element: withSuspense(EditRoster) },
 
           // Phase-based roster workflow
+          {
+            path: "rosters/departments",
+            element: withSuspense(RosterDepartments),
+          },
           {
             path: "rosters/:rosterId/phase1",
             element: withSuspense(RosterPhase1),

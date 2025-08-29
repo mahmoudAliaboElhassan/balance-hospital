@@ -1576,7 +1576,8 @@
     "scientificDegreeData": "جاري تحميل بيانات الدرجة العلمية…",
     "userRole": "جاري تحميل بيانات دور المستخدم…",
     "rosters": "جاري تحميل بيانات جداول المعاينه…",
-    "roster": "جاري تحميل بيانات جدول المعاينه…"
+    "roster": "جاري تحميل بيانات جدول المعاينه…",
+    "rosterDepartments": "جاري تحميل بيانات  أقسام جدول المعاينه…"
   },
 
   "error": {
@@ -1635,6 +1636,91 @@
     "dayss": "أيام",
     "updateStatusFor": "تحديث الحالة إلى ",
     "completion": "نسبة الإنجاز",
+
+    "contractingTypes": {
+      "title": "إدارة أنواع التعاقد",
+      "editTitle": "تعديل نوع التعاقد",
+
+      "subtitle": "تحديد أنواع التعاقد المطلوبة للشيفت",
+      "noContractingTypes": "لا توجد أنواع تعاقد مضافة",
+      "contractingTypeNumber": "نوع التعاقد ",
+      "charactersCount": "حرف",
+      "viewContractingTypes": "عرض أنواع التعاقد",
+      "addContractingTypes": "إضافة أنواع التعاقد",
+      "fields": {
+        "contractingTypes": "أنواع التعاقد",
+        "contractingType": "نوع التعاقد",
+        "defaultRequired": "العدد الأساسي المطلوب",
+        "defaultMax": "الحد الأقصى",
+        "notes": "ملاحظات",
+        "overwriteExisting": "استبدال الموجود",
+        "overwriteExistingHelp": "سيتم استبدال أنواع التعاقد الموجودة بالجديدة"
+      },
+      "placeholders": {
+        "selectContractingType": "اختر نوع التعاقد",
+        "notes": "ملاحظات إضافية حول هذا النوع من التعاقد..."
+      },
+      "buttons": {
+        "addContractingType": "إضافة نوع تعاقد",
+        "remove": "حذف",
+        "cancel": "إلغاء",
+        "addContractingTypes": "إضافة أنواع التعاقد",
+        "adding": "جارٍ الإضافة..."
+      },
+      "success": {
+        "added": "تم إضافة أنواع التعاقد بنجاح",
+        "updated": "تم تحديث نوع التعاقد بنجاح"
+      },
+      "error": {
+        "title": "خطأ في إضافة أنواع التعاقد",
+        "removeTitle": "فشل في حذف نوع التعاقد",
+        "removeMessage": "حدث خطأ أثناء حذف نوع التعاقد",
+        "updateTitle": "فشل في تحديث نوع التعاقد",
+        "updateMessage": "حدث خطأ أثناء تحديث نوع التعاقد",
+        "message": "حدث خطأ أثناء إضافة أنواع التعاقد. يرجى المحاولة مرة أخرى."
+      },
+      "validation": {
+        "atLeastOneRequired": "يجب إضافة نوع تعاقد واحد على الأقل",
+        "contractingTypeRequired": "نوع التعاقد مطلوب",
+        "minRequired": "الحد الأدنى هو 1 طبيب",
+        "maxRequired": "الحد الأقصى هو 50 طبيب",
+        "requiredDoctorsRequired": "العدد المطلوب من الأطباء مطلوب",
+        "minMax": "الحد الأدنى هو 1 طبيب",
+        "maxMax": "الحد الأقصى هو 50 طبيب",
+        "defaultRequiredRequired": "العدد الأساسي للأطباء مطلوب",
+        "defaultMaxRequired": "العدد الأقصى للأطباء مطلوب",
+        "minValue": "يجب ألا يقل العدد عن 1",
+        "maxGreaterThanRequired": "الحد الأقصى يجب أن يكون أكبر من أو يساوي العدد المطلوب",
+        "maxDoctorsRequired": "الحد الأقصى من الأطباء مطلوب",
+        "notesMaxLength": "الملاحظات يجب ألا تتجاوز 500 حرف"
+      }
+    },
+
+    "departmentss": {
+      "title": "أقسام الروستر",
+      "subtitle": "إدارة وضبط الشيفتات لكل قسم في هذا الروستر.",
+      "nextPhase": "الانتقال إلى المرحلة 2",
+      "createdAt": "تاريخ الإنشاء",
+      "addShiftHours": "إضافة ساعات الشيفت",
+      "noDepartments": "لا توجد أقسام مضافة",
+
+      "shifts": "الشيفتات",
+
+      "viewShifts": "عرض الشيفتات",
+      "department": "القسم",
+      "status": "الحالة",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "configured": "مهيأ",
+      "yes": "نعم",
+      "no": "لا",
+      "notes": "ملاحظات",
+      "createdBy": "تم الإنشاء بواسطة",
+      "delete": "حذف",
+
+      "noDepartmentsMessage": "أضف الأقسام في مرحلة إنشاء الروستر الأساسية لتتمكن من ضبط الشيفتات هنا."
+    },
+
     "phaseOne": {
       "title": "إعداد شيفتات القسم",
       "subtitle": "تهيئة شيفتات القسم",
@@ -1889,6 +1975,7 @@
       "created": "تم إنشاء الجدول بنجاح",
       "updated": "تم تحديث الجدول بنجاح",
       "deleted": "تم حذف الجدول بنجاح",
+      "removeContracting": "تم حذف نوع التعاقد بنجاح",
       "published": "تم نشر الجدول بنجاح",
       "closed": "تم إغلاق الجدول بنجاح",
       "archived": "تمت أرشفة الجدول بنجاح",
@@ -1898,6 +1985,7 @@
     "error": {
       "createFailed": "فشل إنشاء الجدول",
       "updateFailed": "فشل تحديث الجدول",
+
       "deleteFailed": "فشل حذف الجدول",
       "fetchFailed": "فشل في جلب الجداول",
       "exportFailed": "فشل تصدير الجدول",
