@@ -27,6 +27,9 @@ import {
   Info,
   Activity,
   PlusCircle,
+  Archive,
+  PenTool,
+  Send,
 } from "lucide-react";
 
 function RosterDetails() {
@@ -68,12 +71,26 @@ function RosterDetails() {
           : "bg-gray-100 text-gray-800",
         icon: FileText,
       },
-      DRAFT_DETAILED: {
-        name: t("roster.status.draftDetailed"),
+      DRAFT_PARTIAL: {
+        name: t("roster.status.draftPartial"),
+        color: isDark
+          ? "bg-yellow-900/40 text-yellow-300"
+          : "bg-yellow-100 text-yellow-800",
+        icon: Clock,
+      },
+      DRAFT: {
+        name: t("roster.status.draft"),
         color: isDark
           ? "bg-blue-900/40 text-blue-300"
           : "bg-blue-100 text-blue-800",
-        icon: Edit,
+        icon: PenTool,
+      },
+      DRAFT_READY: {
+        name: t("roster.status.draftReady"),
+        color: isDark
+          ? "bg-purple-900/40 text-purple-300"
+          : "bg-purple-100 text-purple-800",
+        icon: Send,
       },
       PUBLISHED: {
         name: t("roster.status.published"),
@@ -88,6 +105,13 @@ function RosterDetails() {
           ? "bg-red-900/40 text-red-300"
           : "bg-red-100 text-red-800",
         icon: XCircle,
+      },
+      ARCHIVED: {
+        name: t("roster.status.archived"),
+        color: isDark
+          ? "bg-red-900/40 text-red-300"
+          : "bg-red-100 text-red-800",
+        icon: Archive,
       },
     };
     return statusMap[status] || statusMap.DRAFT_BASIC;
@@ -200,6 +224,7 @@ function RosterDetails() {
   }
 
   const statusInfo = getStatusInfo(selectedRoster.status);
+  console.log("statusInfo", statusInfo);
   const StatusIcon = statusInfo.icon;
 
   return (
