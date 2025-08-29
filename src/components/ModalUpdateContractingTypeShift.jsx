@@ -13,6 +13,7 @@ import {
 import { useEffect } from "react";
 import { getContractingTypes } from "../state/act/actContractingType";
 import LoadingGetData from "./LoadingGetData";
+import UseFormValidation from "../hooks/use-form-validation";
 
 function ModalEditContractingTypeModal({
   selectedContractingType,
@@ -40,25 +41,8 @@ function ModalEditContractingTypeModal({
   }, [dispatch]);
 
   // Validation schema - removed contractingTypeId validation since it's disabled
-  const validationSchema = Yup.object({
-    defaultRequiredDoctors: Yup.number()
-      .required(t("roster.contractingTypes.validation.defaultRequiredRequired"))
-      .min(1, t("roster.contractingTypes.validation.minValue")),
-    defaultMaxDoctors: Yup.number()
-      .required(t("roster.contractingTypes.validation.defaultMaxRequired"))
-      .min(1, t("roster.contractingTypes.validation.minValue"))
-      .when("defaultRequiredDoctors", (defaultRequired, schema) => {
-        return schema.min(
-          defaultRequired,
-          t("roster.contractingTypes.validation.maxGreaterThanRequired")
-        );
-      }),
-    notes: Yup.string().max(
-      500,
-      t("roster.contractingTypes.validation.notesMaxLength")
-    ),
-  });
-
+  const { VALIDATION_SCHEMA_EDIT_ROSTER_CONTRAFCTING_TYPES } =
+    UseFormValidation();
   // Initial values
   const initialValues = {
     contractingTypeId: selectedContractingType?.contractingTypeId || "",
@@ -129,22 +113,22 @@ function ModalEditContractingTypeModal({
 
   return (
     <>
-      {loadingGetContractingTypes ? (
-        <LoadingGetData text={t("gettingData.contractingTypes")} />
-      ) : (
+      <div
+        className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 mt-8 ${
+          isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+        } rounded-lg shadow border`}
+      >
         <div
-          className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 mt-8 ${
-            isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
-          } rounded-lg shadow border`}
-        >
-          <div
-            className={` p-6 rounded-lg border ${
-              isDark
-                ? "bg-gray-700 border-gray-600"
-                : "bg-gray-50 border-gray-200"
-            }  
+          className={` p-6 rounded-lg border ${
+            isDark
+              ? "bg-gray-700 border-gray-600"
+              : "bg-gray-50 border-gray-200"
+          }  
             } rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto`}
-          >
+        >
+          {loadingGetContractingTypes ? (
+            <LoadingGetData text={t("gettingData.contractingTypes")} />
+          ) : (
             <div className="p-4">
               <div className="flex items-center justify-between mb-4">
                 <div>
@@ -177,7 +161,9 @@ function ModalEditContractingTypeModal({
 
               <Formik
                 initialValues={initialValues}
-                validationSchema={validationSchema}
+                validationSchema={
+                  VALIDATION_SCHEMA_EDIT_ROSTER_CONTRAFCTING_TYPES
+                }
                 onSubmit={handleSubmit}
                 enableReinitialize
               >
@@ -369,9 +355,9 @@ function ModalEditContractingTypeModal({
                 )}
               </Formik>
             </div>
-          </div>
+          )}
         </div>
-      )}
+      </div>
     </>
   );
 }

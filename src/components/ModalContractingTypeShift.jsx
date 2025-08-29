@@ -29,7 +29,8 @@ function ModalContractingTypesDepartment({ selectedShift, onClose }) {
   const isRTL = currentLang === "ar";
 
   // Validation schema for contracting types
-  const { VALIDATION_SCHEMA_ADD_CONTRACTING_TYPES } = UseFormValidation();
+  const { VALIDATION_SCHEMA_ADD_ROSTER_CONTRACTING_TYPES } =
+    UseFormValidation();
   const { INITIAL_VALUES_ADD_CONTRACTING_TYPES } = UseInitialValues();
 
   useEffect(() => {
@@ -101,22 +102,22 @@ function ModalContractingTypesDepartment({ selectedShift, onClose }) {
 
   return (
     <>
-      {loadingGetContractingTypes ? (
-        <LoadingGetData text={t("gettingData.contractingTypes")} />
-      ) : (
+      <div
+        className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 mt-8 ${
+          isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+        } rounded-lg shadow border`}
+      >
         <div
-          className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 mt-8 ${
-            isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
-          } rounded-lg shadow border`}
-        >
-          <div
-            className={` p-6 rounded-lg border ${
-              isDark
-                ? "bg-gray-700 border-gray-600"
-                : "bg-gray-50 border-gray-200"
-            }  
+          className={` p-6 rounded-lg border ${
+            isDark
+              ? "bg-gray-700 border-gray-600"
+              : "bg-gray-50 border-gray-200"
+          }  
             } rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto`}
-          >
+        >
+          {loadingGetContractingTypes ? (
+            <LoadingGetData text={t("gettingData.contractingTypes")} />
+          ) : (
             <div className="p-4">
               <div className="flex items-center justify-between mb-4">
                 <div>
@@ -150,7 +151,9 @@ function ModalContractingTypesDepartment({ selectedShift, onClose }) {
 
               <Formik
                 initialValues={INITIAL_VALUES_ADD_CONTRACTING_TYPES}
-                validationSchema={VALIDATION_SCHEMA_ADD_CONTRACTING_TYPES}
+                validationSchema={
+                  VALIDATION_SCHEMA_ADD_ROSTER_CONTRACTING_TYPES
+                }
                 onSubmit={handleSubmit}
                 enableReinitialize
               >
@@ -538,9 +541,9 @@ function ModalContractingTypesDepartment({ selectedShift, onClose }) {
                 )}
               </Formik>
             </div>
-          </div>
+          )}
         </div>
-      )}
+      </div>
     </>
   );
 }

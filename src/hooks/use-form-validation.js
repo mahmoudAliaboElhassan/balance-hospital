@@ -730,7 +730,7 @@ function UseFormValidation() {
     overwriteExisting: Yup.boolean(),
   });
 
-  const VALIDATION_SCHEMA_ADD_CONTRACTING_TYPES = Yup.object().shape({
+  const VALIDATION_SCHEMA_ADD_ROSTER_CONTRACTING_TYPES = Yup.object().shape({
     contractingTypes: Yup.array()
       .min(1, t("roster.contractingTypes.validation.atLeastOneRequired"))
       .of(
@@ -770,6 +770,25 @@ function UseFormValidation() {
     overwriteExisting: Yup.boolean(),
   });
 
+  const VALIDATION_SCHEMA_EDIT_ROSTER_CONTRAFCTING_TYPES = Yup.object({
+    defaultRequiredDoctors: Yup.number()
+      .required(t("roster.contractingTypes.validation.defaultRequiredRequired"))
+      .min(1, t("roster.contractingTypes.validation.minValue")),
+    defaultMaxDoctors: Yup.number()
+      .required(t("roster.contractingTypes.validation.defaultMaxRequired"))
+      .min(1, t("roster.contractingTypes.validation.minValue"))
+      .when("defaultRequiredDoctors", (defaultRequired, schema) => {
+        return schema.min(
+          defaultRequired,
+          t("roster.contractingTypes.validation.maxGreaterThanRequired")
+        );
+      }),
+    notes: Yup.string().max(
+      500,
+      t("roster.contractingTypes.validation.notesMaxLength")
+    ),
+  });
+
   return {
     VALIDATION_SCHEMA_LOGIN,
     VALIDATION_SCHEMA_RESET_PASSWORD,
@@ -792,7 +811,8 @@ function UseFormValidation() {
     VALIDATION_SCHEMA_CREATE_BASIC_ROASTER,
     VALIDATION_SCHEMA_UPDATE_BASIC_ROASTER,
     VALIDATION_SCHEMA_ADD_SHIFTS_DEPARTMENT,
-    VALIDATION_SCHEMA_ADD_CONTRACTING_TYPES,
+    VALIDATION_SCHEMA_ADD_ROSTER_CONTRACTING_TYPES,
+    VALIDATION_SCHEMA_EDIT_ROSTER_CONTRAFCTING_TYPES,
   };
 }
 
