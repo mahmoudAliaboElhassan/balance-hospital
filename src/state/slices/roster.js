@@ -843,6 +843,7 @@ const rosterManagementSlice = createSlice({
       .addCase(getRosterById.fulfilled, (state, action) => {
         state.loading.fetch = false;
         state.selectedRoster = action.payload?.data || null;
+        localStorage.setItem("rosterId", action.payload?.data?.id);
       })
       .addCase(getRosterById.rejected, (state, action) => {
         state.loading.fetch = false;

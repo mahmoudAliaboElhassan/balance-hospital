@@ -1631,8 +1631,32 @@
     "createFirstRoster": "Create your first roster to start scheduling doctors and departments.",
     "departments": "Departments",
     "dayss": "Days",
+    "shifts": "Shifts",
+    "workingHours": "Working Hours",
     "updateStatusFor": "Update Status for ",
     "completion": "Completion",
+    "completionPercentage": "Completion Percentage",
+    "completed": "Completed",
+    "allowed": "Allowed",
+    "notAllowed": "Not Allowed",
+
+    "details": {
+      "basicInfo": "Basic Information",
+      "progress": "Progress and Statistics",
+      "settings": "Roster Settings",
+      "quickActions": "Quick Actions",
+      "dateInfo": "Date Information",
+      "auditInfo": "Audit Information",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "deadline": "Submission Deadline",
+      "createdAt": "Created At",
+      "createdBy": "Created By",
+      "updatedAt": "Updated At",
+      "updatedBy": "Updated By",
+      "publishedAt": "Published At",
+      "closedAt": "Closed At"
+    },
 
     "contractingTypes": {
       "title": "Contracting Types Management",
@@ -1767,6 +1791,7 @@
       "createComplete": "Create Complete Roster",
       "view": "View Details",
       "edit": "Edit Roster",
+      "editRoster": "Edit Roster",
       "addNew": "Add New Roster",
       "cancel": "Cancel",
       "add": "Add",
@@ -1780,11 +1805,15 @@
       "archive": "Archive",
       "update": "Update",
       "updating": "Updating...",
-      "addDoctors": "Add Doctors"
+      "addDoctors": "Add Doctors",
+      "manageRoster": "Manage Roster",
+      "manageShifts": "Manage Shifts",
+      "backToList": "Back to Roster List"
     },
     "status": {
       "draft": "Draft",
       "draftBasic": "Draft (Basic)",
+      "draftDetailed": "Draft (Detailed)",
       "draftPartial": "Draft (Partial)",
       "draftReady": "Ready for Publish",
       "published": "Published",

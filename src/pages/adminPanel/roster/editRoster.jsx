@@ -184,16 +184,14 @@ const UpdateRoster = () => {
           pauseOnHover: true,
           draggable: true,
         });
-        navigate("/admin-panel/rosters");
+        navigate(`/admin-panel/rosters/${rosterId}`);
       })
       .catch((error) => {
         setSubmitting(false);
+        console.log("Update error:", error);
         Swal.fire({
           title: t("roster.error.updateFailed"),
-          text:
-            currentLang === "en"
-              ? error?.response?.data?.messageEn || error?.message
-              : error?.response?.data?.messageAr,
+          text: error.errors[0],
           icon: "error",
           confirmButtonText: t("common.ok"),
           confirmButtonColor: "#ef4444",
