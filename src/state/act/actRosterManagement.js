@@ -237,10 +237,10 @@ export const deleteShiftContractingType = createAsyncThunk(
  */
 export const addWorkingHours = createAsyncThunk(
   "rosterManagement/addWorkingHours",
-  async ({ shiftId, workingHours }, { rejectWithValue }) => {
+  async (workingHours, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.post(
-        `/api/v1/RosterManagement/department-shifts/${shiftId}/working-hours`,
+        `/api/v1/rostermanagement/working-hours/generate`,
         workingHours,
         { headers: getAuthHeaders() }
       );
@@ -257,10 +257,43 @@ export const addWorkingHours = createAsyncThunk(
  */
 export const getWorkingHours = createAsyncThunk(
   "rosterManagement/getWorkingHours",
-  async ({ rosterId }, { rejectWithValue }) => {
+  async ({ rosterId, params = {} }, { rejectWithValue }) => {
+    try {
+      const queryString = buildQueryParams(params);
+
+      const res = await axiosInstance.get(
+        `/api/v1/RosterManagement/${rosterId}/working-hours${
+          queryString ? `?${queryString}` : ""
+        }`,
+        { headers: getAuthHeaders() }
+      );
+      return res.data;
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+export const getWorkingHour = createAsyncThunk(
+  "rosterManagement/getWorkingHour",
+  async ({ workingHourId }, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get(
-        `/api/v1/RosterManagement/${rosterId}/working-hours`,
+        `/api/v1/RosterManagement/working-hours/${workingHourId}`,
+        { headers: getAuthHeaders() }
+      );
+      return res.data;
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+export const updateWorkingHour = createAsyncThunk(
+  "rosterManagement/updateWorkingHour",
+  async ({ workingHourId, data }, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.put(
+        `/api/v1/RosterManagement/working-hours/${workingHourId}`,
+        data,
         { headers: getAuthHeaders() }
       );
       return res.data;
@@ -497,6 +530,18 @@ export const getRostersPaged = createAsyncThunk(
         queryString ? `?${queryString}` : ""
       }`;
 
+      const res = await axiosInstance.get(url, { headers: getAuthHeaders() });
+      return res.data;
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+export const getRosterByCategory = createAsyncThunk(
+  "rosterManagement/getRostersPaged",
+  async ({ categoryId }, { rejectWithValue }) => {
+    try {
+      const url = `/api/v1/RosterManagement/categories/${categoryId}`;
       const res = await axiosInstance.get(url, { headers: getAuthHeaders() });
       return res.data;
     } catch (error) {

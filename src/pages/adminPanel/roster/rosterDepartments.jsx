@@ -165,8 +165,7 @@ function RosterDepartments() {
   const isDark = mymode === "dark";
 
   const navigateToNextPhase = () => {
-    const currentRosterId = localStorage.getItem("rosterId");
-    navigate(`/admin-panel/rosters/${currentRosterId}/phase3`);
+    navigate(`/admin-panel/rosters/working-hours/generate`);
   };
 
   if (loading.fetch) {

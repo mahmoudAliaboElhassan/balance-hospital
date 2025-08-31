@@ -789,6 +789,28 @@ function UseFormValidation() {
     ),
   });
 
+  const VALIDATION_SCHEMA_EDIT_WORKING_HOUR = Yup.object({
+    requiredDoctors: Yup.number()
+      .required(t("roster.workingHours.validation.requiredDoctorsRequired"))
+      .min(1, t("roster.workingHours.validation.requiredDoctorsMin"))
+      .integer(t("roster.workingHours.validation.requiredDoctorsInteger")),
+    maxDoctors: Yup.number()
+      .required(t("roster.workingHours.validation.maxDoctorsRequired"))
+      .min(1, t("roster.workingHours.validation.maxDoctorsMin"))
+      .integer(t("roster.workingHours.validation.maxDoctorsInteger"))
+      .test(
+        "max-greater-than-required",
+        t("roster.workingHours.validation.maxDoctorsGreater"),
+        function (value) {
+          const { requiredDoctors } = this.parent;
+          return !requiredDoctors || !value || value >= requiredDoctors;
+        }
+      ),
+    notes: Yup.string().max(500, t("roster.workingHours.validation.notesMax")),
+    modificationReason: Yup.string()
+      .required(t("roster.workingHours.validation.modificationReasonRequired"))
+      .max(500, t("roster.workingHours.validation.modificationReasonMax")),
+  });
   return {
     VALIDATION_SCHEMA_LOGIN,
     VALIDATION_SCHEMA_RESET_PASSWORD,
@@ -813,6 +835,7 @@ function UseFormValidation() {
     VALIDATION_SCHEMA_ADD_SHIFTS_DEPARTMENT,
     VALIDATION_SCHEMA_ADD_ROSTER_CONTRACTING_TYPES,
     VALIDATION_SCHEMA_EDIT_ROSTER_CONTRAFCTING_TYPES,
+    VALIDATION_SCHEMA_EDIT_WORKING_HOUR,
   };
 }
 

@@ -1,7 +1,23 @@
 import React, { Suspense, lazy } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Loader from "../components/Loader";
-import RosterDepartments from "../pages/adminPanel/roster/rosterDepartments";
+import EditWorkingHour from "../pages/adminPanel/roster/editWorkingHours";
+const WorkingHours = lazy(() =>
+  import("../pages/adminPanel/roster/workingHours")
+);
+const WorkingHour = lazy(() =>
+  import("../pages/adminPanel/roster/workingHour")
+);
+const EditWorkingHours = lazy(() =>
+  import("../pages/adminPanel/roster/editWorkingHours")
+);
+
+const RosterDepartments = lazy(() =>
+  import("../pages/adminPanel/roster/rosterDepartments")
+);
+const GenerateWorkingHours = lazy(() =>
+  import("../pages/adminPanel/roster/generateWorkingHours")
+);
 
 // Lazy pages/layouts
 const RootLayout = lazy(() => import("../pages/rootLayout"));
@@ -124,93 +140,6 @@ const RosterDetails = lazy(() =>
 );
 const EditRoster = lazy(() => import("../pages/adminPanel/roster/editRoster"));
 
-// Phase-specific components
-const RosterPhase1 = lazy(() =>
-  import("../pages/adminPanel/roster/phases/phase1")
-);
-const RosterPhase2 = lazy(() =>
-  import("../pages/adminPanel/roster/phases/phase2")
-);
-const RosterPhase3 = lazy(() =>
-  import("../pages/adminPanel/roster/phases/phase3")
-);
-const RosterPhase4 = lazy(() =>
-  import("../pages/adminPanel/roster/phases/phase4")
-);
-const RosterPhase5 = lazy(() =>
-  import("../pages/adminPanel/roster/phases/phase5")
-);
-const RosterPhase6 = lazy(() =>
-  import("../pages/adminPanel/roster/phases/phase6")
-);
-const RosterPhase7 = lazy(() =>
-  import("../pages/adminPanel/roster/phases/phase7")
-);
-
-// Department Shifts Management
-// const DepartmentShifts = lazy(() =>
-//   import("../pages/adminPanel/roster/departmentShifts")
-// );
-// const CreateDepartmentShift = lazy(() =>
-//   import("../pages/adminPanel/roster/departmentShifts/create")
-// );
-// const EditDepartmentShift = lazy(() =>
-//   import("../pages/adminPanel/roster/departmentShifts/edit")
-// );
-
-// // Contracting Management
-// const ContractingRequirements = lazy(() =>
-//   import("../pages/adminPanel/roster/contracting")
-// );
-// const CreateContractingRequirement = lazy(() =>
-//   import("../pages/adminPanel/roster/contracting/create")
-// );
-// const EditContractingRequirement = lazy(() =>
-//   import("../pages/adminPanel/roster/contracting/edit")
-// );
-
-// // Working Hours Management
-// const WorkingHoursManagement = lazy(() =>
-//   import("../pages/adminPanel/roster/workingHours")
-// );
-// const CreateWorkingHours = lazy(() =>
-//   import("../pages/adminPanel/roster/workingHours/create")
-// );
-// const EditWorkingHours = lazy(() =>
-//   import("../pages/adminPanel/roster/workingHours/edit")
-// );
-
-// // Analytics and Reports
-// const RosterAnalytics = lazy(() =>
-//   import("../pages/adminPanel/roster/analytics")
-// );
-// const DoctorWorkloads = lazy(() =>
-//   import("../pages/adminPanel/roster/analytics/workloads")
-// );
-// const DepartmentCoverage = lazy(() =>
-//   import("../pages/adminPanel/roster/analytics/coverage")
-// );
-// const ContractingAnalytics = lazy(() =>
-//   import("../pages/adminPanel/roster/analytics/contracting")
-// );
-
-// // Doctor Assignment
-// const DoctorAssignment = lazy(() =>
-//   import("../pages/adminPanel/roster/doctorAssignment")
-// );
-// const SearchColleagues = lazy(() =>
-//   import("../pages/adminPanel/roster/searchColleagues")
-// );
-
-// // Schedule Views
-// const DepartmentSchedule = lazy(() =>
-//   import("../pages/adminPanel/roster/schedule/department")
-// );
-// const FullRosterSchedule = lazy(() =>
-//   import("../pages/adminPanel/roster/schedule/full")
-// );
-
-// Helper to wrap lazies with a shared fallback
 const withSuspense = (Comp) => (
   <Suspense fallback={<Loader />}>
     <Comp />
@@ -361,33 +290,36 @@ const router = createBrowserRouter([
             element: withSuspense(RosterDepartments),
           },
           {
-            path: "rosters/:rosterId/phase1",
-            element: withSuspense(RosterPhase1),
+            path: "rosters/working-hours/generate",
+            element: withSuspense(GenerateWorkingHours),
+          },
+
+          {
+            path: "rosters/:rosterId/working-hours",
+            element: withSuspense(WorkingHours),
           },
           {
-            path: "rosters/:rosterId/phase2",
-            element: withSuspense(RosterPhase2),
+            path: "rosters/working-hours/:workingHourId/edit",
+            element: withSuspense(EditWorkingHour),
           },
           {
-            path: "rosters/:rosterId/phase3",
-            element: withSuspense(RosterPhase3),
+            path: "rosters/working-hours/:workingHourId",
+            element: withSuspense(WorkingHour),
           },
-          {
-            path: "rosters/:rosterId/phase4",
-            element: withSuspense(RosterPhase4),
-          },
-          {
-            path: "rosters/:rosterId/phase5",
-            element: withSuspense(RosterPhase5),
-          },
-          {
-            path: "rosters/:rosterId/phase6",
-            element: withSuspense(RosterPhase6),
-          },
-          {
-            path: "rosters/:rosterId/phase7",
-            element: withSuspense(RosterPhase7),
-          },
+          // {
+          //   path: "rosters/:rosterId/working-hours/:workingHoursId",
+          //   element: withSuspense(WorkingHourDetails),
+          // },
+
+          // // Doctor Assignment
+          // {
+          //   path: "rosters/:rosterId/doctor-assignment",
+          //   element: withSuspense(DoctorAssignment),
+          // },
+          // {
+          //   path: "rosters/:rosterId/doctors/:doctorId/schedule",
+          //   element: withSuspense(DoctorSchedule),
+          // },
         ],
       },
     ],

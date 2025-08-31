@@ -761,6 +761,16 @@
     "confirm": "Confirm",
     "save": "Save",
     "edit": "Edit",
+    "filters": "Filters",
+    "refresh": "Refresh",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "department": "Department",
+    "allDepartments": "All Departments",
+    "apply": "Apply",
+
+    "notes": "Notes",
+    "more": "more",
     "delete": "Delete",
     "view": "View",
     "add": "Add",
@@ -1573,7 +1583,9 @@
     "userRole": "Loading User Role Data data…",
     "rosters": "Loading Rosters Data data…",
     "roster": "Loading Roster Data data…",
-    "rosterDepartments": "Loading Roster Department data…"
+    "rosterDepartments": "Loading Roster Department data…",
+    "workingHours": "Loading working hours...",
+    "workingHour": "Loading working hour Data..."
   },
 
   "error": {
@@ -1632,7 +1644,51 @@
     "departments": "Departments",
     "dayss": "Days",
     "shifts": "Shifts",
-    "workingHours": "Working Hours",
+
+    "workingHours": {
+      "title": "Working Hours",
+      "description": "View and filter working hours, fill rates, and doctor assignments for this roster.",
+      "editTitle": "Edit Working Hour",
+      "editSubtitle": "Update required and maximum doctors, add notes, and provide a modification reason.",
+      "charactersCount": "characters",
+      "fields": {
+        "requiredDoctors": "Required Doctors",
+        "maxDoctors": "Maximum Doctors",
+        "notes": "Notes",
+        "modificationReason": "Modification Reason"
+      },
+      "placeholders": {
+        "notes": "Optional notes (max 500 characters)",
+        "modificationReason": "Reason for this change (required)"
+      },
+      "success": {
+        "updated": "Working hour updated successfully"
+      },
+      "error": {
+        "updateTitle": "Failed to update working hour",
+        "updateMessage": "An error occurred while updating the working hour.",
+        "notFound": "Working hour not found or no longer exists."
+      },
+      "validation": {
+        "requiredDoctorsRequired": "Required doctors is required",
+        "requiredDoctorsMin": "Required doctors must be at least 1",
+        "requiredDoctorsMax": "Required doctors cannot exceed 50",
+        "maxDoctorsRequired": "Maximum doctors is required",
+        "maxDoctorsMin": "Maximum doctors must be at least 1",
+        "maxDoctorsMax": "Maximum doctors cannot exceed 50",
+        "maxGreaterThanRequired": "Maximum doctors must be greater than or equal to required doctors",
+        "notesMaxLength": "Notes must not exceed 500 characters",
+        "requiredDoctorsInteger": "Required doctors must be a whole number",
+        "maxDoctorsInteger": "Maximum doctors must be a whole number",
+        "maxDoctorsGreater": "Maximum doctors must be greater than or equal to required doctors",
+        "notesMax": "Notes must not exceed 500 characters",
+        "modificationReasonRequired": "Modification reason is required",
+        "modificationReasonMax": "Modification reason must not exceed 500 characters",
+
+        "modificationReasonMaxLength": "Modification reason must not exceed 500 characters"
+      }
+    },
+
     "updateStatusFor": "Update Status for ",
     "completion": "Completion",
     "completionPercentage": "Completion Percentage",
@@ -1658,10 +1714,36 @@
       "closedAt": "Closed At"
     },
 
+    "workingHourss": {
+      "generateTitle": "Generate Working Hours",
+      "generateSubtitle": "Generate working hours for all shifts and departments",
+      "infoTitle": "About Working Hours Generation",
+      "infoDescription": "This process will create individual working hour slots for each day of the roster period, for each shift and contracting type combination. This is required before doctors can be assigned to specific shifts.",
+      "generateSettings": "Generation Settings",
+      "overwriteExisting": "Overwrite Existing Working Hours",
+      "overwriteExistingHelp": "Replace any existing working hours. WARNING: This will remove all doctor assignments!",
+      "warningTitle": "Warning",
+      "overwriteWarning": "Overwriting existing working hours will remove all current doctor assignments. This action cannot be undone.",
+      "existingTitle": "Existing Working Hours",
+      "existingMessage": "{{count}} working hours already exist for this roster.",
+      "buttons": {
+        "back": "Back",
+        "generate": "Generate Working Hours",
+        "generating": "Generating..."
+      },
+      "success": {
+        "generated": "Working hours generated successfully"
+      },
+      "error": {
+        "title": "Failed to generate working hours",
+        "message": "An error occurred while generating working hours. Please try again.",
+        "noRosterId": "Roster ID is missing. Please open a roster first."
+      }
+    },
+
     "contractingTypes": {
       "title": "Contracting Types Management",
       "editTitle": "Edit Contracting Type",
-
       "subtitle": "Define required contracting types for the shift",
       "noContractingTypes": "No contracting types added",
       "contractingTypeNumber": "Contracting Type #{number}",
@@ -1738,10 +1820,10 @@
       "noDepartments": "No departments added yet",
       "noDepartmentsMessage": "Add departments in the basic roster setup to configure shifts here."
     },
+
     "phaseOne": {
       "title": "Department Shifts Setup",
       "subtitle": "Configure department shifts",
-
       "rosterId": "Roster ID",
       "fields": {
         "shifts": "Shifts",
@@ -1786,6 +1868,7 @@
         "message": "An error occurred while adding department shifts"
       }
     },
+
     "actions": {
       "createBasic": "Create Basic Roster",
       "createComplete": "Create Complete Roster",
@@ -1808,8 +1891,10 @@
       "addDoctors": "Add Doctors",
       "manageRoster": "Manage Roster",
       "manageShifts": "Manage Shifts",
-      "backToList": "Back to Roster List"
+      "backToList": "Back to Roster List",
+      "backToRoster": "Back to Roster"
     },
+
     "status": {
       "draft": "Draft",
       "draftBasic": "Draft (Basic)",
@@ -1820,6 +1905,7 @@
       "closed": "Closed",
       "archived": "Archived"
     },
+
     "filters": {
       "search": "Search",
       "searchPlaceholder": "Search by title or description",
@@ -1850,6 +1936,7 @@
       "department": "Department",
       "allDepartments": "All Departments"
     },
+
     "table": {
       "title": "Title",
       "category": "Category",
@@ -1864,6 +1951,7 @@
       "updatedAt": "Last Updated",
       "completion": "Completion"
     },
+
     "form": {
       "basicInfo": "Basic Information",
       "title": "Roster Title",
@@ -1925,6 +2013,7 @@
       "startDate": "Start Date",
       "endDate": "End Date"
     },
+
     "days": {
       "sunday": "Sunday",
       "monday": "Monday",
@@ -1934,6 +2023,7 @@
       "friday": "Friday",
       "saturday": "Saturday"
     },
+
     "months": {
       "january": "January",
       "february": "February",
@@ -1985,13 +2075,13 @@
       "maxConsecutiveDaysMax": "Maximum consecutive days cannot exceed 14",
       "minRestDaysMin": "Minimum rest days must be at least 0",
       "minRestDaysMax": "Minimum rest days cannot exceed 7",
-
       "dayMin": "Day must be at least 1",
       "dayMax": "Day cannot exceed 30",
       "required": "This field is required",
       "endDayAfterStartDay": "End day must be greater than or equal to start day",
       "notesMaxLength": "Notes cannot exceed 500 characters"
     },
+
     "success": {
       "created": "Roster created successfully",
       "updated": "Roster updated successfully",
@@ -2003,6 +2093,7 @@
       "exported": "Roster exported successfully",
       "statusUpdated": "Roster status updated successfully"
     },
+
     "error": {
       "createFailed": "Failed to create roster",
       "updateFailed": "Failed to update roster",
@@ -2017,8 +2108,20 @@
       "notFound": "Roster not found",
       "updateStatusFailed": "Failed to update roster status"
     },
+
     "pagination": {
       "itemsPerPage": "Items per page"
-    }
+    },
+
+    "totalShifts": "Total Working Hours",
+    "assignedDoctors": "Assigned Doctors",
+    "fullyBooked": "Fully Booked",
+    "averageFill": "Average Fill",
+    "workingHoursList": "Working Hours List",
+    "noWorkingHours": "No working hours found for this roster.",
+    "required": "required",
+    "filled": "filled",
+    "progress": "Progress",
+    "overBooked": "Overbooked"
   }
 }

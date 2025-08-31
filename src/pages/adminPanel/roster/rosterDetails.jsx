@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { getRosterById } from "../../../state/act/actRosterManagement";
+import {
+  addWorkingHours,
+  getRosterById,
+} from "../../../state/act/actRosterManagement";
 import { useTranslation } from "react-i18next";
 import LoadingGetData from "../../../components/LoadingGetData";
 import ModalUpdateRosterStatus from "../../../components/ModalUpdateRosterStatus";
@@ -255,6 +258,14 @@ function RosterDetails() {
                 <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors w-full sm:w-auto justify-center">
                   <Edit size={16} />
                   {t("roster.actions.edit")}
+                </button>
+              </Link>
+              <Link
+                to={`/admin-panel/rosters/${selectedRoster.id}/working-hours`}
+              >
+                <button className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all shadow-md hover:shadow-lg w-full sm:w-auto justify-center">
+                  <Clock size={16} />
+                  {t("roster.workingHours")}
                 </button>
               </Link>
 
@@ -806,6 +817,15 @@ function RosterDetails() {
                   <button className="w-full bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white p-3 rounded-lg flex items-center justify-center gap-2 transition-all duration-200 transform hover:scale-105">
                     <Edit size={18} />
                     {t("roster.actions.editRoster")}
+                  </button>
+                </Link>
+
+                <Link
+                  to={`/admin-panel/rosters/${selectedRoster.id}/working-hours`}
+                >
+                  <button className="w-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 text-white p-3 rounded-lg flex items-center justify-center gap-2 transition-all duration-200 transform hover:scale-105">
+                    <Clock size={16} />
+                    {t("roster.workingHours")}
                   </button>
                 </Link>
               </div>

@@ -58,6 +58,8 @@ import {
   addShiftContractingTypes,
   deleteShiftContractingType,
   updateShiftContractingType,
+  getWorkingHour,
+  updateWorkingHour,
 } from "../act/actRosterManagement";
 import i18next from "i18next";
 
@@ -86,6 +88,7 @@ const initialState = {
 
   // ===== WORKING HOURS DATA (بيانات ساعات العمل) =====
   workingHours: [],
+  workingHour: null,
   workingHoursOverview: null,
   doctorRequirements: [],
 
@@ -603,6 +606,29 @@ const rosterManagementSlice = createSlice({
       .addCase(getWorkingHours.rejected, (state, action) => {
         state.loading.fetch = false;
         state.errors.workingHours = action.payload;
+      });
+    builder
+      .addCase(getWorkingHour.pending, (state) => {
+        state.loading.fetch = true;
+        state.errors.workingHours = null;
+      })
+      .addCase(getWorkingHour.fulfilled, (state, action) => {
+        state.loading.fetch = false;
+        state.workingHour = action.payload?.data || [];
+      })
+      .addCase(getWorkingHour.rejected, (state, action) => {
+        state.loading.fetch = false;
+        state.errors.workingHours = action.payload;
+      });
+    builder
+      .addCase(updateWorkingHour.pending, (state) => {
+        state.loading.update = true;
+      })
+      .addCase(updateWorkingHour.fulfilled, (state, action) => {
+        state.loading.update = false;
+      })
+      .addCase(updateWorkingHour.rejected, (state, action) => {
+        state.loading.update = false;
       });
 
     // Update Doctor Requirements
