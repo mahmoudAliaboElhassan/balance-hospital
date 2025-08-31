@@ -768,7 +768,7 @@
     "department": "Department",
     "allDepartments": "All Departments",
     "apply": "Apply",
-
+    "date": "Date",
     "notes": "Notes",
     "more": "more",
     "delete": "Delete",
@@ -1642,15 +1642,19 @@
     "noRosters": "No rosters found. Create your first roster to get started.",
     "createFirstRoster": "Create your first roster to start scheduling doctors and departments.",
     "departments": "Departments",
+    "fillPercentage": "Fill percentage",
+    "remainingSlots": "Remaining slots",
     "dayss": "Days",
     "shifts": "Shifts",
-
+    "noAssignedDoctors": "No doctors assigned yet",
     "workingHours": {
       "title": "Working Hours",
       "description": "View and filter working hours, fill rates, and doctor assignments for this roster.",
       "editTitle": "Edit Working Hour",
       "editSubtitle": "Update required and maximum doctors, add notes, and provide a modification reason.",
       "charactersCount": "characters",
+      "assignedBy": "Assigned By",
+
       "fields": {
         "requiredDoctors": "Required Doctors",
         "maxDoctors": "Maximum Doctors",
@@ -1873,6 +1877,8 @@
       "createBasic": "Create Basic Roster",
       "createComplete": "Create Complete Roster",
       "view": "View Details",
+      "assignDoctor": "Assing Doctor",
+
       "edit": "Edit Roster",
       "editRoster": "Edit Roster",
       "addNew": "Add New Roster",

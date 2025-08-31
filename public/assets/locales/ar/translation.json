@@ -565,6 +565,7 @@
     "allDepartments": "كل الأقسام",
     "apply": "تطبيق",
     "view": "عرض",
+    "date": "التاريخ",
     "notes": "ملاحظات",
     "more": "أخرى",
     "search": "بحث",
@@ -575,7 +576,8 @@
     "error": "خطأ",
     "success": "نجاح",
     "warning": "تحذير",
-    "info": "معلومة"
+    "info": "معلومة",
+    "goBack": "العودة"
   },
 
   "subDepartment": {
@@ -1646,13 +1648,16 @@
     "departments": "الأقسام",
     "dayss": "الأيام",
     "shifts": "الشيفتات",
-
+    "fillPercentage": "نسبة الإشغال",
+    "remainingSlots": "الأماكن المتبقية",
+    "noAssignedDoctors": "لا يوجد أطباء معينون",
     "workingHours": {
       "title": "ساعات العمل",
       "description": "اعرض وفلتر ساعات العمل ونِسب الإشغال وتعيينات الأطباء لهذا الروستر.",
       "editTitle": "تعديل ساعة العمل",
       "editSubtitle": "قم بتحديث عدد الأطباء المطلوبين والحد الأقصى، أضف الملاحظات، واذكر سبب التعديل.",
       "charactersCount": "حرف",
+      "assignedBy": "تم التعيين بواسطة",
       "fields": {
         "requiredDoctors": "الأطباء المطلوبون",
         "maxDoctors": "الحد الأقصى للأطباء",
@@ -1879,6 +1884,7 @@
       "addNew": "إضافة روستر جديد",
       "cancel": "إلغاء",
       "add": "إضافة",
+      "assignDoctors": "تعيين الأطباء",
       "create": "إنشاء الروستر",
       "updateStatus": "تحديث الحالة",
       "creating": "جارٍ إنشاء الروستر...",
@@ -1893,7 +1899,8 @@
       "manageRoster": "إدارة الروستر",
       "manageShifts": "إدارة الشيفتات",
       "backToList": "الرجوع إلى قائمة الروسترات",
-      "backToRoster": "الرجوع إلى الروستر"
+      "backToRoster": "الرجوع إلى الروستر",
+      "assignDoctor": "تعيين طبيب"
     },
 
     "status": {

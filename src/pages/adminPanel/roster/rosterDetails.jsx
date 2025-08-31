@@ -265,7 +265,7 @@ function RosterDetails() {
               >
                 <button className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all shadow-md hover:shadow-lg w-full sm:w-auto justify-center">
                   <Clock size={16} />
-                  {t("roster.workingHours")}
+                  {t("roster.workingHours.title")}
                 </button>
               </Link>
 
@@ -647,7 +647,7 @@ function RosterDetails() {
                       isDark ? "text-gray-300" : "text-gray-600"
                     }`}
                   >
-                    {t("roster.workingHours")}
+                    {t("roster.workingHours.title")}
                   </p>
                 </div>
 
@@ -825,7 +825,7 @@ function RosterDetails() {
                 >
                   <button className="w-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 text-white p-3 rounded-lg flex items-center justify-center gap-2 transition-all duration-200 transform hover:scale-105">
                     <Clock size={16} />
-                    {t("roster.workingHours")}
+                    {t("roster.workingHours.title")}
                   </button>
                 </Link>
               </div>

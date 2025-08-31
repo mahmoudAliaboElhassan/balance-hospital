@@ -478,10 +478,10 @@ export const closeRoster = createAsyncThunk(
  */
 export const assignDoctor = createAsyncThunk(
   "rosterManagement/assignDoctor",
-  async ({ rosterId, assignmentData }, { rejectWithValue }) => {
+  async (assignmentData, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.post(
-        `/api/v1/RosterManagement/${rosterId}/assign-doctor`,
+        `/api/v1/RosterManagement/doctor-assignments`,
         assignmentData,
         { headers: getAuthHeaders() }
       );
