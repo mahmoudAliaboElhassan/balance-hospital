@@ -1648,9 +1648,9 @@
     "shifts": "Shifts",
     "noAssignedDoctors": "No doctors assigned yet",
     "workingHours": {
-      "title": "Working Hours",
+      "title": "Shifts Requirements",
       "description": "View and filter working hours, fill rates, and doctor assignments for this roster.",
-      "editTitle": "Edit Working Hour",
+      "editTitle": "Edit Shift Requirements",
       "editSubtitle": "Update required and maximum doctors, add notes, and provide a modification reason.",
       "charactersCount": "characters",
       "assignedBy": "Assigned By",
@@ -1669,7 +1669,7 @@
         "updated": "Working hour updated successfully"
       },
       "error": {
-        "updateTitle": "Failed to update working hour",
+        "updateTitle": "Failed to update Shift Requirements",
         "updateMessage": "An error occurred while updating the working hour.",
         "notFound": "Working hour not found or no longer exists."
       },
@@ -1719,27 +1719,27 @@
     },
 
     "workingHourss": {
-      "generateTitle": "Generate Working Hours",
+      "generateTitle": "Generate Shifts Requirements",
       "generateSubtitle": "Generate working hours for all shifts and departments",
       "infoTitle": "About Working Hours Generation",
       "infoDescription": "This process will create individual working hour slots for each day of the roster period, for each shift and contracting type combination. This is required before doctors can be assigned to specific shifts.",
       "generateSettings": "Generation Settings",
-      "overwriteExisting": "Overwrite Existing Working Hours",
+      "overwriteExisting": "Overwrite Existing Shifts Requirements",
       "overwriteExistingHelp": "Replace any existing working hours. WARNING: This will remove all doctor assignments!",
       "warningTitle": "Warning",
       "overwriteWarning": "Overwriting existing working hours will remove all current doctor assignments. This action cannot be undone.",
-      "existingTitle": "Existing Working Hours",
+      "existingTitle": "Existing Shifts Requirements",
       "existingMessage": "{{count}} working hours already exist for this roster.",
       "buttons": {
         "back": "Back",
-        "generate": "Generate Working Hours",
+        "generate": "Generate Shifts Requirements",
         "generating": "Generating..."
       },
       "success": {
         "generated": "Working hours generated successfully"
       },
       "error": {
-        "title": "Failed to generate working hours",
+        "title": "Failed to generate Shifts Requirements",
         "message": "An error occurred while generating working hours. Please try again.",
         "noRosterId": "Roster ID is missing. Please open a roster first."
       }
@@ -1988,8 +1988,8 @@
       "selectShiftType": "Select Shift Type",
       "requiredDoctors": "Required Doctors",
       "maxDoctors": "Maximum Doctors",
-      "addWorkingHours": "Add Working Hours",
-      "removeWorkingHours": "Remove Working Hours",
+      "addWorkingHours": "Add Shifts Requirements",
+      "removeWorkingHours": "Remove Shifts Requirements",
       "contractingRequirements": "Contracting Requirements",
       "contractingType": "Contracting Type",
       "selectContractingType": "Select Contracting Type",
@@ -2119,7 +2119,7 @@
       "itemsPerPage": "Items per page"
     },
 
-    "totalShifts": "Total Working Hours",
+    "totalShifts": "Total Shifts Requirements",
     "assignedDoctors": "Assigned Doctors",
     "fullyBooked": "Fully Booked",
     "averageFill": "Average Fill",
