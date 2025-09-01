@@ -25,6 +25,7 @@ import {
   Timer,
   UserCheck,
   Edit,
+  UserPlus,
 } from "lucide-react";
 import { getDepartments } from "../../../state/act/actDepartment";
 
@@ -58,7 +59,7 @@ function WorkingHours() {
   useEffect(() => {
     if (rosterId) {
       dispatch(getWorkingHours({ rosterId, params: filters }));
-      // Load rosterDepartments for filter dropdown
+      // Load departments for filter dropdown
       dispatch(getDepartments());
     }
   }, [dispatch, rosterId]);
@@ -124,6 +125,93 @@ function WorkingHours() {
     if (percentage >= 25) return "bg-orange-500";
     return "bg-red-500";
   };
+
+  // Group working hours by date
+  const getWorkingHoursByDate = () => {
+    if (!workingHours?.data?.departments) return {};
+
+    const groupedByDate = {};
+
+    workingHours.data.departments.forEach((department) => {
+      department.shifts.forEach((shift) => {
+        shift.contractingTypes.forEach((contractingType) => {
+          contractingType.workingHoursDetails.forEach((detail) => {
+            const dateKey = detail.shiftDate;
+
+            if (!groupedByDate[dateKey]) {
+              groupedByDate[dateKey] = {
+                date: dateKey,
+                dayOfWeek: detail.dayOfWeek,
+                dayOfWeekName: detail.dayOfWeekName,
+                departments: [],
+              };
+            }
+
+            // Find or create department in this date
+            let deptGroup = groupedByDate[dateKey].departments.find(
+              (d) => d.departmentId === department.departmentId
+            );
+            if (!deptGroup) {
+              deptGroup = {
+                departmentId: department.departmentId,
+                departmentName: department.departmentName,
+                shifts: [],
+              };
+              groupedByDate[dateKey].departments.push(deptGroup);
+            }
+
+            // Find or create shift in this department
+            let shiftGroup = deptGroup.shifts.find(
+              (s) => s.shiftId === shift.shiftId
+            );
+            if (!shiftGroup) {
+              shiftGroup = {
+                shiftId: shift.shiftId,
+                shiftName: shift.shiftName,
+                shiftPeriod: shift.shiftPeriod,
+                startTime: shift.startTime,
+                endTime: shift.endTime,
+                hours: shift.hours,
+                contractingTypes: [],
+              };
+              deptGroup.shifts.push(shiftGroup);
+            }
+
+            // Add contracting type with working hour detail
+            shiftGroup.contractingTypes.push({
+              contractingTypeId: contractingType.contractingTypeId,
+              contractingTypeName: contractingType.contractingTypeName,
+              workingHourDetail: detail,
+            });
+          });
+        });
+      });
+    });
+
+    // Sort dates
+    return Object.keys(groupedByDate)
+      .sort()
+      .reduce((sorted, key) => {
+        sorted[key] = groupedByDate[key];
+        return sorted;
+      }, {});
+  };
+
+  const groupedWorkingHours = getWorkingHoursByDate();
+  const totalWorkingHoursCount = Object.values(groupedWorkingHours).reduce(
+    (count, day) =>
+      count +
+      day.departments.reduce(
+        (deptCount, dept) =>
+          deptCount +
+          dept.shifts.reduce(
+            (shiftCount, shift) => shiftCount + shift.contractingTypes.length,
+            0
+          ),
+        0
+      ),
+    0
+  );
 
   if (loading.fetch) {
     return <LoadingGetData text={t("gettingData.workingHours")} />;
@@ -349,7 +437,7 @@ function WorkingHours() {
         )}
 
         {/* Statistics Cards */}
-        {workingHours && workingHours.length > 0 && (
+        {workingHours?.data?.summary && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
             <div
               className={`${
@@ -365,7 +453,7 @@ function WorkingHours() {
                       isDark ? "text-white" : "text-gray-900"
                     }`}
                   >
-                    {workingHours.length}
+                    {totalWorkingHoursCount}
                   </p>
                   <p
                     className={`text-sm ${
@@ -397,10 +485,7 @@ function WorkingHours() {
                       isDark ? "text-white" : "text-gray-900"
                     }`}
                   >
-                    {workingHours.reduce(
-                      (acc, wh) => acc + wh.currentAssignedDoctors,
-                      0
-                    )}
+                    {workingHours.data.summary.totalAssignedDoctors}
                   </p>
                   <p
                     className={`text-sm ${
@@ -432,17 +517,17 @@ function WorkingHours() {
                       isDark ? "text-white" : "text-gray-900"
                     }`}
                   >
-                    {workingHours.filter((wh) => wh.isFullyBooked).length}
+                    {Object.keys(groupedWorkingHours).length}
                   </p>
                   <p
                     className={`text-sm ${
                       isDark ? "text-gray-400" : "text-gray-600"
                     }`}
                   >
-                    {t("roster.fullyBooked")}
+                    {t("roster.totalDays")}
                   </p>
                 </div>
-                <Target
+                <Calendar
                   className={`h-8 w-8 ${
                     isDark ? "text-orange-400" : "text-orange-600"
                   }`}
@@ -465,10 +550,7 @@ function WorkingHours() {
                     }`}
                   >
                     {Math.round(
-                      workingHours.reduce(
-                        (acc, wh) => acc + wh.fillPercentage,
-                        0
-                      ) / workingHours.length
+                      workingHours.data.summary.overallFillPercentage
                     )}
                     %
                   </p>
@@ -490,26 +572,16 @@ function WorkingHours() {
           </div>
         )}
 
-        {/* Working Hours List */}
-        <div
-          className={`${
-            isDark ? "bg-gray-800" : "bg-white"
-          } rounded-lg shadow-sm border ${
-            isDark ? "border-gray-700" : "border-gray-200"
-          }`}
-        >
-          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-            <h2
-              className={`text-xl font-semibold ${
-                isDark ? "text-white" : "text-gray-900"
-              }`}
+        {/* Working Hours by Date */}
+        <div className="space-y-6">
+          {Object.keys(groupedWorkingHours).length === 0 ? (
+            <div
+              className={`${
+                isDark ? "bg-gray-800" : "bg-white"
+              } rounded-lg shadow-sm border ${
+                isDark ? "border-gray-700" : "border-gray-200"
+              } p-12 text-center`}
             >
-              {t("roster.workingHoursList")}
-            </h2>
-          </div>
-
-          {!workingHours || workingHours.length === 0 ? (
-            <div className="p-12 text-center">
               <Clock
                 className={`h-12 w-12 mx-auto mb-4 ${
                   isDark ? "text-gray-500" : "text-gray-400"
@@ -524,301 +596,429 @@ function WorkingHours() {
               </p>
             </div>
           ) : (
-            <div className="divide-y divide-gray-200 dark:divide-gray-700">
-              {workingHours.map((workingHour) => (
-                <div key={workingHour.id} className="p-6">
-                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                    {/* Left Side - Main Info */}
-                    <div className="flex-1">
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-4">
-                        <div className="flex items-center gap-3">
-                          <Calendar
-                            className={`h-5 w-5 ${
-                              isDark ? "text-blue-400" : "text-blue-600"
-                            }`}
-                          />
-                          <div>
-                            <h3
-                              className={`font-semibold ${
-                                isDark ? "text-white" : "text-gray-900"
-                              }`}
-                            >
-                              {formatDate(workingHour.shiftDate)}
-                            </h3>
-                            <p
-                              className={`text-sm ${
-                                isDark ? "text-gray-400" : "text-gray-600"
-                              }`}
-                            >
-                              {workingHour.dayOfWeekName}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                          <Building
-                            className={`h-5 w-5 ${
-                              isDark ? "text-green-400" : "text-green-600"
-                            }`}
-                          />
-                          <div>
-                            <p
-                              className={`font-medium ${
-                                isDark ? "text-white" : "text-gray-900"
-                              }`}
-                            >
-                              {workingHour.department.name}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Shift Details */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div className="flex items-center gap-3">
-                          <Briefcase
-                            className={`h-4 w-4 ${
-                              isDark ? "text-purple-400" : "text-purple-600"
-                            }`}
-                          />
-                          <div>
-                            <p
-                              className={`font-medium ${
-                                isDark ? "text-white" : "text-gray-900"
-                              }`}
-                            >
-                              {workingHour.shift.name}
-                            </p>
-                            <p
-                              className={`text-sm ${
-                                isDark ? "text-gray-400" : "text-gray-600"
-                              }`}
-                            >
-                              {workingHour.shift.period} (
-                              {workingHour.shift.hours}h)
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                          <User
-                            className={`h-4 w-4 ${
-                              isDark ? "text-orange-400" : "text-orange-600"
-                            }`}
-                          />
-                          <div>
-                            <p
-                              className={`font-medium ${
-                                isDark ? "text-white" : "text-gray-900"
-                              }`}
-                            >
-                              {workingHour.contractingType.name}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Assignment Stats */}
-                      <div className="flex flex-wrap items-center gap-4">
-                        <div className="flex items-center gap-2">
-                          <Users
-                            className={`h-4 w-4 ${
-                              isDark ? "text-blue-400" : "text-blue-600"
-                            }`}
-                          />
-                          <span
-                            className={`text-sm ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            }`}
-                          >
-                            {workingHour.currentAssignedDoctors}/
-                            {workingHour.requiredDoctors} {t("roster.required")}
-                          </span>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <Target
-                            className={`h-4 w-4 ${getFillColor(
-                              workingHour.fillPercentage
-                            )}`}
-                          />
-                          <span
-                            className={`text-sm font-medium ${getFillColor(
-                              workingHour.fillPercentage
-                            )}`}
-                          >
-                            {Math.round(workingHour.fillPercentage)}%{" "}
-                            {t("roster.filled")}
-                          </span>
-                        </div>
-
-                        {workingHour.isFullyBooked && (
-                          <span className="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
-                            <CheckCircle
-                              size={12}
-                              className={`${isRTL ? "ml-1" : "mr-1"}`}
-                            />
-                            {t("roster.fullyBooked")}
-                          </span>
-                        )}
-
-                        {workingHour.isOverBooked && (
-                          <span className="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300">
-                            <AlertCircle
-                              size={12}
-                              className={`${isRTL ? "ml-1" : "mr-1"}`}
-                            />
-                            {t("roster.overBooked")}
-                          </span>
-                        )}
-                      </div>
+            Object.values(groupedWorkingHours).map((dayData) => (
+              <div
+                key={dayData.date}
+                className={`${
+                  isDark ? "bg-gray-800" : "bg-white"
+                } rounded-lg shadow-sm border ${
+                  isDark ? "border-gray-700" : "border-gray-200"
+                }`}
+              >
+                {/* Date Header */}
+                <div
+                  className={`p-6 border-b ${
+                    isDark ? "border-gray-700" : "border-gray-200"
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={`p-3 ${
+                        isDark ? "bg-blue-900/30" : "bg-blue-100"
+                      } rounded-lg`}
+                    >
+                      <Calendar
+                        className={`h-6 w-6 ${
+                          isDark ? "text-blue-400" : "text-blue-600"
+                        }`}
+                      />
                     </div>
-
-                    {/* Right Side - Progress & Actions */}
-                    <div className="flex flex-col gap-4">
-                      {/* Progress Bar */}
-                      <div className="w-full lg:w-32">
-                        <div className="flex justify-between items-center mb-1">
-                          <span
-                            className={`text-xs ${
-                              isDark ? "text-gray-400" : "text-gray-600"
-                            }`}
-                          >
-                            {t("roster.progress")}
-                          </span>
-                          <span
-                            className={`text-xs font-semibold ${getFillColor(
-                              workingHour.fillPercentage
-                            )}`}
-                          >
-                            {Math.round(workingHour.fillPercentage)}%
-                          </span>
-                        </div>
-                        <div
-                          className={`w-full ${
-                            isDark ? "bg-gray-700" : "bg-gray-200"
-                          } rounded-full h-2`}
-                        >
-                          <div
-                            className={`h-2 rounded-full transition-all duration-300 ${getFillBgColor(
-                              workingHour.fillPercentage
-                            )}`}
-                            style={{
-                              width: `${Math.min(
-                                workingHour.fillPercentage,
-                                100
-                              )}%`,
-                            }}
-                          ></div>
-                        </div>
-                      </div>
-
-                      {/* Action Button */}
-                      <button
-                        onClick={() =>
-                          navigate(
-                            `/admin-panel/rosters/working-hours/${workingHour.id}`
-                          )
-                        }
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm flex items-center justify-center gap-2 transition-colors"
+                    <div>
+                      <h2
+                        className={`text-xl font-bold ${
+                          isDark ? "text-white" : "text-gray-900"
+                        }`}
                       >
-                        <Eye size={16} />
-                        {t("common.view")}
-                      </button>
-                      <button
-                        onClick={() =>
-                          navigate(
-                            `/admin-panel/rosters/working-hours/${workingHour.id}/edit`
-                          )
-                        }
-                        className="bg-green-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm flex items-center justify-center gap-2 transition-colors"
+                        {formatDate(dayData.date)}
+                      </h2>
+                      <p
+                        className={`text-sm ${
+                          isDark ? "text-gray-400" : "text-gray-600"
+                        }`}
                       >
-                        <Edit size={16} />
-                        {t("common.edit")}
-                      </button>
+                        {dayData.dayOfWeekName}
+                      </p>
                     </div>
                   </div>
+                </div>
 
-                  {/* Assigned Doctors Preview */}
-                  {workingHour.assignedDoctors &&
-                    workingHour.assignedDoctors.length > 0 && (
-                      <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <div className="flex items-center justify-between mb-2">
-                          <h4
-                            className={`text-sm font-medium ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            }`}
-                          >
-                            {t("roster.assignedDoctors")} (
-                            {workingHour.assignedDoctors.length})
-                          </h4>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {workingHour.assignedDoctors
-                            .slice(0, 3)
-                            .map((doctor, index) => (
-                              <span
-                                key={index}
-                                className={`inline-flex items-center px-2 py-1 text-xs rounded-full ${
-                                  isDark
-                                    ? "bg-gray-700 text-gray-300"
-                                    : "bg-gray-100 text-gray-800"
-                                }`}
-                              >
-                                <User
-                                  size={12}
-                                  className={`${isRTL ? "ml-1" : "mr-1"}`}
-                                />
-                                {doctor.doctorName}
-                              </span>
-                            ))}
-                          {workingHour.assignedDoctors.length > 3 && (
-                            <span
-                              className={`inline-flex items-center px-2 py-1 text-xs rounded-full ${
-                                isDark
-                                  ? "bg-blue-700 text-blue-300"
-                                  : "bg-blue-100 text-blue-800"
-                              }`}
-                            >
-                              +{workingHour.assignedDoctors.length - 3}{" "}
-                              {t("common.more")}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                  {/* Notes */}
-                  {workingHour.notes && (
-                    <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                      <div className="flex items-start gap-2">
-                        <FileText
-                          className={`h-4 w-4 mt-0.5 ${
-                            isDark ? "text-gray-400" : "text-gray-500"
+                {/* Departments for this date */}
+                <div className="p-6 space-y-6">
+                  {dayData.departments.map((department) => (
+                    <div key={department.departmentId} className="space-y-4">
+                      {/* Department Header */}
+                      <div className="flex items-center gap-3">
+                        <Building
+                          className={`h-5 w-5 ${
+                            isDark ? "text-green-400" : "text-green-600"
                           }`}
                         />
-                        <div>
-                          <p
-                            className={`text-sm font-medium ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            } mb-1`}
-                          >
-                            {t("common.notes")}
-                          </p>
-                          <p
-                            className={`text-sm ${
-                              isDark ? "text-gray-400" : "text-gray-600"
-                            }`}
-                          >
-                            {workingHour.notes}
-                          </p>
-                        </div>
+                        <h3
+                          className={`text-lg font-semibold ${
+                            isDark ? "text-white" : "text-gray-900"
+                          }`}
+                        >
+                          {department.departmentName}
+                        </h3>
+                      </div>
+
+                      {/* Shifts for this department */}
+                      <div className="space-y-4 ml-8">
+                        {department.shifts.map((shift) => (
+                          <div key={shift.shiftId} className="space-y-3">
+                            {/* Shift Header */}
+                            <div className="flex items-center gap-3">
+                              <Briefcase
+                                className={`h-4 w-4 ${
+                                  isDark ? "text-purple-400" : "text-purple-600"
+                                }`}
+                              />
+                              <div>
+                                <h4
+                                  className={`font-medium ${
+                                    isDark ? "text-white" : "text-gray-900"
+                                  }`}
+                                >
+                                  {shift.shiftName}
+                                </h4>
+                                <p
+                                  className={`text-sm ${
+                                    isDark ? "text-gray-400" : "text-gray-600"
+                                  }`}
+                                >
+                                  {shift.shiftPeriod} ({shift.hours}h) •{" "}
+                                  {formatTime(shift.startTime)} -{" "}
+                                  {formatTime(shift.endTime)}
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* Contracting Types for this shift */}
+                            <div className="space-y-3 ml-6">
+                              {shift.contractingTypes.map((contractingType) => {
+                                const detail =
+                                  contractingType.workingHourDetail;
+                                return (
+                                  <div
+                                    key={`${contractingType.contractingTypeId}-${detail.id}`}
+                                    className={`p-4 rounded-lg border ${
+                                      isDark
+                                        ? "bg-gray-700/50 border-gray-600"
+                                        : "bg-gray-50 border-gray-200"
+                                    }`}
+                                  >
+                                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                                      {/* Contracting Type Info */}
+                                      <div className="flex-1">
+                                        <div className="flex items-center gap-3 mb-3">
+                                          <User
+                                            className={`h-4 w-4 ${
+                                              isDark
+                                                ? "text-orange-400"
+                                                : "text-orange-600"
+                                            }`}
+                                          />
+                                          <span
+                                            className={`font-medium ${
+                                              isDark
+                                                ? "text-white"
+                                                : "text-gray-900"
+                                            }`}
+                                          >
+                                            {
+                                              contractingType.contractingTypeName
+                                            }
+                                          </span>
+                                        </div>
+
+                                        {/* Assignment Stats */}
+                                        <div className="flex flex-wrap items-center gap-4 mb-3">
+                                          <div className="flex items-center gap-2">
+                                            <Users
+                                              className={`h-4 w-4 ${
+                                                isDark
+                                                  ? "text-blue-400"
+                                                  : "text-blue-600"
+                                              }`}
+                                            />
+                                            <span
+                                              className={`text-sm ${
+                                                isDark
+                                                  ? "text-gray-300"
+                                                  : "text-gray-700"
+                                              }`}
+                                            >
+                                              {detail.currentAssignedDoctors}/
+                                              {detail.requiredDoctors}{" "}
+                                              {t("roster.required")}
+                                            </span>
+                                          </div>
+
+                                          <div className="flex items-center gap-2">
+                                            <Target
+                                              className={`h-4 w-4 ${getFillColor(
+                                                detail.fillPercentage
+                                              )}`}
+                                            />
+                                            <span
+                                              className={`text-sm font-medium ${getFillColor(
+                                                detail.fillPercentage
+                                              )}`}
+                                            >
+                                              {Math.round(
+                                                detail.fillPercentage
+                                              )}
+                                              % {t("roster.filled")}
+                                            </span>
+                                          </div>
+
+                                          <span
+                                            className={`text-sm ${
+                                              isDark
+                                                ? "text-gray-400"
+                                                : "text-gray-600"
+                                            }`}
+                                          >
+                                            {t(
+                                              "roster.workingHours.fields.maxDoctors"
+                                            )}
+                                            : {detail.maxDoctors}
+                                          </span>
+
+                                          <span
+                                            className={`text-sm ${
+                                              isDark
+                                                ? "text-gray-400"
+                                                : "text-gray-600"
+                                            }`}
+                                          >
+                                            {t("roster.remainingSlots")}:{" "}
+                                            {detail.remainingSlots}
+                                          </span>
+                                        </div>
+
+                                        {/* Status Badges */}
+                                        <div className="flex flex-wrap items-center gap-2">
+                                          {detail.isFullyBooked && (
+                                            <span className="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                                              <CheckCircle
+                                                size={12}
+                                                className={`${
+                                                  isRTL ? "ml-1" : "mr-1"
+                                                }`}
+                                              />
+                                              {t("roster.fullyBooked")}
+                                            </span>
+                                          )}
+
+                                          {detail.isOverBooked && (
+                                            <span className="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300">
+                                              <AlertCircle
+                                                size={12}
+                                                className={`${
+                                                  isRTL ? "ml-1" : "mr-1"
+                                                }`}
+                                              />
+                                              {t("roster.overBooked")}
+                                            </span>
+                                          )}
+                                        </div>
+                                      </div>
+
+                                      {/* Progress & Actions */}
+                                      <div className="flex flex-col items-end gap-4">
+                                        {/* Progress Bar */}
+                                        <div className="w-full lg:w-32">
+                                          <div className="flex justify-between items-center mb-1">
+                                            <span
+                                              className={`text-xs ${
+                                                isDark
+                                                  ? "text-gray-400"
+                                                  : "text-gray-600"
+                                              }`}
+                                            >
+                                              {t("roster.progress")}
+                                            </span>
+                                            <span
+                                              className={`text-xs font-semibold ${getFillColor(
+                                                detail.fillPercentage
+                                              )}`}
+                                            >
+                                              {Math.round(
+                                                detail.fillPercentage
+                                              )}
+                                              %
+                                            </span>
+                                          </div>
+                                          <div
+                                            className={`w-full ${
+                                              isDark
+                                                ? "bg-gray-600"
+                                                : "bg-gray-200"
+                                            } rounded-full h-2`}
+                                          >
+                                            <div
+                                              className={`h-2 rounded-full transition-all duration-300 ${getFillBgColor(
+                                                detail.fillPercentage
+                                              )}`}
+                                              style={{
+                                                width: `${Math.min(
+                                                  detail.fillPercentage,
+                                                  100
+                                                )}%`,
+                                              }}
+                                            ></div>
+                                          </div>
+                                        </div>
+
+                                        {/* Action Buttons */}
+                                        <div className="flex gap-2">
+                                          <button
+                                            onClick={() =>
+                                              navigate(
+                                                `/admin-panel/rosters/working-hours/${detail.id}`
+                                              )
+                                            }
+                                            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors"
+                                          >
+                                            <Eye size={14} />
+                                            {t("common.view")}
+                                          </button>
+                                          <button
+                                            onClick={() =>
+                                              navigate(
+                                                `/admin-panel/rosters/working-hours/${detail.id}/edit`
+                                              )
+                                            }
+                                            className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors"
+                                          >
+                                            <Edit size={14} />
+                                            {t("common.edit")}
+                                          </button>
+
+                                          <button
+                                            onClick={() =>
+                                              navigate(
+                                                `/admin-panel/rosters/working-hours/${detail.id}/assign-doctors`
+                                              )
+                                            }
+                                            className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors"
+                                            aria-label={t(
+                                              "roster.actions.assignDoctor"
+                                            )}
+                                            title={t(
+                                              "roster.actions.assignDoctor"
+                                            )}
+                                          >
+                                            <UserPlus size={14} />
+                                            {t("roster.actions.assignDoctor")}
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    {/* Assigned Doctors */}
+                                    {detail.assignedDoctors &&
+                                      detail.assignedDoctors.length > 0 && (
+                                        <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
+                                          <div className="flex items-center justify-between mb-2">
+                                            <h5
+                                              className={`text-sm font-medium ${
+                                                isDark
+                                                  ? "text-gray-300"
+                                                  : "text-gray-700"
+                                              }`}
+                                            >
+                                              {t("roster.assignedDoctors")} (
+                                              {detail.assignedDoctors.length})
+                                            </h5>
+                                          </div>
+                                          <div className="flex flex-wrap gap-2">
+                                            {detail.assignedDoctors
+                                              .slice(0, 4)
+                                              .map((doctor, index) => (
+                                                <span
+                                                  key={index}
+                                                  className={`inline-flex items-center px-2 py-1 text-xs rounded-full ${
+                                                    isDark
+                                                      ? "bg-gray-600 text-gray-200"
+                                                      : "bg-gray-100 text-gray-800"
+                                                  }`}
+                                                >
+                                                  <User
+                                                    size={10}
+                                                    className={`${
+                                                      isRTL ? "ml-1" : "mr-1"
+                                                    }`}
+                                                  />
+                                                  {doctor.doctorName}
+                                                </span>
+                                              ))}
+                                            {detail.assignedDoctors.length >
+                                              4 && (
+                                              <span
+                                                className={`inline-flex items-center px-2 py-1 text-xs rounded-full ${
+                                                  isDark
+                                                    ? "bg-blue-600 text-blue-200"
+                                                    : "bg-blue-100 text-blue-800"
+                                                }`}
+                                              >
+                                                +
+                                                {detail.assignedDoctors.length -
+                                                  4}{" "}
+                                                {t("common.more")}
+                                              </span>
+                                            )}
+                                          </div>
+                                        </div>
+                                      )}
+
+                                    {/* Notes */}
+                                    {detail.notes && (
+                                      <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
+                                        <div className="flex items-start gap-2">
+                                          <FileText
+                                            className={`h-4 w-4 mt-0.5 ${
+                                              isDark
+                                                ? "text-gray-400"
+                                                : "text-gray-500"
+                                            }`}
+                                          />
+                                          <div>
+                                            <p
+                                              className={`text-sm font-medium ${
+                                                isDark
+                                                  ? "text-gray-300"
+                                                  : "text-gray-700"
+                                              } mb-1`}
+                                            >
+                                              {t("common.notes")}
+                                            </p>
+                                            <p
+                                              className={`text-sm ${
+                                                isDark
+                                                  ? "text-gray-400"
+                                                  : "text-gray-600"
+                                              }`}
+                                            >
+                                              {detail.notes}
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  )}
+                  ))}
                 </div>
-              ))}
-            </div>
+              </div>
+            ))
           )}
         </div>
       </div>

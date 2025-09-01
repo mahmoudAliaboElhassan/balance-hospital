@@ -307,6 +307,10 @@ const router = createBrowserRouter([
             element: withSuspense(WorkingHour),
           },
           // {
+          //   path: "rosters/working-hours/:workingHourId/assign-doctors",
+          //   element: withSuspense(AssignDoctor),
+          // },
+          // {
           //   path: "rosters/:rosterId/working-hours/:workingHoursId",
           //   element: withSuspense(WorkingHourDetails),
           // },

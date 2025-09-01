@@ -329,14 +329,7 @@ function Roster() {
               <Eye size={16} />
             </button>
           </Link>
-          <Link to={`/admin-panel/rosters/${roster.id}/add-doctors`}>
-            <button
-              className="p-2 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900 rounded-lg transition-colors"
-              title={t("roster.actions.addDoctors")}
-            >
-              <UserPlus size={16} />
-            </button>
-          </Link>
+
           <button
             className="p-2 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900 rounded-lg transition-colors"
             title={t("roster.actions.updateStatus")}
@@ -930,13 +923,7 @@ function Roster() {
                                   <Eye size={16} />
                                 </button>
                               </Link>
-                              <Link
-                                to={`/admin-panel/rosters/${roster.id}/add-doctors`}
-                              >
-                                <button className="p-2 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900 rounded-lg transition-colors">
-                                  <UserPlus size={16} />
-                                </button>
-                              </Link>
+
                               <button
                                 className="p-2 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900 rounded-lg transition-colors"
                                 title={t("roster.actions.updateStatus")}

@@ -1647,6 +1647,7 @@
     "createFirstRoster": "أنشئ أول روستر لبدء جدولة الأطباء والأقسام.",
     "departments": "الأقسام",
     "dayss": "الأيام",
+    "totalDays": "إجمالي الأيام",
     "shifts": "الشيفتات",
     "fillPercentage": "نسبة الإشغال",
     "remainingSlots": "الأماكن المتبقية",

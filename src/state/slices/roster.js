@@ -580,13 +580,13 @@ const rosterManagementSlice = createSlice({
         state.loading.addWorkingHours = false;
         state.success.addWorkingHours = true;
 
-        if (action.payload?.data) {
-          state.workingHours.push(
-            ...(Array.isArray(action.payload.data)
-              ? action.payload.data
-              : [action.payload.data])
-          );
-        }
+        // if (action.payload?.data) {
+        //   state.workingHours.push(
+        //     ...(Array.isArray(action.payload.data)
+        //       ? action.payload.data
+        //       : [action.payload.data])
+        //   );
+        // }
       })
       .addCase(addWorkingHours.rejected, (state, action) => {
         state.loading.addWorkingHours = false;
@@ -601,7 +601,7 @@ const rosterManagementSlice = createSlice({
       })
       .addCase(getWorkingHours.fulfilled, (state, action) => {
         state.loading.fetch = false;
-        state.workingHours = action.payload?.data || [];
+        state.workingHours = action.payload || [];
       })
       .addCase(getWorkingHours.rejected, (state, action) => {
         state.loading.fetch = false;

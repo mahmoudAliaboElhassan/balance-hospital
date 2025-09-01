@@ -114,7 +114,7 @@
     "subDepartments": "Sub Departments",
     "managementRoles": "Management Roles",
     "scientificDegrees": "Scientific Degrees",
-    "contractTypes": "Contract Types",
+    "contractTypes": "Contracting Types",
     "shiftHours": "Shift Hours",
     "roster": "Staff Roster"
   },
@@ -1646,6 +1646,7 @@
     "remainingSlots": "Remaining slots",
     "dayss": "Days",
     "shifts": "Shifts",
+    "totalDays": "Total Days",
     "noAssignedDoctors": "No doctors assigned yet",
     "workingHours": {
       "title": "Shifts Requirements",

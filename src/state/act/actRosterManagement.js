@@ -262,7 +262,7 @@ export const getWorkingHours = createAsyncThunk(
       const queryString = buildQueryParams(params);
 
       const res = await axiosInstance.get(
-        `/api/v1/RosterManagement/${rosterId}/working-hours${
+        `/api/v1/RosterManagement/${rosterId}/working-hours-structured${
           queryString ? `?${queryString}` : ""
         }`,
         { headers: getAuthHeaders() }

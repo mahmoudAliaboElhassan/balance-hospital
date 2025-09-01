@@ -175,7 +175,14 @@ function WorkingHour() {
                 {t("common.edit")}
               </button>
 
-              <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+              <button
+                onClick={() =>
+                  navigate(
+                    `/admin-panel/rosters/working-hours/${workingHourId}/assign-doctor`
+                  )
+                }
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+              >
                 <UserPlus size={16} />
                 {t("roster.actions.assignDoctor")}
               </button>
