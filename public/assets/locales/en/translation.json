@@ -1585,7 +1585,9 @@
     "roster": "Loading Roster Data data…",
     "rosterDepartments": "Loading Roster Department data…",
     "workingHours": "Loading working hours...",
-    "workingHour": "Loading working hour Data..."
+    "workingHour": "Loading working hour Data...",
+    "availableDoctors": "Loading available doctors...",
+    "doctorSchedule": "Loading doctor schedule..."
   },
 
   "error": {
@@ -1646,10 +1648,91 @@
     "remainingSlots": "Remaining slots",
     "dayss": "Days",
     "shifts": "Shifts",
+    "capacity": "Capacity",
+    "changesInfo": " Any changes on this page require regenerating shift requirements.",
     "totalDays": "Total Days",
     "noAssignedDoctors": "No doctors assigned yet",
+    "doctorSchedule": {
+      "title": "Doctor Schedule",
+      "totalAssignments": "Total Assignments",
+      "completedShifts": "Completed Shifts",
+      "totalHours": "Total Hours",
+      "pendingShifts": "Pending Shifts",
+      "assignments": "Assignments",
+      "noAssignments": "No assignments yet",
+      "weeklyDistribution": "Weekly Distribution",
+      "error": {
+        "notFound": "Doctor schedule not found."
+      }
+    },
+    "assign": {
+      "title": "Assign Doctor",
+      "subtitle": "Select a doctor for this shift and review availability, conflicts, and workload.",
+      "workload": "Workload",
+      "assignments": "assignments",
+      "hours": "hours",
+      "hideConflicts": "Hide conflicts",
+      "showConflicts": "Show conflicts",
+      "priorityScore": "Priority score",
+
+      "unassignTitle": "Unassign Doctor",
+      "confirmMessage": "Are you sure you want to unassign this doctor from the shift?",
+      "reason": "Reason",
+      "reasonPlaceholder": "Enter the reason for unassigning",
+      "reasonRequired": "Reason is required.",
+      "confirm": "Unassign",
+      "unassignSuccess": "{{name}} was unassigned from the shift successfully.",
+
+      "status": {
+        "available": "Available",
+        "unavailable": "Unavailable",
+        "conflict": "Conflict"
+      },
+      "noDoctorsFound": "No doctors match your search.",
+      "noAvailableDoctors": "No available doctors for this shift.",
+      "shiftDetails": "Shift details",
+      "doctors": "doctors",
+      "filled": "filled",
+      "slotsRemaining": "slots remaining",
+      "notes": "Notes",
+      "searchDoctors": "Search doctors",
+      "searchPlaceholder": "Search by name or specialty...",
+      "selectDoctor": "Select a doctor",
+      "fields": {
+        "notes": "Notes",
+        "overrideConflicts": "Override conflicts",
+        "overrideConflictsHelp": "Allow assignment even if conflicts exist (on-call overlap, maximum hours, etc.)."
+      },
+      "placeholders": {
+        "notes": "Optional notes (visible to admins)"
+      },
+      "validation": {
+        "doctorRequired": "Please select a doctor.",
+        "doctorInvalid": "Invalid doctor selection.",
+        "notesMaxLength": "Notes must be at most 500 characters."
+      },
+      "success": {
+        "assigned": "Doctor assigned successfully."
+      },
+      "error": {
+        "title": "Assignment failed",
+        "message": "We couldn't assign the doctor. Please try again."
+      },
+      "conflict": {
+        "title": "Conflict detected",
+        "message": "This doctor has a scheduling conflict with this shift.",
+        "override": "Assign anyway"
+      },
+      "buttons": {
+        "assigning": "Assigning...",
+        "assignDoctor": "Assign doctor"
+      },
+      "charactersCount": "characters"
+    },
+
     "workingHours": {
       "title": "Shifts Requirements",
+      "titlee": "Shift Requirements",
       "description": "View and filter working hours, fill rates, and doctor assignments for this roster.",
       "editTitle": "Edit Shift Requirements",
       "editSubtitle": "Update required and maximum doctors, add notes, and provide a modification reason.",
@@ -1879,7 +1962,7 @@
       "createComplete": "Create Complete Roster",
       "view": "View Details",
       "assignDoctor": "Assing Doctor",
-
+      "unAssignDoctor": "unassign Doctor",
       "edit": "Edit Roster",
       "editRoster": "Edit Roster",
       "addNew": "Add New Roster",

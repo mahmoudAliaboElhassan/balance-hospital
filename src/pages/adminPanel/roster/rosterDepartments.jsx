@@ -3,7 +3,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
-import { Clock, ArrowRight, Building2, Eye, Users, Plus } from "lucide-react";
+import {
+  Clock,
+  ArrowRight,
+  Building2,
+  Eye,
+  Users,
+  Plus,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react";
 import {
   getRosterDepartments,
   getDepartmentShifts,
@@ -196,6 +205,26 @@ function RosterDepartments() {
               >
                 {t("roster.departmentss.subtitle")}
               </p>
+            </div>
+            <div
+              className={`p-4 rounded-lg border ${
+                isDark
+                  ? "bg-green-900/20 border-green-700"
+                  : "bg-green-50 border-green-200"
+              }`}
+            >
+              <div className="flex items-start">
+                <AlertCircle className="text-green-500 mr-3 mt-0.5" size={20} />
+                <div>
+                  <p
+                    className={`text-sm ${
+                      isDark ? "text-green-200" : "text-green-700"
+                    } mt-1`}
+                  >
+                    {t("roster.changesInfo")}
+                  </p>
+                </div>
+              </div>
             </div>
             <button
               onClick={navigateToNextPhase}

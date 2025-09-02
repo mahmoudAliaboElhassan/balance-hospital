@@ -303,197 +303,8 @@ export const updateWorkingHour = createAsyncThunk(
   }
 );
 
-/**
- * Update doctor requirements for working hours
- * تحديث متطلبات الأطباء لساعات العمل
- */
-export const updateDoctorRequirements = createAsyncThunk(
-  "rosterManagement/updateDoctorRequirements",
-  async ({ workingHoursId, requirements }, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.put(
-        `/api/v1/RosterManagement/working-hours/${workingHoursId}/doctor-requirements`,
-        requirements,
-        { headers: getAuthHeaders() }
-      );
-      return res.data;
-    } catch (error) {
-      return handleError(error, rejectWithValue);
-    }
-  }
-);
-
-/**
- * Get working hours overview for roster
- * نظرة عامة على ساعات العمل للروستر
- */
-export const getWorkingHoursOverview = createAsyncThunk(
-  "rosterManagement/getWorkingHoursOverview",
-  async (rosterId, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.get(
-        `/api/v1/RosterManagement/${rosterId}/working-hours-overview`,
-        { headers: getAuthHeaders() }
-      );
-      return res.data;
-    } catch (error) {
-      return handleError(error, rejectWithValue);
-    }
-  }
-);
-
-// ===================================================================
-// PHASE 5: TEMPLATES & ANALYTICS (المرحلة 5: القوالب والتحليل)
-// ===================================================================
-
-/**
- * Apply contracting template to roster
- * تطبيق قالب التعاقدات على الروستر
- */
-export const applyContractingTemplate = createAsyncThunk(
-  "rosterManagement/applyContractingTemplate",
-  async ({ rosterId, templateData }, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.post(
-        `/api/v1/RosterManagement/${rosterId}/apply-contracting-template`,
-        templateData,
-        { headers: getAuthHeaders() }
-      );
-      return res.data;
-    } catch (error) {
-      return handleError(error, rejectWithValue);
-    }
-  }
-);
-
-/**
- * Get contracting analytics for roster
- * تحليل التعاقدات للروستر
- */
-export const getContractingAnalytics = createAsyncThunk(
-  "rosterManagement/getContractingAnalytics",
-  async (rosterId, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.get(
-        `/api/v1/RosterManagement/${rosterId}/contracting-analytics`,
-        { headers: getAuthHeaders() }
-      );
-      return res.data;
-    } catch (error) {
-      return handleError(error, rejectWithValue);
-    }
-  }
-);
-
-/**
- * Validate contracting distribution
- * التحقق من صحة توزيع التعاقدات
- */
-export const validateContractingDistribution = createAsyncThunk(
-  "rosterManagement/validateContractingDistribution",
-  async (rosterId, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.get(
-        `/api/v1/RosterManagement/${rosterId}/validate-contracting`,
-        { headers: getAuthHeaders() }
-      );
-      return res.data;
-    } catch (error) {
-      return handleError(error, rejectWithValue);
-    }
-  }
-);
-
-// ===================================================================
-// PHASE 6: ROSTER STATE MANAGEMENT (المرحلة 6: إدارة حالات الروستر)
-// ===================================================================
-
-/**
- * Mark roster as ready for publication
- * تحديد الروستر كجاهز للنشر
- */
-export const markRosterReady = createAsyncThunk(
-  "rosterManagement/markRosterReady",
-  async ({ rosterId, reason }, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.put(
-        `/api/v1/RosterManagement/${rosterId}/mark-ready`,
-        { reason },
-        { headers: getAuthHeaders() }
-      );
-      return res.data;
-    } catch (error) {
-      return handleError(error, rejectWithValue);
-    }
-  }
-);
-
-/**
- * Publish roster for actual use
- * نشر الروستر للاستخدام الفعلي
- */
-export const publishRoster = createAsyncThunk(
-  "rosterManagement/publishRoster",
-  async ({ rosterId, reason }, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.put(
-        `/api/v1/RosterManagement/${rosterId}/publish`,
-        { reason },
-        { headers: getAuthHeaders() }
-      );
-      return res.data;
-    } catch (error) {
-      return handleError(error, rejectWithValue);
-    }
-  }
-);
-
-/**
- * Close roster
- * إغلاق الروستر
- */
-export const closeRoster = createAsyncThunk(
-  "rosterManagement/closeRoster",
-  async ({ rosterId, reason }, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.put(
-        `/api/v1/RosterManagement/${rosterId}/close`,
-        { reason },
-        { headers: getAuthHeaders() }
-      );
-      return res.data;
-    } catch (error) {
-      return handleError(error, rejectWithValue);
-    }
-  }
-);
-
 // ===================================================================
 // PHASE 7: DOCTOR MANAGEMENT & SCHEDULING (المرحلة 7: إدارة الأطباء والجدولة)
-// ===================================================================
-
-/**
- * Assign doctor to roster
- * تعيين طبيب على الروستر
- */
-export const assignDoctor = createAsyncThunk(
-  "rosterManagement/assignDoctor",
-  async (assignmentData, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.post(
-        `/api/v1/RosterManagement/doctor-assignments`,
-        assignmentData,
-        { headers: getAuthHeaders() }
-      );
-      return res.data;
-    } catch (error) {
-      return handleError(error, rejectWithValue);
-    }
-  }
-);
-
-// ===================================================================
-// QUERY OPERATIONS (عمليات البحث والاستعلامات)
 // ===================================================================
 
 /**
@@ -569,102 +380,6 @@ export const getRosterById = createAsyncThunk(
   }
 );
 
-/**
- * Search for colleagues on specific date
- * البحث عن زملاء في تاريخ محدد
- */
-export const searchColleagues = createAsyncThunk(
-  "rosterManagement/searchColleagues",
-  async (searchParams, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.post(
-        `/api/v1/RosterManagement/search-colleagues`,
-        searchParams,
-        { headers: getAuthHeaders() }
-      );
-      return res.data;
-    } catch (error) {
-      return handleError(error, rejectWithValue);
-    }
-  }
-);
-
-/**
- * Get comprehensive roster analytics
- * تحليلات الروستر الشاملة
- */
-export const getRosterAnalytics = createAsyncThunk(
-  "rosterManagement/getRosterAnalytics",
-  async (rosterId, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.get(
-        `/api/v1/RosterManagement/${rosterId}/analytics`,
-        { headers: getAuthHeaders() }
-      );
-      return res.data;
-    } catch (error) {
-      return handleError(error, rejectWithValue);
-    }
-  }
-);
-
-/**
- * Get doctor workloads
- * أعباء عمل الأطباء
- */
-export const getDoctorWorkloads = createAsyncThunk(
-  "rosterManagement/getDoctorWorkloads",
-  async (rosterId, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.get(
-        `/api/v1/RosterManagement/${rosterId}/doctor-workloads`,
-        { headers: getAuthHeaders() }
-      );
-      return res.data;
-    } catch (error) {
-      return handleError(error, rejectWithValue);
-    }
-  }
-);
-
-/**
- * Get department coverage
- * تغطية الأقسام
- */
-export const getDepartmentCoverage = createAsyncThunk(
-  "rosterManagement/getDepartmentCoverage",
-  async (rosterId, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.get(
-        `/api/v1/RosterManagement/${rosterId}/department-coverage`,
-        { headers: getAuthHeaders() }
-      );
-      return res.data;
-    } catch (error) {
-      return handleError(error, rejectWithValue);
-    }
-  }
-);
-
-/**
- * Get department schedule
- * جدول قسم محدد
- */
-export const getDepartmentSchedule = createAsyncThunk(
-  "rosterManagement/getDepartmentSchedule",
-  async ({ rosterId, departmentId }, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.get(
-        `/api/v1/RosterManagement/${rosterId}/department/${departmentId}/schedule`,
-        { headers: getAuthHeaders() }
-      );
-      return res.data;
-    } catch (error) {
-      return handleError(error, rejectWithValue);
-    }
-  }
-);
-
 // ===================================================================
 // UPDATE & MANAGEMENT OPERATIONS (عمليات التحديث والإدارة)
 // ===================================================================
@@ -704,99 +419,291 @@ export const updateRosterStatus = createAsyncThunk(
   }
 );
 
-/**
- * Delete roster (soft delete)
- * حذف الروستر (حذف ناعم)
- */
-export const deleteRoster = createAsyncThunk(
-  "rosterManagement/deleteRoster",
-  async ({ rosterId, reason }, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.delete(
-        `/api/v1/RosterManagement/${rosterId}`,
-        {
-          data: { reason },
-          headers: getAuthHeaders(),
-        }
-      );
-      return res.data;
-    } catch (error) {
-      return handleError(error, rejectWithValue);
-    }
-  }
-);
-
-/**
- * Archive roster
- * أرشفة الروستر
- */
-export const archiveRoster = createAsyncThunk(
-  "rosterManagement/archiveRoster",
-  async ({ rosterId, reason }, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.put(
-        `/api/v1/RosterManagement/${rosterId}/archive`,
-        { reason },
-        { headers: getAuthHeaders() }
-      );
-      return res.data;
-    } catch (error) {
-      return handleError(error, rejectWithValue);
-    }
-  }
-);
-
-// ===================================================================
-// EXPORT & ADDITIONAL OPERATIONS (التصدير والعمليات الإضافية)
-// ===================================================================
-
-/**
- * Export roster in different formats
- * تصدير الروستر بصيغ مختلفة
- */
-export const exportRoster = createAsyncThunk(
-  "rosterManagement/exportRoster",
-  async ({ rosterId, format = "excel" }, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.get(
-        `/api/v1/RosterManagement/${rosterId}/export?format=${format}`,
-        {
-          headers: getAuthHeaders(),
-          responseType: "blob",
-        }
-      );
-      return res.data;
-    } catch (error) {
-      return handleError(error, rejectWithValue);
-    }
-  }
-);
-
-/**
- * Duplicate existing roster
- * نسخ الروستر الموجود
- */
-export const duplicateRoster = createAsyncThunk(
-  "rosterManagement/duplicateRoster",
-  async ({ rosterId, duplicateData }, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.post(
-        `/api/v1/RosterManagement/${rosterId}/duplicate`,
-        duplicateData,
-        { headers: getAuthHeaders() }
-      );
-      return res.data;
-    } catch (error) {
-      return handleError(error, rejectWithValue);
-    }
-  }
-);
 export const getRosterDepartments = createAsyncThunk(
   "rosterManagement/getRosterDepartments",
   async ({ rosterId }, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get(
         `/api/v1/RosterManagement/${rosterId}/departments`,
+        { headers: getAuthHeaders() }
+      );
+      return res.data;
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+
+// ===================================================================
+// ROSTER ASSIGNMENT ACTIONS (أكشنز تعيين الروستر)
+// ===================================================================
+
+/**
+ * Assign doctor to working hours
+ * تعيين دكتور لساعات عمل
+ */
+export const assignDoctorToShift = createAsyncThunk(
+  "rosterManagement/assignDoctorToShift",
+  async (
+    { doctorId, workingHoursId, notes, overrideConflicts = false },
+    { rejectWithValue }
+  ) => {
+    try {
+      const res = await axiosInstance.post(
+        "/api/v1/rosterassignment/assign",
+        {
+          doctorId,
+          workingHoursId,
+          notes,
+          overrideConflicts,
+        },
+        { headers: getAuthHeaders() }
+      );
+      return res.data;
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+
+/**
+ * Unassign doctor from shift
+ * إلغاء تعيين دكتور من شفت
+ */
+export const unassignDoctorFromShift = createAsyncThunk(
+  "rosterManagement/unassignDoctorFromShift",
+  async ({ scheduleId, reason }, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.delete(
+        `/api/v1/rosterassignment/unassign/${scheduleId}`,
+        {
+          headers: getAuthHeaders(),
+          data: { reason },
+        }
+      );
+      return { ...res.data, scheduleId };
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+
+/**
+ * Get available doctors for working hours
+ * الحصول على الدكاترة المتاحين لساعات عمل محددة
+ */
+export const getAvailableDoctorsForShift = createAsyncThunk(
+  "rosterManagement/getAvailableDoctorsForShift",
+  async ({ workingHourId }, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.get(
+        `/api/v1/rosterassignment/working-hours/${workingHourId}/available-doctors`,
+        { headers: getAuthHeaders() }
+      );
+      return res.data;
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+
+/**
+ * Get available doctors for specific date
+ * الحصول على الدكاترة المتاحين لتاريخ محدد
+ */
+export const getAvailableDoctorsForDate = createAsyncThunk(
+  "rosterManagement/getAvailableDoctorsForDate",
+  async (
+    { rosterId, date, departmentId, shiftTypeId },
+    { rejectWithValue }
+  ) => {
+    try {
+      const queryParams = buildQueryParams({ departmentId, shiftTypeId });
+      const url = `/api/v1/rosterassignment/roster/${rosterId}/available-doctors/${date}${
+        queryParams ? `?${queryParams}` : ""
+      }`;
+
+      const res = await axiosInstance.get(url, { headers: getAuthHeaders() });
+      return { ...res.data, date };
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+
+/**
+ * Get doctor schedule in roster
+ * الحصول على جدول دكتور في روستر
+ */
+export const getDoctorSchedule = createAsyncThunk(
+  "rosterManagement/getDoctorSchedule",
+  async ({ rosterId, doctorId }, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.get(
+        `/api/v1/rosterassignment/roster/${rosterId}/doctor/${doctorId}/schedule`,
+        { headers: getAuthHeaders() }
+      );
+      return res.data;
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+
+/**
+ * Get assigned doctors summary
+ * الحصول على ملخص الدكاترة المعينين
+ */
+export const getAssignedDoctorsSummary = createAsyncThunk(
+  "rosterManagement/getAssignedDoctorsSummary",
+  async ({ rosterId, params = {} }, { rejectWithValue }) => {
+    try {
+      const queryString = buildQueryParams(params);
+      const url = `/api/v1/rosterassignment/roster/${rosterId}/assigned-doctors${
+        queryString ? `?${queryString}` : ""
+      }`;
+
+      const res = await axiosInstance.get(url, { headers: getAuthHeaders() });
+      return res.data;
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+
+/**
+ * Get doctors for specific date
+ * الحصول على دكاترة تاريخ محدد
+ */
+export const getDoctorsForDate = createAsyncThunk(
+  "rosterManagement/getDoctorsForDate",
+  async ({ rosterId, date }, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.get(
+        `/api/v1/rosterassignment/roster/${rosterId}/doctors/${date}`,
+        { headers: getAuthHeaders() }
+      );
+      return res.data;
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+
+/**
+ * Get day summary
+ * الحصول على ملخص اليوم
+ */
+export const getDaySummary = createAsyncThunk(
+  "rosterManagement/getDaySummary",
+  async ({ rosterId, date }, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.get(
+        `/api/v1/rosterassignment/roster/${rosterId}/day-summary/${date}`,
+        { headers: getAuthHeaders() }
+      );
+      return res.data;
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+
+// ===================================================================
+// DOCTOR REQUESTS WORKFLOW (سير عمل طلبات الدكاترة)
+// ===================================================================
+
+/**
+ * Submit doctor request
+ * إرسال طلب دكتور
+ */
+export const submitDoctorRequest = createAsyncThunk(
+  "rosterManagement/submitDoctorRequest",
+  async (requestData, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.post(
+        "/api/v1/rosterassignment/doctor-requests",
+        requestData,
+        { headers: getAuthHeaders() }
+      );
+      return res.data;
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+
+/**
+ * Get doctor requests for roster
+ * الحصول على طلبات الدكاترة للروستر
+ */
+export const getDoctorRequestsForRoster = createAsyncThunk(
+  "rosterManagement/getDoctorRequestsForRoster",
+  async ({ rosterId, status }, { rejectWithValue }) => {
+    try {
+      const queryParams = buildQueryParams({ status });
+      const url = `/api/v1/rosterassignment/roster/${rosterId}/doctor-requests${
+        queryParams ? `?${queryParams}` : ""
+      }`;
+
+      const res = await axiosInstance.get(url, { headers: getAuthHeaders() });
+      return res.data;
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+
+/**
+ * Approve doctor request
+ * الموافقة على طلب دكتور
+ */
+export const approveDoctorRequest = createAsyncThunk(
+  "rosterManagement/approveDoctorRequest",
+  async ({ requestId, processingData }, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.put(
+        `/api/v1/rosterassignment/doctor-requests/${requestId}/approve`,
+        processingData,
+        { headers: getAuthHeaders() }
+      );
+      return { ...res.data, requestId };
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+
+/**
+ * Reject doctor request
+ * رفض طلب دكتور
+ */
+export const rejectDoctorRequest = createAsyncThunk(
+  "rosterManagement/rejectDoctorRequest",
+  async ({ requestId, processingData }, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.put(
+        `/api/v1/rosterassignment/doctor-requests/${requestId}/reject`,
+        processingData,
+        { headers: getAuthHeaders() }
+      );
+      return { ...res.data, requestId };
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+
+/**
+ * Get doctor's requests
+ * الحصول على طلبات الدكتور
+ */
+export const getDoctorRequests = createAsyncThunk(
+  "rosterManagement/getDoctorRequests",
+  async ({ doctorId }, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.get(
+        `/api/v1/rosterassignment/doctors/${doctorId}/requests`,
         { headers: getAuthHeaders() }
       );
       return res.data;

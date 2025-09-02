@@ -1,7 +1,15 @@
 import React, { Suspense, lazy } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Loader from "../components/Loader";
-import EditWorkingHour from "../pages/adminPanel/roster/editWorkingHours";
+const EditWorkingHour = lazy(() =>
+  import("../pages/adminPanel/roster/editWorkingHours")
+);
+const DoctorSchedule = lazy(() =>
+  import("../pages/adminPanel/roster/doctorSchedule")
+);
+const AssignDoctor = lazy(() =>
+  import("../pages/adminPanel/roster/assignDoctor")
+);
 const WorkingHours = lazy(() =>
   import("../pages/adminPanel/roster/workingHours")
 );
@@ -306,10 +314,14 @@ const router = createBrowserRouter([
             path: "rosters/working-hours/:workingHourId",
             element: withSuspense(WorkingHour),
           },
-          // {
-          //   path: "rosters/working-hours/:workingHourId/assign-doctors",
-          //   element: withSuspense(AssignDoctor),
-          // },
+          {
+            path: "rosters/working-hours/:workingHourId/assign-doctors",
+            element: withSuspense(AssignDoctor),
+          },
+          {
+            path: "rosters/doctors/:doctorId",
+            element: withSuspense(DoctorSchedule),
+          },
           // {
           //   path: "rosters/:rosterId/working-hours/:workingHoursId",
           //   element: withSuspense(WorkingHourDetails),

@@ -21,10 +21,7 @@ import {
   Edit,
   UserPlus,
 } from "lucide-react";
-import {
-  assignDoctor,
-  getWorkingHour,
-} from "../../../state/act/actRosterManagement";
+import { getWorkingHour } from "../../../state/act/actRosterManagement";
 import LoadingGetData from "../../../components/LoadingGetData";
 
 function WorkingHour() {
@@ -41,6 +38,10 @@ function WorkingHour() {
   const { t } = useTranslation();
   const currentLang = i18next.language;
   const isRTL = currentLang === "ar";
+
+  const handleNavigateToSchedule = (doctor) => {
+    navigate(`/admin-panel/rosters/doctors/${doctor.doctorId}`);
+  };
 
   useEffect(() => {
     if (workingHourId) {
@@ -178,7 +179,7 @@ function WorkingHour() {
               <button
                 onClick={() =>
                   navigate(
-                    `/admin-panel/rosters/working-hours/${workingHourId}/assign-doctor`
+                    `/admin-panel/rosters/working-hours/${workingHourId}/assign-doctors`
                   )
                 }
                 className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
@@ -207,7 +208,7 @@ function WorkingHour() {
                   isDark ? "text-white" : "text-gray-900"
                 } mb-2`}
               >
-                {t("roster.workingHours.title")}
+                {t("roster.workingHours.titlee")}
               </h1>
               <p
                 className={`text-sm ${
@@ -367,7 +368,7 @@ function WorkingHour() {
                   isDark ? "text-white" : "text-gray-900"
                 } mb-6`}
               >
-                {t("roster.workingHours.title")}
+                {t("roster.workingHours.titlee")}
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -642,15 +643,27 @@ function WorkingHour() {
                             </p>
                           </div>
                         </div>
-                        <span
-                          className={`text-xs px-2 py-1 rounded-full ${
-                            doctor.assignmentMethod === "MANUAL"
-                              ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
-                              : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
-                          }`}
-                        >
-                          {doctor.assignmentMethod}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`text-xs px-2 py-1 rounded-full ${
+                              doctor.assignmentMethod === "MANUAL"
+                                ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+                                : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+                            }`}
+                          >
+                            {doctor.assignmentMethod}
+                          </span>
+                          <button
+                            onClick={() => handleNavigateToSchedule(doctor)}
+                            className={`px-3 py-1 text-xs rounded-md transition-colors ${
+                              isDark
+                                ? "bg-blue-600 hover:bg-blue-700 text-white"
+                                : "bg-blue-600 hover:bg-blue-700 text-white"
+                            }`}
+                          >
+                            {t("roster.doctorSchedule.title")}{" "}
+                          </button>
+                        </div>
                       </div>
 
                       <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-600">

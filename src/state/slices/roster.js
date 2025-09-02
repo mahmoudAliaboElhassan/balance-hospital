@@ -18,40 +18,16 @@ import {
   // Phase 4: Working Hours
   addWorkingHours,
   getWorkingHours,
-  updateDoctorRequirements,
-  getWorkingHoursOverview,
-
-  // Phase 5: Templates & Analytics
-  applyContractingTemplate,
-  getContractingAnalytics,
-  validateContractingDistribution,
-
-  // Phase 6: State Management
-  markRosterReady,
-  publishRoster,
-  closeRoster,
-
-  // Phase 7: Doctor Management
-  assignDoctor,
 
   // Query Operations
   getRosterList,
   getRostersPaged,
   getRosterById,
-  searchColleagues,
-  getRosterAnalytics,
-  getDoctorWorkloads,
-  getDepartmentCoverage,
-  getDepartmentSchedule,
 
   // Update & Management
   updateRosterBasicInfo,
-  deleteRoster,
-  archiveRoster,
 
   // Export & Additional
-  exportRoster,
-  duplicateRoster,
   updateRosterStatus,
   getRosterDepartments,
   getShiftContractingTypes,
@@ -60,6 +36,23 @@ import {
   updateShiftContractingType,
   getWorkingHour,
   updateWorkingHour,
+
+  // assignment
+  assignDoctorToShift,
+  unassignDoctorFromShift,
+  getAvailableDoctorsForShift,
+  getAvailableDoctorsForDate,
+  getDoctorSchedule,
+  getAssignedDoctorsSummary,
+  getDoctorsForDate,
+  getDaySummary,
+
+  // NEW: Doctor Requests Workflow
+  submitDoctorRequest,
+  getDoctorRequestsForRoster,
+  approveDoctorRequest,
+  rejectDoctorRequest,
+  getDoctorRequests,
 } from "../act/actRosterManagement";
 import i18next from "i18next";
 
@@ -85,6 +78,19 @@ const initialState = {
   availableContractingTypes: [],
   contractingAnalytics: null,
   contractingValidation: null,
+
+  // ===== NEW: ROSTER ASSIGNMENT DATA (بيانات تعيين الروستر) =====
+  availableDoctorsForShift: [],
+  availableDoctorsForDate: {},
+  doctorSchedule: null,
+  assignedDoctorsSummary: null,
+  doctorsForDate: null,
+  daySummary: null,
+
+  // ===== NEW: DOCTOR REQUESTS DATA (بيانات طلبات الدكاترة) =====
+  doctorRequestsForRoster: [],
+  doctorRequests: [],
+  pendingRequests: [],
 
   // ===== WORKING HOURS DATA (بيانات ساعات العمل) =====
   workingHours: [],
@@ -128,6 +134,19 @@ const initialState = {
     close: false,
     assign: false,
 
+    assignDoctor: false,
+    unassignDoctor: false,
+    availableDoctors: false,
+    doctorSchedule: false,
+    assignedDoctors: false,
+    doctorsForDate: false,
+    daySummary: false,
+
+    // NEW: Doctor Requests Loading States
+    submitRequest: false,
+    processRequest: false,
+    doctorRequests: false,
+
     // CRUD Operations
     fetch: false,
     update: false,
@@ -157,6 +176,10 @@ const initialState = {
     close: false,
     assign: false,
     update: false,
+    assignDoctor: false,
+    unassignDoctor: false,
+    submitRequest: false,
+    processRequest: false,
     delete: false,
     export: false,
     archive: false,
@@ -174,6 +197,12 @@ const initialState = {
     search: null,
     validation: null,
     shifts: null,
+    assignDoctor: null,
+    unassignDoctor: null,
+    availableDoctors: null,
+    doctorSchedule: null,
+    doctorRequests: null,
+    processRequest: null,
     contracting: null,
     workingHours: null,
   },
@@ -184,6 +213,8 @@ const initialState = {
     activeTab: "overview",
     viewMode: "grid", // grid, list, calendar
     selectedDepartmentId: null,
+    selectedDoctorId: null,
+    selectedDate: null,
     selectedShiftId: null,
     filters: {
       categoryId: null,
@@ -380,6 +411,89 @@ const rosterManagementSlice = createSlice({
           ...state.departmentShifts[shiftIndex],
           ...updates,
         };
+      }
+    },
+
+    // NEW: Selected Doctor and Date Management
+    setSelectedDoctorId: (state, action) => {
+      state.ui.selectedDoctorId = action.payload;
+    },
+
+    setSelectedDate: (state, action) => {
+      state.ui.selectedDate = action.payload;
+    },
+
+    // NEW: Roster Assignment Data Management
+    clearRosterAssignmentData: (state) => {
+      state.availableDoctorsForShift = [];
+      state.availableDoctorsForDate = {};
+      state.doctorSchedule = null;
+      state.assignedDoctorsSummary = null;
+      state.doctorsForDate = null;
+      state.daySummary = null;
+    },
+
+    clearDoctorRequestsData: (state) => {
+      state.doctorRequestsForRoster = [];
+      state.doctorRequests = [];
+      state.pendingRequests = [];
+    },
+
+    // NEW: Updated clearSelectedRoster to include new data
+    clearSelectedRoster: (state) => {
+      state.selectedRoster = null;
+      state.rosterAnalytics = null;
+      state.workingHoursOverview = null;
+      state.contractingValidation = null;
+      // NEW: Clear assignment data
+      state.doctorSchedule = null;
+      state.daySummary = null;
+      state.assignedDoctorsSummary = null;
+    },
+
+    // NEW: Roster Assignment Operations
+    updateDoctorAssignment: (state, action) => {
+      const { scheduleId, doctorInfo, workingHoursId } = action.payload;
+
+      // Update in doctorsForDate if available
+      if (state.doctorsForDate?.shifts) {
+        state.doctorsForDate.shifts.forEach((shift) => {
+          if (shift.workingHoursId === workingHoursId) {
+            const existingDoctor = shift.doctors.find(
+              (d) => d.scheduleId === scheduleId
+            );
+            if (existingDoctor) {
+              Object.assign(existingDoctor, doctorInfo);
+            } else {
+              shift.doctors.push({ scheduleId, ...doctorInfo });
+            }
+            shift.assignedDoctors = shift.doctors.length;
+            shift.remainingSlots =
+              shift.requiredDoctors - shift.assignedDoctors;
+            shift.fillPercentage =
+              (shift.assignedDoctors / shift.requiredDoctors) * 100;
+          }
+        });
+      }
+    },
+
+    removeDoctorAssignment: (state, action) => {
+      const { scheduleId, workingHoursId } = action.payload;
+
+      // Remove from doctorsForDate if available
+      if (state.doctorsForDate?.shifts) {
+        state.doctorsForDate.shifts.forEach((shift) => {
+          if (shift.workingHoursId === workingHoursId) {
+            shift.doctors = shift.doctors.filter(
+              (d) => d.scheduleId !== scheduleId
+            );
+            shift.assignedDoctors = shift.doctors.length;
+            shift.remainingSlots =
+              shift.requiredDoctors - shift.assignedDoctors;
+            shift.fillPercentage =
+              (shift.assignedDoctors / shift.requiredDoctors) * 100;
+          }
+        });
       }
     },
   },
@@ -631,182 +745,13 @@ const rosterManagementSlice = createSlice({
         state.loading.update = false;
       });
 
-    // Update Doctor Requirements
-    builder
-      .addCase(updateDoctorRequirements.pending, (state) => {
-        state.loading.update = true;
-        state.errors.workingHours = null;
-      })
-      .addCase(updateDoctorRequirements.fulfilled, (state, action) => {
-        state.loading.update = false;
-        state.success.update = true;
-
-        if (action.payload?.data) {
-          state.doctorRequirements = action.payload.data;
-        }
-      })
-      .addCase(updateDoctorRequirements.rejected, (state, action) => {
-        state.loading.update = false;
-        state.errors.workingHours = action.payload;
-      });
-
-    // Get Working Hours Overview
-    builder
-      .addCase(getWorkingHoursOverview.pending, (state) => {
-        state.loading.fetch = true;
-        state.errors.general = null;
-      })
-      .addCase(getWorkingHoursOverview.fulfilled, (state, action) => {
-        state.loading.fetch = false;
-        state.workingHoursOverview = action.payload?.data || null;
-      })
-      .addCase(getWorkingHoursOverview.rejected, (state, action) => {
-        state.loading.fetch = false;
-        state.errors.general = action.payload;
-      });
-
     // ===================================================================
     // PHASE 5: TEMPLATES & ANALYTICS (المرحلة 5: القوالب والتحليل)
     // ===================================================================
 
-    // Apply Contracting Template
-    builder
-      .addCase(applyContractingTemplate.pending, (state) => {
-        state.loading.applyTemplate = true;
-        state.errors.contracting = null;
-        state.success.applyTemplate = false;
-      })
-      .addCase(applyContractingTemplate.fulfilled, (state) => {
-        state.loading.applyTemplate = false;
-        state.success.applyTemplate = true;
-      })
-      .addCase(applyContractingTemplate.rejected, (state, action) => {
-        state.loading.applyTemplate = false;
-        state.errors.contracting = action.payload;
-      });
-
-    // Get Contracting Analytics
-    builder
-      .addCase(getContractingAnalytics.pending, (state) => {
-        state.loading.analytics = true;
-        state.errors.analytics = null;
-      })
-      .addCase(getContractingAnalytics.fulfilled, (state, action) => {
-        state.loading.analytics = false;
-        state.contractingAnalytics = action.payload?.data || null;
-      })
-      .addCase(getContractingAnalytics.rejected, (state, action) => {
-        state.loading.analytics = false;
-        state.errors.analytics = action.payload;
-      });
-
-    // Validate Contracting Distribution
-    builder
-      .addCase(validateContractingDistribution.pending, (state) => {
-        state.loading.validation = true;
-        state.errors.validation = null;
-      })
-      .addCase(validateContractingDistribution.fulfilled, (state, action) => {
-        state.loading.validation = false;
-        state.contractingValidation = action.payload?.data || null;
-      })
-      .addCase(validateContractingDistribution.rejected, (state, action) => {
-        state.loading.validation = false;
-        state.errors.validation = action.payload;
-      });
-
-    // ===================================================================
-    // PHASE 6: STATE MANAGEMENT (المرحلة 6: إدارة الحالات)
-    // ===================================================================
-
-    // Mark Roster Ready
-    builder
-      .addCase(markRosterReady.pending, (state) => {
-        state.loading.markReady = true;
-        state.errors.update = null;
-        state.success.markReady = false;
-      })
-      .addCase(markRosterReady.fulfilled, (state, action) => {
-        state.loading.markReady = false;
-        state.success.markReady = true;
-
-        if (action.payload?.data) {
-          const updates = { status: "DRAFT_READY" };
-          rosterManagementSlice.caseReducers.updateRosterInList(state, {
-            payload: { rosterId: action.payload.data.id, updates },
-          });
-        }
-      })
-      .addCase(markRosterReady.rejected, (state, action) => {
-        state.loading.markReady = false;
-        state.errors.update = action.payload;
-      });
-
-    // Publish Roster
-    builder
-      .addCase(publishRoster.pending, (state) => {
-        state.loading.publish = true;
-        state.errors.update = null;
-        state.success.publish = false;
-      })
-      .addCase(publishRoster.fulfilled, (state, action) => {
-        state.loading.publish = false;
-        state.success.publish = true;
-
-        if (action.payload?.data) {
-          const updates = { status: "PUBLISHED" };
-          rosterManagementSlice.caseReducers.updateRosterInList(state, {
-            payload: { rosterId: action.payload.data.id, updates },
-          });
-        }
-      })
-      .addCase(publishRoster.rejected, (state, action) => {
-        state.loading.publish = false;
-        state.errors.update = action.payload;
-      });
-
-    // Close Roster
-    builder
-      .addCase(closeRoster.pending, (state) => {
-        state.loading.close = true;
-        state.errors.update = null;
-        state.success.close = false;
-      })
-      .addCase(closeRoster.fulfilled, (state, action) => {
-        state.loading.close = false;
-        state.success.close = true;
-
-        if (action.payload?.data) {
-          const updates = { status: "CLOSED" };
-          rosterManagementSlice.caseReducers.updateRosterInList(state, {
-            payload: { rosterId: action.payload.data.id, updates },
-          });
-        }
-      })
-      .addCase(closeRoster.rejected, (state, action) => {
-        state.loading.close = false;
-        state.errors.update = action.payload;
-      });
-
     // ===================================================================
     // PHASE 7: DOCTOR MANAGEMENT (المرحلة 7: إدارة الأطباء)
     // ===================================================================
-
-    // Assign Doctor
-    builder
-      .addCase(assignDoctor.pending, (state) => {
-        state.loading.assign = true;
-        state.errors.assign = null;
-        state.success.assign = false;
-      })
-      .addCase(assignDoctor.fulfilled, (state) => {
-        state.loading.assign = false;
-        state.success.assign = true;
-      })
-      .addCase(assignDoctor.rejected, (state, action) => {
-        state.loading.assign = false;
-        state.errors.assign = action.payload;
-      });
 
     // ===================================================================
     // QUERY OPERATIONS (عمليات الاستعلام)
@@ -877,81 +822,6 @@ const rosterManagementSlice = createSlice({
           action.payload || i18next.t("roster.error.fetchFailed");
       });
 
-    // Search Colleagues
-    builder
-      .addCase(searchColleagues.pending, (state) => {
-        state.loading.search = true;
-        state.errors.search = null;
-      })
-      .addCase(searchColleagues.fulfilled, (state, action) => {
-        state.loading.search = false;
-        state.colleagueSearchResults = action.payload?.data || [];
-      })
-      .addCase(searchColleagues.rejected, (state, action) => {
-        state.loading.search = false;
-        state.errors.search = action.payload;
-      });
-
-    // Get Roster Analytics
-    builder
-      .addCase(getRosterAnalytics.pending, (state) => {
-        state.loading.analytics = true;
-        state.errors.analytics = null;
-      })
-      .addCase(getRosterAnalytics.fulfilled, (state, action) => {
-        state.loading.analytics = false;
-        state.rosterAnalytics = action.payload?.data || null;
-      })
-      .addCase(getRosterAnalytics.rejected, (state, action) => {
-        state.loading.analytics = false;
-        state.errors.analytics = action.payload;
-      });
-
-    // Get Doctor Workloads
-    builder
-      .addCase(getDoctorWorkloads.pending, (state) => {
-        state.loading.workloads = true;
-        state.errors.analytics = null;
-      })
-      .addCase(getDoctorWorkloads.fulfilled, (state, action) => {
-        state.loading.workloads = false;
-        state.doctorWorkloads = action.payload?.data || [];
-      })
-      .addCase(getDoctorWorkloads.rejected, (state, action) => {
-        state.loading.workloads = false;
-        state.errors.analytics = action.payload;
-      });
-
-    // Get Department Coverage
-    builder
-      .addCase(getDepartmentCoverage.pending, (state) => {
-        state.loading.coverage = true;
-        state.errors.analytics = null;
-      })
-      .addCase(getDepartmentCoverage.fulfilled, (state, action) => {
-        state.loading.coverage = false;
-        state.departmentCoverage = action.payload?.data || [];
-      })
-      .addCase(getDepartmentCoverage.rejected, (state, action) => {
-        state.loading.coverage = false;
-        state.errors.analytics = action.payload;
-      });
-
-    // Get Department Schedule
-    builder
-      .addCase(getDepartmentSchedule.pending, (state) => {
-        state.loading.schedule = true;
-        state.errors.general = null;
-      })
-      .addCase(getDepartmentSchedule.fulfilled, (state, action) => {
-        state.loading.schedule = false;
-        state.departmentSchedule = action.payload?.data || null;
-      })
-      .addCase(getDepartmentSchedule.rejected, (state, action) => {
-        state.loading.schedule = false;
-        state.errors.general = action.payload;
-      });
-
     // ===================================================================
     // UPDATE & MANAGEMENT OPERATIONS (عمليات التحديث والإدارة)
     // ===================================================================
@@ -981,89 +851,260 @@ const rosterManagementSlice = createSlice({
         state.errors.update = action.payload;
       });
 
-    // Delete Roster
+    // Assign Doctor to Shift
     builder
-      .addCase(deleteRoster.pending, (state) => {
-        state.loading.delete = true;
-        state.errors.general = null;
-        state.success.delete = false;
+      .addCase(assignDoctorToShift.pending, (state) => {
+        state.loading.assignDoctor = true;
+        state.errors.assignDoctor = null;
+        state.success.assignDoctor = false;
       })
-      .addCase(deleteRoster.fulfilled, (state, action) => {
-        state.loading.delete = false;
-        state.success.delete = true;
+      .addCase(assignDoctorToShift.fulfilled, (state, action) => {
+        state.loading.assignDoctor = false;
+        state.success.assignDoctor = true;
+      })
+      .addCase(assignDoctorToShift.rejected, (state, action) => {
+        state.loading.assignDoctor = false;
+        state.errors.assignDoctor = action.payload;
+      });
 
-        if (action.payload?.data?.id) {
-          rosterManagementSlice.caseReducers.removeRosterFromList(state, {
-            payload: action.payload.data.id,
-          });
-        }
+    // Unassign Doctor from Shift
+    builder
+      .addCase(unassignDoctorFromShift.pending, (state) => {
+        state.loading.unassignDoctor = true;
+        state.errors.unassignDoctor = null;
+        state.success.unassignDoctor = false;
       })
-      .addCase(deleteRoster.rejected, (state, action) => {
-        state.loading.delete = false;
+      .addCase(unassignDoctorFromShift.fulfilled, (state, action) => {
+        state.loading.unassignDoctor = false;
+        state.success.unassignDoctor = true;
+
+        const scheduleId = action.payload.scheduleId;
+        state.doctorSchedule = state.doctorSchedule.assignments.filter(
+          (entry) => entry.scheduleId !== scheduleId
+        );
+        // Local state update logic can be added here
+      })
+      .addCase(unassignDoctorFromShift.rejected, (state, action) => {
+        state.loading.unassignDoctor = false;
+        state.errors.unassignDoctor = action.payload;
+      });
+
+    // Get Available Doctors for Shift
+    builder
+      .addCase(getAvailableDoctorsForShift.pending, (state) => {
+        state.loading.availableDoctors = true;
+        state.errors.availableDoctors = null;
+      })
+      .addCase(getAvailableDoctorsForShift.fulfilled, (state, action) => {
+        state.loading.availableDoctors = false;
+
+        state.availableDoctorsForShift = action.payload.data;
+        console.log(
+          "state.availableDoctorsForShift",
+          state.availableDoctorsForShift
+        );
+        console.log("action.payload.data", action.payload.data);
+      })
+      .addCase(getAvailableDoctorsForShift.rejected, (state, action) => {
+        state.loading.availableDoctors = false;
+        state.errors.availableDoctors = action.payload;
+      });
+
+    // Get Available Doctors for Date
+    builder
+      .addCase(getAvailableDoctorsForDate.pending, (state) => {
+        state.loading.availableDoctors = true;
+        state.errors.availableDoctors = null;
+      })
+      .addCase(getAvailableDoctorsForDate.fulfilled, (state, action) => {
+        state.loading.availableDoctors = false;
+
+        const date = action.payload.date;
+        state.availableDoctorsForDate[date] = action.payload.data || [];
+      })
+      .addCase(getAvailableDoctorsForDate.rejected, (state, action) => {
+        state.loading.availableDoctors = false;
+        state.errors.availableDoctors = action.payload;
+      });
+
+    // Get Doctor Schedule
+    builder
+      .addCase(getDoctorSchedule.pending, (state) => {
+        state.loading.doctorSchedule = true;
+        state.errors.doctorSchedule = null;
+      })
+      .addCase(getDoctorSchedule.fulfilled, (state, action) => {
+        state.loading.doctorSchedule = false;
+        state.doctorSchedule = action.payload?.data || null;
+      })
+      .addCase(getDoctorSchedule.rejected, (state, action) => {
+        state.loading.doctorSchedule = false;
+        state.errors.doctorSchedule = action.payload;
+      });
+
+    // Get Assigned Doctors Summary
+    builder
+      .addCase(getAssignedDoctorsSummary.pending, (state) => {
+        state.loading.assignedDoctors = true;
+        state.errors.general = null;
+      })
+      .addCase(getAssignedDoctorsSummary.fulfilled, (state, action) => {
+        state.loading.assignedDoctors = false;
+        state.assignedDoctorsSummary = action.payload?.data || null;
+      })
+      .addCase(getAssignedDoctorsSummary.rejected, (state, action) => {
+        state.loading.assignedDoctors = false;
         state.errors.general = action.payload;
       });
 
-    // Archive Roster
+    // Get Doctors for Date
     builder
-      .addCase(archiveRoster.pending, (state) => {
-        state.loading.update = true;
+      .addCase(getDoctorsForDate.pending, (state) => {
+        state.loading.doctorsForDate = true;
         state.errors.general = null;
-        state.success.archive = false;
       })
-      .addCase(archiveRoster.fulfilled, (state, action) => {
-        state.loading.update = false;
-        state.success.archive = true;
+      .addCase(getDoctorsForDate.fulfilled, (state, action) => {
+        state.loading.doctorsForDate = false;
+        state.doctorsForDate = action.payload?.data || null;
+      })
+      .addCase(getDoctorsForDate.rejected, (state, action) => {
+        state.loading.doctorsForDate = false;
+        state.errors.general = action.payload;
+      });
 
-        if (action.payload?.data) {
-          const updates = { status: "ARCHIVED" };
-          rosterManagementSlice.caseReducers.updateRosterInList(state, {
-            payload: { rosterId: action.payload.data.id, updates },
-          });
-        }
+    // Get Day Summary
+    builder
+      .addCase(getDaySummary.pending, (state) => {
+        state.loading.daySummary = true;
+        state.errors.general = null;
       })
-      .addCase(archiveRoster.rejected, (state, action) => {
-        state.loading.update = false;
+      .addCase(getDaySummary.fulfilled, (state, action) => {
+        state.loading.daySummary = false;
+        state.daySummary = action.payload?.data || null;
+      })
+      .addCase(getDaySummary.rejected, (state, action) => {
+        state.loading.daySummary = false;
         state.errors.general = action.payload;
       });
 
     // ===================================================================
-    // EXPORT & ADDITIONAL OPERATIONS (التصدير والعمليات الإضافية)
+    // NEW: DOCTOR REQUESTS WORKFLOW REDUCERS (مُخفِّضات سير عمل طلبات الدكاترة)
     // ===================================================================
 
-    // Export Roster
+    // Submit Doctor Request
     builder
-      .addCase(exportRoster.pending, (state) => {
-        state.loading.export = true;
-        state.errors.export = null;
-        state.success.export = false;
+      .addCase(submitDoctorRequest.pending, (state) => {
+        state.loading.submitRequest = true;
+        state.errors.doctorRequests = null;
+        state.success.submitRequest = false;
       })
-      .addCase(exportRoster.fulfilled, (state) => {
-        state.loading.export = false;
-        state.success.export = true;
+      .addCase(submitDoctorRequest.fulfilled, (state, action) => {
+        state.loading.submitRequest = false;
+        state.success.submitRequest = true;
       })
-      .addCase(exportRoster.rejected, (state, action) => {
-        state.loading.export = false;
-        state.errors.export = action.payload;
+      .addCase(submitDoctorRequest.rejected, (state, action) => {
+        state.loading.submitRequest = false;
+        state.errors.doctorRequests = action.payload;
       });
 
-    // Duplicate Roster
+    // Get Doctor Requests for Roster
     builder
-      .addCase(duplicateRoster.pending, (state) => {
-        state.loading.update = true;
-        state.errors.general = null;
-        state.success.duplicate = false;
+      .addCase(getDoctorRequestsForRoster.pending, (state) => {
+        state.loading.doctorRequests = true;
+        state.errors.doctorRequests = null;
       })
-      .addCase(duplicateRoster.fulfilled, (state, action) => {
-        state.loading.update = false;
-        state.success.duplicate = true;
+      .addCase(getDoctorRequestsForRoster.fulfilled, (state, action) => {
+        state.loading.doctorRequests = false;
+        state.doctorRequestsForRoster = action.payload?.data || [];
 
-        if (action.payload?.data) {
-          state.rosters.unshift(action.payload.data);
-        }
+        // Also update pending requests if status is PENDING
+        const pendingRequests = (action.payload?.data || []).filter(
+          (request) => request.status === "PENDING"
+        );
+        state.pendingRequests = pendingRequests;
       })
-      .addCase(duplicateRoster.rejected, (state, action) => {
-        state.loading.update = false;
-        state.errors.general = action.payload;
+      .addCase(getDoctorRequestsForRoster.rejected, (state, action) => {
+        state.loading.doctorRequests = false;
+        state.errors.doctorRequests = action.payload;
+      });
+
+    // Approve Doctor Request
+    builder
+      .addCase(approveDoctorRequest.pending, (state) => {
+        state.loading.processRequest = true;
+        state.errors.processRequest = null;
+        state.success.processRequest = false;
+      })
+      .addCase(approveDoctorRequest.fulfilled, (state, action) => {
+        state.loading.processRequest = false;
+        state.success.processRequest = true;
+
+        // Update the request in local state
+        const requestId = action.payload.requestId;
+        const requestIndex = state.doctorRequestsForRoster.findIndex(
+          (req) => req.id === requestId
+        );
+        if (requestIndex !== -1) {
+          state.doctorRequestsForRoster[requestIndex].status = "APPROVED";
+          state.doctorRequestsForRoster[requestIndex].processedAt =
+            new Date().toISOString();
+        }
+
+        // Remove from pending requests
+        state.pendingRequests = state.pendingRequests.filter(
+          (req) => req.id !== requestId
+        );
+      })
+      .addCase(approveDoctorRequest.rejected, (state, action) => {
+        state.loading.processRequest = false;
+        state.errors.processRequest = action.payload;
+      });
+
+    // Reject Doctor Request
+    builder
+      .addCase(rejectDoctorRequest.pending, (state) => {
+        state.loading.processRequest = true;
+        state.errors.processRequest = null;
+        state.success.processRequest = false;
+      })
+      .addCase(rejectDoctorRequest.fulfilled, (state, action) => {
+        state.loading.processRequest = false;
+        state.success.processRequest = true;
+
+        // Update the request in local state
+        const requestId = action.payload.requestId;
+        const requestIndex = state.doctorRequestsForRoster.findIndex(
+          (req) => req.id === requestId
+        );
+        if (requestIndex !== -1) {
+          state.doctorRequestsForRoster[requestIndex].status = "REJECTED";
+          state.doctorRequestsForRoster[requestIndex].processedAt =
+            new Date().toISOString();
+        }
+
+        // Remove from pending requests
+        state.pendingRequests = state.pendingRequests.filter(
+          (req) => req.id !== requestId
+        );
+      })
+      .addCase(rejectDoctorRequest.rejected, (state, action) => {
+        state.loading.processRequest = false;
+        state.errors.processRequest = action.payload;
+      });
+
+    // Get Doctor's Requests
+    builder
+      .addCase(getDoctorRequests.pending, (state) => {
+        state.loading.doctorRequests = true;
+        state.errors.doctorRequests = null;
+      })
+      .addCase(getDoctorRequests.fulfilled, (state, action) => {
+        state.loading.doctorRequests = false;
+        state.doctorRequests = action.payload?.data || [];
+      })
+      .addCase(getDoctorRequests.rejected, (state, action) => {
+        state.loading.doctorRequests = false;
+        state.errors.doctorRequests = action.payload;
       });
   },
 });
@@ -1110,6 +1151,16 @@ export const {
   // Department Shifts Operations
   addShiftToList,
   removeShiftFromList,
+  setSelectedDoctorId,
+  setSelectedDate,
+
+  // NEW: Data Management
+  clearRosterAssignmentData,
+  clearDoctorRequestsData,
+
+  // NEW: Roster Assignment Operations
+  updateDoctorAssignment,
+  removeDoctorAssignment,
   updateShiftInList,
 } = rosterManagementSlice.actions;
 

@@ -1590,7 +1590,9 @@
     "roster": "جاري تحميل بيانات جدول المعاينه…",
     "rosterDepartments": "جاري تحميل بيانات  أقسام جدول المعاينه…",
     "workingHours": "جارٍ تحميل متطلبات الشيفتات...",
-    "workingHour": "جارٍ تحميل بيانات متطلبات الشيفت..."
+    "workingHour": "جارٍ تحميل بيانات متطلبات الشيفت...",
+    "availableDoctors": "جارٍ تحميل الأطباء المتاحين...",
+    "doctorSchedule": "جارٍ تحميل جدول الطبيب..."
   },
 
   "error": {
@@ -1648,12 +1650,92 @@
     "departments": "الأقسام",
     "dayss": "الأيام",
     "totalDays": "إجمالي الأيام",
+    "changesInfo": "\u00A0أي تغييرات في هذه الصفحة تتطلب إعادة توليد متطلبات الشيفتات.",
     "shifts": "الشيفتات",
+    "capacity": "السعة",
     "fillPercentage": "نسبة الإشغال",
     "remainingSlots": "الأماكن المتبقية",
     "noAssignedDoctors": "لا يوجد أطباء معينون",
+
+    "doctorSchedule": {
+      "totalAssignments": "إجمالي التعيينات",
+      "title": "جدول الطبيب",
+      "completedShifts": "الشيفتات المكتملة",
+      "totalHours": "إجمالي الساعات",
+      "pendingShifts": "الشيفتات المعلقة",
+      "assignments": "التعيينات",
+      "noAssignments": "لا توجد تعيينات حتى الآن",
+      "weeklyDistribution": "التوزيع الأسبوعي",
+      "error": {
+        "notFound": "لم يتم العثور على جدول الطبيب."
+      }
+    },
+
+    "assign": {
+      "title": "تعيين طبيب",
+      "subtitle": "اختر طبيبًا لهذا الشيفت وراجع التوفر والتعارضات وعبء العمل.",
+      "workload": "عبء العمل",
+      "assignments": "تعيينات",
+      "hours": "ساعات",
+      "hideConflicts": "إخفاء التعارضات",
+      "showConflicts": "عرض التعارضات",
+      "priorityScore": "درجة الأولوية",
+      "unassignTitle": "إلغاء تعيين الطبيب",
+      "confirmMessage": "هل أنت متأكد أنك تريد إلغاء تعيين هذا الطبيب من الشيفت؟",
+      "reason": "السبب",
+      "reasonPlaceholder": "أدخل سبب إلغاء التعيين",
+      "reasonRequired": "السبب مطلوب.",
+      "confirm": "إلغاء التعيين",
+      "unassignSuccess": "تم إلغاء تعيين {{name}} من الشيفت بنجاح.",
+      "status": {
+        "available": "متاح",
+        "unavailable": "غير متاح",
+        "conflict": "تعارض"
+      },
+      "noDoctorsFound": "لا يوجد أطباء مطابقون لبحثك.",
+      "noAvailableDoctors": "لا يوجد أطباء متاحون لهذا الشيفت.",
+      "shiftDetails": "تفاصيل الشيفت",
+      "doctors": "أطباء",
+
+      "notes": "ملاحظات",
+      "searchDoctors": "ابحث عن الأطباء",
+      "searchPlaceholder": "ابحث بالاسم أو التخصص...",
+      "selectDoctor": "اختر طبيبًا",
+      "fields": {
+        "notes": "الملاحظات",
+        "overrideConflicts": "تجاوز التعارضات",
+        "overrideConflictsHelp": "السماح بالتعيين حتى مع وجود تعارضات (تداخل نوبات، تجاوز الحد الأقصى للساعات، إلخ)."
+      },
+      "placeholders": {
+        "notes": "ملاحظات اختيارية (مرئية للمشرفين)"
+      },
+      "validation": {
+        "doctorRequired": "من فضلك اختر طبيبًا.",
+        "doctorInvalid": "اختيار الطبيب غير صحيح.",
+        "notesMaxLength": "يجب ألا تتجاوز الملاحظات 500 حرف."
+      },
+      "success": {
+        "assigned": "تم تعيين الطبيب بنجاح."
+      },
+      "error": {
+        "title": "فشل التعيين",
+        "message": "تعذر تعيين الطبيب. حاول مرة أخرى."
+      },
+      "conflict": {
+        "title": "تم اكتشاف تعارض",
+        "message": "لدى هذا الطبيب تعارض في الجدول مع هذا الشيفت.",
+        "override": "تعيين على أي حال"
+      },
+      "buttons": {
+        "assigning": "جارٍ التعيين...",
+        "assignDoctor": "تعيين الطبيب"
+      },
+      "charactersCount": "حرف"
+    },
+
     "workingHours": {
       "title": "متطلبات الشيفتات",
+      "titlee": "متطلبات الشيفت",
       "description": "اعرض وفلتر متطلبات الشيفتات ونِسب الإشغال وتعيينات الأطباء لهذا الروستر.",
       "editTitle": "تعديل متطلبات الشيفت",
       "editSubtitle": "قم بتحديث عدد الأطباء المطلوبين والحد الأقصى، أضف الملاحظات، واذكر سبب التعديل.",
@@ -1882,6 +1964,7 @@
       "view": "عرض التفاصيل",
       "edit": "تعديل الروستر",
       "editRoster": "تعديل الروستر",
+      "unAssignDoctor": "إزالة تعيين الدكتور",
       "addNew": "إضافة روستر جديد",
       "cancel": "إلغاء",
       "add": "إضافة",

@@ -41,6 +41,8 @@ function GenerateWorkingHours() {
   const { mymode } = useSelector((state) => state.mode);
   const isDark = mymode === "dark";
 
+  console.log("workingHours", workingHours.data);
+
   // Get roster ID from localStorage and fetch data
   useEffect(() => {
     const storedRosterId = localStorage.getItem("rosterId");
@@ -320,7 +322,7 @@ function GenerateWorkingHours() {
                 )}
 
                 {/* Current Working Hours Status */}
-                {workingHours && workingHours.length > 0 && (
+                {workingHours.data && (
                   <div
                     className={`p-4 rounded-lg border ${
                       isDark
@@ -348,9 +350,9 @@ function GenerateWorkingHours() {
                           } mt-1`}
                         >
                           {t("roster.workingHourss.existingMessage", {
-                            count: workingHours.length,
+                            count: workingHours.data.length,
                           }) ||
-                            `${workingHours.length} working hours already exist for this roster.`}
+                            `${workingHours.data.length} working hours already exist for this roster.`}
                         </p>
                       </div>
                     </div>
