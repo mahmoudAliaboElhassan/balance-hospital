@@ -12,6 +12,9 @@ import {
   Plus,
   CheckCircle,
   AlertCircle,
+  EyeOff,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import {
   getRosterDepartments,
@@ -26,6 +29,7 @@ import ModalContractingTypesDepartment from "../../../components/ModalContractin
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import ModalEditContractingTypeModal from "../../../components/ModalUpdateContractingTypeShift";
+import { AddDepartmentButton } from "../../../components/AddDepartment";
 
 function RosterDepartments() {
   const dispatch = useDispatch();
@@ -36,20 +40,41 @@ function RosterDepartments() {
   const [deleteIdx, setDeleteIdx] = useState(false);
   const [deleteContractingIdx, setdDleteContractingIdx] = useState(false);
 
+  // Redux state
+  const {
+    rosterDepartments,
+    loading,
+    selectedDepartmentShifts,
+    shiftContractingTypes,
+  } = useSelector((state) => state.rosterManagement);
+
   const [selectedContractingType, setSelectedContractingType] = useState(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
 
   const [selectedDepartment, setSelectedDepartment] = useState(null);
+  const [activeDepartment, setActiveDepartment] = useState(null); // Track which department is expanded
   const [selectedShift, setSelectedShift] = useState(null);
   const [isShiftModalOpen, setIsShiftModalOpen] = useState(false);
   const [isContractingModalOpen, setIsContractingModalOpen] = useState(false);
   const [loadingShifts, setLoadingShifts] = useState(false);
   const [loadingContractingTypes, setLoadingContractingTypes] = useState({});
 
+  // Add state to track which contracting types sections are visible
+  const [visibleContractingTypes, setVisibleContractingTypes] = useState({});
+
   const handleUpdateContractingType = (contractingType) => {
     setSelectedContractingType(contractingType);
     console.log("from function", contractingType);
     setEditModalOpen(true);
+  };
+
+  const goToRosterData = () => {
+    const id = localStorage.getItem("rosterId");
+    if (id) {
+      navigate(`/admin-panel/rosters/${id}`);
+    } else {
+      navigate("/admin-panel/rosters");
+    }
   };
 
   const handleDeleteContractingType = (contractingTypeId, index) => {
@@ -88,14 +113,6 @@ function RosterDepartments() {
       });
   };
 
-  // Redux state
-  const {
-    rosterDepartments,
-    loading,
-    selectedDepartmentShifts,
-    shiftContractingTypes,
-  } = useSelector((state) => state.rosterManagement);
-
   useEffect(() => {
     const storedRosterId = localStorage.getItem("rosterId") || "";
     if (storedRosterId) {
@@ -103,6 +120,12 @@ function RosterDepartments() {
         .unwrap()
         .then((response) => {
           console.log("Fetched roster departments:", response);
+          dispatch(
+            getDepartmentShifts({
+              rosterDepartmentId: response.data[0]?.id,
+            })
+          );
+          setActiveDepartment(response.data[0]);
         })
         .catch((err) => {
           console.error("Failed to fetch roster departments:", err);
@@ -134,9 +157,17 @@ function RosterDepartments() {
     setEditModalOpen(false);
   };
 
-  const handleViewShifts = async (department) => {
+  // Updated function to handle department card click
+  const handleDepartmentClick = async (department) => {
+    // If clicking on the same department that's already active, collapse it
+    if (activeDepartment && activeDepartment.id === department.id) {
+      return;
+    }
+
+    // Set the new active department and fetch its shifts
+    setActiveDepartment(department);
     setLoadingShifts(true);
-    setIsShiftModalOpen(false);
+
     try {
       await dispatch(
         getDepartmentShifts({ rosterDepartmentId: department.id })
@@ -151,16 +182,27 @@ function RosterDepartments() {
 
   const handleViewContractingTypes = async (shift) => {
     localStorage.setItem("currentShiftId", shift.id);
-    setLoadingContractingTypes((prev) => ({ ...prev, [shift.id]: true }));
-    try {
-      await dispatch(
-        getShiftContractingTypes({ departmentShiftId: shift.id })
-      ).unwrap();
-      console.log("Fetched shift contracting types successfully");
-    } catch (error) {
-      console.error("Failed to fetch shift contracting types:", error);
-    } finally {
-      setLoadingContractingTypes((prev) => ({ ...prev, [shift.id]: false }));
+
+    // Toggle visibility
+    const isCurrentlyVisible = visibleContractingTypes[shift.id];
+
+    if (isCurrentlyVisible) {
+      // If currently visible, just hide it
+      setVisibleContractingTypes((prev) => ({ ...prev, [shift.id]: false }));
+    } else {
+      // If not visible, fetch data and show
+      setLoadingContractingTypes((prev) => ({ ...prev, [shift.id]: true }));
+      try {
+        await dispatch(
+          getShiftContractingTypes({ departmentShiftId: shift.id })
+        ).unwrap();
+        console.log("Fetched shift contracting types successfully");
+        setVisibleContractingTypes((prev) => ({ ...prev, [shift.id]: true }));
+      } catch (error) {
+        console.error("Failed to fetch shift contracting types:", error);
+      } finally {
+        setLoadingContractingTypes((prev) => ({ ...prev, [shift.id]: false }));
+      }
     }
   };
 
@@ -186,7 +228,7 @@ function RosterDepartments() {
       className={`min-h-screen p-6 ${isDark ? "bg-gray-900" : "bg-gray-50"}`}
       dir={isRTL ? "rtl" : "ltr"}
     >
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
@@ -226,426 +268,489 @@ function RosterDepartments() {
                 </div>
               </div>
             </div>
-            <button
-              onClick={navigateToNextPhase}
-              className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-            >
-              {t("roster.departmentss.nextPhase")}
-              <ArrowRight size={20} className={isRTL ? "mr-2" : "ml-2"} />
-            </button>
+            <AddDepartmentButton />
           </div>
         </div>
 
-        {/* Departments Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Departments Grid - Updated to 4 cards per row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {rosterDepartments?.map((department) => (
-            <div
-              key={department.id}
-              className={`${
-                isDark
-                  ? "bg-gray-800 border-gray-700"
-                  : "bg-white border-gray-200"
-              } rounded-lg shadow border transition-all duration-200 hover:shadow-lg`}
-            >
-              <div className="p-6">
-                <div className="flex items-center mb-4">
-                  <div
-                    className={`p-3 rounded-lg ${
-                      isDark ? "bg-blue-900/30" : "bg-blue-100"
-                    }`}
-                  >
-                    <Building2
-                      size={24}
-                      className={isDark ? "text-blue-400" : "text-blue-600"}
-                    />
-                  </div>
-                  <div className={isRTL ? "mr-4" : "ml-4"}>
-                    <h3
-                      className={`text-lg font-semibold ${
-                        isDark ? "text-white" : "text-gray-900"
+            <div key={department.id} className="flex flex-col">
+              <div
+                onClick={() => handleDepartmentClick(department)}
+                className={`${
+                  isDark
+                    ? "bg-gray-800 border-gray-700"
+                    : "bg-white border-gray-200"
+                } ${
+                  activeDepartment && activeDepartment.id === department.id
+                    ? isDark
+                      ? "ring-2 ring-blue-500 border-blue-500"
+                      : "ring-2 ring-blue-500 border-blue-500"
+                    : ""
+                } rounded-lg shadow border transition-all duration-200 hover:shadow-lg cursor-pointer hover:scale-105`}
+              >
+                <div className="p-4">
+                  <div className="flex items-center mb-3">
+                    <div
+                      className={`p-2 rounded-lg ${
+                        isDark ? "bg-blue-900/30" : "bg-blue-100"
                       }`}
                     >
-                      {currentLang === "ar"
-                        ? department.nameArabic || department.nameEnglish
-                        : department.nameEnglish || department.nameArabic}
-                    </h3>
+                      <Building2
+                        size={20}
+                        className={isDark ? "text-blue-400" : "text-blue-600"}
+                      />
+                    </div>
+                    <div className={isRTL ? "mr-3" : "ml-3"}>
+                      <h3
+                        className={`text-base font-semibold ${
+                          isDark ? "text-white" : "text-gray-900"
+                        }`}
+                      >
+                        {currentLang === "ar"
+                          ? department.nameArabic || department.nameEnglish
+                          : department.nameEnglish || department.nameArabic}
+                      </h3>
+                    </div>
                   </div>
-                </div>
 
-                {department.notes && (
-                  <div className="mb-4">
+                  {department.notes && (
+                    <div className="mb-3">
+                      <p
+                        className={`text-xs ${
+                          isDark ? "text-gray-300" : "text-gray-600"
+                        } line-clamp-2`}
+                      >
+                        {department.notes}
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="mb-3">
                     <p
-                      className={`text-sm ${
-                        isDark ? "text-gray-300" : "text-gray-600"
+                      className={`text-xs ${
+                        isDark ? "text-gray-400" : "text-gray-500"
                       }`}
                     >
-                      {department.notes}
+                      {t("roster.departmentss.createdAt")}:{" "}
+                      {new Date(department.createdAt).toLocaleDateString(
+                        currentLang === "ar" ? "ar-EG" : "en-US"
+                      )}
                     </p>
                   </div>
-                )}
-
-                <div className="mb-4">
-                  <p
-                    className={`text-xs ${
-                      isDark ? "text-gray-400" : "text-gray-500"
-                    }`}
-                  >
-                    {t("roster.departmentss.createdAt")}:{" "}
-                    {new Date(department.createdAt).toLocaleDateString(
-                      currentLang === "ar" ? "ar-EG" : "en-US"
-                    )}
-                  </p>
                 </div>
-
-                {/* Action Buttons */}
-                <div className="space-y-2">
-                  <button
-                    onClick={() => handleViewShifts(department)}
-                    disabled={loadingShifts}
-                    className="w-full inline-flex items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {loadingShifts ? (
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    ) : (
-                      <>
-                        <Eye size={16} className={isRTL ? "ml-2" : "mr-2"} />
-                        {t("roster.departmentss.viewShifts") || "View Shifts"}
-                      </>
-                    )}
-                  </button>
-
-                  <button
-                    onClick={() => openShiftModal(department)}
-                    className="w-full inline-flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
-                  >
-                    <Clock size={16} className={isRTL ? "ml-2" : "mr-2"} />
-                    {t("roster.departmentss.addShiftHours")}
-                  </button>
-                </div>
+              </div>
+              <div className="p-4">
+                <button
+                  onClick={() => openShiftModal(department)}
+                  className="w-full inline-flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+                >
+                  <Clock size={16} className={isRTL ? "ml-2" : "mr-2"} />
+                  {t("roster.departmentss.addShiftHours")}
+                </button>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Shifts Display Section */}
-        {selectedDepartmentShifts &&
-          !isShiftModalOpen &&
-          selectedDepartmentShifts.length > 0 && (
-            <div
-              className={`mt-8 ${
-                isDark
-                  ? "bg-gray-800 border-gray-700"
-                  : "bg-white border-gray-200"
-              } rounded-lg shadow border`}
-            >
-              <div className="p-6">
-                <h2
-                  className={`text-xl font-semibold mb-4 ${
-                    isDark ? "text-white" : "text-gray-900"
-                  }`}
+        {/* Shifts Display Section - Updated to show only when department is active */}
+        {activeDepartment && (
+          <div
+            className={`mt-8 ${
+              isDark
+                ? "bg-gray-800 border-gray-700"
+                : "bg-white border-gray-200"
+            } rounded-lg shadow border`}
+          >
+            <div className="p-6">
+              <h2
+                className={`text-xl font-semibold mb-4 ${
+                  isDark ? "text-white" : "text-gray-900"
+                }`}
+              >
+                {t("roster.departmentss.shifts") || "Department Shifts"}
+              </h2>
+              <h3 className="mb-6">
+                <span
+                  className={`${isDark ? "text-gray-400" : "text-gray-500"}`}
                 >
-                  {t("roster.departmentss.shifts") || "Department Shifts"}
-                </h2>
-                <h3 className="mb-6">
+                  {t("roster.departmentss.department") || "Department"}{" "}
+                </span>
+                <span
+                  className={`${isDark ? "text-gray-300" : "text-gray-700"}`}
+                >
+                  {currentLang === "ar"
+                    ? activeDepartment.nameArabic ||
+                      activeDepartment.nameEnglish
+                    : activeDepartment.nameEnglish ||
+                      activeDepartment.nameArabic}
+                </span>
+              </h3>
+
+              {/* Loading State */}
+              {loadingShifts && (
+                <div className="flex items-center justify-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                   <span
-                    className={`${isDark ? "text-gray-400" : "text-gray-500"}`}
+                    className={`ml-3 ${
+                      isDark ? "text-gray-300" : "text-gray-700"
+                    }`}
                   >
-                    {t("roster.departmentss.department") || "Department"}{" "}
+                    {t("roster.departmentss.loadingShifts") ||
+                      "Loading shifts..."}
                   </span>
-                  <span
-                    className={`${isDark ? "text-gray-300" : "text-gray-700"}`}
+                </div>
+              )}
+
+              {/* No Shifts State */}
+              {!loadingShifts &&
+                (!selectedDepartmentShifts ||
+                  selectedDepartmentShifts.length === 0) && (
+                  <div
+                    className={`text-center py-6 ${
+                      isDark ? "text-gray-400" : "text-gray-500"
+                    }`}
                   >
-                    {selectedDepartmentShifts[0].departmentName}
-                  </span>
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {selectedDepartmentShifts.map((shift, index) => (
-                    <div
-                      key={shift.id || index}
-                      className={`p-6 rounded-lg border ${
-                        isDark
-                          ? "bg-gray-700 border-gray-600"
-                          : "bg-gray-50 border-gray-200"
+                    <Clock
+                      size={32}
+                      className={`mx-auto mb-2 ${
+                        isDark ? "text-gray-500" : "text-gray-400"
                       }`}
-                    >
-                      <div className="flex justify-between items-start mb-4">
-                        <div className="flex-1">
-                          <h3
-                            className={`font-semibold text-lg ${
-                              isDark ? "text-white" : "text-gray-900"
-                            }`}
-                          >
-                            {shift.shiftTypeName}
-                          </h3>
-                          <p
-                            className={`text-sm ${
-                              isDark ? "text-blue-400" : "text-blue-600"
-                            }`}
-                          >
-                            {shift.shiftPeriod}
-                          </p>
-                        </div>
-                        <span
-                          className={`text-sm px-3 py-1 rounded-full font-medium ${
-                            isDark
-                              ? "bg-green-900/30 text-green-400"
-                              : "bg-green-100 text-green-700"
-                          }`}
-                        >
-                          {shift.shiftHours}h
-                        </span>
-                      </div>
+                    />
+                    <p className="text-sm">
+                      {t("roster.departmentss.noShifts") ||
+                        "No shifts found for this department"}
+                    </p>
+                  </div>
+                )}
 
-                      <div className="space-y-3 mb-4">
-                        <div className="flex justify-between text-sm">
-                          <span
-                            className={`${
-                              isDark ? "text-gray-400" : "text-gray-500"
-                            }`}
-                          >
-                            {t("roster.departmentss.status") || "Status"}:
-                          </span>
-                          <span
-                            className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
-                              shift.isActive
-                                ? isDark
-                                  ? "bg-green-900/30 text-green-400"
-                                  : "bg-green-100 text-green-700"
-                                : isDark
-                                ? "bg-red-900/30 text-red-400"
-                                : "bg-red-100 text-red-700"
-                            }`}
-                          >
-                            {shift.isActive
-                              ? t("roster.departmentss.active") || "Active"
-                              : t("roster.departmentss.inactive") || "Inactive"}
-                          </span>
-                        </div>
-
-                        <div className="flex justify-between text-sm">
-                          <span
-                            className={`${
-                              isDark ? "text-gray-400" : "text-gray-500"
-                            }`}
-                          >
-                            {t("roster.departmentss.configured") ||
-                              "Configured"}
-                            :
-                          </span>
-                          <span
-                            className={`${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            }`}
-                          >
-                            {shift.hasCompleteConfiguration
-                              ? t("roster.departmentss.yes") || "Yes"
-                              : t("roster.departmentss.no") || "No"}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Contracting Types Section */}
-                      {shiftContractingTypes[shift.id] && (
-                        <div
-                          className={`mb-4 rounded-lg border shadow-sm ${
-                            isDark
-                              ? "bg-gray-800 border-gray-700"
-                              : "bg-white border-gray-200"
-                          }`}
-                        >
-                          {/* Card Header */}
-                          <div
-                            className={`px-4 py-3 border-b ${
-                              isDark
-                                ? "border-gray-700 bg-gray-750"
-                                : "border-gray-200 bg-gray-50"
-                            }`}
-                          >
-                            <h4
-                              className={`text-sm font-semibold ${
+              {/* Shifts Grid */}
+              {!loadingShifts &&
+                selectedDepartmentShifts &&
+                selectedDepartmentShifts.length > 0 && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {selectedDepartmentShifts.map((shift, index) => (
+                      <div
+                        key={shift.id || index}
+                        className={`p-6 rounded-lg border ${
+                          isDark
+                            ? "bg-gray-700 border-gray-600"
+                            : "bg-gray-50 border-gray-200"
+                        }`}
+                      >
+                        <div className="flex justify-between items-start mb-4">
+                          <div className="flex-1">
+                            <h3
+                              className={`font-semibold text-lg ${
                                 isDark ? "text-white" : "text-gray-900"
                               }`}
                             >
-                              {t("roster.contractingTypes.title") ||
-                                "Contracting Types"}
-                            </h4>
+                              {shift.shiftTypeName}
+                            </h3>
+                            <p
+                              className={`text-sm ${
+                                isDark ? "text-blue-400" : "text-blue-600"
+                              }`}
+                            >
+                              {shift.shiftPeriod}
+                            </p>
                           </div>
-
-                          {/* Card Content */}
-                          <div className="p-4">
-                            <div className="space-y-3">
-                              {shiftContractingTypes[shift.id].map(
-                                (contractingType, index) => (
-                                  <div
-                                    key={contractingType.id}
-                                    className={`p-3 rounded-md border transition-colors ${
-                                      isDark
-                                        ? "bg-gray-700 border-gray-600 hover:bg-gray-650"
-                                        : "bg-gray-50 border-gray-200 hover:bg-gray-100"
-                                    }`}
-                                  >
-                                    <div className="flex items-center justify-between">
-                                      {/* Contracting Type Info */}
-                                      <div className="flex-1 min-w-0">
-                                        <div className="flex items-center justify-between mb-1">
-                                          <h5
-                                            className={`text-sm font-medium truncate ${
-                                              isDark
-                                                ? "text-white"
-                                                : "text-gray-900"
-                                            }`}
-                                          >
-                                            {
-                                              contractingType.contractingTypeName
-                                            }
-                                          </h5>
-                                        </div>
-                                        <p
-                                          className={`text-xs ${
-                                            isDark
-                                              ? "text-gray-400"
-                                              : "text-gray-600"
-                                          }`}
-                                        >
-                                          <span>
-                                            {
-                                              contractingType.defaultRequiredDoctors
-                                            }
-                                            -{contractingType.defaultMaxDoctors}{" "}
-                                            docs
-                                          </span>
-                                        </p>
-                                      </div>
-
-                                      {/* Action Buttons */}
-                                      <div className="flex items-center space-x-2 ml-3">
-                                        <button
-                                          onClick={() =>
-                                            handleUpdateContractingType(
-                                              contractingType
-                                            )
-                                          }
-                                          className={`p-2 rounded-md transition-all duration-200 ${
-                                            isDark
-                                              ? "text-blue-400 hover:bg-blue-500/20 hover:text-blue-300"
-                                              : "text-blue-600 hover:bg-blue-50 hover:text-blue-700"
-                                          }`}
-                                          title="Update contracting type"
-                                        >
-                                          <svg
-                                            className="w-4 h-4"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                          >
-                                            <path
-                                              strokeLinecap="round"
-                                              strokeLinejoin="round"
-                                              strokeWidth={2}
-                                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                                            />
-                                          </svg>
-                                        </button>
-                                        <button
-                                          onClick={() =>
-                                            handleDeleteContractingType(
-                                              contractingType.id,
-                                              index
-                                            )
-                                          }
-                                          disabled={
-                                            loading.deleteShiftContractingType &&
-                                            deleteContractingIdx == index
-                                          }
-                                          className={`p-2 rounded-md transition-all duration-200 disabled:opacity-50 ${
-                                            isDark
-                                              ? "text-red-400 hover:bg-red-500/20 hover:text-red-300"
-                                              : "text-red-600 hover:bg-red-50 hover:text-red-700"
-                                          }`}
-                                          title="Delete contracting type"
-                                        >
-                                          <svg
-                                            className="w-4 h-4"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                          >
-                                            <path
-                                              strokeLinecap="round"
-                                              strokeLinejoin="round"
-                                              strokeWidth={2}
-                                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                                            />
-                                          </svg>
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                )
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Action Buttons */}
-                      <div className="space-y-2">
-                        <button
-                          onClick={() => handleViewContractingTypes(shift)}
-                          disabled={loadingContractingTypes[shift.id]}
-                          className="w-full inline-flex items-center justify-center px-3 py-2 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700 transition-colors disabled:opacity-50"
-                        >
-                          {loadingContractingTypes[shift.id] ? (
-                            <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
-                          ) : (
-                            <>
-                              <Eye
-                                size={14}
-                                className={isRTL ? "ml-1" : "mr-1"}
-                              />
-                              {t(
-                                "roster.contractingTypes.viewContractingTypes"
-                              ) || "View Contracting Types"}
-                            </>
-                          )}
-                        </button>
-
-                        <button
-                          onClick={() => openContractingModal(shift)}
-                          className="w-full inline-flex items-center justify-center px-3 py-2 bg-orange-600 text-white text-sm rounded hover:bg-orange-700 transition-colors"
-                        >
-                          <Users
-                            size={14}
-                            className={isRTL ? "ml-1" : "mr-1"}
-                          />
-                          {t("roster.contractingTypes.addContractingTypes") ||
-                            "Add Contracting Types"}
-                        </button>
-
-                        <div className="flex justify-between items-center pt-2 border-t border-gray-300 dark:border-gray-600">
-                          <p
-                            className={`text-xs ${
-                              isDark ? "text-gray-500" : "text-gray-400"
+                          <span
+                            className={`text-sm px-3 py-1 rounded-full font-medium ${
+                              isDark
+                                ? "bg-green-900/30 text-green-400"
+                                : "bg-green-100 text-green-700"
                             }`}
                           >
-                            {t("roster.departmentss.createdBy") || "Created by"}
-                            : {shift.createdByName}
-                          </p>
+                            {shift.shiftHours}h
+                          </span>
+                        </div>
+
+                        <div className="space-y-3 mb-4">
+                          <div className="flex justify-between text-sm">
+                            <span
+                              className={`${
+                                isDark ? "text-gray-400" : "text-gray-500"
+                              }`}
+                            >
+                              {t("roster.departmentss.status") || "Status"}:
+                            </span>
+                            <span
+                              className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
+                                shift.isActive
+                                  ? isDark
+                                    ? "bg-green-900/30 text-green-400"
+                                    : "bg-green-100 text-green-700"
+                                  : isDark
+                                  ? "bg-red-900/30 text-red-400"
+                                  : "bg-red-100 text-red-700"
+                              }`}
+                            >
+                              {shift.isActive
+                                ? t("roster.departmentss.active") || "Active"
+                                : t("roster.departmentss.inactive") ||
+                                  "Inactive"}
+                            </span>
+                          </div>
+
+                          <div className="flex justify-between text-sm">
+                            <span
+                              className={`${
+                                isDark ? "text-gray-400" : "text-gray-500"
+                              }`}
+                            >
+                              {t("roster.departmentss.configured") ||
+                                "Configured"}
+                              :
+                            </span>
+                            <span
+                              className={`${
+                                isDark ? "text-gray-300" : "text-gray-700"
+                              }`}
+                            >
+                              {shift.hasCompleteConfiguration
+                                ? t("roster.departmentss.yes") || "Yes"
+                                : t("roster.departmentss.no") || "No"}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Contracting Types Section - Now Collapsible */}
+                        {shiftContractingTypes[shift.id] &&
+                          visibleContractingTypes[shift.id] && (
+                            <div
+                              className={`mb-4 rounded-lg border shadow-sm transition-all duration-300 ${
+                                isDark
+                                  ? "bg-gray-800 border-gray-700"
+                                  : "bg-white border-gray-200"
+                              }`}
+                            >
+                              {/* Card Header */}
+                              <div
+                                className={`px-4 py-3 border-b ${
+                                  isDark
+                                    ? "border-gray-700 bg-gray-750"
+                                    : "border-gray-200 bg-gray-50"
+                                }`}
+                              >
+                                <div className="flex items-center justify-between">
+                                  <h4
+                                    className={`text-sm font-semibold ${
+                                      isDark ? "text-white" : "text-gray-900"
+                                    }`}
+                                  >
+                                    {t("roster.contractingTypes.title") ||
+                                      "Contracting Types"}
+                                  </h4>
+                                  <ChevronUp
+                                    size={16}
+                                    className={`${
+                                      isDark ? "text-gray-400" : "text-gray-500"
+                                    }`}
+                                  />
+                                </div>
+                              </div>
+
+                              {/* Card Content */}
+                              <div className="p-4">
+                                <div className="space-y-3">
+                                  {shiftContractingTypes[shift.id].map(
+                                    (contractingType, contractingIndex) => (
+                                      <div
+                                        key={contractingType.id}
+                                        className={`p-3 rounded-md border transition-colors ${
+                                          isDark
+                                            ? "bg-gray-700 border-gray-600 hover:bg-gray-650"
+                                            : "bg-gray-50 border-gray-200 hover:bg-gray-100"
+                                        }`}
+                                      >
+                                        <div className="flex items-center justify-between">
+                                          {/* Contracting Type Info */}
+                                          <div className="flex-1 min-w-0">
+                                            <div className="flex items-center justify-between mb-1">
+                                              <h5
+                                                className={`text-sm font-medium truncate ${
+                                                  isDark
+                                                    ? "text-white"
+                                                    : "text-gray-900"
+                                                }`}
+                                              >
+                                                {
+                                                  contractingType.contractingTypeName
+                                                }
+                                              </h5>
+                                            </div>
+                                            <p
+                                              className={`text-xs ${
+                                                isDark
+                                                  ? "text-gray-400"
+                                                  : "text-gray-600"
+                                              }`}
+                                            >
+                                              <span>
+                                                {
+                                                  contractingType.defaultRequiredDoctors
+                                                }
+                                                -
+                                                {
+                                                  contractingType.defaultMaxDoctors
+                                                }{" "}
+                                                docs
+                                              </span>
+                                            </p>
+                                          </div>
+
+                                          {/* Action Buttons */}
+                                          <div className="flex items-center space-x-2 ml-3">
+                                            <button
+                                              onClick={() =>
+                                                handleUpdateContractingType(
+                                                  contractingType
+                                                )
+                                              }
+                                              className={`p-2 rounded-md transition-all duration-200 ${
+                                                isDark
+                                                  ? "text-blue-400 hover:bg-blue-500/20 hover:text-blue-300"
+                                                  : "text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+                                              }`}
+                                              title="Update contracting type"
+                                            >
+                                              <svg
+                                                className="w-4 h-4"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                              >
+                                                <path
+                                                  strokeLinecap="round"
+                                                  strokeLinejoin="round"
+                                                  strokeWidth={2}
+                                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                                />
+                                              </svg>
+                                            </button>
+                                            <button
+                                              onClick={() =>
+                                                handleDeleteContractingType(
+                                                  contractingType.id,
+                                                  contractingIndex
+                                                )
+                                              }
+                                              disabled={
+                                                loading.deleteShiftContractingType &&
+                                                deleteContractingIdx ==
+                                                  contractingIndex
+                                              }
+                                              className={`p-2 rounded-md transition-all duration-200 disabled:opacity-50 ${
+                                                isDark
+                                                  ? "text-red-400 hover:bg-red-500/20 hover:text-red-300"
+                                                  : "text-red-600 hover:bg-red-50 hover:text-red-700"
+                                              }`}
+                                              title="Delete contracting type"
+                                            >
+                                              <svg
+                                                className="w-4 h-4"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                              >
+                                                <path
+                                                  strokeLinecap="round"
+                                                  strokeLinejoin="round"
+                                                  strokeWidth={2}
+                                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                                />
+                                              </svg>
+                                            </button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    )
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                        {/* Action Buttons */}
+                        <div className="space-y-2">
                           <button
-                            onClick={() => handleDeleteShift(shift, index)}
-                            className="inline-flex items-center px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors disabled:opacity-50"
-                            disabled={loading.delete && deleteIdx == index}
+                            onClick={() => handleViewContractingTypes(shift)}
+                            disabled={loadingContractingTypes[shift.id]}
+                            className={`w-full inline-flex items-center justify-center px-3 py-2 text-white text-sm rounded transition-colors disabled:opacity-50 ${
+                              visibleContractingTypes[shift.id]
+                                ? "bg-gray-600 hover:bg-gray-700"
+                                : "bg-indigo-600 hover:bg-indigo-700"
+                            }`}
                           >
-                            {t("roster.departmentss.delete") || "Delete"}
+                            {loadingContractingTypes[shift.id] ? (
+                              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
+                            ) : (
+                              <>
+                                {visibleContractingTypes[shift.id] ? (
+                                  <>
+                                    <EyeOff
+                                      size={14}
+                                      className={isRTL ? "ml-1" : "mr-1"}
+                                    />
+                                    {t(
+                                      "roster.contractingTypes.hideContractingTypes"
+                                    ) || "Hide Contracting Types"}
+                                  </>
+                                ) : (
+                                  <>
+                                    <Eye
+                                      size={14}
+                                      className={isRTL ? "ml-1" : "mr-1"}
+                                    />
+                                    {t(
+                                      "roster.contractingTypes.viewContractingTypes"
+                                    ) || "View Contracting Types"}
+                                  </>
+                                )}
+                              </>
+                            )}
                           </button>
+
+                          <button
+                            onClick={() => openContractingModal(shift)}
+                            className="w-full inline-flex items-center justify-center px-3 py-2 bg-orange-600 text-white text-sm rounded hover:bg-orange-700 transition-colors"
+                          >
+                            <Users
+                              size={14}
+                              className={isRTL ? "ml-1" : "mr-1"}
+                            />
+                            {t("roster.contractingTypes.addContractingTypes") ||
+                              "Add Contracting Types"}
+                          </button>
+
+                          <div className="flex justify-between items-center pt-2 border-t border-gray-300 dark:border-gray-600">
+                            <p
+                              className={`text-xs ${
+                                isDark ? "text-gray-500" : "text-gray-400"
+                              }`}
+                            >
+                              {t("roster.departmentss.createdBy") ||
+                                "Created by"}
+                              : {shift.createdByName}
+                            </p>
+                            <button
+                              onClick={() => handleDeleteShift(shift, index)}
+                              className="inline-flex items-center px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors disabled:opacity-50"
+                              disabled={loading.delete && deleteIdx == index}
+                            >
+                              {t("roster.departmentss.delete") || "Delete"}
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+                    ))}
+                  </div>
+                )}
             </div>
-          )}
+          </div>
+        )}
 
         {/* Empty State */}
         {!rosterDepartments || rosterDepartments.length === 0 ? (
@@ -699,6 +804,43 @@ function RosterDepartments() {
           onClose={closeEditContractingModal}
         />
       )}
+
+      {/* Footer actions */}
+      <div className="max-w-7xl mx-auto mt-10">
+        <div
+          className={`flex flex-col sm:flex-row ${
+            isRTL
+              ? "space-y-3 sm:space-y-0 sm:space-x-reverse sm:space-x-3"
+              : "space-y-3 sm:space-y-0 sm:space-x-3"
+          }`}
+        >
+          {/* Roster Data */}
+          <button
+            onClick={goToRosterData}
+            className={`flex-1 inline-flex items-center justify-center px-5 py-3 rounded-lg font-medium transition-colors
+              ${
+                isDark
+                  ? "bg-gray-700 text-gray-100 hover:bg-gray-600"
+                  : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+              }`}
+          >
+            <Eye size={18} className={isRTL ? "ml-2" : "mr-2"} />
+            {t("roster.actions.view") || "Roster Data"}
+          </button>
+
+          {/* Next Step */}
+          <button
+            onClick={navigateToNextPhase}
+            className="flex-1 inline-flex items-center justify-center px-5 py-3 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+          >
+            {t("roster.departmentss.nextPhase") || "Next Step"}
+            <ArrowRight
+              size={18}
+              className={isRTL ? "mr-2 rotate-180" : "ml-2"}
+            />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

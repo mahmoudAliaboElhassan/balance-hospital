@@ -18,6 +18,7 @@ import {
   Eye,
   Edit,
   Trash2,
+  Plus,
 } from "lucide-react";
 
 const SpecificCategory = () => {
@@ -46,7 +47,16 @@ const SpecificCategory = () => {
     if (id) {
       // Clear previous data before fetching
       dispatch(clearSingleCategory());
-      dispatch(getCategoryById({ categoryId: id }));
+      dispatch(getCategoryById({ categoryId: id }))
+        .unwrap()
+        .then((response) => {
+          localStorage.setItem("categoryId", response.data.id);
+          localStorage.setItem(
+            "categoryEnglishName",
+            response.data.nameEnglish
+          );
+          localStorage.setItem("categoryArabicName", response.data.nameArabic);
+        });
       // Fetch departments for this specific category
       dispatch(getDepartments({ categoryId: id }));
     }
@@ -70,6 +80,7 @@ const SpecificCategory = () => {
   }, [singleCategoryError, navigate]);
 
   // Get category name based on current language
+
   const getCategoryName = () => {
     if (!selectedCategory) return "";
     return currentLang === "en"
@@ -455,11 +466,17 @@ const SpecificCategory = () => {
 
             {/* Create Department Button */}
             <div
-              className={`mt-6 flex ${isRTL ? "justify-start" : "justify-end"}`}
+              className={`
+    mt-6 flex flex-col gap-3
+    ${isRTL ? "items-start" : "items-end"}
+    md:flex-row md:items-center
+    ${isRTL ? "md:justify-start" : "md:justify-end"}
+  `}
             >
+              {/* Create Specific Department */}
               <button
                 onClick={handleCreateDepartment}
-                className="inline-flex items-center bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                className="w-full md:w-auto inline-flex items-center justify-center bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
                 <svg
                   className={`w-5 h-5 ${isRTL ? "mr-2" : "ml-2"}`}
@@ -476,6 +493,20 @@ const SpecificCategory = () => {
                 </svg>
                 {t("create-specific-department")}
               </button>
+
+              {/* Add New Roster (Link button) */}
+              <Link
+                to="/admin-panel/rosters/create"
+                className="w-full md:w-auto"
+              >
+                <button className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-colors justify-center">
+                  <Plus size={20} />
+                  <span className="hidden sm:inline">
+                    {t("roster.actions.addNew")}
+                  </span>
+                  <span className="sm:hidden">{t("roster.actions.add")}</span>
+                </button>
+              </Link>
             </div>
           </div>
         </div>

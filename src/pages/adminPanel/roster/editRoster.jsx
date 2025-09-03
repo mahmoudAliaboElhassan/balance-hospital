@@ -136,11 +136,6 @@ const UpdateRoster = () => {
   const handleSubmit = async (values, { setSubmitting }) => {
     console.log("values", values);
     let formattedDeadline = values.submissionDeadline;
-    if (formattedDeadline) {
-      // Parse the date and format it as YYYY-MM-DD
-      const date = new Date(formattedDeadline);
-      formattedDeadline = date.toISOString().split("T")[0];
-    }
 
     const startDate = `${values.year}-${values.month
       .toString()

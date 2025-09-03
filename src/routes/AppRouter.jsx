@@ -1,6 +1,10 @@
 import React, { Suspense, lazy } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Loader from "../components/Loader";
+
+const AddRosterDepartment = lazy(() =>
+  import("../pages/adminPanel/roster/addRosterDepartment")
+);
 const EditWorkingHour = lazy(() =>
   import("../pages/adminPanel/roster/editWorkingHours")
 );
@@ -296,6 +300,10 @@ const router = createBrowserRouter([
           {
             path: "rosters/departments",
             element: withSuspense(RosterDepartments),
+          },
+          {
+            path: "rosters/departments/create",
+            element: withSuspense(AddRosterDepartment),
           },
           {
             path: "rosters/working-hours/generate",

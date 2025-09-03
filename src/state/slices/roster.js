@@ -53,6 +53,7 @@ import {
   approveDoctorRequest,
   rejectDoctorRequest,
   getDoctorRequests,
+  addRosterDepartment,
 } from "../act/actRosterManagement";
 import i18next from "i18next";
 
@@ -133,6 +134,7 @@ const initialState = {
     publish: false,
     close: false,
     assign: false,
+    addRosterDepartment: false,
 
     assignDoctor: false,
     unassignDoctor: false,
@@ -815,6 +817,7 @@ const rosterManagementSlice = createSlice({
         state.loading.fetch = false;
         state.selectedRoster = action.payload?.data || null;
         localStorage.setItem("rosterId", action.payload?.data?.id);
+        localStorage.setItem("categoryId", action.payload?.data?.categoryId);
       })
       .addCase(getRosterById.rejected, (state, action) => {
         state.loading.fetch = false;
@@ -1105,6 +1108,16 @@ const rosterManagementSlice = createSlice({
       .addCase(getDoctorRequests.rejected, (state, action) => {
         state.loading.doctorRequests = false;
         state.errors.doctorRequests = action.payload;
+      });
+    builder
+      .addCase(addRosterDepartment.pending, (state) => {
+        state.loading.addRosterDepartment = true;
+      })
+      .addCase(addRosterDepartment.fulfilled, (state, action) => {
+        state.loading.addRosterDepartment = false;
+      })
+      .addCase(addRosterDepartment.rejected, (state, action) => {
+        state.loading.addRosterDepartment = false;
       });
   },
 });

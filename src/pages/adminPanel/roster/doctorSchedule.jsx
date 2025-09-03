@@ -514,7 +514,8 @@ function DoctorSchedule() {
                             isDark ? "text-gray-400" : "text-gray-600"
                           }`}
                         >
-                          {t("roster.assignedBy")}: {assignment.assignedByName}
+                          {t("roster.workingHours.assignedBy")}: :{" "}
+                          {assignment.assignedByName}
                         </span>
                       </div>
 

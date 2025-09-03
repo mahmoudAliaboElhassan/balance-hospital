@@ -658,7 +658,7 @@ function UseFormValidation() {
   });
 
   const VALIDATION_SCHEMA_CREATE_BASIC_ROASTER = Yup.object().shape({
-    categoryId: Yup.number().required(t("roster.validation.categoryRequired")),
+    // categoryId: Yup.number().required(t("roster.validation.categoryRequired")),
     title: Yup.string()
       .required(t("roster.validation.titleRequired"))
       .min(3, t("roster.validation.titleMinLength"))
@@ -811,6 +811,12 @@ function UseFormValidation() {
       .required(t("roster.workingHours.validation.modificationReasonRequired"))
       .max(500, t("roster.workingHours.validation.modificationReasonMax")),
   });
+
+  const VALIDATION_SCHEMA_ADD_DEPARTMENT_TO_ROSTER = Yup.object().shape({
+    departmentId: Yup.string().required(t("validation.required")),
+    notes: Yup.string().max(500, t("validation.maxLength", { max: 500 })),
+  });
+
   return {
     VALIDATION_SCHEMA_LOGIN,
     VALIDATION_SCHEMA_RESET_PASSWORD,
@@ -836,6 +842,7 @@ function UseFormValidation() {
     VALIDATION_SCHEMA_ADD_ROSTER_CONTRACTING_TYPES,
     VALIDATION_SCHEMA_EDIT_ROSTER_CONTRAFCTING_TYPES,
     VALIDATION_SCHEMA_EDIT_WORKING_HOUR,
+    VALIDATION_SCHEMA_ADD_DEPARTMENT_TO_ROSTER,
   };
 }
 

@@ -433,6 +433,21 @@ export const getRosterDepartments = createAsyncThunk(
     }
   }
 );
+export const addRosterDepartment = createAsyncThunk(
+  "rosterManagement/addRosterDepartment",
+  async ({ rosterId, department }, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.post(
+        `/api/v1/RosterManagement/${rosterId}/departments`,
+        department,
+        { headers: getAuthHeaders() }
+      );
+      return res.data;
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
 
 // ===================================================================
 // ROSTER ASSIGNMENT ACTIONS (أكشنز تعيين الروستر)

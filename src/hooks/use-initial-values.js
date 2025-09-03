@@ -158,7 +158,7 @@ function UseInitialValues() {
   );
 
   const INITIAL_VALUES_CREATE_BASIC_ROASTER = {
-    categoryId: "",
+    categoryId: localStorage.getItem("categoryId"),
     title: "",
     description: "",
     startDay: 1,
@@ -199,6 +199,11 @@ function UseInitialValues() {
     ],
     overwriteExisting: false,
   };
+  const INITIAL_VALUES_ADD_DEPARTMENT_TO_ROSTER = {
+    departmentId: "",
+    notes: "",
+    defaultShifts: [],
+  };
 
   return {
     INITIAL_VALUES_LOGIN,
@@ -220,6 +225,7 @@ function UseInitialValues() {
     INITIAL_VALUES_CREATE_BASIC_ROASTER,
     INITIAL_VALUES_ADD_SHIFTS_DEPARTMENT,
     INITIAL_VALUES_ADD_CONTRACTING_TYPES,
+    INITIAL_VALUES_ADD_DEPARTMENT_TO_ROSTER,
   };
 }
 

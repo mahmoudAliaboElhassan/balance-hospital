@@ -375,6 +375,7 @@
   "departmentForm": {
     "title": "Create New Department",
     "editTitle": "Edit Department",
+    "addToRoster": "Add New Department to Roster",
     "fields": {
       "nameArabic": "Arabic Name",
       "nameEnglish": "English Name",
@@ -1680,6 +1681,7 @@
       "reason": "Reason",
       "reasonPlaceholder": "Enter the reason for unassigning",
       "reasonRequired": "Reason is required.",
+      "departmentPlacholder": "Select Department to add to Roster",
       "confirm": "Unassign",
       "unassignSuccess": "{{name}} was unassigned from the shift successfully.",
 
@@ -1837,6 +1839,8 @@
       "contractingTypeNumber": "Contracting Type #{number}",
       "charactersCount": "characters",
       "viewContractingTypes": "View Contracting Types",
+      "hideContractingTypes": "Hide Contracting Types",
+
       "addContractingTypes": "Add Contracting Types",
       "fields": {
         "contractingTypes": "Contracting Types",
@@ -1888,7 +1892,7 @@
     },
 
     "departmentss": {
-      "title": "Roster Departments",
+      "title": "Category Departments",
       "subtitle": "Manage and configure shifts for each department in this roster.",
       "nextPhase": "Go to Phase 2",
       "createdAt": "Created At",
@@ -1901,10 +1905,13 @@
       "yes": "Yes",
       "no": "No",
       "shifts": "Shifts",
+      "noShifts": "No shifts configured",
       "notes": "Notes",
       "createdBy": "Created by",
       "delete": "Delete",
       "viewShifts": "View Shifts",
+      "hideShifts": "Hide Shifts",
+
       "noDepartments": "No departments added yet",
       "noDepartmentsMessage": "Add departments in the basic roster setup to configure shifts here."
     },
@@ -1968,6 +1975,7 @@
       "addNew": "Add New Roster",
       "cancel": "Cancel",
       "add": "Add",
+      "addDepartment": "Add Another Department",
       "create": "Create Roster",
       "updateStatus": "Update Status",
       "creating": "Creating Roster...",

@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import { toast } from "react-toastify";
 import {
   ArrowLeft,
@@ -19,6 +18,7 @@ import {
   CheckCircle,
   Save,
   X,
+  ArrowRight,
 } from "lucide-react";
 
 import { createBasicRoster } from "../../../state/act/actRosterManagement";
@@ -45,8 +45,7 @@ const CreateRoster = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = rosterType === "complete" ? 4 : 2;
   // State for cascading dropdowns
-  const [selectedCategoryId, setSelectedCategoryId] = useState("");
-  const [departmentsByCategory, setDepartmentsByCategory] = useState([]);
+
   const [subDepartmentsByDepartment, setSubDepartmentsByDepartment] = useState(
     {}
   );
@@ -64,36 +63,23 @@ const CreateRoster = () => {
   const [loadingSubDepartment, setLoadingSubDepartment] = useState(0);
 
   // Configuration data
-  const { categoryTypes, loadingGetCategoryTypes } = useSelector(
-    (state) => state.category
-  );
+
   const { departments, loadingGetDepartments } = useSelector(
     (state) => state.department
   );
   const { subDepartments, loadingGetSubDepartments } = useSelector(
     (state) => state.subDepartment
   );
+  console.log("departments", departments);
 
   // Load initial data
   useEffect(() => {
-    dispatch(getCategoryTypes());
-    if (rosterType === "complete") {
-      dispatch(getShiftHoursTypes());
-      dispatch(getContractingTypes());
-    }
-  }, [dispatch, rosterType]);
-
-  // Filter departments when category changes
-  useEffect(() => {
-    if (selectedCategoryId && departments.length > 0) {
-      const filteredDepartments = departments.filter(
-        (dept) => dept.categoryId === parseInt(selectedCategoryId)
-      );
-      setDepartmentsByCategory(filteredDepartments);
-    } else {
-      setDepartmentsByCategory([]);
-    }
-  }, [selectedCategoryId, departments]);
+    dispatch(
+      getDepartments({
+        categoryId: parseInt(localStorage.getItem("categoryId")),
+      })
+    );
+  }, [dispatch]);
 
   // Filter subdepartments when departments change
   useEffect(() => {
@@ -129,9 +115,6 @@ const CreateRoster = () => {
   }, [createError, dispatch, t]);
 
   // Show loading screen for initial categoryTypes loading
-  if (loadingGetCategoryTypes) {
-    return <LoadingGetData text={t("gettingData.categories")} />;
-  }
 
   // Get current year and next 5 years
   const currentYear = new Date().getFullYear();
@@ -178,7 +161,7 @@ const CreateRoster = () => {
       .padStart(2, "0")}`;
 
     const cleanedValues = {
-      categoryId: parseInt(values.categoryId),
+      categoryId: parseInt(localStorage.getItem("categoryId")),
       month: month,
       year: year,
       startDate: startDate,
@@ -228,37 +211,14 @@ const CreateRoster = () => {
   };
 
   // Handle category change
-  const handleCategoryChange = (categoryId, setFieldValue) => {
-    setSelectedCategoryId(categoryId);
-    setFieldValue("categoryId", categoryId);
-
-    // Clear all department selections when category changes
-    setFieldValue("departments", [
-      {
-        departmentId: "",
-        subDepartmentId: "",
-        notes: "",
-        ...(rosterType === "complete" && {
-          workingHours: [],
-        }),
-      },
-    ]);
-
-    // Fetch departments for the selected category
-    if (categoryId) {
-      dispatch(getDepartments({ categoryId }));
-      // Also fetch subdepartments for future use
-      dispatch(getSubDepartments());
-    }
-  };
 
   // Handle department change
   const handleDepartmentChange = (departmentId, index, setFieldValue) => {
     setFieldValue(`departments.${index}.departmentId`, departmentId);
-    // const departmentFiltered = departmentsByCategory.filter(
+    // const departmentFiltered = departments.filter(
     //   (dep) => dep.id != departmentId
     // );
-    // setDepartmentsByCategory(departmentFiltered);
+    // setdepartments(departmentFiltered);
     setFieldValue(`departments.${index}.subDepartmentId`, "");
     setLoadingSubDepartment(index);
     dispatch(getSubDepartments({ departmentId }));
@@ -336,9 +296,49 @@ const CreateRoster = () => {
     }
   };
 
-  const nextStep = (e) => {
+  const nextStep = async (e, validateForm, setTouched) => {
     e.preventDefault();
     e.stopPropagation();
+
+    // If we're on the first step, validate first step fields only
+    if (currentStep === 1) {
+      try {
+        // Trigger validation for the entire form
+        const errors = await validateForm();
+
+        // Define first step fields that need validation
+        const firstStepFields = [
+          "categoryId",
+          "title",
+          "description",
+          "startDay",
+          "endDay",
+          "month",
+          "year",
+          "submissionDeadline",
+        ];
+
+        // Check if any first step fields have errors
+        const hasFirstStepErrors = firstStepFields.some(
+          (field) => errors[field]
+        );
+
+        if (hasFirstStepErrors) {
+          // Mark first step fields as touched to show errors
+          const touchedFields = {};
+          firstStepFields.forEach((field) => {
+            touchedFields[field] = true;
+          });
+          setTouched(touchedFields);
+          return; // Don't proceed to next step
+        }
+      } catch (error) {
+        console.error("Validation error:", error);
+        return;
+      }
+    }
+
+    // Proceed to next step if validation passes or not on first step
     setCurrentStep((prev) => Math.min(prev + 1, totalSteps));
   };
 
@@ -486,7 +486,15 @@ const CreateRoster = () => {
               onSubmit={handleSubmit}
               enableReinitialize={true}
             >
-              {({ values, errors, touched, isSubmitting, setFieldValue }) => (
+              {({
+                values,
+                errors,
+                touched,
+                isSubmitting,
+                setFieldValue,
+                validateForm,
+                setTouched,
+              }) => (
                 <Form className="space-y-6">
                   {/* Step 1: Basic Information */}
                   {currentStep === 1 && (
@@ -516,36 +524,27 @@ const CreateRoster = () => {
                             {t("roster.form.category")} *
                           </label>
                           <Field
-                            as="select"
+                            as="input"
+                            type="text"
                             name="categoryId"
-                            value={values.categoryId}
-                            onChange={(e) =>
-                              handleCategoryChange(
-                                e.target.value,
-                                setFieldValue
-                              )
+                            value={
+                              currentLang === "ar"
+                                ? localStorage.getItem("categoryArabicName") ||
+                                  ""
+                                : localStorage.getItem("categoryEnglishName") ||
+                                  ""
                             }
+                            disabled
                             className={`w-full px-3 py-2 border rounded-lg ${
                               isDark
                                 ? "bg-gray-700 border-gray-600 text-white"
                                 : "bg-white border-gray-300 text-gray-900"
-                            } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                            } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent opacity-60 cursor-not-allowed ${
                               errors.categoryId && touched.categoryId
                                 ? "border-red-500"
                                 : ""
                             }`}
-                          >
-                            <option value="">
-                              {t("roster.form.selectCategory")}
-                            </option>
-                            {categoryTypes.map((category) => (
-                              <option key={category.id} value={category.id}>
-                                {isRTL
-                                  ? category.nameArabic
-                                  : category.nameEnglish}
-                              </option>
-                            ))}
-                          </Field>
+                          />
                           <ErrorMessage
                             name="categoryId"
                             component="div"
@@ -804,69 +803,29 @@ const CreateRoster = () => {
                         </h2>
                       </div>
 
-                      {!selectedCategoryId && (
+                      {/* Loading indicator for departments/subdepartments */}
+                      {loadingGetDepartments && (
                         <div
                           className={`p-4 rounded-lg border ${
                             isDark
-                              ? "border-yellow-600 bg-yellow-900/20"
-                              : "border-yellow-200 bg-yellow-50"
-                          }`}
+                              ? "border-blue-600 bg-blue-900/20"
+                              : "border-blue-200 bg-blue-50"
+                          } mb-4`}
                         >
-                          <div className="flex items-start">
-                            <AlertCircle
-                              className={`${
-                                isRTL ? "ml-3" : "mr-3"
-                              } text-yellow-600 mt-0.5`}
-                              size={20}
-                            />
-                            <div>
-                              <h4
-                                className={`font-medium ${
-                                  isDark ? "text-yellow-300" : "text-yellow-800"
-                                } mb-1`}
-                              >
-                                {t("roster.form.selectCategoryFirst")}
-                              </h4>
-                              <p
-                                className={`text-sm ${
-                                  isDark ? "text-yellow-200" : "text-yellow-700"
-                                }`}
-                              >
-                                {t(
-                                  "roster.form.selectCategoryFirstDescription"
-                                )}
-                              </p>
-                            </div>
+                          <div className="flex items-center">
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                            <span
+                              className={`${isRTL ? "mr-3" : "ml-3"} text-sm ${
+                                isDark ? "text-blue-300" : "text-blue-800"
+                              }`}
+                            >
+                              {loadingGetDepartments
+                                ? t("department.loading")
+                                : t("gettingData.subDepartments")}
+                            </span>
                           </div>
                         </div>
                       )}
-
-                      {/* Loading indicator for departments/subdepartments */}
-                      {(loadingGetDepartments || loadingGetSubDepartments) &&
-                        selectedCategoryId && (
-                          <div
-                            className={`p-4 rounded-lg border ${
-                              isDark
-                                ? "border-blue-600 bg-blue-900/20"
-                                : "border-blue-200 bg-blue-50"
-                            } mb-4`}
-                          >
-                            <div className="flex items-center">
-                              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
-                              <span
-                                className={`${
-                                  isRTL ? "mr-3" : "ml-3"
-                                } text-sm ${
-                                  isDark ? "text-blue-300" : "text-blue-800"
-                                }`}
-                              >
-                                {loadingGetDepartments
-                                  ? t("department.loading")
-                                  : t("gettingData.subDepartments")}
-                              </span>
-                            </div>
-                          </div>
-                        )}
 
                       <FieldArray name="departments">
                         {({ remove, push }) => (
@@ -930,10 +889,7 @@ const CreateRoster = () => {
                                             setFieldValue
                                           )
                                         }
-                                        disabled={
-                                          !selectedCategoryId ||
-                                          loadingGetDepartments
-                                        }
+                                        disabled={loadingGetDepartments}
                                         className={`w-full px-3 py-2 border rounded-lg ${
                                           isDark
                                             ? "bg-gray-700 border-gray-600 text-white disabled:bg-gray-800 disabled:text-gray-500"
@@ -950,7 +906,7 @@ const CreateRoster = () => {
                                         <option value="">
                                           {t("roster.form.selectDepartment")}
                                         </option>
-                                        {departmentsByCategory.map((dept) => (
+                                        {departments.map((dept) => (
                                           <option key={dept.id} value={dept.id}>
                                             {isRTL
                                               ? dept.nameArabic
@@ -1058,112 +1014,35 @@ const CreateRoster = () => {
                                   departmentId: "",
                                   subDepartmentId: "",
                                   notes: "",
-                                  ...(rosterType === "complete" && {
-                                    workingHours: [],
-                                  }),
                                 })
                               }
-                              disabled={!selectedCategoryId}
+                              disabled={
+                                values.departments.length === departments.length
+                              }
                               className={`inline-flex items-center px-4 py-2 border border-dashed rounded-lg text-sm font-medium transition-colors ${
-                                !selectedCategoryId
-                                  ? "border-gray-400 text-gray-400 cursor-not-allowed"
+                                values.departments.length === departments.length
+                                  ? isDark
+                                    ? "border-gray-700 text-gray-600 cursor-not-allowed bg-gray-800/50 opacity-60 hover:border-gray-700 hover:text-gray-600"
+                                    : "border-gray-300 text-gray-500 cursor-not-allowed bg-gray-50 opacity-60 hover:border-gray-300 hover:text-gray-500"
                                   : isDark
-                                  ? "border-gray-600 text-gray-400 hover:border-gray-500 hover:text-gray-300"
-                                  : "border-gray-300 text-gray-700 hover:border-gray-400 hover:text-gray-600"
+                                  ? "border-gray-600 text-gray-400 hover:border-gray-500 hover:text-gray-300 hover:bg-gray-700/30"
+                                  : "border-gray-300 text-gray-700 hover:border-gray-400 hover:text-gray-600 hover:bg-gray-50"
                               }`}
                             >
                               <Plus
                                 size={16}
-                                className={isRTL ? "ml-2" : "mr-2"}
+                                className={`${isRTL ? "ml-2" : "mr-2"} ${
+                                  values.departments.length ===
+                                  departments.length
+                                    ? "opacity-50"
+                                    : ""
+                                }`}
                               />
                               {t("roster.form.addDepartment")}
                             </button>
                           </div>
                         )}
                       </FieldArray>
-                    </div>
-                  )}
-
-                  {/* Step 3: Working Hours (Complete Mode Only) */}
-                  {currentStep === 3 && rosterType === "complete" && (
-                    <div className="space-y-6">
-                      <div className="flex items-center mb-6">
-                        <Clock
-                          className={`${isRTL ? "ml-3" : "mr-3"} text-blue-600`}
-                          size={24}
-                        />
-                        <h2
-                          className={`text-xl font-semibold ${
-                            isDark ? "text-white" : "text-gray-900"
-                          }`}
-                        >
-                          {t("roster.form.workingHours")}
-                        </h2>
-                      </div>
-
-                      <div
-                        className={`p-4 rounded-lg border ${
-                          isDark
-                            ? "border-blue-600 bg-blue-900/20"
-                            : "border-blue-200 bg-blue-50"
-                        }`}
-                      >
-                        <div className="flex items-start">
-                          <AlertCircle
-                            className={`${
-                              isRTL ? "ml-3" : "mr-3"
-                            } text-blue-600 mt-0.5`}
-                            size={20}
-                          />
-                          <div>
-                            <h4
-                              className={`font-medium ${
-                                isDark ? "text-blue-300" : "text-blue-800"
-                              } mb-1`}
-                            >
-                              {t("roster.form.workingHoursNote")}
-                            </h4>
-                            <p
-                              className={`text-sm ${
-                                isDark ? "text-blue-200" : "text-blue-700"
-                              }`}
-                            >
-                              {t("roster.form.workingHoursDescription")}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Working hours configuration would be implemented here */}
-                      {/* This is a complex nested form that would require additional components */}
-                      <div
-                        className={`p-8 text-center ${
-                          isDark ? "bg-gray-700" : "bg-gray-100"
-                        } rounded-lg`}
-                      >
-                        <Clock
-                          className={`mx-auto mb-4 ${
-                            isDark ? "text-gray-400" : "text-gray-500"
-                          }`}
-                          size={48}
-                        />
-                        <h3
-                          className={`text-lg font-medium ${
-                            isDark ? "text-white" : "text-gray-900"
-                          } mb-2`}
-                        >
-                          {t("roster.form.workingHoursConfiguration")}
-                        </h3>
-                        <p
-                          className={`${
-                            isDark ? "text-gray-400" : "text-gray-500"
-                          }`}
-                        >
-                          {t(
-                            "roster.form.workingHoursConfigurationDescription"
-                          )}
-                        </p>
-                      </div>
                     </div>
                   )}
 
@@ -1370,11 +1249,11 @@ const CreateRoster = () => {
                       {currentStep < totalSteps ? (
                         <button
                           type="button"
-                          onClick={nextStep}
+                          onClick={(e) => nextStep(e, validateForm, setTouched)}
                           className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
                         >
                           {t("common.next")}
-                          <ArrowLeft
+                          <ArrowRight
                             size={16}
                             className={`${isRTL ? "mr-2 rotate-180" : "ml-2"}`}
                           />

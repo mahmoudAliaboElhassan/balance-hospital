@@ -269,7 +269,7 @@
         "title": "الأقسام",
         "count": "قسم",
         "noDepartments": "لم يتم العثور على أقسام",
-        "createFirst": "أنشئ أول قسم لهذه الفئة"
+        "createFirst": "أنشئ أول قسم لهذه التخصص"
       },
       "chief": {
         "title": "الرئيس"
@@ -376,6 +376,8 @@
   "departmentForm": {
     "title": "إنشاء قسم جديد",
     "editTitle": "تعديل القسم",
+    "addToRoster": "إضافة قسم جديد لجدول المعاينه",
+
     "fields": {
       "nameArabic": "الاسم بالعربية",
       "nameEnglish": "الاسم بالإنجليزية",
@@ -1684,6 +1686,8 @@
       "confirmMessage": "هل أنت متأكد أنك تريد إلغاء تعيين هذا الطبيب من الشيفت؟",
       "reason": "السبب",
       "reasonPlaceholder": "أدخل سبب إلغاء التعيين",
+      "departmentPlacholder": "إختر القسم للإضافه",
+
       "reasonRequired": "السبب مطلوب.",
       "confirm": "إلغاء التعيين",
       "unassignSuccess": "تم إلغاء تعيين {{name}} من الشيفت بنجاح.",
@@ -1838,6 +1842,8 @@
       "contractingTypeNumber": "نوع التعاقد رقم #{number}",
       "charactersCount": "حرف",
       "viewContractingTypes": "عرض أنواع التعاقد",
+      "hideContractingTypes": "إخفاء أنواع العقود",
+
       "addContractingTypes": "إضافة أنواع التعاقد",
       "fields": {
         "contractingTypes": "أنواع التعاقد",
@@ -1889,30 +1895,32 @@
     },
 
     "departmentss": {
-      "title": "أقسام الروستر",
+      "title": "أقسام التخصص",
       "subtitle": "إدارة وضبط الشيفتات لكل قسم في هذا الروستر.",
       "nextPhase": "الذهاب إلى المرحلة 2",
       "createdAt": "تاريخ الإنشاء",
-      "addShiftHours": "إضافة ساعات الشيفت",
+      "addShiftHours": "إضافة مناوبات",
       "department": "القسم",
       "status": "الحالة",
       "active": "نشط",
       "inactive": "غير نشط",
-      "configured": "مُكوَّن",
+      "configured": "مُفعّل",
+      "noShifts": " لا توجد مناوبات مُضبطة",
       "yes": "نعم",
       "no": "لا",
       "shifts": "الشيفتات",
       "notes": "ملاحظات",
       "createdBy": "تم الإنشاء بواسطة",
       "delete": "حذف",
-      "viewShifts": "عرض الشيفتات",
+      "viewShifts": "عرض المناوبات",
+      "hideShifts": "إخفاء المناوبات",
       "noDepartments": "لا توجد أقسام مُضافة بعد",
       "noDepartmentsMessage": "أضف الأقسام من إعداد الروستر الأساسي لتتمكن من ضبط الشيفتات هنا."
     },
 
     "phaseOne": {
-      "title": "تهيئة شيفتات الأقسام",
-      "subtitle": "ضبط شيفتات الأقسام",
+      "title": "تهيئة مناوبات الأقسام",
+      "subtitle": "ضبط مناوبات الأقسام",
       "rosterId": "مُعرّف الروستر",
       "fields": {
         "shifts": "الشيفتات",
@@ -1963,6 +1971,8 @@
       "createComplete": "إنشاء روستر كامل",
       "view": "عرض التفاصيل",
       "edit": "تعديل الروستر",
+
+      "addDepartment": "إضافة قسم آخر",
       "editRoster": "تعديل الروستر",
       "unAssignDoctor": "إزالة تعيين الدكتور",
       "addNew": "إضافة روستر جديد",
@@ -2001,8 +2011,8 @@
     "filters": {
       "search": "بحث",
       "searchPlaceholder": "ابحث بالعنوان أو الوصف",
-      "category": "الفئة",
-      "allCategories": "كل الفئات",
+      "category": "التخصص",
+      "allCategories": "كل التخصصات",
       "status": "الحالة",
       "title": "عوامل التصفية",
       "all": "الكل",
@@ -2031,7 +2041,7 @@
 
     "table": {
       "title": "العنوان",
-      "category": "الفئة",
+      "category": "التخصص",
       "period": "الفترة",
       "status": "الحالة",
       "deadline": "الموعد النهائي للتقديم",
@@ -2050,8 +2060,8 @@
       "titlePlaceholder": "أدخل عنوان الروستر (مثال: قسم الطوارئ - يناير 2024)",
       "description": "الوصف",
       "descriptionPlaceholder": "أدخل وصفًا اختياريًا لهذا الروستر",
-      "category": "الفئة",
-      "selectCategory": "اختر الفئة",
+      "category": "التخصص",
+      "selectCategory": "اختر التخصص",
       "month": "الشهر",
       "year": "السنة",
       "selectCategoryFirst": "يرجى اختيار فئة أولًا",
@@ -2099,7 +2109,7 @@
       "completeRosterInfo": "يتضمن الروستر الكامل كل الإعدادات بما في ذلك متطلبات الشيفتات ومتطلبات التعاقد.",
       "updateRoster": "تحديث الروستر",
       "updateRosterInfo": "حدّث البيانات الأساسية وإعدادات الروستر.",
-      "categoryReadOnly": "لا يمكن تغيير الفئة بعد الإنشاء.",
+      "categoryReadOnly": "لا يمكن تغيير التخصص بعد الإنشاء.",
       "monthReadOnly": "لا يمكن تغيير الشهر بعد الإنشاء.",
       "yearReadOnly": "لا يمكن تغيير السنة بعد الإنشاء.",
       "startDate": "تاريخ البداية",
@@ -2136,7 +2146,7 @@
       "titleMinLength": "يجب ألا يقل العنوان عن 3 أحرف",
       "titleMaxLength": "يجب ألا يتجاوز العنوان 255 حرفًا",
       "descriptionMaxLength": "لا يجب أن يتجاوز الوصف 1000 حرف",
-      "categoryRequired": "اختيار الفئة مطلوب",
+      "categoryRequired": "اختيار التخصص مطلوب",
       "monthRequired": "الشهر مطلوب",
       "monthInvalid": "يجب أن يكون الشهر بين 1 و12",
       "yearRequired": "السنة مطلوبة",

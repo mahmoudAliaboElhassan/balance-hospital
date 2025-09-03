@@ -41,8 +41,6 @@ function GenerateWorkingHours() {
   const { mymode } = useSelector((state) => state.mode);
   const isDark = mymode === "dark";
 
-  console.log("workingHours", workingHours.data);
-
   // Get roster ID from localStorage and fetch data
   useEffect(() => {
     const storedRosterId = localStorage.getItem("rosterId");
@@ -322,7 +320,8 @@ function GenerateWorkingHours() {
                 )}
 
                 {/* Current Working Hours Status */}
-                {workingHours.data && (
+                {workingHours.data?.departments[0]?.shifts[0]
+                  ?.contractingTypes[0].workingHoursDetails && (
                   <div
                     className={`p-4 rounded-lg border ${
                       isDark

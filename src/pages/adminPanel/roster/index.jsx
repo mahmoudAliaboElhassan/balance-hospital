@@ -375,7 +375,7 @@ function Roster() {
                 {t("roster.title")}
               </h1>
               <div className="flex gap-2 w-full sm:w-auto">
-                <Link to="/admin-panel/rosters/create">
+                {/* <Link to="/admin-panel/rosters/create">
                   <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors flex-1 sm:flex-none justify-center">
                     <Plus size={20} />
                     <span className="hidden sm:inline">
@@ -383,7 +383,7 @@ function Roster() {
                     </span>
                     <span className="sm:hidden">{t("roster.actions.add")}</span>
                   </button>
-                </Link>
+                </Link> */}
                 <button
                   onClick={() => setShowMobileTable(!showMobileTable)}
                   className={`md:hidden px-3 py-2 rounded-lg border transition-colors ${
