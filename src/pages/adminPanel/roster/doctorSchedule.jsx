@@ -33,6 +33,8 @@ function DoctorSchedule() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const currentLange = i18next.language;
+
   const [modalOpen, setModalOpen] = useState(false);
   const [doctorData, setDoctorData] = useState({});
 
@@ -431,7 +433,10 @@ function DoctorSchedule() {
                             <button
                               onClick={() => {
                                 setDoctorData({
-                                  name: doctorSchedule.doctorName,
+                                  name:
+                                    currentLange == "en"
+                                      ? doctorSchedule.doctorNameEn
+                                      : doctorSchedule.doctorNameAr,
                                   doctorScheule: assignment.scheduleId,
                                 });
                                 setModalOpen(true);
