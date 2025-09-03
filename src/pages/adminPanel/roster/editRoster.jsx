@@ -766,7 +766,9 @@ const UpdateRoster = () => {
                     </div>
 
                     <div className="flex space-x-3">
-                      <Link
+                      <button
+                        type="button"
+                        onClick={() => navigate(-1)}
                         to="/admin-panel/rosters"
                         className={`inline-flex items-center px-4 py-2 border rounded-lg text-sm font-medium transition-colors ${
                           isDark
@@ -776,7 +778,7 @@ const UpdateRoster = () => {
                       >
                         <X size={16} className={isRTL ? "ml-2" : "mr-2"} />
                         {t("common.cancel")}
-                      </Link>
+                      </button>
 
                       {currentStep < totalSteps ? (
                         <button

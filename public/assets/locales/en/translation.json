@@ -276,7 +276,8 @@
       "statistics": {
         "title": "Statistics",
         "departmentsCount": "Departments Count",
-        "usersCount": "Users Count"
+        "usersCount": "Users Count",
+        "rostersCount": "Rosters Count"
       },
       "metadata": {
         "title": "Additional Information",
@@ -1650,6 +1651,7 @@
     "dayss": "Days",
     "shifts": "Shifts",
     "capacity": "Capacity",
+    "count": "Rosters",
     "changesInfo": " Any changes on this page require regenerating shift requirements.",
     "totalDays": "Total Days",
     "noAssignedDoctors": "No doctors assigned yet",

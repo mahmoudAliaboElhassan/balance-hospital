@@ -54,6 +54,7 @@ import {
   rejectDoctorRequest,
   getDoctorRequests,
   addRosterDepartment,
+  getRosterByCategory,
 } from "../act/actRosterManagement";
 import i18next from "i18next";
 
@@ -801,6 +802,35 @@ const rosterManagementSlice = createSlice({
         console.log("totalItems", state.pagination.totalItems);
       })
       .addCase(getRostersPaged.rejected, (state, action) => {
+        state.loading.fetch = false;
+        state.errors.general =
+          // action.payload?.message ||
+          i18next.t("roster.error.fetchFailed");
+      });
+    // Get Rosters By Category
+    builder
+      .addCase(getRosterByCategory.pending, (state) => {
+        state.loading.fetch = true;
+        state.errors.general = null;
+      })
+      .addCase(getRosterByCategory.fulfilled, (state, action) => {
+        state.loading.fetch = false;
+        state.rosterList = action.payload?.data || [];
+
+        state.pagination = {
+          totalCount: action.payload.data.totalCount,
+          page: action.payload.data.page,
+          pageSize: action.payload.data.pageSize,
+          totalPages: action.payload.data.totalPages,
+          hasNextPage: action.payload.data.hasNextPage,
+          hasPreviousPage: action.payload.data.hasPreviousPage,
+          totalItems: action.payload.data.totalCount,
+        };
+
+        console.log("roster list", state.rosterList);
+        console.log("totalItems", state.pagination.totalItems);
+      })
+      .addCase(getRosterByCategory.rejected, (state, action) => {
         state.loading.fetch = false;
         state.errors.general =
           // action.payload?.message ||

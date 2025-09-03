@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { getCategoryById } from "../../../state/act/actCategory";
@@ -19,15 +19,69 @@ import {
   Edit,
   Trash2,
   Plus,
+  FileText,
+  BarChart3,
+  Clock,
 } from "lucide-react";
+import { getRosterByCategory } from "../../../state/act/actRosterManagement";
+import ModalUpdateRosterStatus from "../../../components/ModalUpdateRosterStatus";
+import "../../../styles/general.css";
 
 const SpecificCategory = () => {
   const { catId: id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [statusModalOpen, setStatusModalOpen] = useState(false);
+  const [statusToUpdate, setStatusToUpdate] = useState({
+    id: null,
+    title: "",
+    currentStatus: "",
+  });
+  const [showMobileRosterTable, setShowMobileRosterTable] = useState(false);
+
+  const formatMonthYear = (month, year) => {
+    const monthNames = {
+      ar: [
+        "يناير",
+        "فبراير",
+        "مارس",
+        "أبريل",
+        "مايو",
+        "يونيو",
+        "يوليو",
+        "أغسطس",
+        "سبتمبر",
+        "أكتوبر",
+        "نوفمبر",
+        "ديسمبر",
+      ],
+      en: [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ],
+    };
+
+    const months = monthNames[currentLang] || monthNames.en;
+    return `${months[month - 1]} ${year}`;
+  };
+
   const { selectedCategory, loadingGetSingleCategory, singleCategoryError } =
     useSelector((state) => state.category);
+
+  const { rosterList, loading } = useSelector(
+    (state) => state.rosterManagement
+  );
 
   // Get departments from the department slice
   const { departments, loadingGetDepartments } = useSelector(
@@ -42,6 +96,50 @@ const SpecificCategory = () => {
   const isRTL = mymode === "ar";
   const currentLang = i18next.language;
   const isDark = mymode === "dark";
+
+  const getStatusInfo = (status) => {
+    const statusMap = {
+      DRAFT_BASIC: {
+        color: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300",
+        name: t("roster.status.draftBasic"),
+      },
+      DRAFT_PARTIAL: {
+        color:
+          "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
+        name: t("roster.status.draftPartial"),
+      },
+      DRAFT: {
+        color: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
+        name: t("roster.status.draft"),
+      },
+      DRAFT_READY: {
+        color:
+          "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
+        name: t("roster.status.draftReady"),
+      },
+      PUBLISHED: {
+        color:
+          "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
+        name: t("roster.status.published"),
+      },
+      CLOSED: {
+        color:
+          "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300",
+        name: t("roster.status.closed"),
+      },
+      ARCHIVED: {
+        color: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
+        name: t("roster.status.archived"),
+      },
+    };
+
+    return (
+      statusMap[status] || {
+        color: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300",
+        name: status,
+      }
+    );
+  };
 
   useEffect(() => {
     if (id) {
@@ -59,6 +157,7 @@ const SpecificCategory = () => {
         });
       // Fetch departments for this specific category
       dispatch(getDepartments({ categoryId: id }));
+      dispatch(getRosterByCategory({ categoryId: id }));
     }
 
     // Cleanup on unmount
@@ -80,7 +179,6 @@ const SpecificCategory = () => {
   }, [singleCategoryError, navigate]);
 
   // Get category name based on current language
-
   const getCategoryName = () => {
     if (!selectedCategory) return "";
     return currentLang === "en"
@@ -260,6 +358,98 @@ const SpecificCategory = () => {
       </div>
     </div>
   );
+
+  // Roster Card Component for Mobile
+  const RosterCard = ({ roster }) => {
+    const statusInfo = getStatusInfo(roster.status);
+
+    return (
+      <div
+        className={`p-4 rounded-lg border mb-3 ${
+          isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+        }`}
+      >
+        <div className="flex justify-between items-start mb-3">
+          <div className="flex-1">
+            <h3
+              className={`font-semibold text-lg mb-1 ${
+                isDark ? "text-white" : "text-gray-900"
+              }`}
+            >
+              {roster.title}
+            </h3>
+            <p
+              className={`text-sm mb-2 ${
+                isDark ? "text-gray-300" : "text-gray-600"
+              }`}
+            >
+              {formatMonthYear(roster.month, roster.year)}
+            </p>
+            <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
+              <Users size={12} />
+              <span>
+                {roster.departmentsCount} {t("roster.departments")}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <Calendar size={12} />
+              <span>
+                {roster.totalDays} {t("roster.dayss")}
+              </span>
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              setStatusToUpdate({
+                id: roster.id,
+                title: roster.title,
+                currentStatus: roster.status,
+              });
+              setStatusModalOpen(true);
+            }}
+            className={`px-2 py-1 rounded-full text-xs font-medium transition-colors hover:opacity-80 cursor-pointer ${statusInfo.color}`}
+            title={t("roster.actions.updateStatus")}
+          >
+            {statusInfo.name}
+          </button>
+        </div>
+
+        <div className="flex gap-2 justify-end">
+          <Link to={`/admin-panel/rosters/${roster.id}`}>
+            <button
+              className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors"
+              title={t("roster.actions.view")}
+            >
+              <Eye size={16} />
+            </button>
+          </Link>
+
+          <button
+            className="p-2 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900 rounded-lg transition-colors"
+            title={t("roster.actions.updateStatus")}
+            onClick={() => {
+              setStatusToUpdate({
+                id: roster.id,
+                title: roster.title,
+                currentStatus: roster.status,
+              });
+              setStatusModalOpen(true);
+            }}
+          >
+            <BarChart3 size={16} />
+          </button>
+          <Link to={`/admin-panel/rosters/${roster.id}/edit`}>
+            <button
+              className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors"
+              title={t("roster.actions.edit")}
+            >
+              <Edit size={16} />
+            </button>
+          </Link>
+        </div>
+      </div>
+    );
+  };
 
   // Loading Component
   if (loadingGetSingleCategory) {
@@ -511,166 +701,445 @@ const SpecificCategory = () => {
           </div>
         </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Info */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Description Card */}
-            <div
-              className={`${
-                isDark ? "bg-gray-800" : "bg-white"
-              } rounded-2xl shadow-xl p-6`}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Description Card */}
+          <div
+            className={`${
+              isDark ? "bg-gray-800" : "bg-white"
+            } rounded-2xl shadow-xl p-6`}
+          >
+            <h2
+              className={`text-2xl font-bold ${
+                isDark ? "text-white" : "text-gray-900"
+              } mb-4 flex items-center`}
             >
-              <h2
-                className={`text-2xl font-bold ${
-                  isDark ? "text-white" : "text-gray-900"
-                } mb-4 flex items-center`}
+              <div
+                className={`w-8 h-8 ${
+                  isDark ? "bg-blue-900/30" : "bg-blue-100"
+                }                     rounded-lg flex items-center justify-center ${
+                  isRTL ? "mr-3" : "ml-3"
+                }`}
               >
+                <FileText
+                  className={`w-4 h-4 ${
+                    isDark ? "text-purple-400" : "text-purple-600"
+                  }`}
+                />
+              </div>
+              {t("roster.title")}
+            </h2>
+            <span
+              className={`px-3 py-1 rounded-full text-sm font-medium ${
+                isDark
+                  ? "bg-blue-900/30 text-blue-400"
+                  : "bg-blue-100 text-blue-800"
+              }`}
+            >
+              {rosterList?.length || 0} {t("roster.count")}
+            </span>
+          </div>
+
+          {/* Mobile Cards View for Rosters */}
+          <div className="md:hidden">
+            {loading.fetch.fetch ? (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p className={`${isDark ? "text-gray-400" : "text-gray-600"}`}>
+                  {t("gettingData.rosters")}
+                </p>
+              </div>
+            ) : rosterList && rosterList.length > 0 ? (
+              rosterList.map((roster) => (
+                <RosterCard key={roster.id} roster={roster} />
+              ))
+            ) : (
+              <div className="text-center py-8">
                 <div
-                  className={`w-8 h-8 ${
-                    isDark ? "bg-blue-900/30" : "bg-blue-100"
-                  } rounded-lg flex items-center justify-center ${
-                    isRTL ? "mr-3" : "ml-3"
+                  className={`w-16 h-16 ${
+                    isDark ? "bg-gray-700" : "bg-gray-100"
+                  } rounded-full flex items-center justify-center mx-auto mb-4`}
+                >
+                  <FileText
+                    className={`w-8 h-8 ${
+                      isDark ? "text-gray-500" : "text-gray-400"
+                    }`}
+                  />
+                </div>
+                <p
+                  className={`text-lg font-medium ${
+                    isDark ? "text-gray-300" : "text-gray-600"
+                  } mb-2`}
+                >
+                  {t("roster.noRosters")}
+                </p>
+                <p
+                  className={`text-sm ${
+                    isDark ? "text-gray-400" : "text-gray-500"
                   }`}
                 >
-                  <svg
-                    className={`w-4 h-4 ${
-                      isDark ? "text-blue-400" : "text-blue-600"
+                  {t("roster.createFirstRoster")}
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Table View for Rosters */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr
+                  className={`border-b ${
+                    isDark
+                      ? "border-gray-700 bg-gray-750"
+                      : "border-gray-200 bg-gray-50"
+                  }`}
+                >
+                  <th
+                    className={`${
+                      isRTL ? "text-right" : "text-left"
+                    } p-4 font-semibold ${
+                      isDark ? "text-white" : "text-gray-900"
                     }`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12h6m-6 4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.29-1.009-5.664-2.226M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
-                </div>
-                {t("specificCategory.sections.description.title")}
-              </h2>
-              <p
-                className={`${
-                  isDark ? "text-gray-300" : "text-gray-600"
-                } leading-relaxed text-lg`}
+                    {t("roster.table.title")}
+                  </th>
+                  <th
+                    className={`${
+                      isRTL ? "text-right" : "text-left"
+                    } p-4 font-semibold ${
+                      isDark ? "text-white" : "text-gray-900"
+                    }`}
+                  >
+                    {t("roster.table.period")}
+                  </th>
+                  <th
+                    className={`${
+                      isRTL ? "text-right" : "text-left"
+                    } p-4 font-semibold ${
+                      isDark ? "text-white" : "text-gray-900"
+                    }`}
+                  >
+                    {t("roster.table.status")}
+                  </th>
+
+                  <th
+                    className={`${
+                      isRTL ? "text-right" : "text-left"
+                    } p-4 font-semibold ${
+                      isDark ? "text-white" : "text-gray-900"
+                    }`}
+                  >
+                    {t("roster.table.actions")}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading.fetch ? (
+                  <tr>
+                    <td colSpan="5" className="text-center p-8">
+                      <div className="flex items-center justify-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                        <span
+                          className={`${isRTL ? "mr-3" : "ml-3"} ${
+                            isDark ? "text-gray-400" : "text-gray-600"
+                          }`}
+                        >
+                          {t("gettingData.rosters")}
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                ) : rosterList && rosterList.length > 0 ? (
+                  rosterList.map((roster) => {
+                    const statusInfo = getStatusInfo(roster.status);
+                    return (
+                      <tr
+                        key={roster.id}
+                        className={`border-b transition-colors ${
+                          isDark
+                            ? "border-gray-700 hover:bg-gray-750"
+                            : "border-gray-200 hover:bg-gray-50"
+                        }`}
+                      >
+                        <td className="p-4">
+                          <div
+                            className={`font-semibold ${
+                              isDark ? "text-white" : "text-gray-900"
+                            }`}
+                          >
+                            {roster.title}
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <div
+                            className={`${
+                              isDark ? "text-gray-300" : "text-gray-700"
+                            }`}
+                          >
+                            {formatMonthYear(roster.month, roster.year)}
+                          </div>
+                          <div
+                            className={`text-sm ${
+                              isDark ? "text-gray-400" : "text-gray-500"
+                            }`}
+                          >
+                            {roster.totalDays} {t("roster.dayss")}
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <button
+                            onClick={() => {
+                              setStatusToUpdate({
+                                id: roster.id,
+                                title: roster.title,
+                                currentStatus: roster.status,
+                              });
+                              setStatusModalOpen(true);
+                            }}
+                            className={`px-3 py-1 rounded-full text-xs font-medium transition-colors hover:opacity-80 cursor-pointer ${statusInfo.color}`}
+                            title={t("roster.actions.updateStatus")}
+                          >
+                            {statusInfo.name}
+                          </button>
+                        </td>
+
+                        <td className="p-4">
+                          <div className="flex gap-1">
+                            <Link to={`/admin-panel/rosters/${roster.id}`}>
+                              <button className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors">
+                                <Eye size={16} />
+                              </button>
+                            </Link>
+                            <button
+                              className="p-2 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900 rounded-lg transition-colors"
+                              title={t("roster.actions.updateStatus")}
+                              onClick={() => {
+                                setStatusToUpdate({
+                                  id: roster.id,
+                                  title: roster.title,
+                                  currentStatus: roster.status,
+                                });
+                                setStatusModalOpen(true);
+                              }}
+                            >
+                              <BarChart3 size={16} />
+                            </button>
+                            <Link to={`/admin-panel/rosters/${roster.id}/edit`}>
+                              <button className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors">
+                                <Edit size={16} />
+                              </button>
+                            </Link>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="text-center p-12">
+                      <div
+                        className={`w-16 h-16 ${
+                          isDark ? "bg-gray-700" : "bg-gray-100"
+                        } rounded-full flex items-center justify-center mx-auto mb-4`}
+                      >
+                        <FileText
+                          size={32}
+                          className={`${
+                            isDark ? "text-gray-600" : "text-gray-400"
+                          }`}
+                        />
+                      </div>
+                      <h3
+                        className={`text-lg font-medium ${
+                          isDark ? "text-white" : "text-gray-900"
+                        } mb-2`}
+                      >
+                        {t("roster.noRosters")}
+                      </h3>
+                      <p
+                        className={`${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        } mb-6`}
+                      >
+                        {t("roster.createFirstRoster")}
+                      </p>
+                      <Link to="/admin-panel/rosters/create">
+                        <button className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                          <Plus size={16} className={isRTL ? "ml-2" : "mr-2"} />
+                          {t("roster.actions.createBasic")}
+                        </button>
+                      </Link>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Departments Section */}
+        <div
+          className={`${
+            isDark ? "bg-gray-800" : "bg-white"
+          } rounded-2xl shadow-xl p-6`}
+        >
+          <div className="flex items-center justify-between mb-6">
+            <h2
+              className={`text-2xl font-bold ${
+                isDark ? "text-white" : "text-gray-900"
+              } flex items-center`}
+            >
+              <div
+                className={`w-8 h-8 ${
+                  isDark ? "bg-green-900/30" : "bg-green-100"
+                } rounded-lg flex items-center justify-center ${
+                  isRTL ? "mr-3" : "ml-3"
+                }`}
               >
-                {selectedCategory.description ||
-                  t("specificCategory.sections.description.noDescription")}
+                <Building
+                  className={`w-4 h-4 ${
+                    isDark ? "text-green-400" : "text-green-600"
+                  }`}
+                />
+              </div>
+              {t("specificCategory.sections.departments.title")}
+            </h2>
+            <span
+              className={`px-3 py-1 rounded-full text-sm font-medium ${
+                isDark
+                  ? "bg-blue-900/30 text-blue-400"
+                  : "bg-blue-100 text-blue-800"
+              }`}
+            >
+              {departments?.length || 0}{" "}
+              {t("specificCategory.sections.departments.count")}
+            </span>
+          </div>
+
+          {loadingGetDepartments ? (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className={`${isDark ? "text-gray-400" : "text-gray-600"}`}>
+                {t("department.loading")}
               </p>
             </div>
-
-            {/* Departments Section */}
-            <div
-              className={`${
-                isDark ? "bg-gray-800" : "bg-white"
-              } rounded-2xl shadow-xl p-6`}
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h2
-                  className={`text-2xl font-bold ${
-                    isDark ? "text-white" : "text-gray-900"
-                  } flex items-center`}
-                >
-                  <div
-                    className={`w-8 h-8 ${
-                      isDark ? "bg-green-900/30" : "bg-green-100"
-                    } rounded-lg flex items-center justify-center ${
-                      isRTL ? "mr-3" : "ml-3"
-                    }`}
-                  >
-                    <Building
-                      className={`w-4 h-4 ${
-                        isDark ? "text-green-400" : "text-green-600"
-                      }`}
-                    />
-                  </div>
-                  {t("specificCategory.sections.departments.title")}
-                </h2>
-                <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    isDark
-                      ? "bg-blue-900/30 text-blue-400"
-                      : "bg-blue-100 text-blue-800"
-                  }`}
-                >
-                  {departments?.length || 0}{" "}
-                  {t("specificCategory.sections.departments.count")}
-                </span>
-              </div>
-
-              {loadingGetDepartments ? (
-                <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                  <p
-                    className={`${isDark ? "text-gray-400" : "text-gray-600"}`}
-                  >
-                    {t("department.loading")}
-                  </p>
-                </div>
-              ) : departments && departments.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {departments.map((department) => (
-                    <DepartmentCard
-                      key={department.id}
-                      department={department}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <div
-                    className={`w-16 h-16 ${
-                      isDark ? "bg-gray-700" : "bg-gray-100"
-                    } rounded-full flex items-center justify-center mx-auto mb-4`}
-                  >
-                    <Building
-                      className={`w-8 h-8 ${
-                        isDark ? "text-gray-500" : "text-gray-400"
-                      }`}
-                    />
-                  </div>
-                  <p
-                    className={`text-lg font-medium ${
-                      isDark ? "text-gray-300" : "text-gray-600"
-                    } mb-2`}
-                  >
-                    {t("specificCategory.sections.departments.noDepartments")}
-                  </p>
-                  <p
-                    className={`text-sm ${
-                      isDark ? "text-gray-400" : "text-gray-500"
-                    }`}
-                  >
-                    {t("specificCategory.sections.departments.createFirst")}
-                  </p>
-                </div>
-              )}
+          ) : departments && departments.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {departments.map((department) => (
+                <DepartmentCard key={department.id} department={department} />
+              ))}
             </div>
-
-            {/* Chief Card - if exists */}
-            {selectedCategory.chief && (
+          ) : (
+            <div className="text-center py-8">
               <div
-                className={`${
-                  isDark ? "bg-gray-800" : "bg-white"
-                } rounded-2xl shadow-xl p-6`}
+                className={`w-16 h-16 ${
+                  isDark ? "bg-gray-700" : "bg-gray-100"
+                } rounded-full flex items-center justify-center mx-auto mb-4`}
               >
-                <h2
-                  className={`text-2xl font-bold ${
-                    isDark ? "text-white" : "text-gray-900"
-                  } mb-4 flex items-center`}
+                <Building
+                  className={`w-8 h-8 ${
+                    isDark ? "text-gray-500" : "text-gray-400"
+                  }`}
+                />
+              </div>
+              <p
+                className={`text-lg font-medium ${
+                  isDark ? "text-gray-300" : "text-gray-600"
+                } mb-2`}
+              >
+                {t("specificCategory.sections.departments.noDepartments")}
+              </p>
+              <p
+                className={`text-sm ${
+                  isDark ? "text-gray-400" : "text-gray-500"
+                }`}
+              >
+                {t("specificCategory.sections.departments.createFirst")}
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Chief Card - if exists */}
+        {selectedCategory.chief && (
+          <div
+            className={`${
+              isDark ? "bg-gray-800" : "bg-white"
+            } rounded-2xl shadow-xl p-6`}
+          >
+            <h2
+              className={`text-2xl font-bold ${
+                isDark ? "text-white" : "text-gray-900"
+              } mb-4 flex items-center`}
+            >
+              <div
+                className={`w-8 h-8 ${
+                  isDark ? "bg-purple-900/30" : "bg-purple-100"
+                } rounded-lg flex items-center justify-center ${
+                  isRTL ? "mr-3" : "ml-3"
+                }`}
+              >
+                <svg
+                  className={`w-4 h-4 ${
+                    isDark ? "text-purple-400" : "text-purple-600"
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+              </div>
+              {t("specificCategory.sections.chief.title")}
+            </h2>
+            <p
+              className={`${
+                isDark ? "text-gray-300" : "text-gray-600"
+              } text-lg`}
+            >
+              {selectedCategory.chief.name}
+            </p>
+          </div>
+        )}
+
+        {/* Statistics Sidebar */}
+        <div className="space-y-6">
+          {/* Statistics Cards */}
+          <div
+            className={`${
+              isDark ? "bg-gray-800" : "bg-white"
+            } rounded-2xl shadow-xl p-6`}
+          >
+            <h2
+              className={`text-xl font-bold ${
+                isDark ? "text-white" : "text-gray-900"
+              } mb-6`}
+            >
+              {t("specificCategory.sections.statistics.title")}
+            </h2>
+
+            <div className="space-y-4">
+              <div
+                className={`flex items-center justify-between p-4 ${
+                  isDark ? "bg-blue-900/20" : "bg-blue-50"
+                } rounded-xl`}
+              >
+                <div className="flex items-center">
                   <div
-                    className={`w-8 h-8 ${
-                      isDark ? "bg-purple-900/30" : "bg-purple-100"
+                    className={`w-10 h-10 ${
+                      isDark ? "bg-blue-900/30" : "bg-blue-100"
                     } rounded-lg flex items-center justify-center ${
                       isRTL ? "mr-3" : "ml-3"
                     }`}
                   >
                     <svg
-                      className={`w-4 h-4 ${
-                        isDark ? "text-purple-400" : "text-purple-600"
+                      className={`w-5 h-5 ${
+                        isDark ? "text-blue-400" : "text-blue-600"
                       }`}
                       fill="none"
                       stroke="currentColor"
@@ -680,241 +1149,202 @@ const SpecificCategory = () => {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
                       />
                     </svg>
                   </div>
-                  {t("specificCategory.sections.chief.title")}
-                </h2>
-                <p
-                  className={`${
-                    isDark ? "text-gray-300" : "text-gray-600"
-                  } text-lg`}
+                  <span
+                    className={`${
+                      isDark ? "text-gray-300" : "text-gray-700"
+                    } font-medium`}
+                  >
+                    {t("specificCategory.sections.statistics.departmentsCount")}
+                  </span>
+                </div>
+                <span
+                  className={`text-2xl font-bold ${
+                    isDark ? "text-blue-400" : "text-blue-600"
+                  }`}
                 >
-                  {selectedCategory.chief.name}
-                </p>
+                  {selectedCategory.departmentsCount}
+                </span>
               </div>
-            )}
-          </div>
 
-          {/* Statistics Sidebar */}
-          <div className="space-y-6">
-            {/* Statistics Cards */}
-            <div
-              className={`${
-                isDark ? "bg-gray-800" : "bg-white"
-              } rounded-2xl shadow-xl p-6`}
-            >
-              <h2
-                className={`text-xl font-bold ${
-                  isDark ? "text-white" : "text-gray-900"
-                } mb-6`}
+              <div
+                className={`flex items-center justify-between p-4 ${
+                  isDark ? "bg-green-900/20" : "bg-green-50"
+                } rounded-xl`}
               >
-                {t("specificCategory.sections.statistics.title")}
-              </h2>
-
-              <div className="space-y-4">
-                <div
-                  className={`flex items-center justify-between p-4 ${
-                    isDark ? "bg-blue-900/20" : "bg-blue-50"
-                  } rounded-xl`}
-                >
-                  <div className="flex items-center">
-                    <div
-                      className={`w-10 h-10 ${
-                        isDark ? "bg-blue-900/30" : "bg-blue-100"
-                      } rounded-lg flex items-center justify-center ${
-                        isRTL ? "mr-3" : "ml-3"
-                      }`}
-                    >
-                      <svg
-                        className={`w-5 h-5 ${
-                          isDark ? "text-blue-400" : "text-blue-600"
-                        }`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                        />
-                      </svg>
-                    </div>
-                    <span
-                      className={`${
-                        isDark ? "text-gray-300" : "text-gray-700"
-                      } font-medium`}
-                    >
-                      {t(
-                        "specificCategory.sections.statistics.departmentsCount"
-                      )}
-                    </span>
-                  </div>
-                  <span
-                    className={`text-2xl font-bold ${
-                      isDark ? "text-blue-400" : "text-blue-600"
+                <div className="flex items-center">
+                  <div
+                    className={`w-10 h-10 ${
+                      isDark ? "bg-green-900/30" : "bg-green-100"
+                    } rounded-lg flex items-center justify-center ${
+                      isRTL ? "mr-3" : "ml-3"
                     }`}
                   >
-                    {selectedCategory.departmentsCount}
-                  </span>
-                </div>
-
-                <div
-                  className={`flex items-center justify-between p-4 ${
-                    isDark ? "bg-green-900/20" : "bg-green-50"
-                  } rounded-xl`}
-                >
-                  <div className="flex items-center">
-                    <div
-                      className={`w-10 h-10 ${
-                        isDark ? "bg-green-900/30" : "bg-green-100"
-                      } rounded-lg flex items-center justify-center ${
-                        isRTL ? "mr-3" : "ml-3"
+                    <svg
+                      className={`w-5 h-5 ${
+                        isDark ? "text-green-400" : "text-green-600"
                       }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
                     >
-                      <svg
-                        className={`w-5 h-5 ${
-                          isDark ? "text-green-400" : "text-green-600"
-                        }`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
-                        />
-                      </svg>
-                    </div>
-                    <span
-                      className={`${
-                        isDark ? "text-gray-300" : "text-gray-700"
-                      } font-medium`}
-                    >
-                      {t("specificCategory.sections.statistics.usersCount")}
-                    </span>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+                      />
+                    </svg>
                   </div>
                   <span
-                    className={`text-2xl font-bold ${
-                      isDark ? "text-green-400" : "text-green-600"
-                    }`}
+                    className={`${
+                      isDark ? "text-gray-300" : "text-gray-700"
+                    } font-medium`}
                   >
-                    {selectedCategory.usersCount}
+                    {t("specificCategory.sections.statistics.usersCount")}
                   </span>
                 </div>
+                <span
+                  className={`text-2xl font-bold ${
+                    isDark ? "text-green-400" : "text-green-600"
+                  }`}
+                >
+                  {selectedCategory.usersCount}
+                </span>
+              </div>
+
+              {/* Rosters Count */}
+              <div
+                className={`flex items-center justify-between p-4 ${
+                  isDark ? "bg-purple-900/20" : "bg-purple-50"
+                } rounded-xl`}
+              >
+                <div className="flex items-center">
+                  <div
+                    className={`w-10 h-10 ${
+                      isDark ? "bg-purple-900/30" : "bg-purple-100"
+                    } rounded-lg flex items-center justify-center ${
+                      isRTL ? "mr-3" : "ml-3"
+                    }`}
+                  >
+                    <FileText
+                      className={`w-5 h-5 ${
+                        isDark ? "text-purple-400" : "text-purple-600"
+                      }`}
+                    />
+                  </div>
+                  <span
+                    className={`${
+                      isDark ? "text-gray-300" : "text-gray-700"
+                    } font-medium`}
+                  >
+                    {t("specificCategory.sections.statistics.rostersCount")}
+                  </span>
+                </div>
+                <span
+                  className={`text-2xl font-bold ${
+                    isDark ? "text-purple-400" : "text-purple-600"
+                  }`}
+                >
+                  {rosterList?.length || 0}
+                </span>
               </div>
             </div>
+          </div>
 
-            {/* Metadata Card */}
-            <div
-              className={`${
-                isDark ? "bg-gray-800" : "bg-white"
-              } rounded-2xl shadow-xl p-6`}
+          {/* Metadata Card */}
+          <div
+            className={`${
+              isDark ? "bg-gray-800" : "bg-white"
+            } rounded-2xl shadow-xl p-6`}
+          >
+            <h2
+              className={`text-xl font-bold ${
+                isDark ? "text-white" : "text-gray-900"
+              } mb-6`}
             >
-              <h2
-                className={`text-xl font-bold ${
-                  isDark ? "text-white" : "text-gray-900"
-                } mb-6`}
+              {t("specificCategory.sections.metadata.title")}
+            </h2>
+
+            <div className="space-y-4 text-sm">
+              <div
+                className={`border-b ${
+                  isDark ? "border-gray-700" : "border-gray-200"
+                } pb-3`}
               >
-                {t("specificCategory.sections.metadata.title")}
-              </h2>
-
-              <div className="space-y-4 text-sm">
                 <div
-                  className={`border-b ${
-                    isDark ? "border-gray-700" : "border-gray-200"
-                  } pb-3`}
+                  className={`${
+                    isDark ? "text-gray-400" : "text-gray-500"
+                  } mb-1`}
                 >
-                  <div
-                    className={`${
-                      isDark ? "text-gray-400" : "text-gray-500"
-                    } mb-1`}
-                  >
-                    {t("specificCategory.sections.metadata.createdAt")}
-                  </div>
-                  <div
-                    className={`${
-                      isDark ? "text-white" : "text-gray-900"
-                    } font-medium`}
-                  >
-                    {formatDate(selectedCategory.createdAt)}
-                  </div>
+                  {t("specificCategory.sections.metadata.createdBy")}
                 </div>
-
                 <div
-                  className={`border-b ${
-                    isDark ? "border-gray-700" : "border-gray-200"
-                  } pb-3`}
+                  className={`${
+                    isDark ? "text-white" : "text-gray-900"
+                  } font-medium`}
                 >
-                  <div
-                    className={`${
-                      isDark ? "text-gray-400" : "text-gray-500"
-                    } mb-1`}
-                  >
-                    {t("specificCategory.sections.metadata.createdBy")}
-                  </div>
-                  <div
-                    className={`${
-                      isDark ? "text-white" : "text-gray-900"
-                    } font-medium`}
-                  >
-                    {selectedCategory.createdByName}
-                  </div>
+                  {selectedCategory.createdByName}
                 </div>
+              </div>
 
-                {selectedCategory.updatedAt && (
-                  <>
+              {selectedCategory.updatedAt && (
+                <>
+                  <div
+                    className={`border-b ${
+                      isDark ? "border-gray-700" : "border-gray-200"
+                    } pb-3`}
+                  >
                     <div
-                      className={`border-b ${
-                        isDark ? "border-gray-700" : "border-gray-200"
-                      } pb-3`}
+                      className={`${
+                        isDark ? "text-gray-400" : "text-gray-500"
+                      } mb-1`}
                     >
+                      {t("specificCategory.sections.metadata.updatedAt")}
+                    </div>
+                    <div
+                      className={`${
+                        isDark ? "text-white" : "text-gray-900"
+                      } font-medium`}
+                    >
+                      {formatDate(selectedCategory.updatedAt)}
+                    </div>
+                  </div>
+
+                  {selectedCategory.updatedByName && (
+                    <div>
                       <div
                         className={`${
                           isDark ? "text-gray-400" : "text-gray-500"
                         } mb-1`}
                       >
-                        {t("specificCategory.sections.metadata.updatedAt")}
+                        {t("specificCategory.sections.metadata.updatedBy")}
                       </div>
                       <div
                         className={`${
                           isDark ? "text-white" : "text-gray-900"
                         } font-medium`}
                       >
-                        {formatDate(selectedCategory.updatedAt)}
+                        {selectedCategory.updatedByName}
                       </div>
                     </div>
-
-                    {selectedCategory.updatedByName && (
-                      <div>
-                        <div
-                          className={`${
-                            isDark ? "text-gray-400" : "text-gray-500"
-                          } mb-1`}
-                        >
-                          {t("specificCategory.sections.metadata.updatedBy")}
-                        </div>
-                        <div
-                          className={`${
-                            isDark ? "text-white" : "text-gray-900"
-                          } font-medium`}
-                        >
-                          {selectedCategory.updatedByName}
-                        </div>
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
+                  )}
+                </>
+              )}
             </div>
           </div>
         </div>
       </div>
+      {statusModalOpen && (
+        <ModalUpdateRosterStatus
+          setStatusModalOpen={setStatusModalOpen}
+          statusToUpdate={statusToUpdate}
+          setStatusToUpdate={setStatusToUpdate}
+        />
+      )}
     </div>
   );
 };

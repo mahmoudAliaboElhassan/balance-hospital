@@ -349,10 +349,10 @@ export const getRostersPaged = createAsyncThunk(
   }
 );
 export const getRosterByCategory = createAsyncThunk(
-  "rosterManagement/getRostersPaged",
+  "rosterManagement/getRosterByCategory",
   async ({ categoryId }, { rejectWithValue }) => {
     try {
-      const url = `/api/v1/RosterManagement/categories/${categoryId}`;
+      const url = `/api/v1/RosterManagement/categories/${categoryId}/rosters`;
       const res = await axiosInstance.get(url, { headers: getAuthHeaders() });
       return res.data;
     } catch (error) {
