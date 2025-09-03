@@ -137,12 +137,14 @@ function WorkingHours() {
         shift.contractingTypes.forEach((contractingType) => {
           contractingType.workingHoursDetails.forEach((detail) => {
             const dateKey = detail.shiftDate;
-
             if (!groupedByDate[dateKey]) {
               groupedByDate[dateKey] = {
                 date: dateKey,
                 dayOfWeek: detail.dayOfWeek,
-                dayOfWeekName: detail.dayOfWeekName,
+                dayOfWeekName:
+                  currentLang === "en"
+                    ? detail.dayOfWeekNameAr
+                    : detail.dayOfWeekNameAr,
                 departments: [],
               };
             }
@@ -154,7 +156,10 @@ function WorkingHours() {
             if (!deptGroup) {
               deptGroup = {
                 departmentId: department.departmentId,
-                departmentName: department.departmentName,
+                departmentName:
+                  currentLang === "en"
+                    ? department.departmentNameEn
+                    : department.departmentNameAr,
                 shifts: [],
               };
               groupedByDate[dateKey].departments.push(deptGroup);
@@ -167,7 +172,8 @@ function WorkingHours() {
             if (!shiftGroup) {
               shiftGroup = {
                 shiftId: shift.shiftId,
-                shiftName: shift.shiftName,
+                shiftName:
+                  currentLang === "en" ? shift.shiftNameAr : shift.shiftNameEn,
                 shiftPeriod: shift.shiftPeriod,
                 startTime: shift.startTime,
                 endTime: shift.endTime,
@@ -180,7 +186,10 @@ function WorkingHours() {
             // Add contracting type with working hour detail
             shiftGroup.contractingTypes.push({
               contractingTypeId: contractingType.contractingTypeId,
-              contractingTypeName: contractingType.contractingTypeName,
+              contractingTypeName:
+                currentLang === "en"
+                  ? contractingType.contractingTypeNameEn
+                  : contractingType.contractingTypeNameAr,
               workingHourDetail: detail,
             });
           });
@@ -951,7 +960,9 @@ function WorkingHours() {
                                                       isRTL ? "ml-1" : "mr-1"
                                                     }`}
                                                   />
-                                                  {doctor.doctorName}
+                                                  {currentLang === "en"
+                                                    ? doctor.doctorNameEn
+                                                    : doctor.doctorNameAr}
                                                 </span>
                                               ))}
                                             {detail.assignedDoctors.length >

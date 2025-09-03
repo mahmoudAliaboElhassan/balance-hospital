@@ -424,7 +424,9 @@ function WorkingHour() {
                           isDark ? "text-gray-400" : "text-gray-600"
                         }`}
                       >
-                        {workingHour.department.name}
+                        {currentLang === "en"
+                          ? workingHour.department.nameEnglish
+                          : workingHour.department.nameArabic}{" "}
                       </p>
                     </div>
                   </div>
@@ -451,7 +453,9 @@ function WorkingHour() {
                           isDark ? "text-gray-400" : "text-gray-600"
                         }`}
                       >
-                        {workingHour.shift.name}
+                        {currentLang === "en"
+                          ? workingHour.shift.nameEnglish
+                          : workingHour.shift.nameArabic}{" "}
                       </p>
                       <p
                         className={`text-xs ${
@@ -482,7 +486,9 @@ function WorkingHour() {
                           isDark ? "text-gray-400" : "text-gray-600"
                         }`}
                       >
-                        {workingHour.contractingType.name}
+                        {currentLang === "en"
+                          ? workingHour.contractingType.nameEnglish
+                          : workingHour.contractingType.nameArabic}
                       </p>
                     </div>
                   </div>
@@ -632,7 +638,9 @@ function WorkingHour() {
                                 isDark ? "text-white" : "text-gray-900"
                               }`}
                             >
-                              {doctor.doctorName}
+                              {currentLang == "en"
+                                ? doctor.doctorNameAr
+                                : doctor.doctorNameEn}
                             </p>
                             <p
                               className={`text-xs ${

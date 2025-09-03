@@ -218,8 +218,8 @@ const DoctorCard = ({
                 }`}
               >
                 {currentLang === "ar"
-                  ? doctor.doctorNameArabic || doctor.doctorName
-                  : doctor.doctorName || doctor.doctorNameArabic}
+                  ? doctor.doctorNameArabic
+                  : doctor.doctorNameEnglish}
               </h3>
               <span
                 className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getDoctorStatusColor(
@@ -350,7 +350,7 @@ const ShiftInfo = ({ workingHour, isDark, isRTL, t }) => {
   const shift = workingHour.shift || {};
   const department = workingHour.department || {};
   const contractingType = workingHour.contractingType || {};
-
+  const currentLang = i18next.language;
   return (
     <div
       className={`rounded-lg border p-4 mb-6 ${
@@ -444,7 +444,9 @@ const ShiftInfo = ({ workingHour, isDark, isRTL, t }) => {
                   isDark ? "text-white" : "text-gray-900"
                 }`}
               >
-                {department.name || "-"}
+                {currentLang === "en"
+                  ? department.nameArabic
+                  : department.nameEnglish}
               </div>
             </div>
 
@@ -515,7 +517,9 @@ const ShiftInfo = ({ workingHour, isDark, isRTL, t }) => {
                   isDark ? "text-white" : "text-gray-900"
                 }`}
               >
-                {contractingType.name || "-"}
+                {currentLang == "ar"
+                  ? contractingType.nameArabic
+                  : contractingType.nameEnglish}
               </div>
             </div>
           </div>
@@ -588,7 +592,6 @@ function AssignDoctor() {
   const { workingHourId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const { loading, availableDoctorsForShift, errors, workingHour } =
     useSelector((state) => state.rosterManagement);
   const { mymode } = useSelector((state) => state.mode);
