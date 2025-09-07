@@ -446,7 +446,9 @@ function RosterDepartments() {
                                 isDark ? "text-white" : "text-gray-900"
                               }`}
                             >
-                              {shift.shiftTypeName}
+                              {currentLang === "ar"
+                                ? shift.shiftTypeNameAr || shift.shiftTypeName
+                                : shift.shiftTypeNameEn || shift.shiftTypeName}
                             </h3>
                             <p
                               className={`text-sm ${
@@ -576,9 +578,11 @@ function RosterDepartments() {
                                                     : "text-gray-900"
                                                 }`}
                                               >
-                                                {
-                                                  contractingType.contractingTypeName
-                                                }
+                                                {currentLang === "ar"
+                                                  ? contractingType.contractingTypeNameAr ||
+                                                    contractingType.contractingTypeName
+                                                  : contractingType.contractingTypeNameEn ||
+                                                    contractingType.contractingTypeName}
                                               </h5>
                                             </div>
                                             <p

@@ -290,9 +290,24 @@
   },
   "loading": "loading...",
   "pendingDoctorRequests": {
-    "title": "Pending Doctor Requests",
+    "title": "Doctor Status",
     "subtitle": "Doctor enrollment requests for this category",
+    "count": "Count",
     "backButton": "Back",
+    "messages": {
+      "approvalSuccess": "Doctor request approved successfully",
+      "rejectionSuccess": "Doctor request rejected successfully"
+    },
+
+    "table": {
+      "doctorName": "Doctor Name",
+      "contact": "Contact",
+      "degree": "Degree",
+      "status": "Status",
+      "requestedAt": "Requested At",
+      "actions": "Actions"
+    },
+
     "loading": {
       "categories": "Loading category data...",
       "requests": "Loading requests...",
@@ -303,7 +318,9 @@
       "dataLoadError": "Error loading data",
       "retryButton": "Retry",
       "closeButton": "Close",
-      "dismissButton": "Dismiss"
+      "dismissButton": "Dismiss",
+      "rejectionError": "An error occurred while rejecting the request.",
+      "approvalError": "An error occurred while approving the request."
     },
     "categorySelector": {
       "title": "Select Category to View Requests",
@@ -330,7 +347,7 @@
       "showAllRequests": "Show all requests"
     },
     "pagination": {
-      "showing": "Showing {start} to {end} of {total} requests",
+      "showing": "Showing {{start}}–{{end}} of {{total}} results",
       "resultsCount": "Showing {start} to {end} of {total} results",
       "category": "Category: {categoryName}",
       "perPage": "{count} per page",
@@ -1648,6 +1665,7 @@
     "departments": "Departments",
     "fillPercentage": "Fill percentage",
     "remainingSlots": "Remaining slots",
+    "deleteReason": " Reason for deletion",
     "dayss": "Days",
     "shifts": "Shifts",
     "capacity": "Capacity",
@@ -1655,6 +1673,22 @@
     "changesInfo": " Any changes on this page require regenerating shift requirements.",
     "totalDays": "Total Days",
     "noAssignedDoctors": "No doctors assigned yet",
+
+    "delete": {
+      "title": "Delete Roster",
+      "confirmMessage": "Are you sure you want to delete this roster? This action cannot be undone. Please provide a reason below.",
+      "reason": "Deletion reason",
+      "reasonPlaceholder": "Write a brief reason for deletion...",
+      "reasonRequired": "Please provide a reason for deletion.",
+      "charactersCount": "characters",
+      "confirm": "Confirm delete",
+      "success": "Roster \"{{name}}\" deleted successfully.",
+      "error": {
+        "title": "Delete error",
+        "message": "Failed to delete roster. Please try again."
+      }
+    },
+
     "doctorSchedule": {
       "title": "Doctor Schedule",
       "totalAssignments": "Total Assignments",

@@ -204,7 +204,6 @@ function UseInitialValues() {
     notes: "",
     defaultShifts: [],
   };
-
   return {
     INITIAL_VALUES_LOGIN,
     INITIAL_VALUES_FORGET_PASSWORD,

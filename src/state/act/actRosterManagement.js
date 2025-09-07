@@ -403,6 +403,23 @@ export const updateRosterBasicInfo = createAsyncThunk(
     }
   }
 );
+export const deleteRoster = createAsyncThunk(
+  "rosterManagement/deleteRoster",
+  async ({ rosterId, reason }, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.delete(
+        `/api/v1/RosterManagement/${rosterId}/remove`,
+        {
+          headers: getAuthHeaders(),
+          data: { reason },
+        }
+      );
+      return { rosterId, ...res.data };
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
 export const updateRosterStatus = createAsyncThunk(
   "rosterManagement/updateRosterStatus",
   async ({ rosterId, updateData }, { rejectWithValue }) => {

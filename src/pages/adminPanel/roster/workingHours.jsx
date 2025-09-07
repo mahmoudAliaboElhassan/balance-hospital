@@ -37,9 +37,9 @@ function WorkingHours() {
 
   // State for filters
   const [filters, setFilters] = useState({
-    startDate: null,
-    endDate: null,
-    departmentId: null,
+    startDate: "",
+    endDate: "",
+    departmentId: "",
   });
 
   const [showFilters, setShowFilters] = useState(false);
@@ -143,7 +143,7 @@ function WorkingHours() {
                 dayOfWeek: detail.dayOfWeek,
                 dayOfWeekName:
                   currentLang === "en"
-                    ? detail.dayOfWeekNameAr
+                    ? detail.dayOfWeekNameEn
                     : detail.dayOfWeekNameAr,
                 departments: [],
               };
@@ -173,7 +173,7 @@ function WorkingHours() {
               shiftGroup = {
                 shiftId: shift.shiftId,
                 shiftName:
-                  currentLang === "en" ? shift.shiftNameAr : shift.shiftNameEn,
+                  currentLang === "en" ? shift.shiftNameEn : shift.shiftNameAr,
                 shiftPeriod: shift.shiftPeriod,
                 startTime: shift.startTime,
                 endTime: shift.endTime,
@@ -285,7 +285,7 @@ function WorkingHours() {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+                className={`px-4 py-2 rounded-lg cursor-pointer text-sm font-medium transition-colors flex items-center gap-2 ${
                   showFilters
                     ? "bg-blue-600 text-white"
                     : isDark

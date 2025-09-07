@@ -55,6 +55,7 @@ import {
   getDoctorRequests,
   addRosterDepartment,
   getRosterByCategory,
+  deleteRoster,
 } from "../act/actRosterManagement";
 import i18next from "i18next";
 
@@ -614,6 +615,22 @@ const rosterManagementSlice = createSlice({
         );
       })
       .addCase(deleteDepartmentShift.rejected, (state, action) => {
+        state.loading.delete = false;
+        state.errors.shifts = action.payload;
+      });
+    builder
+      .addCase(deleteRoster.pending, (state) => {
+        state.loading.delete = true;
+        state.errors.shifts = null;
+      })
+      .addCase(deleteRoster.fulfilled, (state, action) => {
+        state.loading.delete = false;
+        const rosterId = action.payload.rosterId;
+        state.rosterList = state.rosterList.filter(
+          (roster) => roster.id !== rosterId
+        );
+      })
+      .addCase(deleteRoster.rejected, (state, action) => {
         state.loading.delete = false;
         state.errors.shifts = action.payload;
       });

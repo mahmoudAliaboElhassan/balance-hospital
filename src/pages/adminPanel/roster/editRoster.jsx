@@ -248,9 +248,49 @@ const UpdateRoster = () => {
     }
   };
 
-  const nextStep = (e) => {
+  const nextStep = async (e, validateForm, setTouched) => {
     e.preventDefault();
     e.stopPropagation();
+
+    // If we're on the first step, validate first step fields only
+    if (currentStep === 1) {
+      try {
+        // Trigger validation for the entire form
+        const errors = await validateForm();
+
+        // Define first step fields that need validation
+        const firstStepFields = [
+          "categoryId",
+          "title",
+          "description",
+          "startDay",
+          "endDay",
+          "month",
+          "year",
+          "submissionDeadline",
+        ];
+
+        // Check if any first step fields have errors
+        const hasFirstStepErrors = firstStepFields.some(
+          (field) => errors[field]
+        );
+
+        if (hasFirstStepErrors) {
+          // Mark first step fields as touched to show errors
+          const touchedFields = {};
+          firstStepFields.forEach((field) => {
+            touchedFields[field] = true;
+          });
+          setTouched(touchedFields);
+          return; // Don't proceed to next step
+        }
+      } catch (error) {
+        console.error("Validation error:", error);
+        return;
+      }
+    }
+
+    // Proceed to next step if validation passes or not on first step
     setCurrentStep((prev) => Math.min(prev + 1, totalSteps));
   };
 
@@ -376,7 +416,15 @@ const UpdateRoster = () => {
               onSubmit={handleSubmit}
               enableReinitialize={true}
             >
-              {({ values, errors, touched, isSubmitting, setFieldValue }) => (
+              {({
+                values,
+                errors,
+                touched,
+                isSubmitting,
+                setFieldValue,
+                validateForm,
+                setTouched,
+              }) => (
                 <Form className="space-y-6">
                   {/* Step 1: Basic Information */}
                   {currentStep === 1 && (
@@ -783,7 +831,7 @@ const UpdateRoster = () => {
                       {currentStep < totalSteps ? (
                         <button
                           type="button"
-                          onClick={nextStep}
+                          onClick={(e) => nextStep(e, validateForm, setTouched)}
                           className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
                         >
                           {t("common.next")}

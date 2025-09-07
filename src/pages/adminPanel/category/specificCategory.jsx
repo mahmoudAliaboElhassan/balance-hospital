@@ -5,6 +5,16 @@ import { getCategoryById } from "../../../state/act/actCategory";
 import {
   clearSingleCategory,
   clearSingleCategoryError,
+  getCategoryPendingRequests,
+  setCategoryPendingRequestsCurrentPage,
+  setCategoryPendingRequestsPageSize,
+  setCategoryPendingRequestsStatusFilter,
+  clearCategoryPendingRequestsError,
+  clearCategoryPendingRequests,
+  approveDoctorRequest,
+  clearApprovalSuccess,
+  rejectDoctorRequest,
+  clearApprovalError,
 } from "../../../state/slices/category";
 import { getDepartments } from "../../../state/act/actDepartment";
 import LoadingGetData from "../../../components/LoadingGetData";
@@ -22,10 +32,22 @@ import {
   FileText,
   BarChart3,
   Clock,
+  Mail,
+  Phone,
+  Award,
+  Check,
+  X,
+  RefreshCw,
+  AlertCircle,
+  Filter,
+  UserCheck,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { getRosterByCategory } from "../../../state/act/actRosterManagement";
 import ModalUpdateRosterStatus from "../../../components/ModalUpdateRosterStatus";
 import "../../../styles/general.css";
+import { toast } from "react-toastify";
 
 const SpecificCategory = () => {
   const { catId: id } = useParams();
@@ -39,6 +61,12 @@ const SpecificCategory = () => {
     currentStatus: "",
   });
   const [showMobileRosterTable, setShowMobileRosterTable] = useState(false);
+  const [showPendingDoctors, setShowPendingDoctors] = useState(true);
+
+  // Local filters for pending doctors
+  const [localFilters, setLocalFilters] = useState({
+    status: "",
+  });
 
   const formatMonthYear = (month, year) => {
     const monthNames = {
@@ -78,6 +106,20 @@ const SpecificCategory = () => {
 
   const { selectedCategory, loadingGetSingleCategory, singleCategoryError } =
     useSelector((state) => state.category);
+
+  // Pending doctors selectors
+  const {
+    categoryPendingRequests,
+    categoryPendingRequestsPagination: pagination,
+    categoryPendingRequestsError: pendingError,
+    loadingGetCategoryPendingRequests: loadingPending,
+    categoryPendingRequestsFilters: filters,
+    loadingApproveRequest,
+    loadingRejectRequest,
+    approvalError,
+    approvalSuccess,
+    approvalMessage,
+  } = useSelector((state) => state.category);
 
   const { rosterList, loading } = useSelector(
     (state) => state.rosterManagement
@@ -141,6 +183,121 @@ const SpecificCategory = () => {
     );
   };
 
+  // Get status configuration for pending doctors
+  const getPendingStatusConfig = (status) => {
+    const configs = {
+      Pending: {
+        className: "bg-yellow-100 text-yellow-800 border-yellow-200",
+        text: t("pendingDoctorRequests.status.pending"),
+        icon: Clock,
+      },
+      Approved: {
+        className: "bg-green-100 text-green-800 border-green-200",
+        text: t("pendingDoctorRequests.status.approved"),
+        icon: Check,
+      },
+    };
+
+    return (
+      configs[status] || {
+        className: "bg-gray-100 text-gray-800 border-gray-200",
+        text: status,
+        icon: AlertCircle,
+      }
+    );
+  };
+
+  // Render status badge for pending doctors
+  const renderPendingStatusBadge = (status) => {
+    const config = getPendingStatusConfig(status);
+    const IconComponent = config.icon;
+
+    return (
+      <span
+        className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold border ${config.className}`}
+      >
+        <IconComponent className="w-3 h-3" />
+        {config.text}
+      </span>
+    );
+  };
+
+  // Format date for pending doctors
+  const formatPendingDate = (dateString) => {
+    if (!dateString) return t("pendingDoctorRequests.fields.notSpecified");
+
+    try {
+      const locale = currentLang === "ar" ? "ar-EG" : "en-US";
+      return new Date(dateString).toLocaleDateString(locale, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch (error) {
+      return t("pendingDoctorRequests.fields.invalidDate");
+    }
+  };
+
+  // Handle pending doctor actions
+  const handleApproveRequest = (userId) => {
+    dispatch(approveDoctorRequest({ userId }))
+      .unwrap()
+      .then(() => {
+        toast.success(t("pendingDoctorRequests.messages.approvalSuccess"));
+        setLocalFilters((prev) => ({ ...prev, status: "" }));
+        dispatch(setCategoryPendingRequestsStatusFilter({ status: "" }));
+      })
+      .catch((error) => {
+        toast.error(
+          error.message || t("pendingDoctorRequests.errors.approvalError")
+        );
+      });
+  };
+
+  const handleRejectRequest = (userId) => {
+    dispatch(rejectDoctorRequest({ userId }))
+      .unwrap()
+      .then(() => {
+        toast.success(t("pendingDoctorRequests.messages.rejectionSuccess"));
+        setLocalFilters((prev) => ({ ...prev, status: "" }));
+        dispatch(setCategoryPendingRequestsStatusFilter({ status: "" }));
+      })
+      .catch((error) => {
+        toast.error(
+          error.message || t("pendingDoctorRequests.errors.rejectionError")
+        );
+      });
+  };
+
+  // Handle status filter change for pending doctors
+  const handlePendingStatusChange = (status) => {
+    setLocalFilters((prev) => ({ ...prev, status }));
+    dispatch(setCategoryPendingRequestsStatusFilter(status));
+  };
+
+  // Handle pagination for pending doctors
+  const handlePendingPageChange = (page) => {
+    dispatch(setCategoryPendingRequestsCurrentPage(page));
+  };
+
+  const handlePendingPageSizeChange = (pageSize) => {
+    dispatch(setCategoryPendingRequestsPageSize(pageSize));
+  };
+
+  // Handle refresh pending doctors
+  const handleRefreshPendingDoctors = () => {
+    if (id && !isNaN(id)) {
+      dispatch(
+        getCategoryPendingRequests({
+          categoryId: id,
+          filters,
+        })
+      );
+    }
+  };
+
   useEffect(() => {
     if (id) {
       // Clear previous data before fetching
@@ -158,14 +315,45 @@ const SpecificCategory = () => {
       // Fetch departments for this specific category
       dispatch(getDepartments({ categoryId: id }));
       dispatch(getRosterByCategory({ categoryId: id }));
+
+      // Fetch pending doctors for this category
+      dispatch(
+        getCategoryPendingRequests({ categoryId: id, filters: { status: "" } })
+      );
     }
 
     // Cleanup on unmount
     return () => {
       dispatch(clearSingleCategory());
       dispatch(clearSingleCategoryError());
+      dispatch(clearCategoryPendingRequests());
+      dispatch(clearApprovalSuccess());
+      dispatch(clearApprovalError());
     };
   }, [dispatch, id]);
+
+  // Fetch pending doctors when filters change
+  useEffect(() => {
+    if (id && !isNaN(id)) {
+      dispatch(
+        getCategoryPendingRequests({
+          categoryId: id,
+          filters,
+        })
+      );
+    }
+  }, [dispatch, id, filters]);
+
+  // Handle approval success
+  useEffect(() => {
+    if (approvalSuccess) {
+      console.log(approvalMessage || "Request processed successfully");
+      const timer = setTimeout(() => {
+        dispatch(clearApprovalSuccess());
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [approvalSuccess, approvalMessage, dispatch]);
 
   // Handle error cases
   useEffect(() => {
@@ -220,6 +408,63 @@ const SpecificCategory = () => {
       navigate("/admin-panel/department/create-specific");
     }
   };
+
+  // Render action buttons for pending doctors
+  const renderPendingActionButtons = (request) => {
+    const isProcessing = loadingApproveRequest || loadingRejectRequest;
+
+    return (
+      <div className="flex gap-2">
+        {/* Show Approve button for Pending and Rejected status */}
+        {(request.status === "Pending" || request.status === "Rejected") && (
+          <button
+            onClick={() => handleApproveRequest(request.userId)}
+            disabled={isProcessing}
+            className="flex-1 inline-flex items-center justify-center gap-1 bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {isProcessing ? (
+              <RefreshCw className="w-4 h-4 animate-spin" />
+            ) : (
+              <Check className="w-4 h-4" />
+            )}
+            {t("pendingDoctorRequests.requestCard.actions.approve")}
+          </button>
+        )}
+
+        {/* Show Reject button for Pending and Approved status */}
+        {(request.status === "Pending" || request.status === "Approved") && (
+          <button
+            onClick={() => handleRejectRequest(request.userId)}
+            disabled={isProcessing}
+            className="flex-1 inline-flex items-center justify-center gap-1 bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {isProcessing ? (
+              <RefreshCw className="w-4 h-4 animate-spin" />
+            ) : (
+              <X className="w-4 h-4" />
+            )}
+            {t("pendingDoctorRequests.requestCard.actions.reject")}
+          </button>
+        )}
+      </div>
+    );
+  };
+
+  // Status filter options for pending doctors
+  const statusFilterOptions = [
+    {
+      value: "",
+      label: t("pendingDoctorRequests.filters.statusOptions.all"),
+    },
+    {
+      value: "Pending",
+      label: t("pendingDoctorRequests.filters.statusOptions.pending"),
+    },
+    {
+      value: "Approved",
+      label: t("pendingDoctorRequests.filters.statusOptions.approved"),
+    },
+  ];
 
   // Department Card Component
   const DepartmentCard = ({ department }) => (
@@ -577,6 +822,53 @@ const SpecificCategory = () => {
       } p-6 ${isRTL ? "rtl" : "ltr"}`}
     >
       <div className="max-w-6xl mx-auto">
+        {/* Approval Error Alert */}
+        {approvalError && (
+          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="flex items-start">
+              <AlertCircle className="w-5 h-5 text-red-600 ml-2 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <h4 className="text-red-800 font-medium">
+                  {t("pendingDoctorRequests.errors.approvalError")}
+                </h4>
+                <p className="text-red-700 text-sm mt-1">
+                  {approvalError.message}
+                </p>
+              </div>
+              <button
+                onClick={() => dispatch(clearApprovalError())}
+                className="text-red-600 hover:text-red-800 ml-2"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Success Alert */}
+        {approvalSuccess && (
+          <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
+            <div className="flex items-start">
+              <Check className="w-5 h-5 text-green-600 ml-2 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <h4 className="text-green-800 font-medium">
+                  {t("pendingDoctorRequests.success.processed")}
+                </h4>
+                <p className="text-green-700 text-sm mt-1">
+                  {approvalMessage ||
+                    t("pendingDoctorRequests.success.default")}
+                </p>
+              </div>
+              <button
+                onClick={() => dispatch(clearApprovalSuccess())}
+                className="text-green-600 hover:text-green-800 ml-2"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="mb-8">
           <button
@@ -701,6 +993,567 @@ const SpecificCategory = () => {
           </div>
         </div>
 
+        {/* Pending Doctors Section */}
+        <div
+          className={`${
+            isDark ? "bg-gray-800" : "bg-white"
+          } rounded-2xl shadow-xl p-6 mb-8`}
+        >
+          <div className="flex items-center justify-between mb-6">
+            <h2
+              className={`text-2xl font-bold ${
+                isDark ? "text-white" : "text-gray-900"
+              } flex items-center`}
+            >
+              <div
+                className={`w-8 h-8 ${
+                  isDark ? "bg-orange-900/30" : "bg-orange-100"
+                } rounded-lg flex items-center justify-center ${
+                  isRTL ? "mr-3" : "ml-3"
+                }`}
+              >
+                <UserCheck
+                  className={`w-4 h-4 ${
+                    isDark ? "text-orange-400" : "text-orange-600"
+                  }`}
+                />
+              </div>
+              {t("pendingDoctorRequests.title")}
+            </h2>
+
+            <div className="flex items-center gap-4">
+              <span
+                className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  isDark
+                    ? "bg-blue-900/30 text-blue-400"
+                    : "bg-blue-100 text-blue-800"
+                }`}
+              >
+                {categoryPendingRequests?.length || 0}{" "}
+                {t("pendingDoctorRequests.count")}
+              </span>
+
+              <button
+                onClick={() => setShowPendingDoctors(!showPendingDoctors)}
+                className={`p-2 rounded-lg transition-colors ${
+                  isDark
+                    ? "hover:bg-gray-700 text-gray-400 hover:text-gray-300"
+                    : "hover:bg-gray-100 text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                {showPendingDoctors ? (
+                  <ChevronUp size={20} />
+                ) : (
+                  <ChevronDown size={20} />
+                )}
+              </button>
+
+              <button
+                onClick={handleRefreshPendingDoctors}
+                disabled={loadingPending}
+                className={`p-2 rounded-lg transition-colors ${
+                  isDark
+                    ? "hover:bg-gray-700 text-gray-400 hover:text-gray-300"
+                    : "hover:bg-gray-100 text-gray-500 hover:text-gray-700"
+                } disabled:opacity-50`}
+              >
+                <RefreshCw
+                  className={`w-4 h-4 ${loadingPending ? "animate-spin" : ""}`}
+                />
+              </button>
+            </div>
+          </div>
+
+          {showPendingDoctors && (
+            <>
+              {/* Filters */}
+              <div
+                className={`p-4 rounded-lg mb-6 ${
+                  isDark ? "bg-gray-700" : "bg-gray-50"
+                }`}
+              >
+                <div className="flex flex-wrap gap-4 items-center">
+                  <div className="flex items-center gap-2">
+                    <Filter className="w-5 h-5 text-gray-500" />
+                    <span className="text-sm font-medium text-gray-700">
+                      {t("pendingDoctorRequests.filters.filterByStatus")}
+                    </span>
+                  </div>
+
+                  <div className="flex gap-2 flex-wrap">
+                    {statusFilterOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        onClick={() => handlePendingStatusChange(option.value)}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                          localFilters.status === option.value
+                            ? "bg-blue-600 text-white shadow-md"
+                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Pending Error Display */}
+              {pendingError && (
+                <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+                  <div className="flex items-start">
+                    <AlertCircle className="w-5 h-5 text-red-600 ml-2 flex-shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <h4 className="text-red-800 font-medium">
+                        {t("pendingDoctorRequests.errors.dataLoadError")}
+                      </h4>
+                      <p className="text-red-700 text-sm mt-1">
+                        {pendingError.message}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() =>
+                        dispatch(clearCategoryPendingRequestsError())
+                      }
+                      className="text-red-600 hover:text-red-800 ml-2"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Content */}
+              {loadingPending ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                  <p
+                    className={`${isDark ? "text-gray-400" : "text-gray-600"}`}
+                  >
+                    {t("pendingDoctorRequests.loading.requests")}
+                  </p>
+                </div>
+              ) : !categoryPendingRequests ||
+                categoryPendingRequests.length === 0 ? (
+                <div className="text-center py-8">
+                  <div
+                    className={`w-16 h-16 ${
+                      isDark ? "bg-gray-700" : "bg-gray-100"
+                    } rounded-full flex items-center justify-center mx-auto mb-4`}
+                  >
+                    <UserCheck
+                      className={`w-8 h-8 ${
+                        isDark ? "text-gray-500" : "text-gray-400"
+                      }`}
+                    />
+                  </div>
+                  <p
+                    className={`text-lg font-medium ${
+                      isDark ? "text-gray-300" : "text-gray-600"
+                    } mb-2`}
+                  >
+                    {t("pendingDoctorRequests.emptyStates.noRequests")}
+                  </p>
+                  <p
+                    className={`text-sm ${
+                      isDark ? "text-gray-400" : "text-gray-500"
+                    }`}
+                  >
+                    {filters.status
+                      ? t(
+                          "pendingDoctorRequests.emptyStates.noRequestsWithFilter"
+                        )
+                      : t(
+                          "pendingDoctorRequests.emptyStates.noRequestsDefault"
+                        )}
+                  </p>
+                  {filters.status && (
+                    <button
+                      onClick={() => handlePendingStatusChange("")}
+                      className="inline-flex items-center gap-2 px-4 py-2 text-blue-600 hover:text-blue-700 transition-colors mt-4"
+                    >
+                      <X className="w-4 h-4" />
+                      {t("pendingDoctorRequests.emptyStates.showAllRequests")}
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <>
+                  {/* Results Summary */}
+                  {pagination && (
+                    <div className="mb-6 flex items-center justify-between">
+                      <div className="text-sm text-gray-600">
+                        {t("pendingDoctorRequests.pagination.showing", {
+                          start: pagination.startIndex || 1,
+                          end:
+                            pagination.endIndex ||
+                            categoryPendingRequests.length,
+                          total: pagination.totalCount,
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Desktop Table View */}
+                  <div className="hidden md:block overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr
+                          className={`border-b ${
+                            isDark
+                              ? "border-gray-700 bg-gray-750"
+                              : "border-gray-200 bg-gray-50"
+                          }`}
+                        >
+                          <th
+                            className={`${
+                              isRTL ? "text-right" : "text-left"
+                            } p-4 font-semibold ${
+                              isDark ? "text-white" : "text-gray-900"
+                            }`}
+                          >
+                            {t("pendingDoctorRequests.table.doctorName")}
+                          </th>
+                          <th
+                            className={`${
+                              isRTL ? "text-right" : "text-left"
+                            } p-4 font-semibold ${
+                              isDark ? "text-white" : "text-gray-900"
+                            }`}
+                          >
+                            {t("pendingDoctorRequests.table.contact")}
+                          </th>
+                          <th
+                            className={`${
+                              isRTL ? "text-right" : "text-left"
+                            } p-4 font-semibold ${
+                              isDark ? "text-white" : "text-gray-900"
+                            }`}
+                          >
+                            {t("pendingDoctorRequests.table.degree")}
+                          </th>
+                          <th
+                            className={`${
+                              isRTL ? "text-right" : "text-left"
+                            } p-4 font-semibold ${
+                              isDark ? "text-white" : "text-gray-900"
+                            }`}
+                          >
+                            {t("pendingDoctorRequests.table.status")}
+                          </th>
+                          <th
+                            className={`${
+                              isRTL ? "text-right" : "text-left"
+                            } p-4 font-semibold ${
+                              isDark ? "text-white" : "text-gray-900"
+                            }`}
+                          >
+                            {t("pendingDoctorRequests.table.requestedAt")}
+                          </th>
+                          <th
+                            className={`${
+                              isRTL ? "text-right" : "text-left"
+                            } p-4 font-semibold ${
+                              isDark ? "text-white" : "text-gray-900"
+                            }`}
+                          >
+                            {t("pendingDoctorRequests.table.actions")}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {categoryPendingRequests.map((request) => (
+                          <tr
+                            key={`${request.userId}-${request.categoryId}`}
+                            className={`border-b transition-colors ${
+                              isDark
+                                ? "border-gray-700 hover:bg-gray-750"
+                                : "border-gray-200 hover:bg-gray-50"
+                            }`}
+                          >
+                            <td className="p-4">
+                              <div
+                                className={`font-semibold ${
+                                  isDark ? "text-white" : "text-gray-900"
+                                }`}
+                              >
+                                {request.doctorNameArabic ||
+                                  t(
+                                    "pendingDoctorRequests.requestCard.nameNotSpecified"
+                                  )}
+                              </div>
+                              {request.doctorNameEnglish && (
+                                <div
+                                  className={`text-sm ${
+                                    isDark ? "text-gray-400" : "text-gray-500"
+                                  }`}
+                                >
+                                  {request.doctorNameEnglish}
+                                </div>
+                              )}
+                            </td>
+                            <td className="p-4">
+                              <div className="space-y-1">
+                                {request.email && (
+                                  <div className="flex items-center text-sm text-gray-600">
+                                    <Mail className="w-4 h-4 ml-2 flex-shrink-0 text-gray-400" />
+                                    <span
+                                      className="truncate"
+                                      title={request.email}
+                                    >
+                                      {request.email}
+                                    </span>
+                                  </div>
+                                )}
+                                {request.mobile && (
+                                  <div className="flex items-center text-sm text-gray-600">
+                                    <Phone className="w-4 h-4 ml-2 flex-shrink-0 text-gray-400" />
+                                    <span>{request.mobile}</span>
+                                  </div>
+                                )}
+                              </div>
+                            </td>
+                            <td className="p-4">
+                              <div
+                                className={`text-sm ${
+                                  isDark ? "text-gray-300" : "text-gray-700"
+                                }`}
+                              >
+                                {request.scientificDegree ||
+                                  t(
+                                    "pendingDoctorRequests.fields.notSpecified"
+                                  )}
+                              </div>
+                            </td>
+                            <td className="p-4">
+                              {renderPendingStatusBadge(request.status)}
+                            </td>
+                            <td className="p-4">
+                              <div
+                                className={`text-sm ${
+                                  isDark ? "text-gray-300" : "text-gray-700"
+                                }`}
+                              >
+                                {formatPendingDate(request.requestedAt)}
+                              </div>
+                            </td>
+                            <td className="p-4">
+                              <div className="flex gap-1">
+                                {renderPendingActionButtons(request)}
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Mobile Cards View */}
+                  <div className="md:hidden">
+                    <div className="grid gap-4">
+                      {categoryPendingRequests.map((request) => (
+                        <div
+                          key={`${request.userId}-${request.categoryId}`}
+                          className={`p-4 rounded-lg border ${
+                            isDark
+                              ? "bg-gray-700 border-gray-600"
+                              : "bg-white border-gray-200"
+                          }`}
+                        >
+                          {/* Header */}
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="flex-1 min-w-0">
+                              <h3
+                                className={`text-lg font-semibold mb-1 truncate ${
+                                  isDark ? "text-white" : "text-gray-900"
+                                }`}
+                              >
+                                {request.doctorNameArabic ||
+                                  t(
+                                    "pendingDoctorRequests.requestCard.nameNotSpecified"
+                                  )}
+                              </h3>
+                              {request.doctorNameEnglish && (
+                                <p
+                                  className={`text-sm truncate ${
+                                    isDark ? "text-gray-400" : "text-gray-600"
+                                  }`}
+                                >
+                                  {request.doctorNameEnglish}
+                                </p>
+                              )}
+                            </div>
+                            <div className="mr-3 flex-shrink-0">
+                              {renderPendingStatusBadge(request.status)}
+                            </div>
+                          </div>
+
+                          {/* Details */}
+                          <div className="space-y-3">
+                            {request.email && (
+                              <div className="flex items-center text-sm text-gray-600">
+                                <Mail className="w-4 h-4 ml-2 flex-shrink-0 text-gray-400" />
+                                <span
+                                  className="truncate"
+                                  title={request.email}
+                                >
+                                  {request.email}
+                                </span>
+                              </div>
+                            )}
+
+                            {request.mobile && (
+                              <div className="flex items-center text-sm text-gray-600">
+                                <Phone className="w-4 h-4 ml-2 flex-shrink-0 text-gray-400" />
+                                <span>{request.mobile}</span>
+                              </div>
+                            )}
+
+                            {request.scientificDegree && (
+                              <div className="flex items-center text-sm text-gray-600">
+                                <Award className="w-4 h-4 ml-2 flex-shrink-0 text-gray-400" />
+                                <span
+                                  className="truncate"
+                                  title={request.scientificDegree}
+                                >
+                                  {request.scientificDegree}
+                                </span>
+                              </div>
+                            )}
+
+                            <div className="flex items-center text-sm text-gray-600">
+                              <Clock className="w-4 h-4 ml-2 flex-shrink-0 text-gray-400" />
+                              <span>
+                                {formatPendingDate(request.requestedAt)}
+                              </span>
+                            </div>
+
+                            {request.notes && (
+                              <div className="flex items-start text-sm text-gray-600">
+                                <FileText className="w-4 h-4 ml-2 mt-0.5 flex-shrink-0 text-gray-400" />
+                                <span
+                                  className="line-clamp-2 leading-relaxed"
+                                  title={request.notes}
+                                >
+                                  {request.notes}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Actions */}
+                          <div className="mt-6 pt-4 border-t border-gray-200">
+                            {renderPendingActionButtons(request)}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Pagination */}
+                  {pagination && pagination.totalPages > 1 && (
+                    <div className="mt-8 bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+                      <div className="flex items-center justify-between flex-wrap gap-4">
+                        <div className="flex items-center gap-4">
+                          <span className="text-sm text-gray-600">
+                            {t(
+                              "pendingDoctorRequests.pagination.resultsCount",
+                              {
+                                start: pagination.startIndex || 1,
+                                end:
+                                  pagination.endIndex ||
+                                  categoryPendingRequests.length,
+                                total: pagination.totalCount,
+                              }
+                            )}
+                          </span>
+
+                          <select
+                            value={filters.pageSize}
+                            onChange={(e) =>
+                              handlePendingPageSizeChange(
+                                Number(e.target.value)
+                              )
+                            }
+                            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          >
+                            <option value={10}>
+                              10 {t("pendingDoctorRequests.pagination.perPage")}
+                            </option>
+                            <option value={20}>
+                              20 {t("pendingDoctorRequests.pagination.perPage")}
+                            </option>
+                            <option value={50}>
+                              50 {t("pendingDoctorRequests.pagination.perPage")}
+                            </option>
+                          </select>
+                        </div>
+
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() =>
+                              handlePendingPageChange(pagination.page - 1)
+                            }
+                            disabled={!pagination.hasPrevious}
+                            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                          >
+                            {t("pendingDoctorRequests.pagination.previous")}
+                          </button>
+
+                          <div className="flex gap-1">
+                            {Array.from(
+                              { length: Math.min(pagination.totalPages, 5) },
+                              (_, i) => {
+                                const startPage = Math.max(
+                                  1,
+                                  pagination.page - 2
+                                );
+                                const pageNumber = Math.min(
+                                  startPage + i,
+                                  pagination.totalPages
+                                );
+
+                                if (pageNumber > pagination.totalPages)
+                                  return null;
+
+                                return (
+                                  <button
+                                    key={pageNumber}
+                                    onClick={() =>
+                                      handlePendingPageChange(pageNumber)
+                                    }
+                                    className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                                      pageNumber === pagination.page
+                                        ? "bg-blue-600 text-white"
+                                        : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
+                                    }`}
+                                  >
+                                    {pageNumber}
+                                  </button>
+                                );
+                              }
+                            )}
+                          </div>
+
+                          <button
+                            onClick={() =>
+                              handlePendingPageChange(pagination.page + 1)
+                            }
+                            disabled={!pagination.hasNext}
+                            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                          >
+                            {t("pendingDoctorRequests.pagination.next")}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </>
+          )}
+        </div>
+
         <div className="lg:col-span-2 space-y-6">
           {/* Description Card */}
           <div
@@ -741,7 +1594,7 @@ const SpecificCategory = () => {
 
           {/* Mobile Cards View for Rosters */}
           <div className="md:hidden">
-            {loading.fetch.fetch ? (
+            {loading.fetch ? (
               <div className="text-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
                 <p className={`${isDark ? "text-gray-400" : "text-gray-600"}`}>

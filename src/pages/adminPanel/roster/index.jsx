@@ -34,6 +34,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { getRostersPaged } from "../../../state/act/actRosterManagement";
 import ModalUpdateRosterStatus from "../../../components/ModalUpdateRosterStatus";
+import ModalDeleteRoster from "../../../components/ModalDeleteRoster";
 
 function Roster() {
   const { t, i18n } = useTranslation();
@@ -41,6 +42,8 @@ function Roster() {
   const navigate = useNavigate();
 
   const [statusModalOpen, setStatusModalOpen] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [toDelete, setToDelete] = useState({ id: null, name: "" });
   const [statusToUpdate, setStatusToUpdate] = useState({
     id: null,
     title: "",
@@ -352,6 +355,19 @@ function Roster() {
               <Edit size={16} />
             </button>
           </Link>
+          {/* <button
+            className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors cursor-pointer"
+            title={t("roster.actions.delete")}
+            onClick={() => {
+              setToDelete({
+                id: roster.id,
+                name: roster.title,
+              });
+              setOpenDeleteModal(true);
+            }}
+          >
+            <Trash2 size={16} />
+          </button> */}
         </div>
       </div>
     );
@@ -936,6 +952,19 @@ function Roster() {
                                   <Edit size={16} />
                                 </button>
                               </Link>
+                              {/* <button
+                                className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors cursor-pointer"
+                                title={t("roster.actions.delete")}
+                                onClick={() => {
+                                  setToDelete({
+                                    id: roster.id,
+                                    name: roster.title,
+                                  });
+                                  setOpenDeleteModal(true);
+                                }}
+                              >
+                                <Trash2 size={16} />
+                              </button> */}
                             </div>
                           </td>
                         </tr>
@@ -1125,6 +1154,19 @@ function Roster() {
                                   <Edit size={14} />
                                 </button>
                               </Link>
+                              {/* <button
+                                className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors cursor-pointer"
+                                title={t("roster.actions.delete")}
+                                onClick={() => {
+                                  setToDelete({
+                                    id: roster.id,
+                                    name: roster.title,
+                                  });
+                                  setOpenDeleteModal(true);
+                                }}
+                              >
+                                <Trash2 size={16} />
+                              </button> */}
                             </div>
                           </td>
                         </tr>
@@ -1236,6 +1278,12 @@ function Roster() {
               setStatusModalOpen={setStatusModalOpen}
               statusToUpdate={statusToUpdate}
               setStatusToUpdate={setStatusToUpdate}
+            />
+          )}
+          {openDeleteModal && (
+            <ModalDeleteRoster
+              onClose={() => setOpenDeleteModal(false)}
+              toDelete={toDelete}
             />
           )}
         </div>

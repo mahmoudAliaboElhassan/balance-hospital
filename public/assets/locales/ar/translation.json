@@ -111,7 +111,7 @@
   "adminPanel": {
     "dashboard": "لوحة التحكم",
     "categories": "التخصصات",
-    "pendingDoctorRequests": "طلبات الأطباء المعلقة",
+    "pendingDoctorRequests": "حالة الأطباء",
     "departments": "الأقسام",
     "subDepartments": "الأقسام الفرعية",
     "managementRoles": "أدوار الإدارة",
@@ -294,6 +294,21 @@
     "title": "طلبات الأطباء المعلقة",
     "subtitle": "طلبات انضمام الأطباء لهذا التخصص",
     "backButton": "عودة",
+    "count": "العدد",
+
+    "messages": {
+      "approvalSuccess": "تمت الموافقة على الطلب بنجاح",
+      "rejectionSuccess": "تم رفض الطلب بنجاح"
+    },
+
+    "table": {
+      "doctorName": "اسم الطبيب",
+      "contact": "وسيلة التواصل",
+      "degree": "الدرجة العلمية",
+      "status": "الحالة",
+      "requestedAt": "تاريخ الطلب",
+      "actions": "الإجراءات"
+    },
     "loading": {
       "categories": "جاري تحميل بيانات التخصص…",
       "requests": "جاري تحميل الطلبات…",
@@ -302,6 +317,8 @@
     "errors": {
       "categoryTypesError": "خطأ في تحميل أنواع التصنّيف",
       "dataLoadError": "خطأ في تحميل البيانات",
+      "approvalError": "حدث خطأ أثناء الموافقة على الطلب.",
+      "rejectionError": "حدث خطأ أثناء رفض الطلب.",
       "retryButton": "إعادة المحاولة",
       "closeButton": "إغلاق",
       "dismissButton": "تجاهل"
@@ -331,7 +348,7 @@
       "showAllRequests": "عرض كل الطلبات"
     },
     "pagination": {
-      "showing": "عرض {start} إلى {end} من {total} طلب",
+      "showing": "عرض {{start}} - {{end}} من {{total}} عنصر",
       "resultsCount": "عرض {start} إلى {end} من {total} نتيجة",
       "category": "التخصص: {categoryName}",
       "perPage": "{count} لكل صفحة",
@@ -1652,6 +1669,7 @@
     "createFirstRoster": "أنشئ أول روستر لبدء جدولة الأطباء والأقسام.",
     "departments": "الأقسام",
     "count": "روستر",
+    "deleteReason": "سبب الحذف",
     "dayss": "الأيام",
     "totalDays": "إجمالي الأيام",
     "changesInfo": "\u00A0أي تغييرات في هذه الصفحة تتطلب إعادة توليد متطلبات الشيفتات.",
@@ -1660,7 +1678,20 @@
     "fillPercentage": "نسبة الإشغال",
     "remainingSlots": "الأماكن المتبقية",
     "noAssignedDoctors": "لا يوجد أطباء معينون",
-
+    "delete": {
+      "title": "حذف الروستر",
+      "confirmMessage": "هل أنت متأكد من حذف هذا الروستر؟ هذا الإجراء لا يمكن التراجع عنه. الرجاء توضيح سبب الحذف أدناه.",
+      "reason": "سبب الحذف",
+      "reasonPlaceholder": "اكتب سبب الحذف بشكل مختصر...",
+      "reasonRequired": "الرجاء إدخال سبب الحذف.",
+      "charactersCount": "حرف",
+      "confirm": "تأكيد الحذف",
+      "success": "تم حذف الروستر \"{{name}}\" بنجاح.",
+      "error": {
+        "title": "خطأ في الحذف",
+        "message": "تعذر حذف الروستر. حاول مرة أخرى."
+      }
+    },
     "doctorSchedule": {
       "totalAssignments": "إجمالي التعيينات",
       "title": "جدول الطبيب",

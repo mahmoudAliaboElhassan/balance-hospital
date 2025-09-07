@@ -8,7 +8,8 @@ import {
   deleteCategory,
   getCategoryTypes,
   getCategoryPendingRequests,
-  approveDoctorRequest, // Add the new action import
+  approveDoctorRequest,
+  rejectDoctorRequest, // Add the new action import
 } from "../act/actCategory";
 import i18next from "i18next";
 import "../../translation/i18n";
@@ -576,6 +577,15 @@ export const categorySlice = createSlice({
           status: payload?.status,
           timestamp: new Date().toISOString(),
         };
+      })
+      .addCase(rejectDoctorRequest.pending, (state, action) => {
+        state.loadingRejectRequest = true;
+      })
+      .addCase(rejectDoctorRequest.fulfilled, (state, action) => {
+        state.loadingRejectRequest = false;
+      })
+      .addCase(rejectDoctorRequest.rejected, (state, action) => {
+        state.loadingRejectRequest = false;
       });
   },
 });
@@ -647,4 +657,5 @@ export {
   getCategoryTypes,
   getCategoryPendingRequests,
   approveDoctorRequest,
+  rejectDoctorRequest,
 };

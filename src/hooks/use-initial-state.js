@@ -39,6 +39,7 @@ function UseInitialStates() {
     loadingGetSingleCategory: false,
     loadingUpdateCategory: false,
     loadingDeleteCategory: false,
+    loadingRejectRequest: false,
 
     // Create category states
     createSuccess: false,

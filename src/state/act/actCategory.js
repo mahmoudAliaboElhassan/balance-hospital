@@ -246,8 +246,10 @@ export const approveDoctorRequest = createAsyncThunk(
       }
 
       const res = await axiosInstance.post(
-        `/api/v1/Category/approve-doctor-request?userId=${userId}`,
+        "/api/v1/Category/approve-doctor-request",
+        null, // no body
         {
+          params: { userId }, // ?userId=...
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json",
@@ -256,7 +258,7 @@ export const approveDoctorRequest = createAsyncThunk(
       );
 
       console.log("Doctor request processed successfully:", res);
-      return { ...res.data, userId, isApproved };
+      return { ...res.data, userId };
     } catch (error) {
       console.log("Error processing doctor request:", error);
 
@@ -304,9 +306,10 @@ export const rejectDoctorRequest = createAsyncThunk(
       }
 
       const res = await axiosInstance.post(
-        `/api/v1/Category/reject-doctor-request?userId=${userId}`,
-        {}, // Empty body
+        "/api/v1/Category/reject-doctor-request",
+        null, // no body
         {
+          params: { userId }, // ?userId=...
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json",
@@ -315,7 +318,7 @@ export const rejectDoctorRequest = createAsyncThunk(
       );
 
       console.log("Doctor request rejected successfully:", res);
-      return { ...res.data, userId, isApproved: false }; // Added isApproved: false
+      return { ...res.data, userId }; // Added isApproved: false
     } catch (error) {
       console.log("Error rejecting doctor request:", error);
 
