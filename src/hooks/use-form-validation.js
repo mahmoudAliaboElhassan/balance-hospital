@@ -30,7 +30,7 @@ function UseFormValidation() {
   // Category Add Validation Schema
   const VALIDATION_SCHEMA_ADD_CATEGORY = Yup.object().shape({
     nameArabic: Yup.string()
-      .required(t("category.form.validation.nameArabicRequired"))
+      .required(t("categoryForm.validation.nameArabic.required"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(100, t("validation.maxLength", { count: 100 }))
       .matches(
@@ -39,7 +39,7 @@ function UseFormValidation() {
         t("validation.arabicOnly") // you may want to update this message to "Arabic letters, numbers & punctuation only"
       ),
     nameEnglish: Yup.string()
-      .required(t("category.form.validation.nameEnglishRequired"))
+      .required(t("categoryForm.validation.nameEnglish.required"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(100, t("validation.maxLength", { count: 100 }))
       .matches(
@@ -48,10 +48,10 @@ function UseFormValidation() {
         t("validation.englishOnly") // you may want to update this message to "English letters, numbers & punctuation only"
       ),
     code: Yup.string()
-      .required(t("category.form.validation.codeRequired"))
+      .required(t("categoryForm.validation.code.required"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(10, t("validation.maxLength", { count: 10 }))
-      .matches(/^[A-Z0-9_]+$/, t("category.form.validation.codeFormat")),
+      .matches(/^[A-Z0-9_]+$/, t("categoryForm.form.validation.code.pattern")),
     description: Yup.string().max(
       500,
       t("validation.maxLength", { count: 500 })
@@ -62,7 +62,7 @@ function UseFormValidation() {
   // Category Edit Validation Schema
   const VALIDATION_SCHEMA_EDIT_CATEGORY = Yup.object().shape({
     nameArabic: Yup.string()
-      .required(t("category.form.validation.nameArabicRequired"))
+      .required(t("categoryForm.validation.nameArabic.required"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(100, t("validation.maxLength", { count: 100 }))
       .matches(
@@ -71,7 +71,7 @@ function UseFormValidation() {
         t("validation.arabicOnly") // you may want to update this message to "Arabic letters, numbers & punctuation only"
       ),
     nameEnglish: Yup.string()
-      .required(t("category.form.validation.nameEnglishRequired"))
+      .required(t("categoryForm.validation.nameEnglish.required"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(100, t("validation.maxLength", { count: 100 }))
       .matches(
@@ -80,10 +80,10 @@ function UseFormValidation() {
         t("validation.englishOnly") // you may want to update this message to "English letters, numbers & punctuation only"
       ),
     code: Yup.string()
-      .required(t("category.form.validation.codeRequired"))
+      .required(t("categoryForm.validation.code.required"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(10, t("validation.maxLength", { count: 10 }))
-      .matches(/^[A-Z0-9_]+$/, t("category.form.validation.codeFormat")),
+      .matches(/^[A-Z0-9_]+$/, t("categoryForm.validation.code.pattern")),
     description: Yup.string().max(
       500,
       t("validation.maxLength", { count: 500 })
@@ -112,7 +112,7 @@ function UseFormValidation() {
         t("validation.englishOnly") // you may want to update this message to "English letters, numbers & punctuation only"
       ),
     categoryId: Yup.number()
-      .required(t("department.form.validation.categoryRequired"))
+      .required(t("roster.validation.categoryRequired"))
       .positive(t("validation.positiveNumber"))
       .integer(t("validation.integerOnly")),
     location: Yup.string()
@@ -147,7 +147,7 @@ function UseFormValidation() {
         t("validation.englishOnly") // you may want to update this message to "English letters, numbers & punctuation only"
       ),
     categoryId: Yup.number()
-      .required(t("department.form.validation.categoryRequired"))
+      .required(t("roster.validation.categoryRequired"))
       .positive(t("validation.positiveNumber"))
       .integer(t("validation.integerOnly")),
     location: Yup.string()
