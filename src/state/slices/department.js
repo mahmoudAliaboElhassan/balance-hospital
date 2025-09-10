@@ -11,6 +11,8 @@ import {
   assignManager,
   availabelDepartmentsForCategory,
   linkDepartmentToCategory,
+  getDepartmentByCategory,
+  unlinkDepartmentFromCategory,
 } from "../act/actDepartment";
 import i18next from "i18next";
 import "../../translation/i18n";
@@ -183,12 +185,45 @@ export const departmentSlice = createSlice({
       })
       .addCase(linkDepartmentToCategory.fulfilled, (state, action) => {
         state.loadingLinkDepartmentToCategory = false;
+
         const { depId } = action.payload;
-        console.log("depId from slice", depId);
-        state.departments = state.departments.filter((dep) => dep.id !== depId);
+        const dep = state.departments.find((d) => d.id === depId);
+        if (!dep) return; // لو مش لاقيه، مافيش تعديل
+
+        // ضيف القسم المرتبط للقائمة
+        state.departmentsByCategory.push(dep);
+
+        // شيله من قائمة الأقسام غير المرتبطة
+        state.departments = state.departments.filter((d) => d.id !== depId);
       })
       .addCase(linkDepartmentToCategory.rejected, (state, action) => {
         state.loadingLinkDepartmentToCategory = false;
+      })
+      .addCase(unlinkDepartmentFromCategory.pending, (state) => {
+        state.loadingUnlinkDepartment = true;
+      })
+      .addCase(unlinkDepartmentFromCategory.fulfilled, (state, action) => {
+        state.loadingUnlinkDepartment = false;
+        const { depId } = action.payload;
+        const dep = state.departmentsByCategory.find((dep) => dep.id == depId);
+        state.departments.push(dep);
+        state.departmentsByCategory = state.departmentsByCategory.filter(
+          (dep) => dep.id !== depId
+        );
+      })
+      .addCase(unlinkDepartmentFromCategory.rejected, (state, action) => {
+        state.loadingUnlinkDepartment = false;
+      })
+
+      .addCase(getDepartmentByCategory.pending, (state) => {
+        state.loadingGetDepartmentsByCategory = true;
+      })
+      .addCase(getDepartmentByCategory.fulfilled, (state, action) => {
+        state.loadingGetDepartmentsByCategory = false;
+        state.departmentsByCategory = action.payload.data;
+      })
+      .addCase(getDepartmentByCategory.rejected, (state, action) => {
+        state.loadingGetDepartmentsByCategory = false;
       })
 
       // Create Department

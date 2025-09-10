@@ -263,6 +263,13 @@
         "title": "Description",
         "noDescription": "No description available"
       },
+      "linkedDepartments": {
+        "title": "Linked Departments",
+        "count": "departments",
+        "linked": "Linked",
+        "noLinkedDepartments": "No departments linked yet",
+        "linkDepartmentsToGetStarted": "Link departments to this category to see them here."
+      },
 
       "departments": {
         "title": "Assign Departments to that Category",
@@ -467,6 +474,10 @@
     "fetchError": "Failed to fetch departments",
     "noData": "No departments available",
     "loading": "Loading departments...",
+    "code": "Code",
+    "linkedCategories": "Linked categories",
+    "hasManager": "Has manager",
+    "noManager": "No manager",
     "removeManager": {
       "title": "Remove Manager",
       "confirmMessage": "Are you sure you want to remove this manager from the department? This action cannot be undone.",
@@ -559,6 +570,7 @@
       "view": "View Details",
       "edit": "Edit",
       "delete": "Delete",
+      "unlink": "Unlink",
       "activate": "Activate",
       "editManager": "Edit Managre Permission",
       "removeManager": "Remove Manager",
@@ -2374,15 +2386,23 @@
       "message": "Are you sure you want to link this department to the category?",
       "confirm": "Yes, link it",
       "cancel": "Cancel"
+    },
+    "unlinkDepartment": {
+      "title": "Unlink department?",
+      "message": "Are you sure you want to unlink this department from the category? This won’t delete the department.",
+      "confirm": "Yes, unlink",
+      "cancel": "Cancel"
     }
   },
   "messages": {
     "success": {
-      "departmentLinked": "Department linked successfully"
+      "departmentLinked": "Department linked successfully",
+      "departmentUnlinked": "Department has been unlinked successfully."
     },
     "error": {
       "title": "Error",
-      "linkDepartmentFailed": "Failed to link department"
+      "linkDepartmentFailed": "Failed to link department",
+      "unlinkDepartmentFailed": "Failed to unlink the department. Please try again."
     }
   }
 }

@@ -265,6 +265,13 @@
         "title": "الوصف",
         "noDescription": "لا يوجد وصف"
       },
+      "linkedDepartments": {
+        "title": "الأقسام المرتبطة",
+        "count": "أقسام",
+        "linked": "مرتبط",
+        "noLinkedDepartments": "لا توجد أقسام مرتبطة حتى الآن",
+        "linkDepartmentsToGetStarted": "قم بربط أقسام بهذا التخصص لعرضها هنا."
+      },
       "departments": {
         "title": "أضف أماكن لهذا التخصص",
         "count": "مكان",
@@ -467,6 +474,10 @@
     "fetchError": "حدث خطأ أثناء جلب الأماكن.",
     "noData": "لا توجد بيانات متاحه ",
     "loading": "جاري تحميل الأماكن...",
+    "code": "الكود",
+    "linkedCategories": "التخصصات المرتبطة",
+    "hasManager": "لديه مدير",
+    "noManager": "بدون مدير",
     "removeManager": {
       "title": "إزالة المدير",
       "confirmMessage": "هل أنت متأكد أنك تريد إزالة هذا المدير من المكان؟ لا يمكن التراجع عن هذا الإجراء.",
@@ -559,6 +570,7 @@
       "delete": "حذف",
       "activate": "تفعيل",
       "deactivate": "تعطيل",
+      "unlink": "إلغاء الربط",
       "assign": "تعيين",
       "assigning": "جاري التعيين…",
       "editManager": "تعديل صلاحية المدير",
@@ -2368,14 +2380,22 @@
       "message": "هل أنت متأكد أنك تريد ربط هذا القسم بالفئة؟",
       "confirm": "نعم، قم بالربط",
       "cancel": "إلغاء"
+    },
+    "unlinkDepartment": {
+      "title": "إلغاء ربط القسم؟",
+      "message": "هل أنت متأكد من إلغاء ربط هذا القسم من التخصص؟ لن يتم حذف القسم.",
+      "confirm": "نعم، إلغاء الربط",
+      "cancel": "إلغاء"
     }
   },
   "messages": {
     "success": {
-      "departmentLinked": "تم ربط القسم بنجاح"
+      "departmentUnlinked": "تم إلغاء ربط القسم بنجاح.",
+      "departmentLinked": "تم ربط القسم بنجاح."
     },
     "error": {
       "title": "خطأ",
+      "unlinkDepartmentFailed": "فشل إلغاء ربط القسم. حاول مرة أخرى.",
       "linkDepartmentFailed": "فشل في ربط القسم"
     }
   }

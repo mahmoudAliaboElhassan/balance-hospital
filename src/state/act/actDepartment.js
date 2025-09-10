@@ -264,3 +264,50 @@ export const linkDepartmentToCategory = createAsyncThunk(
     }
   }
 );
+export const unlinkDepartmentFromCategory = createAsyncThunk(
+  "departmentSlice/unlinkDepartmentFromCategory",
+  async ({ id, categoryId, revocationReason }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+
+    try {
+      const res = await axiosInstance.delete(
+        `api/v1/Department/${id}/categories/${categoryId}`,
+        {
+          data: { revocationReason },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("avaialbe departments:", res);
+      return { depId: id };
+    } catch (error) {
+      console.log("Error deleting department:", error);
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+export const getDepartmentByCategory = createAsyncThunk(
+  "departmentSlice/getDepartmentByCategory",
+  async ({ categoryId }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+
+    try {
+      const res = await axiosInstance.get(
+        `api/v1/Department/by-category/${categoryId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("departments by category:", res);
+      return res.data;
+    } catch (error) {
+      console.log("Error deleting department:", error);
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);

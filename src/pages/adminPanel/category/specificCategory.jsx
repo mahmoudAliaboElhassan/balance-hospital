@@ -18,7 +18,9 @@ import {
 } from "../../../state/slices/category";
 import {
   availabelDepartmentsForCategory,
+  getDepartmentByCategory,
   linkDepartmentToCategory,
+  unlinkDepartmentFromCategory,
 } from "../../../state/act/actDepartment";
 import LoadingGetData from "../../../components/LoadingGetData";
 import { useTranslation } from "react-i18next";
@@ -136,12 +138,17 @@ const SpecificCategory = () => {
   const {
     departments,
     loadingGetDepartments,
+    loadingGetDepartmentsByCategory,
+    departmentsByCategory,
     loadingLinkDepartmentToCategory,
+    loadingUnlinkDepartment,
   } = useSelector((state) => state.department);
 
   // Get mode and translation function
   const { mymode } = useSelector((state) => state.mode);
   const { t } = useTranslation();
+
+  console.log("departmentsByCategory", departmentsByCategory);
 
   // Get current language direction and theme
   const isRTL = mymode === "ar";
@@ -353,6 +360,16 @@ const SpecificCategory = () => {
     }
   }, [dispatch, id, filters]);
 
+  useEffect(() => {
+    if (id && !isNaN(id)) {
+      dispatch(
+        getDepartmentByCategory({
+          categoryId: id,
+        })
+      );
+    }
+  }, [dispatch, id, filters]);
+
   // Handle approval success
   useEffect(() => {
     if (approvalSuccess) {
@@ -381,14 +398,6 @@ const SpecificCategory = () => {
     return currentLang === "en"
       ? selectedCategory.nameEnglish
       : selectedCategory.nameArabic;
-  };
-
-  // Get category secondary name (opposite language)
-  const getCategorySecondaryName = () => {
-    if (!selectedCategory) return "";
-    return currentLang === "en"
-      ? selectedCategory.nameArabic
-      : selectedCategory.nameEnglish;
   };
 
   // Format date based on language
@@ -458,6 +467,74 @@ const SpecificCategory = () => {
       await Swal.fire({
         title: t("messages.error.title"),
         text: error.message || t("messages.error.linkDepartmentFailed"),
+        icon: "error",
+        confirmButtonText: t("common.ok"),
+      });
+    }
+  };
+
+  const [unlinkDepId, setUnlinkDepId] = useState(null);
+  // Add this handler function
+
+  const handleUnlinkDepartment = async (departmentId) => {
+    try {
+      // Show confirmation dialog
+      const result = await Swal.fire({
+        title: t("confirmations.unlinkDepartment.title"),
+        text: t("confirmations.unlinkDepartment.message"),
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: t("confirmations.unlinkDepartment.confirm"),
+        cancelButtonText: t("confirmations.unlinkDepartment.cancel"),
+      });
+      console.log(departmentId);
+      if (result.isConfirmed) {
+        setUnlinkDepId(departmentId);
+
+        // Dispatch the unlink action - adjust this based on your Redux action
+        await dispatch(
+          unlinkDepartmentFromCategory({
+            id: departmentId,
+            categoryId: id,
+            revocationReason: "er",
+          })
+        ).unwrap();
+
+        setUnlinkDepId(null);
+
+        // Show success toast
+        toast.success(t("messages.success.departmentUnlinked"), {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+
+        // Refresh the departments list
+        dispatch(getDepartmentByCategory({ categoryId: id }));
+      }
+    } catch (error) {
+      console.error("Error unlinking department:", error);
+      setUnlinkDepId(null);
+
+      // Show error toast
+      toast.error(error.message || t("messages.error.unlinkDepartmentFailed"), {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+
+      // Show error SweetAlert
+      await Swal.fire({
+        title: t("messages.error.title"),
+        text: error.message || t("messages.error.unlinkDepartmentFailed"),
         icon: "error",
         confirmButtonText: t("common.ok"),
       });
@@ -1905,8 +1982,211 @@ const SpecificCategory = () => {
           </div>
         </div>
 
-        {/* Departments Section */}
+        {/* Departments Linked to This Category Section */}
+        <div
+          className={`${
+            isDark ? "bg-gray-800" : "bg-white"
+          } rounded-2xl shadow-xl p-6 mb-8`}
+        >
+          <div className="flex items-center justify-between mb-6">
+            <h2
+              className={`text-2xl font-bold ${
+                isDark ? "text-white" : "text-gray-900"
+              } flex items-center`}
+            >
+              <div
+                className={`w-8 h-8 ${
+                  isDark ? "bg-blue-900/30" : "bg-blue-100"
+                } rounded-lg flex items-center justify-center ${
+                  isRTL ? "mr-3" : "ml-3"
+                }`}
+              >
+                <LinkIcon
+                  className={`w-4 h-4 ${
+                    isDark ? "text-blue-400" : "text-blue-600"
+                  }`}
+                />
+              </div>
+              {t("specificCategory.sections.linkedDepartments.title")}
+            </h2>
+            <span
+              className={`px-3 py-1 rounded-full text-sm font-medium ${
+                isDark
+                  ? "bg-green-900/30 text-green-400"
+                  : "bg-green-100 text-green-800"
+              }`}
+            >
+              {departmentsByCategory?.length || 0}{" "}
+              {t("specificCategory.sections.linkedDepartments.count")}
+            </span>
+          </div>
 
+          {/* Loading State */}
+          {loadingGetDepartmentsByCategory ? (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className={`${isDark ? "text-gray-400" : "text-gray-600"}`}>
+                {t("department.loading")}
+              </p>
+            </div>
+          ) : departmentsByCategory && departmentsByCategory.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {departmentsByCategory.map((department) => (
+                <div
+                  key={department.id}
+                  className={`p-6 rounded-xl border transition-all duration-200 hover:shadow-lg ${
+                    isDark
+                      ? "bg-gray-700 border-gray-600 hover:border-gray-500"
+                      : "bg-white border-gray-200 hover:border-gray-300"
+                  }`}
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="flex-1">
+                      <h3
+                        className={`font-bold text-lg mb-1 ${
+                          isDark ? "text-white" : "text-gray-900"
+                        }`}
+                      >
+                        {currentLang === "en"
+                          ? department.nameEnglish
+                          : department.nameArabic}
+                      </h3>
+                      <p
+                        className={`text-sm ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}
+                      >
+                        {department.code}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {/* Active Status */}
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          department.isActive
+                            ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
+                            : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+                        }`}
+                      >
+                        {department.isActive
+                          ? t("department.status.active")
+                          : t("department.status.inactive")}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 mb-4">
+                    <div className="flex items-center gap-2">
+                      <Building size={16} className="text-gray-500" />
+                      <span
+                        className={`text-sm ${
+                          isDark ? "text-gray-300" : "text-gray-600"
+                        }`}
+                      >
+                        {t("department.code")}: {department.code}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Users size={16} className="text-gray-500" />
+                      <span
+                        className={`text-sm ${
+                          isDark ? "text-gray-300" : "text-gray-600"
+                        }`}
+                      >
+                        {t("department.linkedCategories")}:{" "}
+                        {department.linkedCategoriesCount || 0}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Award size={16} className="text-gray-500" />
+                      <span
+                        className={`text-sm ${
+                          isDark ? "text-gray-300" : "text-gray-600"
+                        }`}
+                      >
+                        {department.hasManager
+                          ? t("department.hasManager")
+                          : t("department.noManager")}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div
+                    className={`flex items-center justify-between pt-4 border-t ${
+                      isDark ? "border-gray-600" : "border-gray-200"
+                    }`}
+                  >
+                    <div className="flex gap-2">
+                      <Link to={`/admin-panel/department/${department.id}`}>
+                        <button
+                          className="inline-flex items-center gap-2 px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
+                          title={t("department.actions.view")}
+                        >
+                          <Eye size={14} />
+                          {t("department.actions.view")}
+                        </button>
+                      </Link>
+                    </div>
+
+                    {/* Unlink Button */}
+                    <button
+                      onClick={() => handleUnlinkDepartment(department.id)}
+                      disabled={
+                        loadingUnlinkDepartment && unlinkDepId === department.id
+                      }
+                      className="inline-flex items-center gap-2 px-3 py-1 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      title={t("department.actions.unlink")}
+                    >
+                      {loadingUnlinkDepartment &&
+                      unlinkDepId === department.id ? (
+                        <RefreshCw size={14} className="animate-spin" />
+                      ) : (
+                        <X size={14} />
+                      )}
+                      {t("department.actions.unlink")}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <div
+                className={`w-16 h-16 ${
+                  isDark ? "bg-gray-700" : "bg-gray-100"
+                } rounded-full flex items-center justify-center mx-auto mb-4`}
+              >
+                <LinkIcon
+                  className={`w-8 h-8 ${
+                    isDark ? "text-gray-500" : "text-gray-400"
+                  }`}
+                />
+              </div>
+              <p
+                className={`text-lg font-medium ${
+                  isDark ? "text-gray-300" : "text-gray-600"
+                } mb-2`}
+              >
+                {t(
+                  "specificCategory.sections.linkedDepartments.noLinkedDepartments"
+                )}
+              </p>
+              <p
+                className={`text-sm ${
+                  isDark ? "text-gray-400" : "text-gray-500"
+                }`}
+              >
+                {t(
+                  "specificCategory.sections.linkedDepartments.linkDepartmentsToGetStarted"
+                )}
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* available departments */}
         <div
           className={`${
             isDark ? "bg-gray-800" : "bg-white"

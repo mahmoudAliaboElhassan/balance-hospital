@@ -128,6 +128,7 @@ function UseInitialStates() {
 
     // Department data
     departments: [],
+    departmentsByCategory: [],
     pagination: null,
     error: null,
     message: "",
@@ -142,6 +143,7 @@ function UseInitialStates() {
     loadingUpdateManagerPermission: false,
     loadingAssignManager: false,
     loadingLinkDepartmentToCategory: false,
+    loadingGetDepartmentsByCategory: false,
 
     // Single department
     selectedDepartment: null,
