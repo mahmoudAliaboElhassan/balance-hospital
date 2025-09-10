@@ -681,22 +681,6 @@ function Roster() {
                 >
                   {t("roster.noRosters")}
                 </h3>
-                <p
-                  className={`${
-                    isDark ? "text-gray-400" : "text-gray-500"
-                  } mb-6`}
-                >
-                  {t("roster.createFirstRoster")}
-                </p>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <button
-                    onClick={() => navigate("/admin-panel/rosters/create")}
-                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                  >
-                    <Plus size={16} className={isRTL ? "ml-2" : "mr-2"} />
-                    {t("roster.actions.createBasic")}
-                  </button>
-                </div>
               </div>
             ) : (
               rosterList.map((roster) => (

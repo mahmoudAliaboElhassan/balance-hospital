@@ -217,3 +217,26 @@ export const assignManager = createAsyncThunk(
     }
   }
 );
+export const availabelDepartmentsForCategory = createAsyncThunk(
+  "departmentSlice/availabelDepartmentsForCategory",
+  async ({ categoryId }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+
+    try {
+      const res = await axiosInstance.get(
+        `api/v1/Department/available-for-category/${categoryId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("avaialbe departments:", res);
+      return res.data;
+    } catch (error) {
+      console.log("Error deleting department:", error);
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);

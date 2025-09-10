@@ -16,7 +16,7 @@ import {
   rejectDoctorRequest,
   clearApprovalError,
 } from "../../../state/slices/category";
-import { getDepartments } from "../../../state/act/actDepartment";
+import { availabelDepartmentsForCategory } from "../../../state/act/actDepartment";
 import LoadingGetData from "../../../components/LoadingGetData";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
@@ -313,7 +313,7 @@ const SpecificCategory = () => {
           localStorage.setItem("categoryArabicName", response.data.nameArabic);
         });
       // Fetch departments for this specific category
-      dispatch(getDepartments({ categoryId: id }));
+      dispatch(availabelDepartmentsForCategory({ categoryId: id }));
       dispatch(getRosterByCategory({ categoryId: id }));
 
       // Fetch pending doctors for this category
@@ -1831,7 +1831,8 @@ const SpecificCategory = () => {
         </div>
 
         {/* Departments Section */}
-        <div
+
+        {/* <div
           className={`${
             isDark ? "bg-gray-800" : "bg-white"
           } rounded-2xl shadow-xl p-6`}
@@ -1911,7 +1912,7 @@ const SpecificCategory = () => {
               </p>
             </div>
           )}
-        </div>
+        </div> */}
 
         {/* Chief Card - if exists */}
         {selectedCategory.chief && (

@@ -9,6 +9,7 @@ import {
   updateManagerPermission,
   removeManager,
   assignManager,
+  availabelDepartmentsForCategory,
 } from "../act/actDepartment";
 import i18next from "i18next";
 import "../../translation/i18n";
@@ -131,6 +132,40 @@ export const departmentSlice = createSlice({
         }
       })
       .addCase(getDepartments.rejected, (state, action) => {
+        state.loadingGetDepartments = false;
+        state.departments = [];
+        state.pagination = null;
+        state.error = {
+          message:
+            action.payload?.message || i18next.t("department.fetchError"),
+          errors: action.payload?.errors || [],
+          timestamp: new Date().toISOString(),
+        };
+      })
+      .addCase(availabelDepartmentsForCategory.pending, (state) => {
+        state.loadingGetDepartments = true;
+        state.error = null;
+      })
+      .addCase(availabelDepartmentsForCategory.fulfilled, (state, action) => {
+        state.loadingGetDepartments = false;
+        state.error = null;
+
+        const response = action.payload;
+        if (response.success) {
+          state.departments = response.data;
+          state.pagination = {
+            totalCount: response.data.totalCount,
+            page: response.data.page,
+            pageSize: response.data.pageSize,
+            totalPages: response.data.totalPages,
+            hasNextPage: response.data.hasNext,
+            hasPreviousPage: response.data.hasPrevious,
+          };
+          state.message = response.messageAr || response.messageEn;
+          state.timestamp = response.timestamp;
+        }
+      })
+      .addCase(availabelDepartmentsForCategory.rejected, (state, action) => {
         state.loadingGetDepartments = false;
         state.departments = [];
         state.pagination = null;
