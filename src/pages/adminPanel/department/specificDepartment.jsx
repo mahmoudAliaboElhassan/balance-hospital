@@ -379,7 +379,7 @@ function SpecificDepartment() {
               </div>
             </div>
 
-            <div
+            {/* <div
               className={`mt-6 flex ${isRTL ? "justify-start" : "justify-end"}`}
             >
               <button
@@ -401,7 +401,7 @@ function SpecificDepartment() {
                 </svg>
                 {t("create-specific-sub-department")}
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -915,7 +915,7 @@ function SpecificDepartment() {
             </div>
 
             {/* Sub-Departments Section */}
-            <div
+            {/* <div
               className={`${
                 isDark ? "bg-gray-800" : "bg-white"
               } rounded-2xl shadow-xl p-6`}
@@ -1228,7 +1228,7 @@ function SpecificDepartment() {
                   ))}
                 </div>
               )}
-            </div>
+            </div> */}
 
             {/* Description Card */}
             {selectedDepartment.description && (

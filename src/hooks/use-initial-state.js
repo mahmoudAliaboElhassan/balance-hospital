@@ -141,6 +141,7 @@ function UseInitialStates() {
     loadingDeleteDepartment: false,
     loadingUpdateManagerPermission: false,
     loadingAssignManager: false,
+    loadingLinkDepartmentToCategory: false,
 
     // Single department
     selectedDepartment: null,

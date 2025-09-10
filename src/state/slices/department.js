@@ -10,6 +10,7 @@ import {
   removeManager,
   assignManager,
   availabelDepartmentsForCategory,
+  linkDepartmentToCategory,
 } from "../act/actDepartment";
 import i18next from "i18next";
 import "../../translation/i18n";
@@ -142,6 +143,7 @@ export const departmentSlice = createSlice({
           timestamp: new Date().toISOString(),
         };
       })
+
       .addCase(availabelDepartmentsForCategory.pending, (state) => {
         state.loadingGetDepartments = true;
         state.error = null;
@@ -175,6 +177,18 @@ export const departmentSlice = createSlice({
           errors: action.payload?.errors || [],
           timestamp: new Date().toISOString(),
         };
+      })
+      .addCase(linkDepartmentToCategory.pending, (state) => {
+        state.loadingLinkDepartmentToCategory = true;
+      })
+      .addCase(linkDepartmentToCategory.fulfilled, (state, action) => {
+        state.loadingLinkDepartmentToCategory = false;
+        const { depId } = action.payload;
+        console.log("depId from slice", depId);
+        state.departments = state.departments.filter((dep) => dep.id !== depId);
+      })
+      .addCase(linkDepartmentToCategory.rejected, (state, action) => {
+        state.loadingLinkDepartmentToCategory = false;
       })
 
       // Create Department

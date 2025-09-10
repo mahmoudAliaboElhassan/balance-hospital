@@ -265,9 +265,10 @@
       },
 
       "departments": {
-        "title": "Departments",
+        "title": "Assign Departments to that Category",
         "count": "departments",
         "noDepartments": "No departments found",
+        "linkButton": "Assign Department",
         "createFirst": "Create your first department for this category"
       },
       "chief": {
@@ -396,9 +397,11 @@
     "addToRoster": "Add New Department to Roster",
     "noResults": "No results found",
     "assignManager": "Assign Manager",
+    "noUsersMessage": "There are no users available to assign as a manager.",
+    "noUsersTitle": "No Users Found",
 
     "sections": {
-      "manager": "Manager",
+      "manager": "Assign Department Manager",
       "basicInfo": "Basic Information",
       "permissions": "Permissions",
       "managerSelection": "Manager Selection"
@@ -410,7 +413,7 @@
       "category": "Category",
       "location": "Location",
       "description": "Description",
-      "departmentHead": "Department Head *",
+      "departmentHead": "Department Manager *",
       "startDate": "Start Date *",
       "canViewDepartment": "Can view department",
       "canEditDepartment": "Can edit department",
@@ -2363,5 +2366,23 @@
       "description": "This department doesn't have a manager assigned. Please assign a manager first."
     },
     "assignManager": "Assign Manager"
+  },
+
+  "confirmations": {
+    "linkDepartment": {
+      "title": "Link Department",
+      "message": "Are you sure you want to link this department to the category?",
+      "confirm": "Yes, link it",
+      "cancel": "Cancel"
+    }
+  },
+  "messages": {
+    "success": {
+      "departmentLinked": "Department linked successfully"
+    },
+    "error": {
+      "title": "Error",
+      "linkDepartmentFailed": "Failed to link department"
+    }
   }
 }

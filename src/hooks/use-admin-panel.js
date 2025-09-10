@@ -24,12 +24,12 @@ function UseAdminPanel() {
       path: "/admin-panel/departments",
     },
 
-    {
-      id: 4,
-      name: t("adminPanel.subDepartments"),
-      icon: "🏗️",
-      path: "/admin-panel/sub-departments",
-    },
+    // {
+    //   id: 4,
+    //   name: t("adminPanel.subDepartments"),
+    //   icon: "🏗️",
+    //   path: "/admin-panel/sub-departments",
+    // },
     {
       id: 5,
       name: t("adminPanel.managementRoles"),

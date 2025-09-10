@@ -16,7 +16,10 @@ import {
   rejectDoctorRequest,
   clearApprovalError,
 } from "../../../state/slices/category";
-import { availabelDepartmentsForCategory } from "../../../state/act/actDepartment";
+import {
+  availabelDepartmentsForCategory,
+  linkDepartmentToCategory,
+} from "../../../state/act/actDepartment";
 import LoadingGetData from "../../../components/LoadingGetData";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
@@ -43,11 +46,15 @@ import {
   UserCheck,
   ChevronDown,
   ChevronUp,
+  LinkIcon,
+  ArrowUpRight,
+  ExternalLink,
 } from "lucide-react";
 import { getRosterByCategory } from "../../../state/act/actRosterManagement";
 import ModalUpdateRosterStatus from "../../../components/ModalUpdateRosterStatus";
 import "../../../styles/general.css";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 const SpecificCategory = () => {
   const { catId: id } = useParams();
@@ -126,9 +133,11 @@ const SpecificCategory = () => {
   );
 
   // Get departments from the department slice
-  const { departments, loadingGetDepartments } = useSelector(
-    (state) => state.department
-  );
+  const {
+    departments,
+    loadingGetDepartments,
+    loadingLinkDepartmentToCategory,
+  } = useSelector((state) => state.department);
 
   // Get mode and translation function
   const { mymode } = useSelector((state) => state.mode);
@@ -395,7 +404,65 @@ const SpecificCategory = () => {
     };
     return date.toLocaleDateString(locale, options);
   };
+  const [depClickId, setDepClickId] = useState(null);
+  const handleLinkDepartment = async (departmentId) => {
+    try {
+      // Show confirmation dialog
+      const result = await Swal.fire({
+        title: t("confirmations.linkDepartment.title"),
+        text: t("confirmations.linkDepartment.message"),
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: t("confirmations.linkDepartment.confirm"),
+        cancelButtonText: t("confirmations.linkDepartment.cancel"),
+      });
 
+      if (result.isConfirmed) {
+        // Dispatch the action with unwrap
+        setDepClickId(departmentId);
+        await dispatch(
+          linkDepartmentToCategory({
+            id: departmentId,
+            categoryId: id,
+          })
+        ).unwrap();
+        setDepClickId(null);
+
+        // Show success toast
+        toast.success(t("messages.success.departmentLinked"), {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      }
+    } catch (error) {
+      console.error("Error linking department:", error);
+      setDepClickId(null);
+
+      // Show error toast
+      toast.error(error.message || t("messages.error.linkDepartmentFailed"), {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+
+      // Show error SweetAlert
+      await Swal.fire({
+        title: t("messages.error.title"),
+        text: error.message || t("messages.error.linkDepartmentFailed"),
+        icon: "error",
+        confirmButtonText: t("common.ok"),
+      });
+    }
+  };
   // Handle create department for this category
   const handleCreateDepartment = () => {
     if (selectedCategory) {
@@ -577,13 +644,8 @@ const SpecificCategory = () => {
           isDark ? "border-gray-700" : "border-gray-200"
         }`}
       >
-        <div
-          className={`text-xs ${isDark ? "text-gray-400" : "text-gray-500"}`}
-        >
-          {formatDate(department.createdAt)}
-        </div>
         <div className="flex gap-2">
-          <Link to={`/admin-panel/department/${department.id}`}>
+          {/* <Link to={`/admin-panel/department/${department.id}`}>
             <button
               className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
               title={t("department.actions.view")}
@@ -598,7 +660,20 @@ const SpecificCategory = () => {
             >
               <Edit size={16} />
             </button>
-          </Link>
+          </Link> */}
+          <button
+            className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors flex items-center gap-2"
+            onClick={() => handleLinkDepartment(department.id)}
+            disabled={
+              loadingLinkDepartmentToCategory && depClickId == department.id
+            }
+            title={t("specificCategory.sections.departments.linkButton")}
+          >
+            <Plus size={16} />
+            {loadingLinkDepartmentToCategory
+              ? t("common.loading")
+              : t("specificCategory.sections.departments.linkButton")}{" "}
+          </button>
         </div>
       </div>
     </div>
@@ -956,7 +1031,7 @@ const SpecificCategory = () => {
   `}
             >
               {/* Create Specific Department */}
-              <button
+              {/* <button
                 onClick={handleCreateDepartment}
                 className="w-full md:w-auto inline-flex items-center justify-center bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
@@ -974,7 +1049,7 @@ const SpecificCategory = () => {
                   />
                 </svg>
                 {t("create-specific-department")}
-              </button>
+              </button> */}
 
               {/* Add New Roster (Link button) */}
               <Link
@@ -1832,7 +1907,7 @@ const SpecificCategory = () => {
 
         {/* Departments Section */}
 
-        {/* <div
+        <div
           className={`${
             isDark ? "bg-gray-800" : "bg-white"
           } rounded-2xl shadow-xl p-6`}
@@ -1912,7 +1987,7 @@ const SpecificCategory = () => {
               </p>
             </div>
           )}
-        </div> */}
+        </div>
 
         {/* Chief Card - if exists */}
         {selectedCategory.chief && (

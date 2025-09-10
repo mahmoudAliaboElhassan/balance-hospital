@@ -112,8 +112,8 @@
     "dashboard": "لوحة التحكم",
     "categories": "التخصصات",
     "pendingDoctorRequests": "حالة الأطباء",
-    "departments": "الأقسام",
-    "subDepartments": "الأقسام الفرعية",
+    "departments": "الاماكن",
+    "subDepartments": "الأماكن الفرعية",
     "managementRoles": "أدوار الإدارة",
     "scientificDegrees": "الدرجات العلمية",
     "contractTypes": "أنواع العقود",
@@ -163,7 +163,7 @@
       "nameEnglish": "الاسم بالإنجليزية",
       "description": "الوصف",
       "status": "الحالة",
-      "departments": "الأقسام",
+      "departments": "الاماكن",
       "users": "المستخدمون",
       "createdAt": "تاريخ الإنشاء",
       "actions": "الإجراءات"
@@ -266,17 +266,18 @@
         "noDescription": "لا يوجد وصف"
       },
       "departments": {
-        "title": "الأقسام",
-        "count": "قسم",
-        "noDepartments": "لم يتم العثور على أقسام",
-        "createFirst": "أنشئ أول قسم لهذه التخصص"
+        "title": "أضف أماكن لهذا التخصص",
+        "count": "مكان",
+        "noDepartments": "لم يتم العثور على أماكن",
+        "createFirst": "أنشئ أول مكان لهذه التخصص",
+        "linkButton": "ربط المكان"
       },
       "chief": {
         "title": "الرئيس"
       },
       "statistics": {
         "title": "الإحصائيات",
-        "departmentsCount": "عدد الأقسام",
+        "departmentsCount": "عدد الأماكن",
         "usersCount": "عدد المستخدمين",
         "rostersCount": "عدد الروستر"
       },
@@ -392,14 +393,15 @@
     }
   },
   "departmentForm": {
-    "title": "إنشاء قسم جديد",
-    "editTitle": "تعديل القسم",
-    "addToRoster": "إضافة قسم جديد لجدول المعاينه",
+    "title": "إنشاء مكان جديد",
+    "editTitle": "تعديل المكان",
+    "addToRoster": "إضافة مكان جديد لجدول المعاينه",
     "noResults": "لا توجد نتائج",
     "assignManager": "تعيين مدير",
-
+    "noUsersTitle": "لا يوجد مستخدمون",
+    "noUsersMessage": "لا يوجد مستخدمون متاحون لتعيينهم كمدير.",
     "sections": {
-      "manager": "المدير",
+      "manager": "تعيين مدير المكان",
       "permissions": "الصلاحيات",
       "basicInfo": "المعلومات الأساسية",
       "managerSelection": "اختيار المدير"
@@ -410,89 +412,89 @@
       "category": "التخصص",
       "location": "الموقع",
       "description": "الوصف",
-      "departmentHead": "رئيس القسم *",
+      "departmentHead": "مدير المكان *",
       "startDate": "تاريخ البدء *",
-      "canViewDepartment": "يمكنه عرض القسم",
-      "canEditDepartment": "يمكنه تعديل القسم",
-      "canViewDepartmentReports": "يمكنه عرض تقارير القسم",
+      "canViewDepartment": "يمكنه عرض المكان",
+      "canEditDepartment": "يمكنه تعديل المكان",
+      "canViewDepartmentReports": "يمكنه عرض تقارير المكان",
       "canManageSchedules": "يمكنه إدارة الجداول",
       "canManageStaff": "يمكنه إدارة الموظفين",
       "notes": "ملاحظات",
       "isActive": "نشط"
     },
     "placeholders": {
-      "nameArabic": "أدخل اسم القسم بالعربية",
-      "nameEnglish": "أدخل اسم القسم بالإنجليزية",
+      "nameArabic": "أدخل اسم المكان بالعربية",
+      "nameEnglish": "أدخل اسم المكان بالإنجليزية",
       "category": "أختر تحصصاً",
-      "location": "أدخل موقع القسم (مثل: الطابق الثالث – الجناح أ)",
-      "description": "أدخل وصفًا للقسم (اختياري)",
+      "location": "أدخل موقع المكان (مثل: الطابق الثالث – الجناح أ)",
+      "description": "أدخل وصفًا للمكان (اختياري)",
       "code": "أدخل الرمز",
       "searchUsers": "بحث عن المستخدمين",
       "searchUser": "اكتب اسم أو بريد للبحث...",
       "notes": "أدخل الملاحظات هنا..."
     },
     "hints": {
-      "location": "حدد الموقع الفعلي للقسم داخل المنشأة",
-      "description": "شرح موجز لخدمات القسم ومسؤولياته"
+      "location": "حدد الموقع الفعلي للمكان داخل المنشأة",
+      "description": "شرح موجز لخدمات المكان ومسؤولياته"
     },
     "charactersCount": "حروف",
     "buttons": {
-      "create": "إنشاء قسم",
-      "edit": "تحديث القسم",
+      "create": "إنشاء مكان",
+      "edit": "تحديث المكان",
       "creating": "جاري الإنشاء…",
       "editing": "جاري التحديث…",
       "cancel": "إلغاء",
       "back": "رجوع"
     },
     "success": {
-      "created": "تم إنشاء القسم بنجاح!",
-      "updated": "تم تحديث القسم بنجاح!",
-      "deleted": "تم حذف القسم بنجاح!",
+      "created": "تم إنشاء المكان بنجاح!",
+      "updated": "تم تحديث المكان بنجاح!",
+      "deleted": "تم حذف المكان بنجاح!",
       "managerAssigned": "تم تعيين المدير بنجاح"
     },
     "error": {
       "title": "خطأ",
-      "createFailed": "فشل في إنشاء القسم",
-      "updateFailed": "فشل في تحديث القسم",
-      "deleteFailed": "فشل في حذف القسم",
-      "loadFailed": "فشل في جلب بيانات القسم"
+      "createFailed": "فشل في إنشاء المكان",
+      "updateFailed": "فشل في تحديث المكان",
+      "deleteFailed": "فشل في حذف المكان",
+      "loadFailed": "فشل في جلب بيانات المكان"
     }
   },
   "department": {
-    "title": "الأقسام",
-    "addNew": "إضافة قسم جديد",
+    "title": "الاماكن",
+    "addNew": "إضافة مكان جديد",
     "add": "إضافة",
-    "fetchError": "حدث خطأ أثناء جلب الأقسام.",
+    "fetchError": "حدث خطأ أثناء جلب الأماكن.",
     "noData": "لا توجد بيانات متاحه ",
-    "loading": "جاري تحميل الأقسام...",
+    "loading": "جاري تحميل الأماكن...",
     "removeManager": {
       "title": "إزالة المدير",
-      "confirmMessage": "هل أنت متأكد أنك تريد إزالة هذا المدير من القسم؟ لا يمكن التراجع عن هذا الإجراء.",
-      "department": "القسم",
+      "confirmMessage": "هل أنت متأكد أنك تريد إزالة هذا المدير من المكان؟ لا يمكن التراجع عن هذا الإجراء.",
+      "department": "المكان",
       "manager": "المدير الحالي",
       "reason": "سبب الإزالة",
       "reasonPlaceholder": "من فضلك أدخل سبب إزالة هذا المدير...",
       "reasonRequired": "السبب مطلوب",
       "warning": {
         "title": "تحذير:",
-        "message": "إزالة المدير ستلغي جميع صلاحياته والوصول الخاص بالقسم."
+        "message": "إزالة المدير ستلغي جميع صلاحياته والوصول الخاص بالمكان."
       },
-      "success": "تمت إزالة المدير {{managerName}} من قسم {{departmentName}} بنجاح",
+      "success": "تمت إزالة المدير {{managerName}} من مكان {{departmentName}} بنجاح",
       "error": {
         "title": "خطأ"
       },
       "confirm": "إزالة المدير"
     },
     "manager": {
-      "title": "مدير القسم",
+      "title": "مدير المكان",
       "noName": "بدون اسم",
       "noManager": "لا يوجد مدير معين",
-      "noManagerDescription": "لا يوجد مدير معين لهذا القسم حتى الآن.",
+      "noManagerDescription": "لا يوجد مدير معين لهذا المكان حتى الآن.",
       "startDate": "تاريخ البدء",
       "notes": "ملاحظات",
       "permissions": {
-        "viewDepartment": "عرض القسم",
-        "editDepartment": "تعديل القسم",
+        "viewDepartment": "عرض المكان",
+        "editDepartment": "تعديل المكان",
         "viewReports": "عرض التقارير",
         "manageSchedules": "إدارة الجداول",
         "manageStaff": "إدارة الموظفين"
@@ -506,25 +508,25 @@
     },
     "form": {
       "validation": {
-        "codeRequired": "كود القسم مطلوب",
-        "codeLength": "يجب أن يكون كود القسم 4 أحرف بالضبط",
+        "codeRequired": "كود المكان مطلوب",
+        "codeLength": "يجب أن يكون كود المكان 4 أحرف بالضبط",
         "nameArabicRequired": "الاسم العربي مطلوب",
         "nameEnglishRequired": "الاسم الإنجليزي مطلوب",
-        "departmentRequired": "القسم مطلوب",
+        "departmentRequired": "المكان مطلوب",
         "categoryRequired": "التخصص مطلوب",
         "locationRequired": "الموقع مطلوب"
       }
     },
     "search": {
-      "placeholder": "ابحث في الأقسام…"
+      "placeholder": "ابحث في الأماكن…"
     },
-    "deleteSuccess": "تم حذف القسم “{{name}}” بنجاح!",
+    "deleteSuccess": "تم حذف المكان “{{name}}” بنجاح!",
     "filters": {
       "title": "الفلاتر",
-      "all": "جميع الأقسام",
-      "allCategories": "كل الأقسام",
-      "active": "الأقسام النشطة فقط",
-      "inactive": "الأقسام غير النشطة فقط",
+      "all": "جميع الأماكن",
+      "allCategories": "كل الأماكن",
+      "active": "الأماكن النشطة فقط",
+      "inactive": "الأماكن غير النشطة فقط",
       "category": "تصفية حسب التخصص",
       "dateRange": "نطاق التاريخ",
       "createdFrom": "أنشئ من",
@@ -538,7 +540,7 @@
       "name": "الاسم",
       "category": "التخصص",
       "location": "الموقع",
-      "subDepartments": "الأقسام الفرعية",
+      "subDepartments": "الأماكن الفرعية",
       "doctors": "الأطباء",
       "pendingRequests": "الطلبات المعلقة",
       "linkedCategories": "التخصصات المرتبطة",
@@ -563,8 +565,8 @@
       "removeManager": "إزالة المدير"
     },
     "delete": {
-      "title": "حذف القسم",
-      "confirmMessage": "هل أنت متأكد أنك تريد حذف هذا القسم؟",
+      "title": "حذف المكان",
+      "confirmMessage": "هل أنت متأكد أنك تريد حذف هذا المكان؟",
       "reason": "سبب الحذف",
       "reasonPlaceholder": "أدخل السبب…",
       "reasonRequired": "يرجى تقديم سبب الحذف.",
@@ -573,24 +575,24 @@
       "warning": "لا يمكن التراجع عن هذا الإجراء."
     },
     "details": {
-      "title": "تفاصيل القسم",
+      "title": "تفاصيل المكان",
       "information": "المعلومات الأساسية",
       "statistics": "الإحصائيات",
-      "subDepartments": "الأقسام الفرعية",
+      "subDepartments": "الأماكن الفرعية",
       "employees": "الموظفون",
-      "head": "رئيس القسم",
+      "head": "رئيس المكان",
       "createdBy": "أنشأ بواسطة",
       "updatedBy": "آخر تحديث بواسطة",
       "createdAt": "تاريخ الإنشاء",
       "updatedAt": "تاريخ آخر تحديث",
-      "backToDepartments": "العودة للأقسام",
+      "backToDepartments": "العودة للأماكن",
       "noCategoryInfo": "لا توجد معلومات عن التخصص"
     },
     "statistics": {
       "totalDoctors": "إجمالي الأطباء",
       "activeDoctors": "الأطباء النشطون",
-      "totalSubDepartments": "إجمالي الأقسام الفرعية",
-      "activeSubDepartments": "الأقسام الفرعية النشطة",
+      "totalSubDepartments": "إجمالي الأماكن الفرعية",
+      "activeSubDepartments": "الأماكن الفرعية النشطة",
       "pendingRequests": "الطلبات المعلقة",
       "schedulesThisMonth": "جداول هذا الشهر",
       "linkedCategories": "التخصصات المرتبطة",
@@ -599,15 +601,15 @@
     },
     "error": {
       "title": "خطأ",
-      "message": "حدث خطأ أثناء معالجة بيانات الأقسام",
-      "notFound": "القسم غير موجود",
-      "noPermission": "ليس لديك إذن للوصول لهذا القسم",
-      "fetchError": "فشل في جلب الأقسام"
+      "message": "حدث خطأ أثناء معالجة بيانات الأماكن",
+      "notFound": "المكان غير موجود",
+      "noPermission": "ليس لديك إذن للوصول لهذا المكان",
+      "fetchError": "فشل في جلب الأماكن"
     },
     "empty": {
-      "title": "لا توجد أقسام",
-      "message": "لا توجد أقسام تطابق الفلاتر الحالية",
-      "suggestion": "حاول تعديل معايير البحث أو إضافة قسم جديد"
+      "title": "لا توجد أماكن",
+      "message": "لا توجد أماكن تطابق الفلاتر الحالية",
+      "suggestion": "حاول تعديل معايير البحث أو إضافة مكان جديد"
     },
     "pagination": {
       "showing": "عرض",
@@ -651,8 +653,8 @@
     "refresh": "تحديث",
     "startDate": "تاريخ البداية",
     "endDate": "تاريخ النهاية",
-    "department": "القسم",
-    "allDepartments": "كل الأقسام",
+    "department": "المكان",
+    "allDepartments": "كل الأماكن",
     "apply": "تطبيق",
     "view": "عرض",
     "date": "التاريخ",
@@ -671,21 +673,21 @@
   },
 
   "subDepartment": {
-    "title": "إدارة الأقسام الفرعية",
-    "addNew": "إضافة قسم فرعي جديد",
+    "title": "إدارة الأماكن الفرعية",
+    "addNew": "إضافة مكان فرعي جديد",
     "add": "إضافة",
     "loading": "جاري التحميل...",
-    "noData": "لا توجد أقسام فرعية",
-    "fetchError": "خطأ في جلب الأقسام الفرعية",
+    "noData": "لا توجد أماكن فرعية",
+    "fetchError": "خطأ في جلب الأماكن الفرعية",
 
     "search": {
-      "placeholder": "البحث في الأقسام الفرعية بالاسم أو الموقع..."
+      "placeholder": "البحث في الأماكن الفرعية بالاسم أو الموقع..."
     },
 
     "filters": {
       "title": "فلاتر",
-      "department": "القسم",
-      "allDepartments": "جميع الأقسام",
+      "department": "المكان",
+      "allDepartments": "جميع الأماكن",
       "category": "التخصص",
       "allCategories": "جميع التخصصات",
       "status": "الحالة",
@@ -706,7 +708,7 @@
       "nameArabic": "الاسم العربي",
       "nameEnglish": "الاسم الإنجليزي",
       "name": "الاسم",
-      "department": "القسم",
+      "department": "المكان",
       "location": "الموقع",
       "status": "الحالة",
       "doctors": "الأطباء",
@@ -735,12 +737,12 @@
 
     "form": {
       "create": {
-        "title": "إنشاء قسم فرعي جديد",
-        "submit": "إنشاء القسم الفرعي"
+        "title": "إنشاء مكان فرعي جديد",
+        "submit": "إنشاء المكان الفرعي"
       },
       "edit": {
-        "title": "تعديل القسم الفرعي",
-        "submit": "تحديث القسم الفرعي"
+        "title": "تعديل المكان الفرعي",
+        "submit": "تحديث المكان الفرعي"
       },
       "fields": {
         "nameArabic": {
@@ -752,8 +754,8 @@
           "placeholder": "أدخل الاسم الإنجليزي"
         },
         "department": {
-          "label": "القسم",
-          "placeholder": "اختر القسم"
+          "label": "المكان",
+          "placeholder": "اختر المكان"
         },
         "location": {
           "label": "الموقع",
@@ -772,24 +774,24 @@
       "validation": {
         "nameArabicRequired": "الاسم العربي مطلوب",
         "nameEnglishRequired": "الاسم الإنجليزي مطلوب",
-        "departmentRequired": "القسم مطلوب",
+        "departmentRequired": "المكان مطلوب",
         "locationRequired": "الموقع مطلوب"
       }
     },
 
     "messages": {
-      "createSuccess": "تم إنشاء القسم الفرعي بنجاح",
-      "updateSuccess": "تم تحديث القسم الفرعي بنجاح",
-      "deleteSuccess": "تم حذف القسم الفرعي بنجاح",
-      "createError": "خطأ في إنشاء القسم الفرعي",
-      "updateError": "خطأ في تحديث القسم الفرعي",
-      "deleteError": "خطأ في حذف القسم الفرعي"
+      "createSuccess": "تم إنشاء المكان الفرعي بنجاح",
+      "updateSuccess": "تم تحديث المكان الفرعي بنجاح",
+      "deleteSuccess": "تم حذف المكان الفرعي بنجاح",
+      "createError": "خطأ في إنشاء المكان الفرعي",
+      "updateError": "خطأ في تحديث المكان الفرعي",
+      "deleteError": "خطأ في حذف المكان الفرعي"
     },
 
     "delete": {
-      "title": "حذف القسم الفرعي",
-      "message": "هل أنت متأكد من حذف هذا القسم الفرعي؟",
-      "subDepartmentName": "اسم القسم الفرعي",
+      "title": "حذف المكان الفرعي",
+      "message": "هل أنت متأكد من حذف هذا المكان الفرعي؟",
+      "subDepartmentName": "اسم المكان الفرعي",
       "reason": {
         "label": "سبب الحذف",
         "placeholder": "أدخل سبب الحذف",
@@ -800,7 +802,7 @@
     },
 
     "details": {
-      "title": "تفاصيل القسم الفرعي",
+      "title": "تفاصيل المكان الفرعي",
       "information": "المعلومات الأساسية",
       "statistics": "الإحصائيات",
       "basicInfo": "المعلومات الأساسية",
@@ -810,8 +812,8 @@
       "updatedAt": "تاريخ التحديث",
       "createdBy": "أنشأ بواسطة",
       "updatedBy": "آخر تحديث بواسطة",
-      "backToSubDepartments": "العودة للأقسام الفرعية",
-      "noDepartmentInfo": "لا توجد معلومات عن القسم"
+      "backToSubDepartments": "العودة للأماكن الفرعية",
+      "noDepartmentInfo": "لا توجد معلومات عن المكان"
     },
 
     "statistics": {
@@ -822,66 +824,66 @@
 
     "error": {
       "title": "خطأ",
-      "message": "حدث خطأ أثناء معالجة بيانات القسم الفرعي",
-      "notFound": "القسم الفرعي غير موجود",
-      "noPermission": "ليس لديك صلاحية للوصول لهذا القسم الفرعي",
-      "fetchError": "فشل في جلب الأقسام الفرعية"
+      "message": "حدث خطأ أثناء معالجة بيانات المكان الفرعي",
+      "notFound": "المكان الفرعي غير موجود",
+      "noPermission": "ليس لديك صلاحية للوصول لهذا المكان الفرعي",
+      "fetchError": "فشل في جلب الأماكن الفرعية"
     },
 
     "empty": {
-      "title": "لا توجد أقسام فرعية",
-      "message": "لا توجد أقسام فرعية تطابق معايير البحث الحالية",
-      "suggestion": "حاول تعديل معايير البحث أو إضافة قسم فرعي جديد",
-      "description": "هذا القسم لا يحتوي على أي أقسام فرعية حتى الآن."
+      "title": "لا توجد أماكن فرعية",
+      "message": "لا توجد أماكن فرعية تطابق معايير البحث الحالية",
+      "suggestion": "حاول تعديل معايير البحث أو إضافة مكان فرعي جديد",
+      "description": "هذا المكان لا يحتوي على أي أماكن فرعية حتى الآن."
     }
   },
 
   "subDepartments": {
-    "fetchError": "خطأ في جلب الأقسام الفرعية"
+    "fetchError": "خطأ في جلب الأماكن الفرعية"
   },
 
   "subDepartmentForm": {
-    "title": "إنشاء قسم فرعي جديد",
-    "editTitle": "تعديل القسم الفرعي",
+    "title": "إنشاء مكان فرعي جديد",
+    "editTitle": "تعديل المكان الفرعي",
     "fields": {
       "nameArabic": "الاسم العربي",
       "nameEnglish": "الاسم الإنجليزي",
-      "department": "القسم",
+      "department": "المكان",
       "location": "الموقع",
       "description": "الوصف",
       "isActive": "حالة النشاط"
     },
     "placeholders": {
-      "nameArabic": "أدخل اسم القسم الفرعي بالعربية",
-      "nameEnglish": "أدخل اسم القسم الفرعي بالإنجليزية",
-      "department": "اختر قسماً",
-      "location": "أدخل موقع القسم الفرعي (مثال: غرفة 101 - الطابق الثاني)",
-      "description": "أدخل وصف القسم الفرعي (اختياري)"
+      "nameArabic": "أدخل اسم المكان الفرعي بالعربية",
+      "nameEnglish": "أدخل اسم المكان الفرعي بالإنجليزية",
+      "department": "اختر مكاناً",
+      "location": "أدخل موقع المكان الفرعي (مثال: غرفة 101 - الطابق الثاني)",
+      "description": "أدخل وصف المكان الفرعي (اختياري)"
     },
     "hints": {
-      "location": "حدد الموقع الفعلي للقسم الفرعي داخل المنشأة",
-      "description": "وصف مختصر لخدمات ومسؤوليات القسم الفرعي"
+      "location": "حدد الموقع الفعلي للمكان الفرعي داخل المنشأة",
+      "description": "وصف مختصر لخدمات ومسؤوليات المكان الفرعي"
     },
     "charactersCount": "حرف",
     "buttons": {
-      "create": "إنشاء القسم الفرعي",
-      "edit": "تحديث القسم الفرعي",
+      "create": "إنشاء المكان الفرعي",
+      "edit": "تحديث المكان الفرعي",
       "creating": "جاري الإنشاء...",
       "editing": "جاري التحديث...",
       "cancel": "إلغاء",
       "back": "رجوع"
     },
     "success": {
-      "created": "تم إنشاء القسم الفرعي بنجاح!",
-      "updated": "تم تحديث القسم الفرعي بنجاح!",
-      "deleted": "تم حذف القسم الفرعي بنجاح!"
+      "created": "تم إنشاء المكان الفرعي بنجاح!",
+      "updated": "تم تحديث المكان الفرعي بنجاح!",
+      "deleted": "تم حذف المكان الفرعي بنجاح!"
     },
     "error": {
       "title": "خطأ",
-      "createFailed": "فشل في إنشاء القسم الفرعي",
-      "updateFailed": "فشل في تحديث القسم الفرعي",
-      "deleteFailed": "فشل في حذف القسم الفرعي",
-      "loadFailed": "فشل في تحميل بيانات القسم الفرعي"
+      "createFailed": "فشل في إنشاء المكان الفرعي",
+      "updateFailed": "فشل في تحديث المكان الفرعي",
+      "deleteFailed": "فشل في حذف المكان الفرعي",
+      "loadFailed": "فشل في تحميل بيانات المكان الفرعي"
     }
   },
 
@@ -1320,13 +1322,13 @@
       "description": "وصول كامل للنظام وإدارته"
     },
     "departmentHead": {
-      "title": "رئيس القسم",
-      "description": "إدارة القسم والإشراف عليه"
+      "title": "رئيس المكان",
+      "description": "إدارة المكان والإشراف عليه"
     },
     "footerHelp": "تحتاج مساعدة؟ تواصل مع مسؤول النظام"
   },
-  "create-specific-department": "إنشاء قسم محدد لهذه التخصص",
-  "create-specific-sub-department": "إنشاء قسم فرعي لهذا القسم",
+  "create-specific-department": "إنشاء مكان محدد لهذه التخصص",
+  "create-specific-sub-department": "إنشاء مكان فرعي لهذا المكان",
   "displayRange": "عرض {{start}} - {{end}} من {{total}} عنصر",
 
   "managementRoles": {
@@ -1520,9 +1522,9 @@
       "contractingType": "أنواع التعاقد",
       "shiftHoursType": "أنواع الورديات",
       "scientificDegree": "الدرجات العلمية",
-      "departments": "إدارة الأقسام",
-      "manageDepartments": "إدارة الأقسام",
-      "manageSubDepartments": "إدارة الأقسام الفرعية",
+      "departments": "إدارة الأماكن",
+      "manageDepartments": "إدارة الأماكن",
+      "manageSubDepartments": "إدارة الأماكن الفرعية",
       "operations": "العمليات",
       "viewReports": "عرض التقارير",
       "manageSchedules": "إدارة الجداول الزمنية",
@@ -1545,9 +1547,9 @@
       "contractingType": "أنواع التعاقد",
       "shiftHoursType": "أنواع ورديات الساعات",
       "scientificDegree": "الدرجات العلمية",
-      "departments": "إدارة الأقسام",
-      "manageDepartments": "إدارة الأقسام",
-      "manageSubDepartments": "إدارة الأقسام الفرعية",
+      "departments": "إدارة الأماكن",
+      "manageDepartments": "إدارة الأماكن",
+      "manageSubDepartments": "إدارة الأماكن الفرعية",
       "operations": "العمليات",
       "viewReports": "عرض التقارير",
       "manageSchedules": "إدارة الجداول",
@@ -1666,10 +1668,10 @@
     "roleData": "جاري تحميل بيانات الدور…",
     "categories": "جاري تحميل التخصصات",
     "categoryData": "جاري تحميل بيانات التخصص",
-    "departments": "جاري تحميل الأقسام…",
-    "departmentData": "جاري تحميل بيانات القسم…",
-    "subDepartments": "جاري تحميل الأقسام الفرعية…",
-    "subDepartmentData": "جاري تحميل بيانات القسم الفرعي…",
+    "departments": "جاري تحميل الأماكن…",
+    "departmentData": "جاري تحميل بيانات المكان…",
+    "subDepartments": "جاري تحميل الأماكن الفرعية…",
+    "subDepartmentData": "جاري تحميل بيانات المكان الفرعي…",
     "shiftHours": "جاري تحميل ورديات العمل…",
     "shiftHourData": "جاري تحميل بيانات الوردية…",
     "contractingTypes": "جاري تحميل أنواع التعاقد…",
@@ -1679,7 +1681,7 @@
     "userRole": "جاري تحميل بيانات دور المستخدم…",
     "rosters": "جاري تحميل بيانات جداول المعاينه…",
     "roster": "جاري تحميل بيانات جدول المعاينه…",
-    "rosterDepartments": "جاري تحميل بيانات  أقسام جدول المعاينه…",
+    "rosterDepartments": "جاري تحميل بيانات  أماكن جدول المعاينه…",
     "workingHours": "جارٍ تحميل متطلبات الشيفتات...",
     "workingHour": "جارٍ تحميل بيانات متطلبات الشيفت...",
     "availableDoctors": "جارٍ تحميل الأطباء المتاحين...",
@@ -1701,7 +1703,7 @@
     },
     "403": {
       "title": "مطلوب تصريح الوصول",
-      "message": "ليس لديك التصريح الطبي اللازم للوصول إلى هذا القسم."
+      "message": "ليس لديك التصريح الطبي اللازم للوصول إلى هذا المكان."
     },
     "401": {
       "title": "مطلوب تسجيل الدخول",
@@ -1737,8 +1739,8 @@
     "title": "إدارة الروستر",
     "subtitle": "إدارة جداول ومواعيد طاقم المستشفى",
     "noRosters": "لا يوجد روسترات. أنشئ الروستر الأول للبدء.",
-    "createFirstRoster": "أنشئ أول روستر لبدء جدولة الأطباء والأقسام.",
-    "departments": "الأقسام",
+    "createFirstRoster": "أنشئ أول روستر لبدء جدولة الأطباء والأماكن.",
+    "departments": "الاماكن",
     "count": "روستر",
     "deleteReason": "سبب الحذف",
     "dayss": "الأيام",
@@ -1790,7 +1792,7 @@
       "confirmMessage": "هل أنت متأكد أنك تريد إلغاء تعيين هذا الطبيب من الشيفت؟",
       "reason": "السبب",
       "reasonPlaceholder": "أدخل سبب إلغاء التعيين",
-      "departmentPlacholder": "إختر القسم للإضافه",
+      "departmentPlacholder": "إختر المكان للإضافه",
 
       "reasonRequired": "السبب مطلوب.",
       "confirm": "إلغاء التعيين",
@@ -1913,7 +1915,7 @@
 
     "workingHourss": {
       "generateTitle": "توليد متطلبات الشيفتات",
-      "generateSubtitle": "توليد متطلبات الشيفتات لجميع الشيفتات والأقسام",
+      "generateSubtitle": "توليد متطلبات الشيفتات لجميع الشيفتات والأماكن",
       "infoTitle": "حول توليد متطلبات الشيفتات",
       "infoDescription": "ستقوم هذه العملية بإنشاء خانات ساعات عمل لكل يوم ضمن فترة الروستر ولكل تركيبة من الشيفت ونوع التعاقد. هذا مطلوب قبل تعيين الأطباء في شيفتات محددة.",
       "generateSettings": "إعدادات التوليد",
@@ -1999,12 +2001,12 @@
     },
 
     "departmentss": {
-      "title": "أقسام التخصص",
-      "subtitle": "إدارة وضبط الشيفتات لكل قسم في هذا الروستر.",
+      "title": "أماكن التخصص",
+      "subtitle": "إدارة وضبط الشيفتات لكل مكان في هذا الروستر.",
       "nextPhase": "الذهاب إلى المرحلة 2",
       "createdAt": "تاريخ الإنشاء",
       "addShiftHours": "إضافة مناوبات",
-      "department": "القسم",
+      "department": "المكان",
       "status": "الحالة",
       "active": "نشط",
       "inactive": "غير نشط",
@@ -2018,27 +2020,27 @@
       "delete": "حذف",
       "viewShifts": "عرض المناوبات",
       "hideShifts": "إخفاء المناوبات",
-      "noDepartments": "لا توجد أقسام مُضافة بعد",
-      "noDepartmentsMessage": "أضف الأقسام من إعداد الروستر الأساسي لتتمكن من ضبط الشيفتات هنا."
+      "noDepartments": "لا توجد أماكن مُضافة بعد",
+      "noDepartmentsMessage": "أضف الأماكن من إعداد الروستر الأساسي لتتمكن من ضبط الشيفتات هنا."
     },
 
     "phaseOne": {
-      "title": "تهيئة مناوبات الأقسام",
-      "subtitle": "ضبط مناوبات الأقسام",
+      "title": "تهيئة مناوبات الأماكن",
+      "subtitle": "ضبط مناوبات الأماكن",
       "rosterId": "مُعرّف الروستر",
       "fields": {
         "shifts": "الشيفتات",
         "shiftType": "نوع الشيفت",
-        "departmentId": "مُعرّف القسم",
-        "overwriteExistingHelp": "إذا فُعِّلت، سيتم استبدال الشيفتات الحالية لهذا القسم.",
+        "departmentId": "مُعرّف المكان",
+        "overwriteExistingHelp": "إذا فُعِّلت، سيتم استبدال الشيفتات الحالية لهذا المكان.",
         "notes": "ملاحظات",
         "reason": "السبب",
-        "overwriteExisting": "استبدال الشيفتات الحالية لهذا القسم"
+        "overwriteExisting": "استبدال الشيفتات الحالية لهذا المكان"
       },
       "placeholders": {
         "selectShiftType": "اختر نوع الشيفت",
         "notes": "أدخل ملاحظات اختيارية (حتى 500 حرف)",
-        "departmentId": "أدخل مُعرّف القسم",
+        "departmentId": "أدخل مُعرّف المكان",
         "updateReason": "أدخل سبب التحديث"
       },
       "buttons": {
@@ -2056,7 +2058,7 @@
         "shiftTypes": "جارٍ تحميل أنواع الشيفت..."
       },
       "validation": {
-        "departmentRequired": "القسم مطلوب",
+        "departmentRequired": "المكان مطلوب",
         "shiftTypeRequired": "نوع الشيفت مطلوب",
         "notesMaxLength": "لا يجب أن تتجاوز الملاحظات 500 حرف",
         "atLeastOneShift": "يجب إضافة شيفت واحد على الأقل"
@@ -2066,7 +2068,7 @@
       },
       "error": {
         "title": "فشل في إضافة الشيفتات",
-        "message": "حدث خطأ أثناء إضافة شيفتات القسم"
+        "message": "حدث خطأ أثناء إضافة شيفتات المكان"
       }
     },
 
@@ -2076,7 +2078,7 @@
       "view": "عرض التفاصيل",
       "edit": "تعديل الروستر",
 
-      "addDepartment": "إضافة قسم آخر",
+      "addDepartment": "إضافة مكان آخر",
       "editRoster": "تعديل الروستر",
       "unAssignDoctor": "إزالة تعيين الدكتور",
       "addNew": "إضافة روستر جديد",
@@ -2139,8 +2141,8 @@
       "month": "الشهر",
       "allMonths": "كل الأشهر",
       "year": "السنة",
-      "department": "القسم",
-      "allDepartments": "كل الأقسام"
+      "department": "المكان",
+      "allDepartments": "كل الأماكن"
     },
 
     "table": {
@@ -2150,7 +2152,7 @@
       "status": "الحالة",
       "deadline": "الموعد النهائي للتقديم",
       "actions": "إجراءات",
-      "departments": "الأقسام",
+      "departments": "الاماكن",
       "createdBy": "تم الإنشاء بواسطة",
       "createdAt": "تاريخ الإنشاء",
       "created": "تاريخ الإنشاء",
@@ -2161,7 +2163,7 @@
     "form": {
       "basicInfo": "المعلومات الأساسية",
       "title": "عنوان الروستر",
-      "titlePlaceholder": "أدخل عنوان الروستر (مثال: قسم الطوارئ - يناير 2024)",
+      "titlePlaceholder": "أدخل عنوان الروستر (مثال: مكان الطوارئ - يناير 2024)",
       "description": "الوصف",
       "descriptionPlaceholder": "أدخل وصفًا اختياريًا لهذا الروستر",
       "category": "التخصص",
@@ -2172,17 +2174,17 @@
       "selectCategoryFirstDescription": "تحتاج لاختيار فئة قبل المتابعة بهذا الإجراء",
       "submissionDeadline": "الموعد النهائي للتقديم",
       "submissionDeadlineHelp": "آخر موعد ووقت لتقديم تفضيلات الأطباء",
-      "departments": "الأقسام",
-      "departmentConfig": "تهيئة الأقسام",
-      "selectDepartment": "اختر القسم",
-      "subDepartment": "القسم الفرعي",
-      "selectSubDepartment": "اختر قسمًا فرعيًا (اختياري)",
+      "departments": "الاماكن",
+      "departmentConfig": "تهيئة الأماكن",
+      "selectDepartment": "اختر المكان",
+      "subDepartment": "المكان الفرعي",
+      "selectSubDepartment": "اختر مكانًا فرعيًا (اختياري)",
       "notes": "ملاحظات",
-      "notesPlaceholder": "أدخل أي ملاحظات خاصة لهذا القسم",
-      "addDepartment": "إضافة قسم آخر",
-      "removeDepartment": "إزالة القسم",
+      "notesPlaceholder": "أدخل أي ملاحظات خاصة لهذا المكان",
+      "addDepartment": "إضافة مكان آخر",
+      "removeDepartment": "إزالة المكان",
       "workingHours": "تهيئة متطلبات الشيفتات",
-      "workingHoursNote": "اضبط متطلبات الشيفتات ومتطلبات الشيفت لكل قسم",
+      "workingHoursNote": "اضبط متطلبات الشيفتات ومتطلبات الشيفت لكل مكان",
       "dayOfWeek": "اليوم من الأسبوع",
       "shiftType": "نوع الشيفت",
       "selectShiftType": "اختر نوع الشيفت",
@@ -2257,8 +2259,8 @@
       "yearInvalid": "يجب أن تكون السنة بين 2024 و2030",
       "deadlineRequired": "الموعد النهائي للتقديم مطلوب",
       "deadlineFuture": "يجب أن يكون الموعد النهائي للتقديم في المستقبل",
-      "departmentsRequired": "يجب اختيار قسم واحد على الأقل",
-      "departmentRequired": "اختيار القسم مطلوب",
+      "departmentsRequired": "يجب اختيار مكان واحد على الأقل",
+      "departmentRequired": "اختيار المكان مطلوب",
       "workingHoursRequired": "مطلوب تكوين ساعة عمل واحدة على الأقل",
       "dayOfWeekRequired": "اليوم من الأسبوع مطلوب",
       "dayOfWeekInvalid": "يجب أن يكون اليوم بين 0 (الأحد) و6 (السبت)",
@@ -2305,7 +2307,7 @@
       "createFailed": "فشل إنشاء الروستر",
       "updateFailed": "فشل تحديث الروستر",
       "deleteFailed": "فشل حذف الروستر",
-      "removeDepartment": "تمت إزالة القسم بنجاح",
+      "removeDepartment": "تمت إزالة المكان بنجاح",
       "fetchFailed": "فشل جلب الروسترات",
       "exportFailed": "فشل تصدير الروستر",
       "statusUpdateFailed": "فشل تحديث حالة الروستر",
@@ -2333,13 +2335,13 @@
   },
   "managerPermissions": {
     "title": "تحديث صلاحيات المدير",
-    "department": "القسم",
+    "department": "المكان",
     "manager": "المدير",
     "startDate": "تاريخ البدء",
     "permissions": "صلاحيات المدير",
-    "canViewDepartment": "يمكنه عرض القسم",
-    "canEditDepartment": "يمكنه تعديل القسم",
-    "canViewDepartmentReports": "يمكنه عرض تقارير القسم",
+    "canViewDepartment": "يمكنه عرض المكان",
+    "canEditDepartment": "يمكنه تعديل المكان",
+    "canViewDepartmentReports": "يمكنه عرض تقارير المكان",
     "canManageSchedules": "يمكنه إدارة الجداول",
     "canManageStaff": "يمكنه إدارة الموظفين",
     "buttons": {
@@ -2355,8 +2357,26 @@
     },
     "noManager": {
       "title": "لا يوجد مدير معين",
-      "description": "هذا القسم ليس له مدير معين. من فضلك قم بتعيين مدير أولاً."
+      "description": "هذا المكان ليس له مدير معين. من فضلك قم بتعيين مدير أولاً."
     },
     "assignManager": "تعيين مدير"
+  },
+
+  "confirmations": {
+    "linkDepartment": {
+      "title": "ربط القسم",
+      "message": "هل أنت متأكد أنك تريد ربط هذا القسم بالفئة؟",
+      "confirm": "نعم، قم بالربط",
+      "cancel": "إلغاء"
+    }
+  },
+  "messages": {
+    "success": {
+      "departmentLinked": "تم ربط القسم بنجاح"
+    },
+    "error": {
+      "title": "خطأ",
+      "linkDepartmentFailed": "فشل في ربط القسم"
+    }
   }
 }

@@ -240,3 +240,27 @@ export const availabelDepartmentsForCategory = createAsyncThunk(
     }
   }
 );
+export const linkDepartmentToCategory = createAsyncThunk(
+  "departmentSlice/linkDepartmentToCategory",
+  async ({ id, categoryId }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+
+    try {
+      const res = await axiosInstance.post(
+        `api/v1/Department/${id}/categories/${categoryId}`,
+        { categoryId },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("avaialbe departments:", res);
+      return { depId: id };
+    } catch (error) {
+      console.log("Error deleting department:", error);
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);

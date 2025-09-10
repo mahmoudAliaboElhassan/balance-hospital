@@ -123,10 +123,9 @@ function UseFormValidation() {
     //   .required(t("roster.validation.categoryRequired"))
     //   .positive(t("validation.positiveNumber"))
     //   .integer(t("validation.integerOnly")),
-    location: Yup.string()
-      .required(t("department.form.validation.locationRequired"))
-      .min(2, t("validation.minLength", { count: 2 }))
-      .max(200, t("validation.maxLength", { count: 200 })),
+    location: Yup.string().optional(),
+    // .min(2, t("validation.minLength", { count: 2 }))
+    // .max(200, t("validation.maxLength", { count: 200 }))
     description: Yup.string().max(
       500,
       t("validation.maxLength", { count: 500 })
