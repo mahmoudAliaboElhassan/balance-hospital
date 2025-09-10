@@ -146,3 +146,74 @@ export const deleteDepartment = createAsyncThunk(
     }
   }
 );
+export const updateManagerPermission = createAsyncThunk(
+  "departmentSlice/updateManagerPermission",
+  async ({ id, data }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+
+    try {
+      const res = await axiosInstance.put(
+        `api/v1/Department/${id}/manager`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Department Manger updated successfully:", res);
+      return res.data;
+    } catch (error) {
+      console.log("Error deleting department:", error);
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+export const removeManager = createAsyncThunk(
+  "departmentSlice/removeManager",
+  async ({ id, reason }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+
+    try {
+      const res = await axiosInstance.delete(
+        `api/v1/Department/${id}/manager?reason=${reason}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Department Manger updated successfully:", res);
+      return res.data;
+    } catch (error) {
+      console.log("Error deleting department:", error);
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+export const assignManager = createAsyncThunk(
+  "departmentSlice/assignManager",
+  async ({ id, data }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+
+    try {
+      const res = await axiosInstance.post(
+        `api/v1/Department/${id}/manager`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Department Manger updated successfully:", res);
+      return res.data;
+    } catch (error) {
+      console.log("Error deleting department:", error);
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);

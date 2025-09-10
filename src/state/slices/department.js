@@ -6,6 +6,9 @@ import {
   getDepartmentById,
   updateDepartment,
   deleteDepartment,
+  updateManagerPermission,
+  removeManager,
+  assignManager,
 } from "../act/actDepartment";
 import i18next from "i18next";
 import "../../translation/i18n";
@@ -261,6 +264,73 @@ export const departmentSlice = createSlice({
           status: payload?.status,
           timestamp: new Date().toISOString(),
         };
+      })
+      .addCase(updateManagerPermission.pending, (state) => {
+        state.loadingUpdateManagerPermission = true;
+        state.updateError = null;
+        state.updateSuccess = false;
+      })
+      .addCase(updateManagerPermission.fulfilled, (state, action) => {
+        state.loadingUpdateManagerPermission = false;
+        state.updateError = null;
+
+        const response = action.payload;
+        if (response.success) {
+          state.updateSuccess = true;
+          state.updateMessage = response.messageAr || response.messageEn;
+          state.selectedDepartment = response.data;
+
+          const departmentIndex = state.departments.findIndex(
+            (dept) => dept.id === response.data.id
+          );
+          if (departmentIndex !== -1) {
+            state.departments[departmentIndex] = response.data;
+          }
+        }
+      })
+      .addCase(updateManagerPermission.rejected, (state, action) => {
+        state.loadingUpdateManagerPermission = false;
+        state.updateSuccess = false;
+
+        const payload = action.payload;
+        let errorMessage = "حدث خطأ في تحديث القسم";
+
+        if (payload?.status === 404) {
+          errorMessage = payload.message || "القسم غير موجود";
+        } else if (payload?.status === 403) {
+          errorMessage = payload.message || "ليس لديك صلاحية لتحديث هذا القسم";
+        } else if (payload?.status === 400) {
+          errorMessage = payload.message || "بيانات غير صحيحة أو عدم تطابق ID";
+        } else if (payload?.message) {
+          errorMessage = payload.message;
+        }
+
+        state.updateError = {
+          message: errorMessage,
+          errors: payload?.errors || [],
+          status: payload?.status,
+          timestamp: new Date().toISOString(),
+        };
+      })
+      .addCase(removeManager.pending, (state) => {
+        state.loadingRemoveManager = true;
+      })
+      .addCase(removeManager.fulfilled, (state, action) => {
+        state.loadingRemoveManager = false;
+        state.selectedDepartment.manager = null;
+        state.selectedDepartment.hasManager = false;
+      })
+      .addCase(removeManager.rejected, (state, action) => {
+        state.loadingRemoveManager = false;
+      })
+      .addCase(assignManager.pending, (state) => {
+        state.loadingAssignManager = true;
+      })
+      .addCase(assignManager.fulfilled, (state, action) => {
+        state.loadingAssignManager = false;
+      })
+      .addCase(assignManager.rejected, (state, action) => {
+        state.loadingAssignManager = false;
       })
 
       // Delete Department

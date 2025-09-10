@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { getDepartmentById } from "../../../state/act/actDepartment";
@@ -9,12 +9,14 @@ import {
 } from "../../../state/slices/department";
 import LoadingGetData from "../../../components/LoadingGetData";
 import { useTranslation } from "react-i18next";
-import { Edit, Eye } from "lucide-react";
+import { Edit, Eye, UserPlus, UserCog, UserX, Shield } from "lucide-react";
+import RemoveManagerModal from "../../../components/RemoveMangerModal";
 
 function SpecificDepartment() {
   const { depId: id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [showRemoveManagerModal, setShowRemoveManagerModal] = useState(false);
 
   const {
     selectedDepartment,
@@ -107,6 +109,28 @@ function SpecificDepartment() {
       // Navigate to create department page
       navigate("/admin-panel/sub-department/create-specific");
     }
+  };
+
+  // Manager action handlers
+  const handleAssignManager = () => {
+    navigate(`/admin-panel/department/assign-manager/${id}`);
+  };
+
+  const handleEditManagerPermissions = () => {
+    navigate(`/admin-panel/department/edit-manager-permissions/${id}`);
+  };
+
+  const handleRemoveManager = () => {
+    setShowRemoveManagerModal(true);
+  };
+
+  // Get manager name based on current language
+  const getManagerName = () => {
+    if (!selectedDepartment?.manager) return "";
+    // Assuming manager object has name properties
+    return currentLang === "ar"
+      ? selectedDepartment.manager.userNameArabic
+      : selectedDepartment.manager.userNameEnglish;
   };
 
   // Get category name based on current language
@@ -497,6 +521,399 @@ function SpecificDepartment() {
               </div>
             </div>
 
+            {/* Manager Management Card */}
+            <div
+              className={`${
+                isDark ? "bg-gray-800" : "bg-white"
+              } rounded-2xl shadow-xl p-6`}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h2
+                  className={`text-2xl font-bold ${
+                    isDark ? "text-white" : "text-gray-900"
+                  } flex items-center`}
+                >
+                  <div
+                    className={`w-8 h-8 ${
+                      isDark ? "bg-purple-900/30" : "bg-purple-100"
+                    } rounded-lg flex items-center justify-center ${
+                      isRTL ? "mr-3" : "ml-3"
+                    }`}
+                  >
+                    <UserCog
+                      className={`w-4 h-4 ${
+                        isDark ? "text-purple-400" : "text-purple-600"
+                      }`}
+                    />
+                  </div>
+                  {t("department.manager.title") || "Department Manager"}
+                </h2>
+              </div>
+
+              {selectedDepartment.hasManager && selectedDepartment.manager ? (
+                <div>
+                  {/* Manager Info */}
+                  <div
+                    className={`p-4 rounded-lg border mb-4 ${
+                      isDark
+                        ? "border-gray-700 bg-gray-750"
+                        : "border-gray-200 bg-gray-50"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <h3
+                          className={`font-semibold text-lg ${
+                            isDark ? "text-white" : "text-gray-900"
+                          } mb-2`}
+                        >
+                          {getManagerName()}
+                        </h3>
+
+                        {/* Manager Permissions */}
+                        <div className="grid grid-cols-2 gap-4 mb-3">
+                          {/* View Department Permission */}
+                          <div className="flex items-center gap-2">
+                            {selectedDepartment.manager.canViewDepartment ? (
+                              <svg
+                                className="w-4 h-4 text-green-500"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M5 13l4 4L19 7"
+                                />
+                              </svg>
+                            ) : (
+                              <svg
+                                className="w-4 h-4 text-red-500"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M6 18L18 6M6 6l12 12"
+                                />
+                              </svg>
+                            )}
+                            <Eye size={16} className="text-blue-500" />
+                            <span
+                              className={`text-sm ${
+                                isDark ? "text-gray-300" : "text-gray-600"
+                              }`}
+                            >
+                              {t(
+                                "department.manager.permissions.viewDepartment"
+                              ) || "View Department"}
+                            </span>
+                          </div>
+
+                          {/* Edit Department Permission */}
+                          <div className="flex items-center gap-2">
+                            {selectedDepartment.manager.canEditDepartment ? (
+                              <svg
+                                className="w-4 h-4 text-green-500"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M5 13l4 4L19 7"
+                                />
+                              </svg>
+                            ) : (
+                              <svg
+                                className="w-4 h-4 text-red-500"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M6 18L18 6M6 6l12 12"
+                                />
+                              </svg>
+                            )}
+                            <Edit size={16} className="text-green-500" />
+                            <span
+                              className={`text-sm ${
+                                isDark ? "text-gray-300" : "text-gray-600"
+                              }`}
+                            >
+                              {t(
+                                "department.manager.permissions.editDepartment"
+                              ) || "Edit Department"}
+                            </span>
+                          </div>
+
+                          {/* View Department Reports Permission */}
+                          <div className="flex items-center gap-2">
+                            {selectedDepartment.manager
+                              .canViewDepartmentReports ? (
+                              <svg
+                                className="w-4 h-4 text-green-500"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M5 13l4 4L19 7"
+                                />
+                              </svg>
+                            ) : (
+                              <svg
+                                className="w-4 h-4 text-red-500"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M6 18L18 6M6 6l12 12"
+                                />
+                              </svg>
+                            )}
+                            <Shield size={16} className="text-purple-500" />
+                            <span
+                              className={`text-sm ${
+                                isDark ? "text-gray-300" : "text-gray-600"
+                              }`}
+                            >
+                              {t(
+                                "department.manager.permissions.viewReports"
+                              ) || "View Reports"}
+                            </span>
+                          </div>
+
+                          {/* Manage Schedules Permission */}
+                          <div className="flex items-center gap-2">
+                            {selectedDepartment.manager.canManageSchedules ? (
+                              <svg
+                                className="w-4 h-4 text-green-500"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M5 13l4 4L19 7"
+                                />
+                              </svg>
+                            ) : (
+                              <svg
+                                className="w-4 h-4 text-red-500"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M6 18L18 6M6 6l12 12"
+                                />
+                              </svg>
+                            )}
+                            <svg
+                              className="w-4 h-4 text-indigo-500"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                              />
+                            </svg>
+                            <span
+                              className={`text-sm ${
+                                isDark ? "text-gray-300" : "text-gray-600"
+                              }`}
+                            >
+                              {t(
+                                "department.manager.permissions.manageSchedules"
+                              ) || "Manage Schedules"}
+                            </span>
+                          </div>
+
+                          {/* Manage Staff Permission */}
+                          <div className="flex items-center gap-2">
+                            {selectedDepartment.manager.canManageStaff ? (
+                              <svg
+                                className="w-4 h-4 text-green-500"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M5 13l4 4L19 7"
+                                />
+                              </svg>
+                            ) : (
+                              <svg
+                                className="w-4 h-4 text-red-500"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M6 18L18 6M6 6l12 12"
+                                />
+                              </svg>
+                            )}
+                            <UserCog size={16} className="text-orange-500" />
+                            <span
+                              className={`text-sm ${
+                                isDark ? "text-gray-300" : "text-gray-600"
+                              }`}
+                            >
+                              {t(
+                                "department.manager.permissions.manageStaff"
+                              ) || "Manage Staff"}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Start Date and Notes */}
+                        {selectedDepartment.manager.startDate && (
+                          <p
+                            className={`text-sm ${
+                              isDark ? "text-gray-400" : "text-gray-500"
+                            } mb-1`}
+                          >
+                            <strong>
+                              {t("department.manager.startDate") ||
+                                "Start Date"}
+                              :
+                            </strong>{" "}
+                            {formatDate(selectedDepartment.manager.startDate)}
+                          </p>
+                        )}
+                        {selectedDepartment.manager.notes && (
+                          <p
+                            className={`text-sm ${
+                              isDark ? "text-gray-400" : "text-gray-500"
+                            }`}
+                          >
+                            <strong>
+                              {t("department.manager.notes") || "Notes"}:
+                            </strong>{" "}
+                            {selectedDepartment.manager.notes}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Manager Action Buttons */}
+                  <div
+                    className={`flex gap-3 ${
+                      isRTL ? "justify-start" : "justify-end"
+                    }`}
+                  >
+                    <button
+                      onClick={handleEditManagerPermissions}
+                      className="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+                      title={
+                        t("department.manager.actions.editPermissions") ||
+                        "Edit Permissions"
+                      }
+                    >
+                      <Shield
+                        size={16}
+                        className={`${isRTL ? "mr-2" : "ml-2"}`}
+                      />
+                      {t("department.manager.actions.editPermissions") ||
+                        "Edit Permissions"}
+                    </button>
+
+                    <button
+                      onClick={handleRemoveManager}
+                      className="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                      title={
+                        t("department.manager.actions.removeManager") ||
+                        "Remove Manager"
+                      }
+                    >
+                      <UserX
+                        size={16}
+                        className={`${isRTL ? "mr-2" : "ml-2"}`}
+                      />
+                      {t("department.manager.actions.removeManager") ||
+                        "Remove Manager"}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center p-8">
+                  <div
+                    className={`w-16 h-16 ${
+                      isDark ? "bg-gray-700" : "bg-gray-100"
+                    } rounded-full flex items-center justify-center mx-auto mb-4`}
+                  >
+                    <UserPlus
+                      className={`w-8 h-8 ${
+                        isDark ? "text-gray-500" : "text-gray-400"
+                      }`}
+                    />
+                  </div>
+                  <p
+                    className={`text-lg font-medium ${
+                      isDark ? "text-gray-300" : "text-gray-600"
+                    } mb-2`}
+                  >
+                    {t("department.manager.noManager") || "No Manager Assigned"}
+                  </p>
+                  <p
+                    className={`${
+                      isDark ? "text-gray-400" : "text-gray-500"
+                    } text-sm mb-4`}
+                  >
+                    {t("department.manager.noManagerDescription") ||
+                      "This department doesn't have a manager assigned yet."}
+                  </p>
+                  <button
+                    onClick={handleAssignManager}
+                    className="inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  >
+                    <UserPlus
+                      size={16}
+                      className={`${isRTL ? "mr-2" : "ml-2"}`}
+                    />
+                    {t("department.manager.actions.assignManager") ||
+                      "Assign Manager"}
+                  </button>
+                </div>
+              )}
+            </div>
+
             {/* Sub-Departments Section */}
             <div
               className={`${
@@ -860,543 +1277,126 @@ function SpecificDepartment() {
                 </p>
               </div>
             )}
-
-            {/* Head of Department Card - if exists */}
-            {selectedDepartment.head && (
-              <div
-                className={`${
-                  isDark ? "bg-gray-800" : "bg-white"
-                } rounded-2xl shadow-xl p-6`}
-              >
-                <h2
-                  className={`text-2xl font-bold ${
-                    isDark ? "text-white" : "text-gray-900"
-                  } mb-4 flex items-center`}
-                >
-                  <div
-                    className={`w-8 h-8 ${
-                      isDark ? "bg-green-900/30" : "bg-green-100"
-                    } rounded-lg flex items-center justify-center ${
-                      isRTL ? "mr-3" : "ml-3"
-                    }`}
-                  >
-                    <svg
-                      className={`w-4 h-4 ${
-                        isDark ? "text-green-400" : "text-green-600"
-                      }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
-                    </svg>
-                  </div>
-                  {t("department.details.head") || "Head of Department"}
-                </h2>
-                <p
-                  className={`${
-                    isDark ? "text-gray-300" : "text-gray-600"
-                  } text-lg`}
-                >
-                  {selectedDepartment.head.name}
-                </p>
-                {selectedDepartment.head.email && (
-                  <p
-                    className={`${
-                      isDark ? "text-gray-400" : "text-gray-500"
-                    } text-sm mt-1`}
-                  >
-                    {selectedDepartment.head.email}
-                  </p>
-                )}
-              </div>
-            )}
           </div>
 
           {/* Statistics Sidebar */}
           <div className="space-y-6">
-            <div className="space-y-6">
-              <div
-                className={`${
-                  isDark ? "bg-gray-800" : "bg-white"
-                } rounded-2xl shadow-xl p-6`}
+            <div
+              className={`${
+                isDark ? "bg-gray-800" : "bg-white"
+              } rounded-2xl shadow-xl p-6`}
+            >
+              <h2
+                className={`text-xl font-bold ${
+                  isDark ? "text-white" : "text-gray-900"
+                } mb-6`}
               >
-                <h2
-                  className={`text-xl font-bold ${
-                    isDark ? "text-white" : "text-gray-900"
-                  } mb-6`}
-                >
-                  {t("department.details.statistics")}
-                </h2>
+                {t("department.details.statistics")}
+              </h2>
 
-                <div className="space-y-4">
-                  {/* Total Doctors */}
-                  {selectedDepartment.statistics?.totalDoctors !==
-                    undefined && (
-                    <div
-                      className={`flex items-center justify-between p-4 ${
-                        isDark ? "bg-blue-900/20" : "bg-blue-50"
-                      } rounded-xl`}
-                    >
-                      <div className="flex items-center">
-                        <div
-                          className={`w-10 h-10 ${
-                            isDark ? "bg-blue-900/30" : "bg-blue-100"
-                          } rounded-lg flex items-center justify-center ${
-                            isRTL ? "mr-3" : "ml-3"
-                          }`}
-                        >
-                          <svg
-                            className={`w-5 h-5 ${
-                              isDark ? "text-blue-400" : "text-blue-600"
-                            }`}
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
-                            />
-                          </svg>
-                        </div>
-                        <span
-                          className={`${
-                            isDark ? "text-gray-300" : "text-gray-700"
-                          } font-medium`}
-                        >
-                          {t("department.statistics.totalDoctors")}
-                        </span>
-                      </div>
-                      <span
-                        className={`text-2xl font-bold ${
-                          isDark ? "text-blue-400" : "text-blue-600"
-                        }`}
-                      >
-                        {selectedDepartment.statistics.totalDoctors}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Active Doctors */}
-                  {selectedDepartment.statistics?.activeDoctors !==
-                    undefined && (
-                    <div
-                      className={`flex items-center justify-between p-4 ${
-                        isDark ? "bg-green-900/20" : "bg-green-50"
-                      } rounded-xl`}
-                    >
-                      <div className="flex items-center">
-                        <div
-                          className={`w-10 h-10 ${
-                            isDark ? "bg-green-900/30" : "bg-green-100"
-                          } rounded-lg flex items-center justify-center ${
-                            isRTL ? "mr-3" : "ml-3"
-                          }`}
-                        >
-                          <svg
-                            className={`w-5 h-5 ${
-                              isDark ? "text-green-400" : "text-green-600"
-                            }`}
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                          </svg>
-                        </div>
-                        <span
-                          className={`${
-                            isDark ? "text-gray-300" : "text-gray-700"
-                          } font-medium`}
-                        >
-                          {t("department.statistics.activeDoctors")}
-                        </span>
-                      </div>
-                      <span
-                        className={`text-2xl font-bold ${
-                          isDark ? "text-green-400" : "text-green-600"
-                        }`}
-                      >
-                        {selectedDepartment.statistics.activeDoctors}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Total Sub Departments */}
-                  {selectedDepartment.statistics?.totalSubDepartments !==
-                    undefined && (
-                    <div
-                      className={`flex items-center justify-between p-4 ${
-                        isDark ? "bg-purple-900/20" : "bg-purple-50"
-                      } rounded-xl`}
-                    >
-                      <div className="flex items-center">
-                        <div
-                          className={`w-10 h-10 ${
-                            isDark ? "bg-purple-900/30" : "bg-purple-100"
-                          } rounded-lg flex items-center justify-center ${
-                            isRTL ? "mr-3" : "ml-3"
-                          }`}
-                        >
-                          <svg
-                            className={`w-5 h-5 ${
-                              isDark ? "text-purple-400" : "text-purple-600"
-                            }`}
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                            />
-                          </svg>
-                        </div>
-                        <span
-                          className={`${
-                            isDark ? "text-gray-300" : "text-gray-700"
-                          } font-medium`}
-                        >
-                          {t("department.statistics.totalSubDepartments")}
-                        </span>
-                      </div>
-                      <span
-                        className={`text-2xl font-bold ${
-                          isDark ? "text-purple-400" : "text-purple-600"
-                        }`}
-                      >
-                        {selectedDepartment.statistics.totalSubDepartments}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Active Sub Departments */}
-                  {selectedDepartment.statistics?.activeSubDepartments !==
-                    undefined && (
-                    <div
-                      className={`flex items-center justify-between p-4 ${
-                        isDark ? "bg-indigo-900/20" : "bg-indigo-50"
-                      } rounded-xl`}
-                    >
-                      <div className="flex items-center">
-                        <div
-                          className={`w-10 h-10 ${
-                            isDark ? "bg-indigo-900/30" : "bg-indigo-100"
-                          } rounded-lg flex items-center justify-center ${
-                            isRTL ? "mr-3" : "ml-3"
-                          }`}
-                        >
-                          <svg
-                            className={`w-5 h-5 ${
-                              isDark ? "text-indigo-400" : "text-indigo-600"
-                            }`}
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M5 13l4 4L19 7"
-                            />
-                          </svg>
-                        </div>
-                        <span
-                          className={`${
-                            isDark ? "text-gray-300" : "text-gray-700"
-                          } font-medium`}
-                        >
-                          {t("department.statistics.activeSubDepartments")}
-                        </span>
-                      </div>
-                      <span
-                        className={`text-2xl font-bold ${
-                          isDark ? "text-indigo-400" : "text-indigo-600"
-                        }`}
-                      >
-                        {selectedDepartment.statistics.activeSubDepartments}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Pending Requests */}
-                  {selectedDepartment.statistics?.pendingRequests !==
-                    undefined && (
-                    <div
-                      className={`flex items-center justify-between p-4 ${
-                        isDark ? "bg-orange-900/20" : "bg-orange-50"
-                      } rounded-xl`}
-                    >
-                      <div className="flex items-center">
-                        <div
-                          className={`w-10 h-10 ${
-                            isDark ? "bg-orange-900/30" : "bg-orange-100"
-                          } rounded-lg flex items-center justify-center ${
-                            isRTL ? "mr-3" : "ml-3"
-                          }`}
-                        >
-                          <svg
-                            className={`w-5 h-5 ${
-                              isDark ? "text-orange-400" : "text-orange-600"
-                            }`}
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                          </svg>
-                        </div>
-                        <span
-                          className={`${
-                            isDark ? "text-gray-300" : "text-gray-700"
-                          } font-medium`}
-                        >
-                          {t("department.statistics.pendingRequests")}
-                        </span>
-                      </div>
-                      <span
-                        className={`text-2xl font-bold ${
-                          isDark ? "text-orange-400" : "text-orange-600"
-                        }`}
-                      >
-                        {selectedDepartment.statistics.pendingRequests}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Schedules This Month */}
-                  {selectedDepartment.statistics?.schedulesThisMonth !==
-                    undefined && (
-                    <div
-                      className={`flex items-center justify-between p-4 ${
-                        isDark ? "bg-cyan-900/20" : "bg-cyan-50"
-                      } rounded-xl`}
-                    >
-                      <div className="flex items-center">
-                        <div
-                          className={`w-10 h-10 ${
-                            isDark ? "bg-cyan-900/30" : "bg-cyan-100"
-                          } rounded-lg flex items-center justify-center ${
-                            isRTL ? "mr-3" : "ml-3"
-                          }`}
-                        >
-                          <svg
-                            className={`w-5 h-5 ${
-                              isDark ? "text-cyan-400" : "text-cyan-600"
-                            }`}
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                            />
-                          </svg>
-                        </div>
-                        <span
-                          className={`${
-                            isDark ? "text-gray-300" : "text-gray-700"
-                          } font-medium`}
-                        >
-                          {t("department.statistics.schedulesThisMonth")}
-                        </span>
-                      </div>
-                      <span
-                        className={`text-2xl font-bold ${
-                          isDark ? "text-cyan-400" : "text-cyan-600"
-                        }`}
-                      >
-                        {selectedDepartment.statistics.schedulesThisMonth}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Completed Schedules This Month */}
-                  {selectedDepartment.statistics
-                    ?.completedSchedulesThisMonth !== undefined && (
-                    <div
-                      className={`flex items-center justify-between p-4 ${
-                        isDark ? "bg-emerald-900/20" : "bg-emerald-50"
-                      } rounded-xl`}
-                    >
-                      <div className="flex items-center">
-                        <div
-                          className={`w-10 h-10 ${
-                            isDark ? "bg-emerald-900/30" : "bg-emerald-100"
-                          } rounded-lg flex items-center justify-center ${
-                            isRTL ? "mr-3" : "ml-3"
-                          }`}
-                        >
-                          <svg
-                            className={`w-5 h-5 ${
-                              isDark ? "text-emerald-400" : "text-emerald-600"
-                            }`}
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                          </svg>
-                        </div>
-                        <span
-                          className={`${
-                            isDark ? "text-gray-300" : "text-gray-700"
-                          } font-medium`}
-                        >
-                          {t(
-                            "department.statistics.completedSchedulesThisMonth"
-                          )}
-                        </span>
-                      </div>
-                      <span
-                        className={`text-2xl font-bold ${
-                          isDark ? "text-emerald-400" : "text-emerald-600"
-                        }`}
-                      >
-                        {
-                          selectedDepartment.statistics
-                            .completedSchedulesThisMonth
-                        }
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Metadata Card */}
-              <div
-                className={`${
-                  isDark ? "bg-gray-800" : "bg-white"
-                } rounded-2xl shadow-xl p-6`}
-              >
-                <h2
-                  className={`text-xl font-bold ${
-                    isDark ? "text-white" : "text-gray-900"
-                  } mb-6`}
-                >
-                  {t("department.details.information")}
-                </h2>
-
-                <div className="space-y-4 text-sm">
+              <div className="space-y-4">
+                {/* Active Schedules Count */}
+                {selectedDepartment.activeSchedulesCount !== undefined && (
                   <div
-                    className={`border-b ${
-                      isDark ? "border-gray-700" : "border-gray-200"
-                    } pb-3`}
+                    className={`flex items-center justify-between p-4 ${
+                      isDark ? "bg-blue-900/20" : "bg-blue-50"
+                    } rounded-xl`}
                   >
-                    <div
-                      className={`${
-                        isDark ? "text-gray-400" : "text-gray-500"
-                      } mb-1`}
-                    >
-                      {t("department.details.createdAt")}
-                    </div>
-                    <div
-                      className={`${
-                        isDark ? "text-white" : "text-gray-900"
-                      } font-medium`}
-                    >
-                      {formatDate(selectedDepartment.createdAt)}
-                    </div>
-                  </div>
-
-                  {selectedDepartment.createdByName && (
-                    <div
-                      className={`border-b ${
-                        isDark ? "border-gray-700" : "border-gray-200"
-                      } pb-3`}
-                    >
+                    <div className="flex items-center">
                       <div
-                        className={`${
-                          isDark ? "text-gray-400" : "text-gray-500"
-                        } mb-1`}
+                        className={`w-10 h-10 ${
+                          isDark ? "bg-blue-900/30" : "bg-blue-100"
+                        } rounded-lg flex items-center justify-center ${
+                          isRTL ? "mr-3" : "ml-3"
+                        }`}
                       >
-                        {t("department.details.createdBy")}
+                        <svg
+                          className={`w-5 h-5 ${
+                            isDark ? "text-blue-400" : "text-blue-600"
+                          }`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
                       </div>
-                      <div
+                      <span
                         className={`${
-                          isDark ? "text-white" : "text-gray-900"
+                          isDark ? "text-gray-300" : "text-gray-700"
                         } font-medium`}
                       >
-                        {selectedDepartment.createdByName}
-                      </div>
+                        {t("department.statistics.activeSchedules") ||
+                          "Active Schedules"}
+                      </span>
                     </div>
-                  )}
+                    <span
+                      className={`text-2xl font-bold ${
+                        isDark ? "text-blue-400" : "text-blue-600"
+                      }`}
+                    >
+                      {selectedDepartment.activeSchedulesCount}
+                    </span>
+                  </div>
+                )}
 
-                  {selectedDepartment.updatedAt && (
-                    <>
+                {/* Linked Categories Count */}
+                {selectedDepartment.linkedCategoriesCount !== undefined && (
+                  <div
+                    className={`flex items-center justify-between p-4 ${
+                      isDark ? "bg-purple-900/20" : "bg-purple-50"
+                    } rounded-xl`}
+                  >
+                    <div className="flex items-center">
                       <div
-                        className={`border-b ${
-                          isDark ? "border-gray-700" : "border-gray-200"
-                        } pb-3`}
+                        className={`w-10 h-10 ${
+                          isDark ? "bg-purple-900/30" : "bg-purple-100"
+                        } rounded-lg flex items-center justify-center ${
+                          isRTL ? "mr-3" : "ml-3"
+                        }`}
                       >
-                        <div
-                          className={`${
-                            isDark ? "text-gray-400" : "text-gray-500"
-                          } mb-1`}
+                        <svg
+                          className={`w-5 h-5 ${
+                            isDark ? "text-purple-400" : "text-purple-600"
+                          }`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
                         >
-                          {t("department.details.updatedAt")}
-                        </div>
-                        <div
-                          className={`${
-                            isDark ? "text-white" : "text-gray-900"
-                          } font-medium`}
-                        >
-                          {formatDate(selectedDepartment.updatedAt)}
-                        </div>
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                          />
+                        </svg>
                       </div>
-
-                      {selectedDepartment.updatedByName && (
-                        <div>
-                          <div
-                            className={`${
-                              isDark ? "text-gray-400" : "text-gray-500"
-                            } mb-1`}
-                          >
-                            {t("department.details.updatedBy")}
-                          </div>
-                          <div
-                            className={`${
-                              isDark ? "text-white" : "text-gray-900"
-                            } font-medium`}
-                          >
-                            {selectedDepartment.updatedByName}
-                          </div>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
+                      <span
+                        className={`${
+                          isDark ? "text-gray-300" : "text-gray-700"
+                        } font-medium`}
+                      >
+                        {t("department.statistics.linkedCategories") ||
+                          "Linked Categories"}
+                      </span>
+                    </div>
+                    <span
+                      className={`text-2xl font-bold ${
+                        isDark ? "text-purple-400" : "text-purple-600"
+                      }`}
+                    >
+                      {selectedDepartment.linkedCategoriesCount}
+                    </span>
+                  </div>
+                )}
               </div>
-            </div>{" "}
+            </div>
+
             {/* Metadata Card */}
             <div
               className={`${
@@ -1504,6 +1504,17 @@ function SpecificDepartment() {
           </div>
         </div>
       </div>
+
+      {/* Remove Manager Modal */}
+      <RemoveManagerModal
+        isOpen={showRemoveManagerModal}
+        onClose={() => setShowRemoveManagerModal(false)}
+        departmentInfo={{
+          id: selectedDepartment?.id,
+          name: getDepartmentName(),
+        }}
+        managerName={getManagerName()}
+      />
     </div>
   );
 }

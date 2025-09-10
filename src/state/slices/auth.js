@@ -35,6 +35,12 @@ export const authSlice = createSlice({
         state.role = action.payload.data.user.role;
         localStorage.setItem("expiresAt", action.payload.data.expiresAt);
         state.expiresAt = action.payload.data.expiresAt;
+
+        localStorage.setItem(
+          "primaryCategory",
+          action.payload.data.user.primaryCategory
+        );
+        state.primaryCategory = action.payload.data.user.primaryCategory;
       })
       .addCase(logIn.rejected, (state, action) => {
         state.loadingAuth = false;

@@ -394,12 +394,30 @@
     "title": "Create New Department",
     "editTitle": "Edit Department",
     "addToRoster": "Add New Department to Roster",
+    "noResults": "No results found",
+    "assignManager": "Assign Manager",
+
+    "sections": {
+      "manager": "Manager",
+      "basicInfo": "Basic Information",
+      "permissions": "Permissions",
+      "managerSelection": "Manager Selection"
+    },
+
     "fields": {
       "nameArabic": "Arabic Name",
       "nameEnglish": "English Name",
       "category": "Category",
       "location": "Location",
       "description": "Description",
+      "departmentHead": "Department Head *",
+      "startDate": "Start Date *",
+      "canViewDepartment": "Can view department",
+      "canEditDepartment": "Can edit department",
+      "canViewDepartmentReports": "Can view department reports",
+      "canManageSchedules": "Can manage schedules",
+      "canManageStaff": "Can manage staff",
+      "notes": "Notes",
       "isActive": "Active Status"
     },
     "placeholders": {
@@ -407,7 +425,10 @@
       "nameEnglish": "Enter department name in English",
       "category": "Select a category",
       "location": "Enter department location (e.g., Third Floor - Wing A)",
-      "description": "Enter department description (optional)"
+      "description": "Enter department description (optional)",
+      "code": "Enter Code",
+      "searchUsers": "Type a name or email to search...",
+      "notes": "Enter notes here..."
     },
     "hints": {
       "location": "Specify the physical location of the department within the facility",
@@ -425,7 +446,8 @@
     "success": {
       "created": "Department created successfully!",
       "updated": "Department updated successfully!",
-      "deleted": "Department deleted successfully!"
+      "deleted": "Department deleted successfully!",
+      "managerAssigned": "Manager assigned successfully"
     },
     "error": {
       "title": "Error",
@@ -442,6 +464,46 @@
     "fetchError": "Failed to fetch departments",
     "noData": "No departments available",
     "loading": "Loading departments...",
+    "removeManager": {
+      "title": "Remove Manager",
+      "confirmMessage": "Are you sure you want to remove this manager from the department? This action cannot be undone.",
+      "department": "Department",
+      "manager": "Current Manager",
+      "reason": "Reason for removal",
+      "reasonPlaceholder": "Please provide a reason for removing this manager...",
+      "reasonRequired": "Reason is required",
+      "warning": {
+        "title": "Warning:",
+        "message": "Removing the manager will revoke all their department-specific permissions and access."
+      },
+      "success": "Manager {{managerName}} removed from {{departmentName}} successfully",
+      "error": {
+        "title": "Error"
+      },
+      "confirm": "Remove Manager"
+    },
+
+    "manager": {
+      "title": "Department Manager",
+      "noName": "No name",
+      "noManager": "No Manager Assigned",
+      "noManagerDescription": "This department doesn't have a manager assigned yet.",
+      "startDate": "Start Date",
+      "notes": "Notes",
+      "permissions": {
+        "viewDepartment": "View Department",
+        "editDepartment": "Edit Department",
+        "viewReports": "View Reports",
+        "manageSchedules": "Manage Schedules",
+        "manageStaff": "Manage Staff"
+      },
+      "actions": {
+        "assignManager": "Assign Manager",
+        "editManager": "Edit Manager",
+        "editPermissions": "Edit Permissions",
+        "removeManager": "Remove Manager"
+      }
+    },
     "deleteSuccess": "Department \"{{name}}\" deleted successfully!",
     "search": {
       "placeholder": "Search departments.."
@@ -477,6 +539,8 @@
       "category": "Category",
       "location": "Location",
       "status": "Status",
+      "code": "Code",
+      "linkedCategories": "Linked Categories",
       "createdAt": "Created Date",
       "actions": "Actions",
       "subDepartments": "Sub Departments",
@@ -493,7 +557,11 @@
       "edit": "Edit",
       "delete": "Delete",
       "activate": "Activate",
-      "deactivate": "Deactivate"
+      "editManager": "Edit Managre Permission",
+      "removeManager": "Remove Manager",
+      "deactivate": "Deactivate",
+      "assign": "Assign",
+      "assigning": "Assigning..."
     },
     "delete": {
       "title": "Delete Department",
@@ -526,17 +594,20 @@
       "activeSubDepartments": "Active Sub Departments",
       "pendingRequests": "Pending Requests",
       "schedulesThisMonth": "Schedules This Month",
+      "linkedCategories": "Linked Categories",
+      "activeSchedules": "Active Schedules",
       "completedSchedulesThisMonth": "Completed Schedules This Month"
     },
     "error": {
       "title": "Error",
       "message": "An error occurred while processing department data",
-      "notFound": "Department not found",
+      "notFound": "The requested department was not found.",
       "noPermission": "You don't have permission to access this department",
       "fetchError": "Failed to fetch departments"
     },
     "empty": {
       "title": "No Departments Found",
+
       "message": "No departments match your current filters",
       "suggestion": "Try adjusting your search criteria or add a new department"
     },
@@ -553,6 +624,9 @@
     },
     "form": {
       "validation": {
+        "codeRequired": "Department code is required",
+        "codeLength": "Department code must be exactly 4 characters",
+
         "nameArabicRequired": "Arabic name is required",
         "nameEnglishRequired": "English name is required",
         "departmentRequired": "Department is required",
@@ -707,6 +781,7 @@
     },
     "empty": {
       "title": "No Sub Departments Found",
+      "description": "This department doesn't have any sub-departments yet.",
       "message": "No sub departments match your current filters",
       "suggestion": "Try adjusting your search criteria or add a new sub department"
     }
@@ -717,6 +792,7 @@
   "subDepartmentForm": {
     "title": "Create New Sub Department",
     "editTitle": "Edit Sub Department",
+
     "fields": {
       "nameArabic": "Arabic Name",
       "nameEnglish": "English Name",
@@ -2183,6 +2259,7 @@
       "monthInvalid": "Month must be between 1 and 12",
       "yearRequired": "Year is required",
       "yearInvalid": "Year must be between 2024 and 2030",
+      "dateInFuture": "Start date must be in the future",
       "deadlineRequired": "Submission deadline is required",
       "deadlineFuture": "Submission deadline must be in the future",
       "departmentsRequired": "At least one department must be selected",
@@ -2257,5 +2334,34 @@
     "filled": "filled",
     "progress": "Progress",
     "overBooked": "Overbooked"
+  },
+
+  "managerPermissions": {
+    "title": "Update Manager Permissions",
+    "department": "Department",
+    "manager": "Manager",
+    "startDate": "Start Date",
+    "permissions": "Manager Permissions",
+    "canViewDepartment": "Can View Department",
+    "canEditDepartment": "Can Edit Department",
+    "canViewDepartmentReports": "Can View Department Reports",
+    "canManageSchedules": "Can Manage Schedules",
+    "canManageStaff": "Can Manage Staff",
+    "buttons": {
+      "cancel": "Cancel",
+      "update": "Update Permissions",
+      "updating": "Updating..."
+    },
+    "success": {
+      "updated": "Manager permissions updated successfully"
+    },
+    "error": {
+      "title": "Error"
+    },
+    "noManager": {
+      "title": "No Manager Assigned",
+      "description": "This department doesn't have a manager assigned. Please assign a manager first."
+    },
+    "assignManager": "Assign Manager"
   }
 }

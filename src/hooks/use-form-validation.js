@@ -93,6 +93,14 @@ function UseFormValidation() {
 
   // Department Add Validation Schema
   const VALIDATION_SCHEMA_ADD_DEPARTMENT = Yup.object().shape({
+    code: Yup.string()
+      .required(t("department.form.validation.codeRequired"))
+      .length(4, t("department.form.validation.codeLength"))
+      .matches(
+        // Latin letters, digits, whitespace, and punctuation
+        /^[A-Za-z]/,
+        t("validation.englishOnly")
+      ),
     nameArabic: Yup.string()
       .required(t("department.form.validation.nameArabicRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
@@ -111,10 +119,10 @@ function UseFormValidation() {
         /^[A-Za-z0-9\s\p{P}]+$/u,
         t("validation.englishOnly") // you may want to update this message to "English letters, numbers & punctuation only"
       ),
-    categoryId: Yup.number()
-      .required(t("roster.validation.categoryRequired"))
-      .positive(t("validation.positiveNumber"))
-      .integer(t("validation.integerOnly")),
+    // categoryId: Yup.number()
+    //   .required(t("roster.validation.categoryRequired"))
+    //   .positive(t("validation.positiveNumber"))
+    //   .integer(t("validation.integerOnly")),
     location: Yup.string()
       .required(t("department.form.validation.locationRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
@@ -124,6 +132,19 @@ function UseFormValidation() {
       t("validation.maxLength", { count: 500 })
     ),
     isActive: Yup.boolean(),
+    // manager: Yup.object().shape({
+    //   userId: Yup.number()
+    //     .required("assignUserRole.validation.")
+    //     .positive()
+    //     .integer(),
+    //   canViewDepartment: Yup.boolean(),
+    //   canEditDepartment: Yup.boolean(),
+    //   canViewDepartmentReports: Yup.boolean(),
+    //   canManageSchedules: Yup.boolean(),
+    //   canManageStaff: Yup.boolean(),
+    //   startDate: Yup.date().required(),
+    //   notes: Yup.string().max(500),
+    // }),
   });
 
   // Department Edit Validation Schema
@@ -146,10 +167,10 @@ function UseFormValidation() {
         /^[A-Za-z0-9\s\p{P}]+$/u,
         t("validation.englishOnly") // you may want to update this message to "English letters, numbers & punctuation only"
       ),
-    categoryId: Yup.number()
-      .required(t("roster.validation.categoryRequired"))
-      .positive(t("validation.positiveNumber"))
-      .integer(t("validation.integerOnly")),
+    // categoryId: Yup.number()
+    //   .required(t("roster.validation.categoryRequired"))
+    //   .positive(t("validation.positiveNumber"))
+    //   .integer(t("validation.integerOnly")),
     location: Yup.string()
       .required(t("department.form.validation.locationRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
@@ -817,6 +838,27 @@ function UseFormValidation() {
     notes: Yup.string().max(500, t("validation.maxLength", { max: 500 })),
   });
 
+  const VALIDATION_SCHEMA_ASSIGN_DEPARTMENT_HEAD = Yup.object({
+    userId: Yup.string().required(
+      t("validation.required") || "User is required"
+    ),
+    startDate: Yup.date()
+      .required(t("validation.required") || "Start date is required")
+      .min(
+        new Date(),
+        t("roster.validation.dateInFuture") ||
+          "Start date must be in the future"
+      ),
+    canViewDepartment: Yup.boolean(),
+    canEditDepartment: Yup.boolean(),
+    canViewDepartmentReports: Yup.boolean(),
+    canManageSchedules: Yup.boolean(),
+    canManageStaff: Yup.boolean(),
+    notes: Yup.string().max(
+      500,
+      t("validation.maxLength") || "Maximum 500 characters"
+    ),
+  });
   return {
     VALIDATION_SCHEMA_LOGIN,
     VALIDATION_SCHEMA_RESET_PASSWORD,
@@ -843,6 +885,7 @@ function UseFormValidation() {
     VALIDATION_SCHEMA_EDIT_ROSTER_CONTRAFCTING_TYPES,
     VALIDATION_SCHEMA_EDIT_WORKING_HOUR,
     VALIDATION_SCHEMA_ADD_DEPARTMENT_TO_ROSTER,
+    VALIDATION_SCHEMA_ASSIGN_DEPARTMENT_HEAD,
   };
 }
 

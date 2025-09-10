@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -9,42 +9,147 @@ import { createDepartment } from "../../../state/act/actDepartment";
 import { useNavigate } from "react-router-dom";
 import UseInitialValues from "../../../hooks/use-initial-values";
 import UseFormValidation from "../../../hooks/use-form-validation";
-import {
-  getCategories,
-  getCategoryTypes,
-} from "../../../state/act/actCategory";
+import { getCategoryTypes } from "../../../state/act/actCategory";
+import { getUserSummaries } from "../../../state/slices/user";
 import LoadingGetData from "../../../components/LoadingGetData";
+import { Search, User, ArrowLeft } from "lucide-react";
 
 function CreateDepartment() {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const dropdownRef = useRef(null);
   const currentLang = i18n.language;
   const isRTL = currentLang === "ar";
 
+  // State for user search and selection
+  const [userSearchTerm, setUserSearchTerm] = useState("");
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  const { mymode } = useSelector((state) => state.mode);
+  const isDark = mymode === "dark";
+
+  const { VALIDATION_SCHEMA_ADD_DEPARTMENT } = UseFormValidation();
+
+  // Initial form values (updated to include userId)
+  const { INITIAL_VALUES_ADD_DEPARTMENT } = UseInitialValues();
+
+  // Redux selectors
   const { loadingCreateDepartment, createError, createSuccess, createMessage } =
     useSelector((state) => state.department);
+  const { loadingGetCategoryTypes, categoryTypes } = useSelector(
+    (state) => state.category
+  );
+  const {
+    users,
+    loading: usersLoading,
+    error: usersError,
+  } = useSelector((state) => state.users);
 
-  const { loadingGetCategoryTypes } = useSelector((state) => state.category);
-
+  // Load initial data
   useEffect(() => {
     dispatch(getCategoryTypes());
+    dispatch(getUserSummaries({ page: 1, pageSize: 50 }));
   }, [dispatch]);
 
-  // Get categories for dropdown (assuming you have categories in your state)
-  const { categoryTypes } = useSelector((state) => state.category);
+  // Handle user search with debouncing
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (userSearchTerm.length >= 2) {
+        dispatch(
+          getUserSummaries({
+            page: 1,
+            pageSize: 50,
+            searchTerm: userSearchTerm,
+          })
+        );
+      } else if (userSearchTerm.length === 0) {
+        dispatch(getUserSummaries({ page: 1, pageSize: 50 }));
+      }
+    }, 300);
 
-  // Validation schema with translations
-  const { VALIDATION_SCHEMA_ADD_DEPARTMENT } = UseFormValidation();
-  const navigate = useNavigate();
+    return () => clearTimeout(delayDebounceFn);
+  }, [userSearchTerm, dispatch]);
 
-  // Initial form values
-  const { INITIAL_VALUES_ADD_DEPARTMENT } = UseInitialValues();
+  // Handle click outside dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowUserDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Updated validation schema
+
+  // Updated initial values
+
+  // Handle user search input
+  const handleUserSearchChange = (e, setFieldValue) => {
+    const value = e.target.value;
+    setUserSearchTerm(value);
+    setShowUserDropdown(true);
+
+    if (!value) {
+      setSelectedUser(null);
+      setFieldValue("manager.userId", "");
+    }
+  };
+
+  // Handle user selection
+  const handleUserSelect = (user, setFieldValue) => {
+    setSelectedUser(user);
+    setUserSearchTerm(`${user.nameEnglish} (${user.mobile})`);
+    setFieldValue("manager.userId", user.id);
+    setShowUserDropdown(false);
+  };
+
+  // Filter users based on search
+  const filteredUsers =
+    users?.filter((user) => {
+      if (!userSearchTerm) return true;
+      const searchLower = userSearchTerm.toLowerCase();
+      return (
+        user.nameEnglish.toLowerCase().includes(searchLower) ||
+        user.nameArabic?.includes(userSearchTerm) ||
+        user.mobile.includes(userSearchTerm) ||
+        user.role.toLowerCase().includes(searchLower)
+      );
+    }) || [];
 
   const handleSubmit = async (
     values,
     { setSubmitting, resetForm, setFieldError }
   ) => {
-    dispatch(createDepartment(values))
+    // Transform the data to match the expected API format
+    const { manager, ...otherData } = values;
+    console.log(otherData);
+    const submissionData = {
+      ...values,
+      ...(values.manager.userId
+        ? {
+            manager: {
+              ...values.manager,
+              startDate: new Date(values.manager.startDate).toISOString(),
+            },
+          }
+        : {}),
+    };
+
+    console.log(submissionData);
+
+    const sndData = {
+      ...otherData,
+      ...(values.manager?.userId && { manager: values.manager }),
+    };
+    console.log("send data", sndData);
+    dispatch(createDepartment(sndData))
       .unwrap()
       .then(() => {
         // Success handling
@@ -66,234 +171,829 @@ function CreateDepartment() {
           title: t("departmentForm.error.title"),
           text:
             currentLang === "en"
-              ? error?.response?.data?.messageEn || error?.message
-              : error?.response?.data?.messageAr ||
+              ? error?.messageEn || error?.message
+              : error?.messageAr ||
                 error?.message ||
                 t("department.error.message"),
           icon: "error",
           confirmButtonText: t("common.ok"),
           confirmButtonColor: "#ef4444",
-          background: "#ffffff",
-          color: "#111827",
+          background: isDark ? "#2d2d2d" : "#ffffff",
+          color: isDark ? "#f0f0f0" : "#111827",
         });
       });
   };
+
   if (loadingGetCategoryTypes) return <LoadingGetData />;
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2
-        className={`text-2xl font-bold text-gray-800 mb-6 text-center ${
-          isRTL ? "font-arabic" : ""
-        }`}
-      >
-        {t("departmentForm.title")}
-      </h2>
-
-      <Formik
-        initialValues={INITIAL_VALUES_ADD_DEPARTMENT}
-        validationSchema={VALIDATION_SCHEMA_ADD_DEPARTMENT}
-        onSubmit={handleSubmit}
-        enableReinitialize
-      >
-        {({ isSubmitting, errors, touched, values, setFieldValue }) => (
-          <Form className="space-y-6">
-            {/* Arabic Name */}
-            <div>
-              <label
-                htmlFor="nameArabic"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                {t("departmentForm.fields.nameArabic")}{" "}
-                <span className="text-red-500">*</span>
-              </label>
-              <Field
-                type="text"
-                id="nameArabic"
-                name="nameArabic"
-                dir="rtl"
-                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.nameArabic && touched.nameArabic
-                    ? "border-red-500 bg-red-50"
-                    : "border-gray-300"
-                }`}
-                placeholder={t("departmentForm.placeholders.nameArabic")}
-              />
-              <ErrorMessage
-                name="nameArabic"
-                component="div"
-                className="mt-1 text-sm text-red-600"
-              />
-            </div>
-
-            {/* English Name */}
-            <div>
-              <label
-                htmlFor="nameEnglish"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                {t("departmentForm.fields.nameEnglish")}{" "}
-                <span className="text-red-500">*</span>
-              </label>
-              <Field
-                type="text"
-                id="nameEnglish"
-                name="nameEnglish"
-                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.nameEnglish && touched.nameEnglish
-                    ? "border-red-500 bg-red-50"
-                    : "border-gray-300"
-                }`}
-                placeholder={t("departmentForm.placeholders.nameEnglish")}
-              />
-              <ErrorMessage
-                name="nameEnglish"
-                component="div"
-                className="mt-1 text-sm text-red-600"
-              />
-            </div>
-
-            {/* Category Selection */}
-            <div>
-              <label
-                htmlFor="categoryId"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                {t("departmentForm.fields.category")}{" "}
-                <span className="text-red-500">*</span>
-              </label>
-              <Field
-                as="select"
-                id="categoryId"
-                name="categoryId"
-                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.categoryId && touched.categoryId
-                    ? "border-red-500 bg-red-50"
-                    : "border-gray-300"
-                }`}
-              >
-                <option value="">
-                  {t("departmentForm.placeholders.category")}
-                </option>
-                {categoryTypes?.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {currentLang === "ar"
-                      ? category.nameArabic
-                      : category.nameEnglish}
-                  </option>
-                ))}
-              </Field>
-              <ErrorMessage
-                name="categoryId"
-                component="div"
-                className="mt-1 text-sm text-red-600"
-              />
-            </div>
-
-            {/* Location */}
-            <div>
-              <label
-                htmlFor="location"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                {t("departmentForm.fields.location")}
-              </label>
-              <Field
-                type="text"
-                id="location"
-                name="location"
-                dir={isRTL ? "rtl" : "ltr"}
-                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.location && touched.location
-                    ? "border-red-500 bg-red-50"
-                    : "border-gray-300"
-                }`}
-                placeholder={t("departmentForm.placeholders.location")}
-              />
-              <ErrorMessage
-                name="location"
-                component="div"
-                className="mt-1 text-sm text-red-600"
-              />
-            </div>
-
-            {/* Is Active */}
-            <div
-              className={`flex items-center ${isRTL ? "flex-row-reverse" : ""}`}
-            >
-              <Field
-                type="checkbox"
-                id="isActive"
-                name="isActive"
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label
-                htmlFor="isActive"
-                className={`block text-sm text-gray-700 ${
-                  isRTL ? "ml-2" : "mr-2"
-                }`}
-              >
-                {t("departmentForm.fields.isActive")}
-              </label>
-            </div>
-
-            {/* Submit Button */}
-            <div
-              className={`flex justify-end space-x-3 pt-4 ${
-                isRTL ? "flex-row-reverse space-x-reverse" : ""
-              }`}
-            >
+    <div
+      className={`min-h-screen ${isDark ? "bg-gray-900" : "bg-gray-50"}`}
+      dir={isRTL ? "rtl" : "ltr"}
+    >
+      <div className="p-4 sm:p-6">
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <div className="mb-6">
+            <div className="flex items-center gap-4 mb-4">
               <button
-                type="button"
-                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                onClick={() => {
-                  window.history.back();
-                }}
+                onClick={() => navigate("/admin-panel/departments")}
+                className={`p-2 rounded-lg border transition-colors ${
+                  isDark
+                    ? "border-gray-600 hover:bg-gray-700 text-gray-300"
+                    : "border-gray-300 hover:bg-gray-50 text-gray-700"
+                }`}
               >
-                {t("departmentForm.buttons.cancel")}
+                <ArrowLeft size={20} />
               </button>
-
-              <button
-                type="submit"
-                disabled={isSubmitting || loadingCreateDepartment}
-                className={`px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-                  isSubmitting || loadingCreateDepartment
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-700"
-                }`}
+              <h1
+                className={`text-2xl sm:text-3xl font-bold ${
+                  isDark ? "text-white" : "text-gray-900"
+                } ${isRTL ? "font-arabic" : ""}`}
               >
-                {isSubmitting || loadingCreateDepartment ? (
-                  <div className="flex items-center">
-                    <svg
-                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
+                {t("departmentForm.title") || "Create Department"}
+              </h1>
+            </div>
+          </div>
+
+          {/* Form */}
+          <div
+            className={`rounded-lg shadow border ${
+              isDark
+                ? "bg-gray-800 border-gray-700"
+                : "bg-white border-gray-200"
+            }`}
+          >
+            <div className="p-6">
+              <Formik
+                initialValues={INITIAL_VALUES_ADD_DEPARTMENT}
+                validationSchema={VALIDATION_SCHEMA_ADD_DEPARTMENT}
+                onSubmit={handleSubmit}
+                enableReinitialize
+              >
+                {({ isSubmitting, errors, touched, values, setFieldValue }) => (
+                  <Form className="space-y-6">
+                    {/* Basic Information Section */}
+                    <div className="space-y-6">
+                      <h3
+                        className={`text-lg font-semibold border-b pb-2 ${
+                          isDark
+                            ? "text-white border-gray-600"
+                            : "text-gray-900 border-gray-200"
+                        }`}
+                      >
+                        {t("departmentForm.sections.basicInfo") ||
+                          "Basic Information"}
+                      </h3>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Arabic Name */}
+                        <div>
+                          <label
+                            htmlFor="nameArabic"
+                            className={`block text-sm font-medium mb-2 ${
+                              isDark ? "text-gray-300" : "text-gray-700"
+                            }`}
+                          >
+                            {t("departmentForm.fields.nameArabic") ||
+                              "Arabic Name"}{" "}
+                            <span className="text-red-500">*</span>
+                          </label>
+                          <Field
+                            type="text"
+                            id="nameArabic"
+                            name="nameArabic"
+                            dir="rtl"
+                            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                              isDark
+                                ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                                : "bg-white border-gray-300 text-gray-900"
+                            } ${
+                              errors.nameArabic && touched.nameArabic
+                                ? "border-red-500 bg-red-50 dark:bg-red-900/20"
+                                : ""
+                            }`}
+                            placeholder={
+                              t("departmentForm.placeholders.nameArabic") ||
+                              "Enter Arabic name"
+                            }
+                          />
+                          <ErrorMessage
+                            name="nameArabic"
+                            component="div"
+                            className="mt-1 text-sm text-red-600"
+                          />
+                        </div>
+
+                        {/* English Name */}
+                        <div>
+                          <label
+                            htmlFor="nameEnglish"
+                            className={`block text-sm font-medium mb-2 ${
+                              isDark ? "text-gray-300" : "text-gray-700"
+                            }`}
+                          >
+                            {t("departmentForm.fields.nameEnglish") ||
+                              "English Name"}{" "}
+                            <span className="text-red-500">*</span>
+                          </label>
+                          <Field
+                            type="text"
+                            id="nameEnglish"
+                            name="nameEnglish"
+                            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                              isDark
+                                ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                                : "bg-white border-gray-300 text-gray-900"
+                            } ${
+                              errors.nameEnglish && touched.nameEnglish
+                                ? "border-red-500 bg-red-50 dark:bg-red-900/20"
+                                : ""
+                            }`}
+                            placeholder={
+                              t("departmentForm.placeholders.nameEnglish") ||
+                              "Enter English name"
+                            }
+                          />
+                          <ErrorMessage
+                            name="nameEnglish"
+                            component="div"
+                            className="mt-1 text-sm text-red-600"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Category Selection */}
+                        {/* <div>
+                          <label
+                            htmlFor="categoryId"
+                            className={`block text-sm font-medium mb-2 ${
+                              isDark ? "text-gray-300" : "text-gray-700"
+                            }`}
+                          >
+                            {t("departmentForm.fields.category") || "Category"}{" "}
+                            <span className="text-red-500">*</span>
+                          </label>
+                          <Field
+                            as="select"
+                            id="categoryId"
+                            name="categoryId"
+                            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                              isDark
+                                ? "bg-gray-700 border-gray-600 text-white"
+                                : "bg-white border-gray-300 text-gray-900"
+                            } ${
+                              errors.categoryId && touched.categoryId
+                                ? "border-red-500 bg-red-50 dark:bg-red-900/20"
+                                : ""
+                            }`}
+                          >
+                            <option value="">
+                              {t("departmentForm.placeholders.category") ||
+                                "Select category"}
+                            </option>
+                            {categoryTypes?.map((category) => (
+                              <option key={category.id} value={category.id}>
+                                {currentLang === "ar"
+                                  ? category.nameArabic
+                                  : category.nameEnglish}
+                              </option>
+                            ))}
+                          </Field>
+                          <ErrorMessage
+                            name="categoryId"
+                            component="div"
+                            className="mt-1 text-sm text-red-600"
+                          />
+                        </div> */}
+
+                        {/* Code */}
+                        <div>
+                          <label
+                            htmlFor="code"
+                            className={`block text-sm font-medium mb-2 ${
+                              isDark ? "text-gray-300" : "text-gray-700"
+                            }`}
+                          >
+                            {t("categoryForm.fields.code") || "Code"}{" "}
+                            <span className="text-red-500">*</span>
+                          </label>
+                          <Field
+                            type="text"
+                            id="code"
+                            name="code"
+                            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 uppercase ${
+                              isDark
+                                ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                                : "bg-white border-gray-300 text-gray-900"
+                            } ${
+                              errors.code && touched.code
+                                ? "border-red-500 bg-red-50 dark:bg-red-900/20"
+                                : ""
+                            }`}
+                            placeholder={
+                              t("categoryForm.placeholders.code") ||
+                              "Enter code"
+                            }
+                            onChange={(e) => {
+                              const upperValue = e.target.value.toUpperCase();
+                              setFieldValue("code", upperValue);
+                            }}
+                          />
+                          <ErrorMessage
+                            name="code"
+                            component="div"
+                            className="mt-1 text-sm text-red-600"
+                          />
+                          <p
+                            className={`mt-1 text-xs ${
+                              isDark ? "text-gray-400" : "text-gray-500"
+                            }`}
+                          >
+                            {t("categoryForm.hints.code") ||
+                              "Code will be automatically converted to uppercase"}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Location */}
+                      <div>
+                        <label
+                          htmlFor="location"
+                          className={`block text-sm font-medium mb-2 ${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          }`}
+                        >
+                          {t("departmentForm.fields.location") || "Location"}
+                          <span className="text-red-500">*</span>
+                        </label>
+                        <Field
+                          type="text"
+                          id="location"
+                          name="location"
+                          dir={isRTL ? "rtl" : "ltr"}
+                          className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                            isDark
+                              ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                              : "bg-white border-gray-300 text-gray-900"
+                          } ${
+                            errors.location && touched.location
+                              ? "border-red-500 bg-red-50 dark:bg-red-900/20"
+                              : ""
+                          }`}
+                          placeholder={
+                            t("departmentForm.placeholders.location") ||
+                            "Enter location"
+                          }
+                        />
+                        <ErrorMessage
+                          name="location"
+                          component="div"
+                          className="mt-1 text-sm text-red-600"
+                        />
+                      </div>
+
+                      {/* Description */}
+                      <div>
+                        <label
+                          htmlFor="description"
+                          className={`block text-sm font-medium mb-2 ${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          }`}
+                        >
+                          {t("departmentForm.fields.description") ||
+                            "Description"}
+                        </label>
+                        <Field
+                          as="textarea"
+                          id="description"
+                          name="description"
+                          rows={3}
+                          dir={isRTL ? "rtl" : "ltr"}
+                          className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical ${
+                            isDark
+                              ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                              : "bg-white border-gray-300 text-gray-900"
+                          } ${
+                            errors.description && touched.description
+                              ? "border-red-500 bg-red-50 dark:bg-red-900/20"
+                              : ""
+                          }`}
+                          placeholder={
+                            t("departmentForm.placeholders.description") ||
+                            "Enter description"
+                          }
+                        />
+                        <ErrorMessage
+                          name="description"
+                          component="div"
+                          className="mt-1 text-sm text-red-600"
+                        />
+                      </div>
+
+                      {/* Is Active */}
+                      <div
+                        className={`flex items-center ${
+                          isRTL ? "flex-row-reverse" : ""
+                        }`}
+                      >
+                        <Field
+                          type="checkbox"
+                          id="isActive"
+                          name="isActive"
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        />
+                        <label
+                          htmlFor="isActive"
+                          className={`text-sm ${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          } ${isRTL ? "mr-2" : "ml-2"}`}
+                        >
+                          {t("departmentForm.fields.isActive") || "Active"}
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Manager Section */}
+                    <div className="space-y-6">
+                      <h3
+                        className={`text-lg font-semibold border-b pb-2 ${
+                          isDark
+                            ? "text-white border-gray-600"
+                            : "text-gray-900 border-gray-200"
+                        }`}
+                      >
+                        {t("departmentForm.sections.manager") ||
+                          "Department Manager"}
+                      </h3>
+
+                      {/* Manager User Selection */}
+                      <div className="space-y-2">
+                        <label
+                          className={`block text-sm font-medium ${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          }`}
+                        >
+                          {t("departmentForm.fields.departmentHead") ||
+                            "Department Head"}{" "}
+                          <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative" ref={dropdownRef}>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              value={userSearchTerm}
+                              onChange={(e) =>
+                                handleUserSearchChange(e, setFieldValue)
+                              }
+                              onFocus={() => setShowUserDropdown(true)}
+                              placeholder={
+                                t("departmentForm.placeholders.searchUsers") ||
+                                "Search users by name, mobile, or role..."
+                              }
+                              className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
+                                isRTL ? "pr-10" : "pl-10"
+                              } ${
+                                isDark
+                                  ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                                  : "bg-white border-gray-300 text-gray-900 placeholder-gray-400"
+                              } ${
+                                errors.manager?.userId &&
+                                touched.manager?.userId
+                                  ? "border-red-500 bg-red-50 dark:bg-red-900/20"
+                                  : ""
+                              }`}
+                              autoComplete="off"
+                            />
+                            <div
+                              className={`absolute top-2.5 ${
+                                isRTL ? "right-3" : "left-3"
+                              }`}
+                            >
+                              <Search
+                                size={16}
+                                className={
+                                  isDark ? "text-gray-400" : "text-gray-500"
+                                }
+                              />
+                            </div>
+
+                            {/* Loading indicator for user search */}
+                            {usersLoading.list.list && (
+                              <div
+                                className={`absolute top-2.5 ${
+                                  isRTL ? "left-3" : "right-3"
+                                }`}
+                              >
+                                <svg
+                                  className="animate-spin h-5 w-5 text-gray-400"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <circle
+                                    className="opacity-25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    strokeWidth="4"
+                                  ></circle>
+                                  <path
+                                    className="opacity-75"
+                                    fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                  ></path>
+                                </svg>
+                              </div>
+                            )}
+                          </div>
+
+                          <ErrorMessage
+                            name="manager.userId"
+                            component="div"
+                            className="mt-1 text-sm text-red-600"
+                          />
+
+                          {/* User Dropdown */}
+                          {showUserDropdown && (
+                            <div
+                              className={`absolute z-20 w-full mt-1 border rounded-md shadow-lg max-h-60 overflow-auto ${
+                                isDark
+                                  ? "bg-gray-700 border-gray-600"
+                                  : "bg-white border-gray-300"
+                              }`}
+                            >
+                              {usersLoading.list.list ? (
+                                <div
+                                  className={`p-4 text-center ${
+                                    isDark ? "text-gray-400" : "text-gray-500"
+                                  }`}
+                                >
+                                  <svg
+                                    className="animate-spin mx-auto h-6 w-6 text-gray-400"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <circle
+                                      className="opacity-25"
+                                      cx="12"
+                                      cy="12"
+                                      r="10"
+                                      stroke="currentColor"
+                                      strokeWidth="4"
+                                    ></circle>
+                                    <path
+                                      className="opacity-75"
+                                      fill="currentColor"
+                                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                    ></path>
+                                  </svg>
+                                  <p className="mt-2">
+                                    {t("departmentForm.loading.users") ||
+                                      "Loading users..."}
+                                  </p>
+                                </div>
+                              ) : filteredUsers.length > 0 ? (
+                                filteredUsers.map((user) => (
+                                  <div
+                                    key={user.id}
+                                    onClick={() =>
+                                      handleUserSelect(user, setFieldValue)
+                                    }
+                                    className={`p-3 cursor-pointer border-b last:border-b-0 transition-colors ${
+                                      isDark
+                                        ? "hover:bg-gray-600 border-gray-600"
+                                        : "hover:bg-gray-50 border-gray-100"
+                                    }`}
+                                  >
+                                    <div className="flex items-center gap-3">
+                                      <div
+                                        className={`p-1.5 rounded-full ${
+                                          isDark ? "bg-gray-600" : "bg-gray-100"
+                                        }`}
+                                      >
+                                        <User
+                                          size={14}
+                                          className={
+                                            isDark
+                                              ? "text-gray-400"
+                                              : "text-gray-500"
+                                          }
+                                        />
+                                      </div>
+                                      <div>
+                                        <div
+                                          className={`text-sm font-medium ${
+                                            isDark
+                                              ? "text-white"
+                                              : "text-gray-900"
+                                          }`}
+                                        >
+                                          {user.nameEnglish}
+                                        </div>
+                                        <div
+                                          className={`text-xs mt-1 ${
+                                            isDark
+                                              ? "text-gray-400"
+                                              : "text-gray-500"
+                                          }`}
+                                        >
+                                          {user.nameArabic &&
+                                            `${user.nameArabic} • `}
+                                          {user.mobile} • {user.role}
+                                        </div>
+                                        {user.primaryCategoryNameEn && (
+                                          <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                                            {user.primaryCategoryNameEn}
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))
+                              ) : (
+                                <div
+                                  className={`p-4 text-center ${
+                                    isDark ? "text-gray-400" : "text-gray-500"
+                                  }`}
+                                >
+                                  {userSearchTerm
+                                    ? t("departmentForm.noResults") ||
+                                      "No users found matching your search"
+                                    : t("departmentForm.noUsers") ||
+                                      "No users available"}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Manager Start Date */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <label
+                            htmlFor="manager.startDate"
+                            className={`block text-sm font-medium mb-2 ${
+                              isDark ? "text-gray-300" : "text-gray-700"
+                            }`}
+                          >
+                            {t("departmentForm.fields.startDate") ||
+                              "Start Date"}{" "}
+                            <span className="text-red-500">*</span>
+                          </label>
+                          <Field
+                            type="date"
+                            id="manager.startDate"
+                            name="manager.startDate"
+                            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                              isDark
+                                ? "bg-gray-700 border-gray-600 text-white"
+                                : "bg-white border-gray-300 text-gray-900"
+                            } ${
+                              errors.manager?.startDate &&
+                              touched.manager?.startDate
+                                ? "border-red-500 bg-red-50 dark:bg-red-900/20"
+                                : ""
+                            }`}
+                          />
+                          <ErrorMessage
+                            name="manager.startDate"
+                            component="div"
+                            className="mt-1 text-sm text-red-600"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Manager Permissions */}
+                      <div className="space-y-4">
+                        <h4
+                          className={`text-md font-medium ${
+                            isDark ? "text-gray-200" : "text-gray-800"
+                          }`}
+                        >
+                          {t("departmentForm.sections.permissions") ||
+                            "Permissions"}
+                        </h4>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div
+                            className={`flex items-center ${
+                              isRTL ? "flex-row-reverse" : ""
+                            }`}
+                          >
+                            <Field
+                              type="checkbox"
+                              id="manager.canViewDepartment"
+                              name="manager.canViewDepartment"
+                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <label
+                              htmlFor="manager.canViewDepartment"
+                              className={`text-sm ${
+                                isDark ? "text-gray-300" : "text-gray-700"
+                              } ${isRTL ? "mr-2" : "ml-2"}`}
+                            >
+                              {t("departmentForm.fields.canViewDepartment") ||
+                                "Can View Department"}
+                            </label>
+                          </div>
+
+                          <div
+                            className={`flex items-center ${
+                              isRTL ? "flex-row-reverse" : ""
+                            }`}
+                          >
+                            <Field
+                              type="checkbox"
+                              id="manager.canEditDepartment"
+                              name="manager.canEditDepartment"
+                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <label
+                              htmlFor="manager.canEditDepartment"
+                              className={`text-sm ${
+                                isDark ? "text-gray-300" : "text-gray-700"
+                              } ${isRTL ? "mr-2" : "ml-2"}`}
+                            >
+                              {t("departmentForm.fields.canEditDepartment") ||
+                                "Can Edit Department"}
+                            </label>
+                          </div>
+
+                          <div
+                            className={`flex items-center ${
+                              isRTL ? "flex-row-reverse" : ""
+                            }`}
+                          >
+                            <Field
+                              type="checkbox"
+                              id="manager.canViewDepartmentReports"
+                              name="manager.canViewDepartmentReports"
+                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <label
+                              htmlFor="manager.canViewDepartmentReports"
+                              className={`text-sm ${
+                                isDark ? "text-gray-300" : "text-gray-700"
+                              } ${isRTL ? "mr-2" : "ml-2"}`}
+                            >
+                              {t(
+                                "departmentForm.fields.canViewDepartmentReports"
+                              ) || "Can View Department Reports"}
+                            </label>
+                          </div>
+
+                          <div
+                            className={`flex items-center ${
+                              isRTL ? "flex-row-reverse" : ""
+                            }`}
+                          >
+                            <Field
+                              type="checkbox"
+                              id="manager.canManageSchedules"
+                              name="manager.canManageSchedules"
+                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <label
+                              htmlFor="manager.canManageSchedules"
+                              className={`text-sm ${
+                                isDark ? "text-gray-300" : "text-gray-700"
+                              } ${isRTL ? "mr-2" : "ml-2"}`}
+                            >
+                              {t("departmentForm.fields.canManageSchedules") ||
+                                "Can Manage Schedules"}
+                            </label>
+                          </div>
+
+                          <div
+                            className={`flex items-center ${
+                              isRTL ? "flex-row-reverse" : ""
+                            }`}
+                          >
+                            <Field
+                              type="checkbox"
+                              id="manager.canManageStaff"
+                              name="manager.canManageStaff"
+                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <label
+                              htmlFor="manager.canManageStaff"
+                              className={`text-sm ${
+                                isDark ? "text-gray-300" : "text-gray-700"
+                              } ${isRTL ? "mr-2" : "ml-2"}`}
+                            >
+                              {t("departmentForm.fields.canManageStaff") ||
+                                "Can Manage Staff"}
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Manager Notes */}
+                      <div>
+                        <label
+                          htmlFor="manager.notes"
+                          className={`block text-sm font-medium mb-2 ${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          }`}
+                        >
+                          {t("departmentForm.fields.notes") || "Notes"}
+                        </label>
+                        <Field
+                          as="textarea"
+                          id="manager.notes"
+                          name="manager.notes"
+                          rows={3}
+                          dir={isRTL ? "rtl" : "ltr"}
+                          className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical ${
+                            isDark
+                              ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                              : "bg-white border-gray-300 text-gray-900"
+                          } ${
+                            errors.manager?.notes && touched.manager?.notes
+                              ? "border-red-500 bg-red-50 dark:bg-red-900/20"
+                              : ""
+                          }`}
+                          placeholder={
+                            t("departmentForm.placeholders.notes") ||
+                            "Enter any notes about the manager"
+                          }
+                        />
+                        <ErrorMessage
+                          name="manager.notes"
+                          component="div"
+                          className="mt-1 text-sm text-red-600"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Submit Buttons */}
+                    <div
+                      className={`flex justify-end space-x-3 pt-6 border-t ${
+                        isDark ? "border-gray-600" : "border-gray-200"
+                      } ${isRTL ? "flex-row-reverse space-x-reverse" : ""}`}
                     >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                    {t("departmentForm.buttons.creating")}
-                  </div>
-                ) : (
-                  t("departmentForm.buttons.create")
+                      <button
+                        type="button"
+                        className={`px-6 py-2 border rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer transition-colors ${
+                          isDark
+                            ? "border-gray-600 text-gray-300 bg-gray-700 hover:bg-gray-600"
+                            : "border-gray-300 text-gray-700 bg-white hover:bg-gray-50"
+                        }`}
+                        onClick={() => navigate("/admin-panel/departments")}
+                      >
+                        {t("departmentForm.buttons.cancel") || "Cancel"}
+                      </button>
+
+                      <button
+                        type="submit"
+                        disabled={isSubmitting || loadingCreateDepartment}
+                        className={`px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer transition-colors ${
+                          isSubmitting || loadingCreateDepartment
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-blue-600 hover:bg-blue-700"
+                        }`}
+                      >
+                        {isSubmitting || loadingCreateDepartment ? (
+                          <div className="flex items-center">
+                            <svg
+                              className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              ></circle>
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                              ></path>
+                            </svg>
+                            {t("departmentForm.buttons.creating") ||
+                              "Creating..."}
+                          </div>
+                        ) : (
+                          t("departmentForm.buttons.create") ||
+                          "Create Department"
+                        )}
+                      </button>
+                    </div>
+                  </Form>
                 )}
-              </button>
+              </Formik>
             </div>
-          </Form>
-        )}
-      </Formik>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

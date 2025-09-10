@@ -13,11 +13,10 @@ import {
   Plus,
   Menu,
   X,
-  MapPin,
+  Hash,
   Building,
-  Users,
-  UserCheck,
   Calendar,
+  Link2,
 } from "lucide-react";
 import { getDepartments } from "../../../state/act/actDepartment";
 import { getCategories } from "../../../state/act/actCategory";
@@ -96,11 +95,13 @@ function Department() {
   const handlePageSizeChange = (newPageSize) => {
     dispatch(setPageSize(parseInt(newPageSize)));
   };
+
   const handleClearFilters = () => {
     dispatch(clearFilters());
     setSearchInput("");
     handleFilterChange("isActive", true);
   };
+
   // Format date
   const formatDate = (dateString) => {
     const locale = i18n.language === "ar" ? "ar-EG" : "en-US";
@@ -156,15 +157,15 @@ function Department() {
           >
             {department.nameEnglish}
           </p>
-          {department.categoryNameArabic && (
+          {department.code && (
             <p
               className={`text-xs mt-1 px-2 py-1 rounded-full inline-block ${
                 isDark
-                  ? "bg-blue-900 text-blue-300"
-                  : "bg-blue-100 text-blue-800"
+                  ? "bg-purple-900 text-purple-300"
+                  : "bg-purple-100 text-purple-800"
               }`}
             >
-              {department.categoryNameArabic}
+              {department.code}
             </p>
           )}
         </div>
@@ -181,78 +182,45 @@ function Department() {
         </span>
       </div>
 
-      {department.location && (
-        <div className="flex items-center gap-2 mb-2">
-          <MapPin size={14} className="text-gray-500" />
-          <span
-            className={`text-sm ${isDark ? "text-gray-300" : "text-gray-600"}`}
-          >
-            {department.location}
-          </span>
-        </div>
-      )}
-
-      <div className="grid grid-cols-2 gap-2 text-sm mb-3">
+      <div className="grid grid-cols-1 gap-2 text-sm mb-3">
         <div className="flex items-center gap-2">
-          <Building size={14} className="text-gray-500" />
+          <Link2 size={14} className="text-gray-500" />
           <span
             className={`font-medium ${
               isDark ? "text-gray-300" : "text-gray-700"
             }`}
           >
-            {t("department.table.subDepartments")}:
+            {t("department.table.linkedCategories")}:
           </span>
           <span className={`${isDark ? "text-gray-200" : "text-gray-800"}`}>
-            {department.subDepartmentsCount || 0}
+            {department.linkedCategoriesCount || 0}
           </span>
         </div>
-        <div className="flex items-center gap-2">
-          <Users size={14} className="text-gray-500" />
-          <span
-            className={`font-medium ${
-              isDark ? "text-gray-300" : "text-gray-700"
-            }`}
-          >
-            {t("department.table.doctors")}:
-          </span>
-          <span className={`${isDark ? "text-gray-200" : "text-gray-800"}`}>
-            {department.doctorsCount || 0}
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <UserCheck size={14} className="text-gray-500" />
-          <span
-            className={`font-medium ${
-              isDark ? "text-gray-300" : "text-gray-700"
-            }`}
-          >
-            {t("department.table.pendingRequests")}:
-          </span>
-          <span className={`${isDark ? "text-gray-200" : "text-gray-800"}`}>
-            {department.pendingRequestsCount || 0}
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Calendar size={14} className="text-gray-500" />
-          <span
-            className={`font-medium ${
-              isDark ? "text-gray-300" : "text-gray-700"
-            }`}
-          >
-            {t("department.table.createdAt")}:
-          </span>
-          <span
-            className={`text-xs ${isDark ? "text-gray-200" : "text-gray-800"}`}
-          >
-            {formatDate(department.createdAt)}
-          </span>
-        </div>
+        {department.createdAt && (
+          <div className="flex items-center gap-2">
+            <Calendar size={14} className="text-gray-500" />
+            <span
+              className={`font-medium ${
+                isDark ? "text-gray-300" : "text-gray-700"
+              }`}
+            >
+              {t("department.table.createdAt")}:
+            </span>
+            <span
+              className={`text-xs ${
+                isDark ? "text-gray-200" : "text-gray-800"
+              }`}
+            >
+              {formatDate(department.createdAt)}
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="flex gap-2 justify-end">
         <Link to={`/admin-panel/department/${department.id}`}>
           <button
-            className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors cursor-pointer cursor-pointer"
+            className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors cursor-pointer"
             title={t("department.actions.view")}
           >
             <Eye size={16} />
@@ -260,12 +228,13 @@ function Department() {
         </Link>
         <Link to={`/admin-panel/department/edit/${department.id}`}>
           <button
-            className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors cursor-pointer cursor-pointer"
+            className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors cursor-pointer"
             title={t("department.actions.edit")}
           >
             <Edit size={16} />
           </button>
         </Link>
+
         <button
           className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors cursor-pointer"
           title={t("department.actions.delete")}
@@ -415,40 +384,6 @@ function Department() {
                         isDark ? "text-gray-300" : "text-gray-700"
                       }`}
                     >
-                      {t("department.filters.category")}
-                    </label>
-                    <select
-                      value={filters.categoryId || 1}
-                      onChange={(e) => {
-                        const value =
-                          e.target.value === "" ? "" : parseInt(e.target.value);
-                        handleFilterChange("categoryId", value);
-                      }}
-                      className={`w-full p-2 border rounded-lg ${
-                        isDark
-                          ? "border-gray-600 bg-gray-700 text-white"
-                          : "border-gray-300 bg-white text-gray-900"
-                      }`}
-                    >
-                      <option value="">
-                        {t("department.filters.allCategories")}
-                      </option>
-                      {categories.map((category) => (
-                        <option key={category.id} value={category.id}>
-                          {language === "ar"
-                            ? category.nameArabic
-                            : category.nameEnglish}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label
-                      className={`block text-sm font-medium mb-2 ${
-                        isDark ? "text-gray-300" : "text-gray-700"
-                      }`}
-                    >
                       {t("department.filters.status")}
                     </label>
                     <select
@@ -470,6 +405,7 @@ function Department() {
                           : "border-gray-300 bg-white text-gray-900"
                       }`}
                     >
+                      <option value="all">{t("department.status.all")}</option>
                       <option value="true">
                         {t("department.status.active")}
                       </option>
@@ -488,7 +424,7 @@ function Department() {
                       {t("department.filters.orderBy")}
                     </label>
                     <select
-                      value={filters.orderBy}
+                      value={filters.orderBy || "nameArabic"}
                       onChange={(e) =>
                         handleFilterChange("orderBy", e.target.value)
                       }
@@ -504,11 +440,11 @@ function Department() {
                       <option value="nameEnglish">
                         {t("department.filters.sortBy.nameEnglish")}
                       </option>
+                      <option value="code">
+                        {t("department.filters.sortBy.code")}
+                      </option>
                       <option value="createdAt">
                         {t("department.filters.sortBy.createdAt")}
-                      </option>
-                      <option value="location">
-                        {t("department.filters.sortBy.location")}
                       </option>
                     </select>
                   </div>
@@ -522,7 +458,11 @@ function Department() {
                       {t("department.filters.orderDirection")}
                     </label>
                     <select
-                      value={filters.orderDesc.toString()}
+                      value={
+                        filters.orderDesc
+                          ? filters.orderDesc.toString()
+                          : "false"
+                      }
                       onChange={(e) =>
                         handleFilterChange(
                           "orderDesc",
@@ -535,24 +475,25 @@ function Department() {
                           : "border-gray-300 bg-white text-gray-900"
                       }`}
                     >
-                      <option value="true">
-                        {t("department.filters.descending")}
-                      </option>
                       <option value="false">
                         {t("department.filters.ascending")}
                       </option>
+                      <option value="true">
+                        {t("department.filters.descending")}
+                      </option>
                     </select>
                   </div>
-                  <div className="sm:col-span-2 lg:col-span-3">
+
+                  <div className="sm:col-span-2 lg:col-span-1">
                     <button
                       onClick={handleClearFilters}
-                      className={`px-4 py-2 rounded-lg border transition-colors cursor-pointer cursor-pointer ${
+                      className={`px-4 py-2 rounded-lg border transition-colors cursor-pointer ${
                         isDark
                           ? "border-gray-600 text-gray-300 hover:bg-gray-700"
                           : "border-gray-300 text-gray-700 hover:bg-gray-50"
                       }`}
                     >
-                      {t("contractingTypes.filters.clear")}
+                      {t("department.filters.clear")}
                     </button>
                   </div>
                 </div>
@@ -615,6 +556,15 @@ function Department() {
                         isDark ? "text-white" : "text-gray-900"
                       }`}
                     >
+                      {t("department.table.code")}
+                    </th>
+                    <th
+                      className={`${
+                        isRTL ? "text-right" : "text-left"
+                      } p-4 font-semibold ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
+                    >
                       {t("department.table.nameArabic")}
                     </th>
                     <th
@@ -633,24 +583,6 @@ function Department() {
                         isDark ? "text-white" : "text-gray-900"
                       }`}
                     >
-                      {t("department.table.category")}
-                    </th>
-                    <th
-                      className={`${
-                        isRTL ? "text-right" : "text-left"
-                      } p-4 font-semibold ${
-                        isDark ? "text-white" : "text-gray-900"
-                      }`}
-                    >
-                      {t("department.table.location")}
-                    </th>
-                    <th
-                      className={`${
-                        isRTL ? "text-right" : "text-left"
-                      } p-4 font-semibold ${
-                        isDark ? "text-white" : "text-gray-900"
-                      }`}
-                    >
                       {t("department.table.status")}
                     </th>
                     <th
@@ -660,34 +592,7 @@ function Department() {
                         isDark ? "text-white" : "text-gray-900"
                       }`}
                     >
-                      {t("department.table.subDepartments")}
-                    </th>
-                    <th
-                      className={`${
-                        isRTL ? "text-right" : "text-left"
-                      } p-4 font-semibold ${
-                        isDark ? "text-white" : "text-gray-900"
-                      }`}
-                    >
-                      {t("department.table.doctors")}
-                    </th>
-                    <th
-                      className={`${
-                        isRTL ? "text-right" : "text-left"
-                      } p-4 font-semibold ${
-                        isDark ? "text-white" : "text-gray-900"
-                      }`}
-                    >
-                      {t("department.table.pendingRequests")}
-                    </th>
-                    <th
-                      className={`${
-                        isRTL ? "text-right" : "text-left"
-                      } p-4 font-semibold ${
-                        isDark ? "text-white" : "text-gray-900"
-                      }`}
-                    >
-                      {t("department.table.createdAt")}
+                      {t("department.table.linkedCategories")}
                     </th>
                     <th
                       className={`${
@@ -703,7 +608,7 @@ function Department() {
                 <tbody>
                   {loadingGetDepartments ? (
                     <tr>
-                      <td colSpan="10" className="text-center p-8">
+                      <td colSpan="6" className="text-center p-8">
                         <div className="flex items-center justify-center">
                           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                           <span
@@ -719,7 +624,7 @@ function Department() {
                   ) : departments.length === 0 ? (
                     <tr>
                       <td
-                        colSpan="10"
+                        colSpan="6"
                         className={`text-center p-8 ${
                           isDark ? "text-gray-400" : "text-gray-500"
                         }`}
@@ -731,12 +636,22 @@ function Department() {
                     departments.map((department) => (
                       <tr
                         key={department.id}
-                        className={`border-b transition-colors cursor-pointer ${
+                        className={`border-b transition-colors hover:cursor-pointer ${
                           isDark
                             ? "border-gray-700 hover:bg-gray-750"
                             : "border-gray-200 hover:bg-gray-50"
                         }`}
                       >
+                        <td
+                          className={`p-4 ${
+                            isDark ? "text-gray-300" : "text-gray-600"
+                          }`}
+                        >
+                          <div className="flex items-center gap-1">
+                            <Hash size={14} className="text-gray-500" />
+                            {department.code || "-"}
+                          </div>
+                        </td>
                         <td
                           className={`p-4 font-semibold ${
                             isDark ? "text-white" : "text-gray-900"
@@ -750,37 +665,6 @@ function Department() {
                           }`}
                         >
                           {department.nameEnglish}
-                        </td>
-                        <td className="p-4">
-                          {department.categoryNameArabic && (
-                            <span
-                              className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                isDark
-                                  ? "bg-blue-900 text-blue-300"
-                                  : "bg-blue-100 text-blue-800"
-                              }`}
-                            >
-                              {language === "ar"
-                                ? department.categoryNameArabic
-                                : department.categoryNameEnglish}
-                            </span>
-                          )}
-                        </td>
-                        <td
-                          className={`p-4 ${
-                            isDark ? "text-gray-300" : "text-gray-600"
-                          }`}
-                        >
-                          <div
-                            className="max-w-xs truncate flex items-center gap-1"
-                            title={department.location}
-                          >
-                            <MapPin
-                              size={14}
-                              className="text-gray-500 flex-shrink-0"
-                            />
-                            {department.location || "-"}
-                          </div>
                         </td>
                         <td className="p-4">
                           <span
@@ -801,36 +685,9 @@ function Department() {
                           }`}
                         >
                           <div className="flex items-center gap-1">
-                            <Building size={14} className="text-gray-500" />
-                            {department.subDepartmentsCount || 0}
+                            <Link2 size={14} className="text-gray-500" />
+                            {department.linkedCategoriesCount || 0}
                           </div>
-                        </td>
-                        <td
-                          className={`p-4 ${
-                            isDark ? "text-gray-300" : "text-gray-600"
-                          }`}
-                        >
-                          <div className="flex items-center gap-1">
-                            <Users size={14} className="text-gray-500" />
-                            {department.doctorsCount || 0}
-                          </div>
-                        </td>
-                        <td
-                          className={`p-4 ${
-                            isDark ? "text-gray-300" : "text-gray-600"
-                          }`}
-                        >
-                          <div className="flex items-center gap-1">
-                            <UserCheck size={14} className="text-gray-500" />
-                            {department.pendingRequestsCount || 0}
-                          </div>
-                        </td>
-                        <td
-                          className={`p-4 text-sm ${
-                            isDark ? "text-gray-300" : "text-gray-600"
-                          }`}
-                        >
-                          {formatDate(department.createdAt)}
                         </td>
                         <td className="p-4">
                           <div className="flex gap-2">
@@ -839,7 +696,7 @@ function Department() {
                             >
                               <button
                                 className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors cursor-pointer"
-                                title={t("departments.actions.view")}
+                                title={t("department.actions.view")}
                               >
                                 <Eye size={16} />
                               </button>
@@ -854,6 +711,7 @@ function Department() {
                                 <Edit size={16} />
                               </button>
                             </Link>
+
                             <button
                               onClick={() => {
                                 setToDelete({
@@ -978,7 +836,7 @@ function Department() {
                                 isDark ? "text-gray-400" : "text-gray-500"
                               }`}
                             >
-                              {department.categoryNameArabic || "بدون فئة"}
+                              {department.code || "بدون رمز"}
                             </div>
                           </div>
                         </td>
@@ -1011,6 +869,7 @@ function Department() {
                                 <Edit size={14} />
                               </button>
                             </Link>
+
                             <button
                               className="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded transition-colors cursor-pointer"
                               onClick={() => {
@@ -1080,7 +939,7 @@ function Department() {
                         isDark ? "text-gray-400" : "text-gray-600"
                       }`}
                     >
-                      {t("department.pagination.itemsPerPage")}{" "}
+                      {t("department.pagination.itemsPerPage")}
                     </span>
                   </div>
                 </div>

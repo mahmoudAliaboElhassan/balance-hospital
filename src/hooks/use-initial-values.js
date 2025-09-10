@@ -29,10 +29,21 @@ function UseInitialValues() {
   const INITIAL_VALUES_ADD_DEPARTMENT = {
     nameArabic: "",
     nameEnglish: "",
-    categoryId: "",
+    // categoryId: "",
     location: "",
     description: "",
     isActive: true,
+    code: "",
+    manager: {
+      userId: "",
+      canViewDepartment: true,
+      canEditDepartment: true,
+      canViewDepartmentReports: true,
+      canManageSchedules: true,
+      canManageStaff: true,
+      startDate: new Date().toISOString().split("T")[0], // Current date in YYYY-MM-DD format
+      notes: "",
+    },
   };
 
   const INITIAL_VALUES_EDIT_DEPARTMENT = {
@@ -204,6 +215,17 @@ function UseInitialValues() {
     notes: "",
     defaultShifts: [],
   };
+  const INITIAL_VALUES_ASSIGN_DEPARTMENT_HEAD = {
+    userId: "",
+    startDate: new Date().toISOString().split("T")[0],
+    canViewDepartment: true,
+    canEditDepartment: false,
+    canViewDepartmentReports: true,
+    canManageSchedules: false,
+    canManageStaff: false,
+    notes: "",
+  };
+
   return {
     INITIAL_VALUES_LOGIN,
     INITIAL_VALUES_FORGET_PASSWORD,
@@ -225,6 +247,7 @@ function UseInitialValues() {
     INITIAL_VALUES_ADD_SHIFTS_DEPARTMENT,
     INITIAL_VALUES_ADD_CONTRACTING_TYPES,
     INITIAL_VALUES_ADD_DEPARTMENT_TO_ROSTER,
+    INITIAL_VALUES_ASSIGN_DEPARTMENT_HEAD,
   };
 }
 

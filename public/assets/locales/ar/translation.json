@@ -395,13 +395,29 @@
     "title": "إنشاء قسم جديد",
     "editTitle": "تعديل القسم",
     "addToRoster": "إضافة قسم جديد لجدول المعاينه",
+    "noResults": "لا توجد نتائج",
+    "assignManager": "تعيين مدير",
 
+    "sections": {
+      "manager": "المدير",
+      "permissions": "الصلاحيات",
+      "basicInfo": "المعلومات الأساسية",
+      "managerSelection": "اختيار المدير"
+    },
     "fields": {
       "nameArabic": "الاسم بالعربية",
       "nameEnglish": "الاسم بالإنجليزية",
       "category": "التخصص",
       "location": "الموقع",
       "description": "الوصف",
+      "departmentHead": "رئيس القسم *",
+      "startDate": "تاريخ البدء *",
+      "canViewDepartment": "يمكنه عرض القسم",
+      "canEditDepartment": "يمكنه تعديل القسم",
+      "canViewDepartmentReports": "يمكنه عرض تقارير القسم",
+      "canManageSchedules": "يمكنه إدارة الجداول",
+      "canManageStaff": "يمكنه إدارة الموظفين",
+      "notes": "ملاحظات",
       "isActive": "نشط"
     },
     "placeholders": {
@@ -409,7 +425,11 @@
       "nameEnglish": "أدخل اسم القسم بالإنجليزية",
       "category": "أختر تحصصاً",
       "location": "أدخل موقع القسم (مثل: الطابق الثالث – الجناح أ)",
-      "description": "أدخل وصفًا للقسم (اختياري)"
+      "description": "أدخل وصفًا للقسم (اختياري)",
+      "code": "أدخل الرمز",
+      "searchUsers": "بحث عن المستخدمين",
+      "searchUser": "اكتب اسم أو بريد للبحث...",
+      "notes": "أدخل الملاحظات هنا..."
     },
     "hints": {
       "location": "حدد الموقع الفعلي للقسم داخل المنشأة",
@@ -427,7 +447,8 @@
     "success": {
       "created": "تم إنشاء القسم بنجاح!",
       "updated": "تم تحديث القسم بنجاح!",
-      "deleted": "تم حذف القسم بنجاح!"
+      "deleted": "تم حذف القسم بنجاح!",
+      "managerAssigned": "تم تعيين المدير بنجاح"
     },
     "error": {
       "title": "خطأ",
@@ -444,8 +465,49 @@
     "fetchError": "حدث خطأ أثناء جلب الأقسام.",
     "noData": "لا توجد بيانات متاحه ",
     "loading": "جاري تحميل الأقسام...",
+    "removeManager": {
+      "title": "إزالة المدير",
+      "confirmMessage": "هل أنت متأكد أنك تريد إزالة هذا المدير من القسم؟ لا يمكن التراجع عن هذا الإجراء.",
+      "department": "القسم",
+      "manager": "المدير الحالي",
+      "reason": "سبب الإزالة",
+      "reasonPlaceholder": "من فضلك أدخل سبب إزالة هذا المدير...",
+      "reasonRequired": "السبب مطلوب",
+      "warning": {
+        "title": "تحذير:",
+        "message": "إزالة المدير ستلغي جميع صلاحياته والوصول الخاص بالقسم."
+      },
+      "success": "تمت إزالة المدير {{managerName}} من قسم {{departmentName}} بنجاح",
+      "error": {
+        "title": "خطأ"
+      },
+      "confirm": "إزالة المدير"
+    },
+    "manager": {
+      "title": "مدير القسم",
+      "noName": "بدون اسم",
+      "noManager": "لا يوجد مدير معين",
+      "noManagerDescription": "لا يوجد مدير معين لهذا القسم حتى الآن.",
+      "startDate": "تاريخ البدء",
+      "notes": "ملاحظات",
+      "permissions": {
+        "viewDepartment": "عرض القسم",
+        "editDepartment": "تعديل القسم",
+        "viewReports": "عرض التقارير",
+        "manageSchedules": "إدارة الجداول",
+        "manageStaff": "إدارة الموظفين"
+      },
+      "actions": {
+        "assignManager": "تعيين مدير",
+        "editManager": "تعديل المدير",
+        "editPermissions": "تعديل الصلاحيات",
+        "removeManager": "إزالة المدير"
+      }
+    },
     "form": {
       "validation": {
+        "codeRequired": "كود القسم مطلوب",
+        "codeLength": "يجب أن يكون كود القسم 4 أحرف بالضبط",
         "nameArabicRequired": "الاسم العربي مطلوب",
         "nameEnglishRequired": "الاسم الإنجليزي مطلوب",
         "departmentRequired": "القسم مطلوب",
@@ -479,8 +541,10 @@
       "subDepartments": "الأقسام الفرعية",
       "doctors": "الأطباء",
       "pendingRequests": "الطلبات المعلقة",
+      "linkedCategories": "التخصصات المرتبطة",
       "status": "الحالة",
       "createdAt": "تاريخ الإنشاء",
+      "code": "الرمز",
       "actions": "الإجراءات"
     },
     "status": {
@@ -492,7 +556,11 @@
       "edit": "تعديل",
       "delete": "حذف",
       "activate": "تفعيل",
-      "deactivate": "تعطيل"
+      "deactivate": "تعطيل",
+      "assign": "تعيين",
+      "assigning": "جاري التعيين…",
+      "editManager": "تعديل صلاحية المدير",
+      "removeManager": "إزالة المدير"
     },
     "delete": {
       "title": "حذف القسم",
@@ -525,6 +593,8 @@
       "activeSubDepartments": "الأقسام الفرعية النشطة",
       "pendingRequests": "الطلبات المعلقة",
       "schedulesThisMonth": "جداول هذا الشهر",
+      "linkedCategories": "التخصصات المرتبطة",
+      "activeSchedules": "الجداول النشطة",
       "completedSchedulesThisMonth": "الجداول المكتملة هذا الشهر"
     },
     "error": {
@@ -761,7 +831,8 @@
     "empty": {
       "title": "لا توجد أقسام فرعية",
       "message": "لا توجد أقسام فرعية تطابق معايير البحث الحالية",
-      "suggestion": "حاول تعديل معايير البحث أو إضافة قسم فرعي جديد"
+      "suggestion": "حاول تعديل معايير البحث أو إضافة قسم فرعي جديد",
+      "description": "هذا القسم لا يحتوي على أي أقسام فرعية حتى الآن."
     }
   },
 
@@ -2192,6 +2263,7 @@
       "dayOfWeekRequired": "اليوم من الأسبوع مطلوب",
       "dayOfWeekInvalid": "يجب أن يكون اليوم بين 0 (الأحد) و6 (السبت)",
       "shiftTypeRequired": "نوع الشيفت مطلوب",
+      "dateInFuture": "يجب أن يكون تاريخ البدء في المستقبل",
       "requiredDoctorsRequired": "عدد الأطباء المطلوبين مطلوب",
       "requiredDoctorsMin": "يجب ألا يقل عدد الأطباء المطلوبين عن 1",
       "requiredDoctorsMax": "لا يجب أن يزيد عدد الأطباء المطلوبين عن 50",
@@ -2258,5 +2330,33 @@
     "filled": "مشغول",
     "progress": "التقدّم",
     "overBooked": "زيادة عن المطلوب"
+  },
+  "managerPermissions": {
+    "title": "تحديث صلاحيات المدير",
+    "department": "القسم",
+    "manager": "المدير",
+    "startDate": "تاريخ البدء",
+    "permissions": "صلاحيات المدير",
+    "canViewDepartment": "يمكنه عرض القسم",
+    "canEditDepartment": "يمكنه تعديل القسم",
+    "canViewDepartmentReports": "يمكنه عرض تقارير القسم",
+    "canManageSchedules": "يمكنه إدارة الجداول",
+    "canManageStaff": "يمكنه إدارة الموظفين",
+    "buttons": {
+      "cancel": "إلغاء",
+      "update": "تحديث الصلاحيات",
+      "updating": "جاري التحديث..."
+    },
+    "success": {
+      "updated": "تم تحديث صلاحيات المدير بنجاح"
+    },
+    "error": {
+      "title": "خطأ"
+    },
+    "noManager": {
+      "title": "لا يوجد مدير معين",
+      "description": "هذا القسم ليس له مدير معين. من فضلك قم بتعيين مدير أولاً."
+    },
+    "assignManager": "تعيين مدير"
   }
 }

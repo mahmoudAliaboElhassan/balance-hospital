@@ -18,6 +18,10 @@ function UseInitialStates() {
       typeof window !== "undefined"
         ? localStorage.getItem("expiresAt") || ""
         : "",
+    primaryCategory:
+      typeof window !== "undefined"
+        ? localStorage.getItem("primaryCategory") || ""
+        : "",
   };
 
   const initialStateCategories = {
@@ -135,6 +139,8 @@ function UseInitialStates() {
     loadingCreateDepartment: false,
     loadingUpdateDepartment: false,
     loadingDeleteDepartment: false,
+    loadingUpdateManagerPermission: false,
+    loadingAssignManager: false,
 
     // Single department
     selectedDepartment: null,

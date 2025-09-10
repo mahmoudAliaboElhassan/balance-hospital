@@ -1,6 +1,11 @@
 import React, { Suspense, lazy } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Loader from "../components/Loader";
+import AssignDepartmentManager from "../pages/adminPanel/department/assignDepartmentManager";
+
+const EditManagerPermission = lazy(() =>
+  import("../pages/adminPanel/department/editManagerPermission")
+);
 
 const AddRosterDepartment = lazy(() =>
   import("../pages/adminPanel/roster/addRosterDepartment")
@@ -198,6 +203,14 @@ const router = createBrowserRouter([
           {
             path: "department/:depId",
             element: withSuspense(SpecificDepartment),
+          },
+          {
+            path: "department/edit-manager-permissions/:depId",
+            element: withSuspense(EditManagerPermission),
+          },
+          {
+            path: "department/assign-manager/:depId",
+            element: withSuspense(AssignDepartmentManager),
           },
           {
             path: "department/create-specific",
