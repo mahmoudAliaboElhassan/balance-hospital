@@ -349,8 +349,8 @@ function SpecificDepartment() {
                     {t("department.table.category")}:
                   </span>
                   <div className="flex flex-wrap gap-2 mt-1">
-                    {getCategoryNames().length > 0 ? (
-                      getCategoryNames().map((category, index) => (
+                    {getCategoryNames()?.length > 0 ? (
+                      getCategoryNames()?.map((category, index) => (
                         <span
                           key={category.id || index}
                           className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
@@ -516,8 +516,8 @@ function SpecificDepartment() {
                       {t("department.table.category")}:
                     </span>
                     <div className="flex flex-wrap gap-2 mt-1">
-                      {getCategoryNames().length > 0 ? (
-                        getCategoryNames().map((category, index) => (
+                      {getCategoryNames()?.length > 0 ? (
+                        getCategoryNames()?.map((category, index) => (
                           <span
                             key={category.id || index}
                             className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${

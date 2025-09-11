@@ -136,7 +136,7 @@ const Login = () => {
       })
     )
       .unwrap()
-      .then(() => {
+      .then((data) => {
         toast.success(t("login.success"), {
           position: "top-right",
           autoClose: 3000,
@@ -145,7 +145,18 @@ const Login = () => {
           pauseOnHover: true,
           draggable: true,
         });
-        navigate("/admin-panel");
+        console.log("data", data);
+        if (
+          data.data.user.loginRoleResponseDto.roleNameAr === "رئيس قسم" &&
+          data.data.user.departmentManager.departmentId
+        ) {
+          console.log("hello dep");
+          navigate(
+            `/admin-panel/department/${data.data.user.departmentManager.departmentId}`
+          );
+        } else {
+          navigate("/admin-panel");
+        }
       })
       .catch((error) => {
         console.log("error", error);
