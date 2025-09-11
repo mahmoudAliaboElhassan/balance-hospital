@@ -266,14 +266,14 @@
         "noDescription": "لا يوجد وصف"
       },
       "linkedDepartments": {
-        "title": "الأقسام المرتبطة",
+        "title": "الأماكن المرتبطة",
         "count": "أقسام",
         "linked": "مرتبط",
         "noLinkedDepartments": "لا توجد أقسام مرتبطة حتى الآن",
         "linkDepartmentsToGetStarted": "قم بربط أقسام بهذا التخصص لعرضها هنا."
       },
       "departments": {
-        "title": "أضف أماكن لهذا التخصص",
+        "title": "الأماكن المتاحه لإضافتها للتخصص",
         "count": "مكان",
         "noDepartments": "لم يتم العثور على أماكن",
         "createFirst": "أنشئ أول مكان لهذه التخصص",
@@ -2183,8 +2183,8 @@
       "selectCategory": "اختر التخصص",
       "month": "الشهر",
       "year": "السنة",
-      "selectCategoryFirst": "يرجى اختيار فئة أولًا",
-      "selectCategoryFirstDescription": "تحتاج لاختيار فئة قبل المتابعة بهذا الإجراء",
+      "selectCategoryFirst": "يرجى اختيار تخصص أولًا",
+      "selectCategoryFirstDescription": "تحتاج لاختيار تخصص قبل المتابعة بهذا الإجراء",
       "submissionDeadline": "الموعد النهائي للتقديم",
       "submissionDeadlineHelp": "آخر موعد ووقت لتقديم تفضيلات الأطباء",
       "departments": "الاماكن",
@@ -2377,27 +2377,27 @@
 
   "confirmations": {
     "linkDepartment": {
-      "title": "ربط القسم",
-      "message": "هل أنت متأكد أنك تريد ربط هذا القسم بالفئة؟",
+      "title": "ربط المكان",
+      "message": "هل أنت متأكد أنك تريد ربط هذا المكان بالتخصص؟",
       "confirm": "نعم، قم بالربط",
       "cancel": "إلغاء"
     },
     "unlinkDepartment": {
-      "title": "إلغاء ربط القسم؟",
-      "message": "هل أنت متأكد من إلغاء ربط هذا القسم من التخصص؟ لن يتم حذف القسم.",
+      "title": "إلغاء ربط المكان؟",
+      "message": "هل أنت متأكد من إلغاء ربط هذا المكان من التخصص؟ لن يتم حذف المكان.",
       "confirm": "نعم، إلغاء الربط",
       "cancel": "إلغاء"
     }
   },
   "messages": {
     "success": {
-      "departmentUnlinked": "تم إلغاء ربط القسم بنجاح.",
-      "departmentLinked": "تم ربط القسم بنجاح."
+      "departmentUnlinked": "تم إلغاء ربط المكان بنجاح.",
+      "departmentLinked": "تم ربط المكان بنجاح."
     },
     "error": {
       "title": "خطأ",
-      "unlinkDepartmentFailed": "فشل إلغاء ربط القسم. حاول مرة أخرى.",
-      "linkDepartmentFailed": "فشل في ربط القسم",
+      "unlinkDepartmentFailed": "فشل إلغاء ربط المكان. حاول مرة أخرى.",
+      "linkDepartmentFailed": "فشل في ربط المكان",
       "accessDenied": "تم رفض الوصول.",
       "insufficientPermissions": "صلاحيات غير كافية."
     }

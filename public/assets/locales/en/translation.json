@@ -272,7 +272,7 @@
       },
 
       "departments": {
-        "title": "Assign Departments to that Category",
+        "title": "Available Departments to assign for that Category",
         "count": "departments",
         "noDepartments": "No departments found",
         "linkButton": "Assign Department",
