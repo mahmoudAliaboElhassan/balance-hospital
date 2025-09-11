@@ -41,6 +41,13 @@ export const authSlice = createSlice({
           action.payload.data.user.primaryCategory
         );
         state.primaryCategory = action.payload.data.user.primaryCategory;
+
+        localStorage.setItem(
+          "loginRoleResponseDto",
+          JSON.stringify(action.payload.data.user.loginRoleResponseDto)
+        );
+        state.loginRoleResponseDto =
+          action.payload.data.user.loginRoleResponseDto;
       })
       .addCase(logIn.rejected, (state, action) => {
         state.loadingAuth = false;

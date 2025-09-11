@@ -22,6 +22,11 @@ function UseInitialStates() {
       typeof window !== "undefined"
         ? localStorage.getItem("primaryCategory") || ""
         : "",
+
+    loginRoleResponseDto:
+      typeof window !== "undefined"
+        ? JSON.parse(localStorage.getItem("loginRoleResponseDto") || "null")
+        : null,
   };
 
   const initialStateCategories = {

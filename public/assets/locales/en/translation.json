@@ -874,6 +874,7 @@
     "filters": "Filters",
     "refresh": "Refresh",
     "startDate": "Start Date",
+    "backToHome": "Back to Home",
     "endDate": "End Date",
     "department": "Department",
     "allDepartments": "All Departments",
@@ -2401,6 +2402,8 @@
     },
     "error": {
       "title": "Error",
+      "accessDenied": "Access denied.",
+      "insufficientPermissions": "Insufficient permissions.",
       "linkDepartmentFailed": "Failed to link department",
       "unlinkDepartmentFailed": "Failed to unlink the department. Please try again."
     }

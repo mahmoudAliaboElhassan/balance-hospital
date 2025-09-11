@@ -663,6 +663,7 @@
     "add": "إضافة",
     "filters": "عوامل التصفية",
     "refresh": "تحديث",
+    "backToHome": "العودة إلى الصفحة الرئيسية",
     "startDate": "تاريخ البداية",
     "endDate": "تاريخ النهاية",
     "department": "المكان",
@@ -2396,7 +2397,9 @@
     "error": {
       "title": "خطأ",
       "unlinkDepartmentFailed": "فشل إلغاء ربط القسم. حاول مرة أخرى.",
-      "linkDepartmentFailed": "فشل في ربط القسم"
+      "linkDepartmentFailed": "فشل في ربط القسم",
+      "accessDenied": "تم رفض الوصول.",
+      "insufficientPermissions": "صلاحيات غير كافية."
     }
   }
 }
