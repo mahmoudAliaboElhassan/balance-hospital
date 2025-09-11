@@ -51,11 +51,12 @@ const DeleteDepartmentModal = ({
         navigate("/admin-panel/departments");
       })
       .catch((err) => {
+        console.log("error from modal", err);
         handleClose();
         const msg =
           i18next.language === "en"
-            ? err?.messageEn || err?.message
-            : err?.messageAr || err?.message;
+            ? err?.errors?.[0] || err?.messageEn
+            : err?.errors?.[0] || err?.messageAr;
         Swal.fire({
           title: msg,
           icon: "error",

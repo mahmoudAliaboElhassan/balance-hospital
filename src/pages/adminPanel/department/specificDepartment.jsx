@@ -134,24 +134,19 @@ function SpecificDepartment() {
   };
 
   // Get category name based on current language
-  const getCategoryName = () => {
-    if (!selectedDepartment?.category && !categories) return "";
+  const getCategoryNames = () => {
+    if (!selectedDepartment?.linkedCategories && !categories) return [];
 
-    if (selectedDepartment?.categoryNameArabic) {
-      return currentLang === "en"
-        ? selectedDepartment.categoryNameArabic
-        : selectedDepartment.categoryNameEnglish;
+    // If department has linked categories, return all of them
+    if (selectedDepartment?.linkedCategories?.length > 0) {
+      return selectedDepartment.linkedCategories.map((category) => ({
+        id: category.id,
+        name:
+          currentLang === "en"
+            ? category.categoryNameEnglish
+            : category.categoryNameArabic,
+      }));
     }
-
-    // Fallback to find category from categories list
-    const category = categories?.find(
-      (cat) => cat.id === selectedDepartment?.categoryId
-    );
-    if (category) {
-      return currentLang === "en" ? category.nameEnglish : category.nameArabic;
-    }
-
-    return t("department.details.noCategoryInfo");
   };
 
   // Format date based on language
@@ -345,13 +340,35 @@ function SpecificDepartment() {
                 <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
                   {getDepartmentName()}
                 </h1>
-                <p
-                  className={`text-lg ${
+                <div
+                  className={`mt-2 ${
                     isDark ? "text-gray-400" : "text-gray-500"
-                  } mt-2`}
+                  }`}
                 >
-                  {t("department.table.category")}: {getCategoryName()}
-                </p>
+                  <span className="text-lg">
+                    {t("department.table.category")}:
+                  </span>
+                  <div className="flex flex-wrap gap-2 mt-1">
+                    {getCategoryNames().length > 0 ? (
+                      getCategoryNames().map((category, index) => (
+                        <span
+                          key={category.id || index}
+                          className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                            isDark
+                              ? "bg-blue-900 text-blue-200"
+                              : "bg-blue-100 text-blue-800"
+                          }`}
+                        >
+                          {category.name}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-sm italic">
+                        {t("department.details.noCategoryInfo")}
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
 
               <div
@@ -490,13 +507,35 @@ function SpecificDepartment() {
                   >
                     {t("departmentForm.fields.category")}
                   </label>
-                  <p
-                    className={`text-lg ${
-                      isDark ? "text-white" : "text-gray-900"
-                    } font-medium`}
+                  <div
+                    className={`mt-2 ${
+                      isDark ? "text-gray-400" : "text-gray-500"
+                    }`}
                   >
-                    {getCategoryName()}
-                  </p>
+                    <span className="text-lg">
+                      {t("department.table.category")}:
+                    </span>
+                    <div className="flex flex-wrap gap-2 mt-1">
+                      {getCategoryNames().length > 0 ? (
+                        getCategoryNames().map((category, index) => (
+                          <span
+                            key={category.id || index}
+                            className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                              isDark
+                                ? "bg-blue-900 text-blue-200"
+                                : "bg-blue-100 text-blue-800"
+                            }`}
+                          >
+                            {category.name}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-sm italic">
+                          {t("department.details.noCategoryInfo")}
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 {selectedDepartment.location && (

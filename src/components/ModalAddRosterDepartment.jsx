@@ -12,7 +12,7 @@ import {
   getDepartmentShifts,
   getRosterDepartments,
 } from "../state/act/actRosterManagement";
-import { getDepartments } from "../state/act/actDepartment";
+import { getDepartmentByCategory } from "../state/act/actDepartment";
 import LoadingGetData from "./LoadingGetData";
 import UseFormValidation from "../hooks/use-form-validation";
 import UseInitialValues from "../hooks/use-initial-values";
@@ -29,16 +29,15 @@ function ModalAddRosterDepartment({ onClose }) {
   const categoryId = localStorage.getItem("categoryId");
 
   const { loading } = useSelector((state) => state.rosterManagement);
-  const { departments, loadingGetDepartments } = useSelector(
-    (state) => state.department
-  );
+  const { departmentsByCategory, loadingGetDepartmentsByCategory } =
+    useSelector((state) => state.department);
   const { mymode } = useSelector((state) => state.mode);
   const isDark = mymode === "dark";
 
   useEffect(() => {
     // Fetch departments with categoryId from localStorage
     dispatch(
-      getDepartments({
+      getDepartmentByCategory({
         categoryId: categoryId ? parseInt(categoryId) : undefined,
         isActive: true,
       })
@@ -109,7 +108,7 @@ function ModalAddRosterDepartment({ onClose }) {
 
   return (
     <div>
-      {loadingGetDepartments && (
+      {loadingGetDepartmentsByCategory && (
         <LoadingGetData text={t("gettingData.departments")} />
       )}
       <div
@@ -175,7 +174,7 @@ function ModalAddRosterDepartment({ onClose }) {
                       as="select"
                       id="departmentId"
                       name="departmentId"
-                      disabled={loadingGetDepartments}
+                      disabled={loadingGetDepartmentsByCategory}
                       className={`w-full px-3 py-2 text-sm border rounded-lg ${
                         isDark
                           ? "bg-gray-700 border-gray-600 text-white disabled:bg-gray-800 disabled:text-gray-500"
@@ -187,11 +186,11 @@ function ModalAddRosterDepartment({ onClose }) {
                       }`}
                     >
                       <option value="">
-                        {loadingGetDepartments
+                        {loadingGetDepartmentsByCategory
                           ? t("department.loading")
                           : t("roster.assign.departmentPlacholder")}
                       </option>
-                      {departments?.map((department) => (
+                      {departmentsByCategory?.map((department) => (
                         <option key={department.id} value={department.id}>
                           {currentLang === "ar"
                             ? department.nameArabic || department.nameEnglish
@@ -268,7 +267,7 @@ function ModalAddRosterDepartment({ onClose }) {
                       disabled={
                         isSubmitting ||
                         loading?.addRosterDepartment ||
-                        loadingGetDepartments
+                        loadingGetDepartmentsByCategory
                       }
                       className={`inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed`}
                     >

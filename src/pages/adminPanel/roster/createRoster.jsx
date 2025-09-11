@@ -25,7 +25,7 @@ import { createBasicRoster } from "../../../state/act/actRosterManagement";
 // import { clearError, clearSuccess } from "../../../state/slices/roster";
 
 import { getCategoryTypes } from "../../../state/act/actCategory";
-import { getDepartments } from "../../../state/act/actDepartment";
+import { getDepartmentByCategory } from "../../../state/act/actDepartment";
 import { getSubDepartments } from "../../../state/act/actSubDepartment";
 import { getShiftHoursTypes } from "../../../state/act/actShiftHours";
 import { getContractingTypes } from "../../../state/act/actContractingType";
@@ -64,18 +64,17 @@ const CreateRoster = () => {
 
   // Configuration data
 
-  const { departments, loadingGetDepartments } = useSelector(
-    (state) => state.department
-  );
+  const { departmentsByCategory, loadingGetDepartmentsByCategory } =
+    useSelector((state) => state.department);
   const { subDepartments, loadingGetSubDepartments } = useSelector(
     (state) => state.subDepartment
   );
-  console.log("departments", departments);
+  console.log("departments", departmentsByCategory);
 
   // Load initial data
   useEffect(() => {
     dispatch(
-      getDepartments({
+      getDepartmentByCategory({
         categoryId: parseInt(localStorage.getItem("categoryId")),
       })
     );
@@ -804,7 +803,7 @@ const CreateRoster = () => {
                       </div>
 
                       {/* Loading indicator for departments/subdepartments */}
-                      {loadingGetDepartments && (
+                      {loadingGetDepartmentsByCategory && (
                         <div
                           className={`p-4 rounded-lg border ${
                             isDark
@@ -819,7 +818,7 @@ const CreateRoster = () => {
                                 isDark ? "text-blue-300" : "text-blue-800"
                               }`}
                             >
-                              {loadingGetDepartments
+                              {loadingGetDepartmentsByCategory
                                 ? t("department.loading")
                                 : t("gettingData.subDepartments")}
                             </span>
@@ -873,7 +872,7 @@ const CreateRoster = () => {
                                       {t("roster.form.selectDepartment")} *
                                     </label>
 
-                                    {loadingGetDepartments ? (
+                                    {loadingGetDepartmentsByCategory ? (
                                       <DropdownLoader
                                         text={t("common.loading")}
                                       />
@@ -889,7 +888,9 @@ const CreateRoster = () => {
                                             setFieldValue
                                           )
                                         }
-                                        disabled={loadingGetDepartments}
+                                        disabled={
+                                          loadingGetDepartmentsByCategory
+                                        }
                                         className={`w-full px-3 py-2 border rounded-lg ${
                                           isDark
                                             ? "bg-gray-700 border-gray-600 text-white disabled:bg-gray-800 disabled:text-gray-500"
@@ -906,7 +907,7 @@ const CreateRoster = () => {
                                         <option value="">
                                           {t("roster.form.selectDepartment")}
                                         </option>
-                                        {departments.map((dept) => (
+                                        {departmentsByCategory.map((dept) => (
                                           <option key={dept.id} value={dept.id}>
                                             {isRTL
                                               ? dept.nameArabic
@@ -1017,10 +1018,12 @@ const CreateRoster = () => {
                                 })
                               }
                               disabled={
-                                values.departments.length === departments.length
+                                values.departments.length ===
+                                departmentsByCategory.length
                               }
                               className={`inline-flex items-center px-4 py-2 border border-dashed rounded-lg text-sm font-medium transition-colors ${
-                                values.departments.length === departments.length
+                                values.departments.length ===
+                                departmentsByCategory.length
                                   ? isDark
                                     ? "border-gray-700 text-gray-600 cursor-not-allowed bg-gray-800/50 opacity-60 hover:border-gray-700 hover:text-gray-600"
                                     : "border-gray-300 text-gray-500 cursor-not-allowed bg-gray-50 opacity-60 hover:border-gray-300 hover:text-gray-500"
@@ -1033,7 +1036,7 @@ const CreateRoster = () => {
                                 size={16}
                                 className={`${isRTL ? "ml-2" : "mr-2"} ${
                                   values.departments.length ===
-                                  departments.length
+                                  departmentsByCategory.length
                                     ? "opacity-50"
                                     : ""
                                 }`}
