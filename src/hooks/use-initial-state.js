@@ -18,9 +18,15 @@ function UseInitialStates() {
       typeof window !== "undefined"
         ? localStorage.getItem("expiresAt") || ""
         : "",
-    primaryCategory:
+
+    departmentManagerId:
       typeof window !== "undefined"
-        ? localStorage.getItem("primaryCategory") || ""
+        ? localStorage.getItem("departmentManagerId") || ""
+        : "",
+
+    categoryManagerId:
+      typeof window !== "undefined"
+        ? localStorage.getItem("categoryManagerId") || ""
         : "",
 
     loginRoleResponseDto:

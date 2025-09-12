@@ -454,19 +454,19 @@ const SpecificCategory = () => {
       setDepClickId(null);
 
       // Show error toast
-      toast.error(error.message || t("messages.error.linkDepartmentFailed"), {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+      // toast.error(error.message || t("messages.error.linkDepartmentFailed"), {
+      //   position: "top-right",
+      //   autoClose: 5000,
+      //   hideProgressBar: false,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      // });
 
       // Show error SweetAlert
       await Swal.fire({
         title: t("messages.error.title"),
-        text: error.message || t("messages.error.linkDepartmentFailed"),
+        text: error.errors[0] || t("messages.error.linkDepartmentFailed"),
         icon: "error",
         confirmButtonText: t("common.ok"),
       });
@@ -515,26 +515,26 @@ const SpecificCategory = () => {
         });
 
         // Refresh the departments list
-        dispatch(getDepartmentByCategory({ categoryId: id }));
+        // dispatch(getDepartmentByCategory({ categoryId: id }));
       }
     } catch (error) {
       console.error("Error unlinking department:", error);
       setUnlinkDepId(null);
 
       // Show error toast
-      toast.error(error.message || t("messages.error.unlinkDepartmentFailed"), {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+      // toast.error(error.message || t("messages.error.unlinkDepartmentFailed"), {
+      //   position: "top-right",
+      //   autoClose: 5000,
+      //   hideProgressBar: false,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      // });
 
       // Show error SweetAlert
       await Swal.fire({
         title: t("messages.error.title"),
-        text: error.message || t("messages.error.unlinkDepartmentFailed"),
+        text: error.errors[0] || t("messages.error.unlinkDepartmentFailed"),
         icon: "error",
         confirmButtonText: t("common.ok"),
       });
@@ -613,9 +613,10 @@ const SpecificCategory = () => {
   // Department Card Component
   const DepartmentCard = ({ department }) => (
     <div
+      key={department.id}
       className={`p-6 rounded-xl border transition-all duration-200 hover:shadow-lg ${
         isDark
-          ? "bg-gray-800 border-gray-700 hover:border-gray-600"
+          ? "bg-gray-700 border-gray-600 hover:border-gray-500"
           : "bg-white border-gray-200 hover:border-gray-300"
       }`}
     >
@@ -633,125 +634,90 @@ const SpecificCategory = () => {
           <p
             className={`text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}
           >
-            {currentLang === "en"
-              ? department.nameArabic
-              : department.nameEnglish}
+            {department.code}
           </p>
         </div>
-        <span
-          className={`px-3 py-1 rounded-full text-xs font-medium ${
-            department.isActive
-              ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
-              : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
-          }`}
-        >
-          {department.isActive
-            ? t("department.status.active")
-            : t("department.status.inactive")}
-        </span>
+        <div className="flex items-center gap-2">
+          {/* Active Status */}
+          <span
+            className={`px-2 py-1 rounded-full text-xs font-medium ${
+              department.isActive
+                ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
+                : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+            }`}
+          >
+            {department.isActive
+              ? t("department.status.active")
+              : t("department.status.inactive")}
+          </span>
+        </div>
       </div>
 
-      {department.location && (
-        <div className="flex items-center gap-2 mb-3">
-          <MapPin size={16} className="text-gray-500" />
+      <div className="space-y-3 mb-4">
+        <div className="flex items-center gap-2">
+          <Building size={16} className="text-gray-500" />
           <span
             className={`text-sm ${isDark ? "text-gray-300" : "text-gray-600"}`}
           >
-            {department.location}
+            {t("department.code")}: {department.code}
           </span>
         </div>
-      )}
 
-      <div className="grid grid-cols-3 gap-4 mb-4">
-        <div className="text-center">
-          <div className="flex items-center justify-center mb-1">
-            <Building size={16} className="text-blue-500" />
-          </div>
-          <div
-            className={`text-sm font-medium ${
-              isDark ? "text-white" : "text-gray-900"
-            }`}
+        <div className="flex items-center gap-2">
+          <Users size={16} className="text-gray-500" />
+          <span
+            className={`text-sm ${isDark ? "text-gray-300" : "text-gray-600"}`}
           >
-            {department.subDepartmentsCount || 0}
-          </div>
-          <div
-            className={`text-xs ${isDark ? "text-gray-400" : "text-gray-500"}`}
-          >
-            {t("department.table.subDepartments")}
-          </div>
+            {t("department.linkedCategories")}:{" "}
+            {department.linkedCategoriesCount || 0}
+          </span>
         </div>
-        <div className="text-center">
-          <div className="flex items-center justify-center mb-1">
-            <Users size={16} className="text-green-500" />
-          </div>
-          <div
-            className={`text-sm font-medium ${
-              isDark ? "text-white" : "text-gray-900"
-            }`}
+
+        <div className="flex items-center gap-2">
+          <Award size={16} className="text-gray-500" />
+          <span
+            className={`text-sm ${isDark ? "text-gray-300" : "text-gray-600"}`}
           >
-            {department.doctorsCount || 0}
-          </div>
-          <div
-            className={`text-xs ${isDark ? "text-gray-400" : "text-gray-500"}`}
-          >
-            {t("department.table.doctors")}
-          </div>
-        </div>
-        <div className="text-center">
-          <div className="flex items-center justify-center mb-1">
-            <Calendar size={16} className="text-purple-500" />
-          </div>
-          <div
-            className={`text-sm font-medium ${
-              isDark ? "text-white" : "text-gray-900"
-            }`}
-          >
-            {department.pendingRequestsCount || 0}
-          </div>
-          <div
-            className={`text-xs ${isDark ? "text-gray-400" : "text-gray-500"}`}
-          >
-            {t("department.table.pendingRequests")}
-          </div>
+            {department.hasManager
+              ? t("department.hasManager")
+              : t("department.noManager")}
+          </span>
         </div>
       </div>
 
       <div
         className={`flex items-center justify-between pt-4 border-t ${
-          isDark ? "border-gray-700" : "border-gray-200"
+          isDark ? "border-gray-600" : "border-gray-200"
         }`}
       >
         <div className="flex gap-2">
-          {/* <Link to={`/admin-panel/department/${department.id}`}>
+          <Link to={`/admin-panel/department/${department.id}`}>
             <button
-              className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
+              className="inline-flex items-center gap-2 px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
               title={t("department.actions.view")}
             >
-              <Eye size={16} />
+              <Eye size={14} />
+              {t("department.actions.view")}
             </button>
           </Link>
-          <Link to={`/admin-panel/department/edit/${department.id}`}>
-            <button
-              className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition-colors"
-              title={t("department.actions.edit")}
-            >
-              <Edit size={16} />
-            </button>
-          </Link> */}
-          <button
-            className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors flex items-center gap-2"
-            onClick={() => handleLinkDepartment(department.id)}
-            disabled={
-              loadingLinkDepartmentToCategory && depClickId == department.id
-            }
-            title={t("specificCategory.sections.departments.linkButton")}
-          >
-            <Plus size={16} />
-            {loadingLinkDepartmentToCategory
-              ? t("common.loading")
-              : t("specificCategory.sections.departments.linkButton")}{" "}
-          </button>
         </div>
+
+        {/* Unlink Button */}
+        <button
+          className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors flex items-center gap-2"
+          onClick={() => handleLinkDepartment(department.id)}
+          disabled={
+            loadingLinkDepartmentToCategory && depClickId == department.id
+          }
+          title={t("specificCategory.sections.departments.linkButton")}
+        >
+          {loadingLinkDepartmentToCategory && depClickId === department.id ? (
+            <RefreshCw size={14} className="animate-spin" />
+          ) : (
+            <Plus size={14} />
+          )}
+          {t("department.actions.link")}
+        </button>
       </div>
     </div>
   );

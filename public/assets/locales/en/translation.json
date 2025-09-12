@@ -543,7 +543,8 @@
         "nameEnglish": "English Name",
         "nameArabic": "Arabic Name",
         "createdAt": "Created Date",
-        "location": "Location"
+        "location": "Location",
+        "code": "Code"
       }
     },
     "table": {
@@ -564,6 +565,7 @@
 
     "status": {
       "active": "Active",
+      "all": "All",
       "inactive": "Inactive"
     },
     "actions": {
@@ -575,6 +577,7 @@
       "editManager": "Edit Managre Permission",
       "removeManager": "Remove Manager",
       "deactivate": "Deactivate",
+      "link": "Link",
       "assign": "Assign",
       "assigning": "Assigning..."
     },

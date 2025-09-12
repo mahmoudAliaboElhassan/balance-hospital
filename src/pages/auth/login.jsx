@@ -148,11 +148,19 @@ const Login = () => {
         console.log("data", data);
         if (
           data.data.user.loginRoleResponseDto.roleNameAr === "رئيس قسم" &&
-          data.data.user.departmentManager.departmentId
+          data.data.user.departmentManager?.departmentId
         ) {
-          console.log("hello dep");
+          console.log("hello dep head");
           navigate(
-            `/admin-panel/department/${data.data.user.departmentManager.departmentId}`
+            `/admin-panel/department/${data.data.user.departmentManager?.departmentId}`
+          );
+        } else if (
+          data.data.user.loginRoleResponseDto.roleNameAr === "رئيس فئة" &&
+          data.data.user.categoryManager?.categoryId
+        ) {
+          console.log("hello cat head");
+          navigate(
+            `/admin-panel/category/${data.data.user.categoryManager?.categoryId}`
           );
         } else {
           navigate("/admin-panel");

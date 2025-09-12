@@ -680,7 +680,8 @@ function AssignDepartmentManager() {
                           isDark ? "text-gray-400" : "text-gray-500"
                         }`}
                       >
-                        {values.notes?.length || 0}/500 characters
+                        {values.notes?.length || 0}/500{" "}
+                        {t("managementRoleForm.charactersCount")}
                       </p>
                     </div>
 

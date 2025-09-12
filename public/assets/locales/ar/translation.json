@@ -534,16 +534,28 @@
     "deleteSuccess": "تم حذف المكان “{{name}}” بنجاح!",
     "filters": {
       "title": "الفلاتر",
-      "all": "جميع الأماكن",
-      "allCategories": "كل الأماكن",
-      "active": "الأماكن النشطة فقط",
-      "inactive": "الأماكن غير النشطة فقط",
-      "category": "تصفية حسب التخصص",
+      "all": "كل الأقسام",
+      "active": "النشط فقط",
+      "inactive": "غير النشط فقط",
+      "category": "تصفية حسب الفئة",
       "dateRange": "نطاق التاريخ",
-      "createdFrom": "أنشئ من",
-      "createdTo": "أنشئ إلى",
+      "createdFrom": "إنشئ من",
+      "createdTo": "إنشئ إلى",
       "clear": "مسح الفلاتر",
-      "apply": "تطبيق الفلاتر"
+      "apply": "تطبيق الفلاتر",
+      "orderBy": "ترتيب حسب",
+      "orderDirection": "اتجاه الترتيب",
+      "status": "الحالة",
+      "ascending": "تصاعدي",
+      "descending": "تنازلي",
+      "allCategories": "كل الفئات",
+      "sortBy": {
+        "nameEnglish": "الاسم بالإنجليزية",
+        "nameArabic": "الاسم بالعربية",
+        "createdAt": "تاريخ الإنشاء",
+        "location": "الموقع",
+        "code": "الكود"
+      }
     },
     "table": {
       "nameArabic": "الاسم بالعربية",
@@ -562,7 +574,8 @@
     },
     "status": {
       "active": "نشط",
-      "inactive": "غير نشط"
+      "inactive": "غير نشط",
+      "all": "الكل"
     },
     "actions": {
       "view": "عرض التفاصيل",
@@ -571,6 +584,7 @@
       "activate": "تفعيل",
       "deactivate": "تعطيل",
       "unlink": "إلغاء الربط",
+      "link": "ربط",
       "assign": "تعيين",
       "assigning": "جاري التعيين…",
       "editManager": "تعديل صلاحية المدير",

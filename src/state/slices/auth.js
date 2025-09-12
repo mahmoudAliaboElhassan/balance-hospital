@@ -37,18 +37,27 @@ export const authSlice = createSlice({
         state.expiresAt = action.payload.data.expiresAt;
 
         localStorage.setItem(
-          "primaryCategory",
-          action.payload.data.user.primaryCategory
-        );
-        state.primaryCategory = action.payload.data.user.primaryCategory;
-
-        localStorage.setItem(
           "loginRoleResponseDto",
           JSON.stringify(action.payload.data.user.loginRoleResponseDto)
         );
         state.loginRoleResponseDto =
           action.payload.data.user.loginRoleResponseDto;
+
+        localStorage.setItem(
+          "departmentManagerId",
+          action.payload.data.user.departmentManager?.departmentId
+        );
+        state.departmentManagerId =
+          action.payload.data.user.departmentManager?.departmentId;
+
+        localStorage.setItem(
+          "categoryManagerId",
+          action.payload.data.user.categoryManager?.categoryId
+        );
+        state.categoryManagerId =
+          action.payload.data.user.categoryManager?.categoryId;
       })
+
       .addCase(logIn.rejected, (state, action) => {
         state.loadingAuth = false;
       })

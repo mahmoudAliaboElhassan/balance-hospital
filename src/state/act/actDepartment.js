@@ -256,7 +256,7 @@ export const linkDepartmentToCategory = createAsyncThunk(
           },
         }
       );
-      console.log("avaialbe departments:", res);
+      console.log("link departments:", res);
       return { depId: id };
     } catch (error) {
       console.log("Error deleting department:", error);
@@ -280,7 +280,7 @@ export const unlinkDepartmentFromCategory = createAsyncThunk(
           },
         }
       );
-      console.log("avaialbe departments:", res);
+      console.log("un link:", res);
       return { depId: id };
     } catch (error) {
       console.log("Error deleting department:", error);
