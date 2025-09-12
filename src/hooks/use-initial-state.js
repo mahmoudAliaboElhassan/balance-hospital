@@ -129,6 +129,8 @@ function UseInitialStates() {
       createdFrom: null,
       createdTo: null,
       includeSubDepartments: true,
+      includeManager: true,
+      includeCategories: true,
       includeStatistics: true,
       includeCategory: true,
       orderBy: "nameArabic",

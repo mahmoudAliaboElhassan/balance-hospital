@@ -663,7 +663,7 @@ const SpecificCategory = () => {
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <Users size={16} className="text-gray-500" />
           <span
             className={`text-sm ${isDark ? "text-gray-300" : "text-gray-600"}`}
@@ -671,7 +671,7 @@ const SpecificCategory = () => {
             {t("department.linkedCategories")}:{" "}
             {department.linkedCategoriesCount || 0}
           </span>
-        </div>
+        </div> */}
 
         <div className="flex items-center gap-2">
           <Award size={16} className="text-gray-500" />
@@ -1952,7 +1952,7 @@ const SpecificCategory = () => {
         <div
           className={`${
             isDark ? "bg-gray-800" : "bg-white"
-          } rounded-2xl shadow-xl p-6 mb-8`}
+          } rounded-2xl shadow-xl p-6 mb-8 mt-8`}
         >
           <div className="flex items-center justify-between mb-6">
             <h2
@@ -2053,7 +2053,7 @@ const SpecificCategory = () => {
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    {/* <div className="flex items-center gap-2">
                       <Users size={16} className="text-gray-500" />
                       <span
                         className={`text-sm ${
@@ -2063,7 +2063,7 @@ const SpecificCategory = () => {
                         {t("department.linkedCategories")}:{" "}
                         {department.linkedCategoriesCount || 0}
                       </span>
-                    </div>
+                    </div> */}
 
                     <div className="flex items-center gap-2">
                       <Award size={16} className="text-gray-500" />

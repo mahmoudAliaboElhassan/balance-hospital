@@ -11,6 +11,10 @@ export const getDepartments = createAsyncThunk(
 
       // Add parameters if they exist
       if (params.search) queryParams.append("search", params.search);
+      if (params.includeManager)
+        queryParams.append("includeManager", params.includeManager);
+      if (params.includeCategories)
+        queryParams.append("includeCategories", params.includeCategories);
       if (params.categoryId !== undefined)
         queryParams.append("categoryId", params.categoryId);
       if (params.isActive !== undefined)
@@ -224,7 +228,7 @@ export const availabelDepartmentsForCategory = createAsyncThunk(
 
     try {
       const res = await axiosInstance.get(
-        `api/v1/Department/available-for-category/${categoryId}`,
+        `api/v1/Department/available-for-category/${categoryId}?includeCategories=true&includeManager=true`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -295,7 +299,7 @@ export const getDepartmentByCategory = createAsyncThunk(
 
     try {
       const res = await axiosInstance.get(
-        `api/v1/Department/by-category/${categoryId}`,
+        `api/v1/Department/by-category/${categoryId}?includeCategories=true&includeManager=true`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
