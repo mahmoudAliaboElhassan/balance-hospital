@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { getCategoryById } from "../../../state/act/actCategory";
+import {
+  getCategoryById,
+  getCategoryHeads,
+} from "../../../state/act/actCategory";
 import {
   clearSingleCategory,
   clearSingleCategoryError,
@@ -57,6 +60,7 @@ import ModalUpdateRosterStatus from "../../../components/ModalUpdateRosterStatus
 import "../../../styles/general.css";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import CategoryHeadsManagement from "../../../components/categoryHeads";
 
 const SpecificCategory = () => {
   const { catId: id } = useParams();
@@ -138,6 +142,7 @@ const SpecificCategory = () => {
   const {
     departments,
     loadingGetDepartments,
+    categoryHead,
     loadingGetDepartmentsByCategory,
     departmentsByCategory,
     loadingLinkDepartmentToCategory,
@@ -331,6 +336,7 @@ const SpecificCategory = () => {
       // Fetch departments for this specific category
       dispatch(availabelDepartmentsForCategory({ categoryId: id }));
       dispatch(getRosterByCategory({ categoryId: id }));
+      dispatch(getCategoryHeads({ categoryId: id }));
 
       // Fetch pending doctors for this category
       dispatch(
@@ -2235,52 +2241,11 @@ const SpecificCategory = () => {
           )}
         </div>
 
-        {/* Chief Card - if exists */}
-        {selectedCategory.chief && (
-          <div
-            className={`${
-              isDark ? "bg-gray-800" : "bg-white"
-            } rounded-2xl shadow-xl p-6`}
-          >
-            <h2
-              className={`text-2xl font-bold ${
-                isDark ? "text-white" : "text-gray-900"
-              } mb-4 flex items-center`}
-            >
-              <div
-                className={`w-8 h-8 ${
-                  isDark ? "bg-purple-900/30" : "bg-purple-100"
-                } rounded-lg flex items-center justify-center ${
-                  isRTL ? "mr-3" : "ml-3"
-                }`}
-              >
-                <svg
-                  className={`w-4 h-4 ${
-                    isDark ? "text-purple-400" : "text-purple-600"
-                  }`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  />
-                </svg>
-              </div>
-              {t("specificCategory.sections.chief.title")}
-            </h2>
-            <p
-              className={`${
-                isDark ? "text-gray-300" : "text-gray-600"
-              } text-lg`}
-            >
-              {selectedCategory.chief.name}
-            </p>
-          </div>
-        )}
+        <CategoryHeadsManagement
+          selectedCategory={selectedCategory}
+          isDark={isDark}
+          isRTL={isRTL}
+        />
 
         {/* Statistics Sidebar */}
         <div className="space-y-6">

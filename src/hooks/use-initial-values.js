@@ -216,13 +216,7 @@ function UseInitialValues() {
     defaultShifts: [],
   };
   const INITIAL_VALUES_ASSIGN_DEPARTMENT_HEAD = {
-    userId: "",
-    startDate: new Date().toISOString().split("T")[0],
-    canViewDepartment: true,
-    canEditDepartment: false,
-    canViewDepartmentReports: true,
-    canManageSchedules: false,
-    canManageStaff: false,
+    UserId: "",
     notes: "",
   };
 

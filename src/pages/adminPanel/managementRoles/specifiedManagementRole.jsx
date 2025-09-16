@@ -2,27 +2,18 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, Link, Navigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "../../../styles/general.css";
 
 import {
   ArrowLeft,
-  Edit,
-  Trash2,
-  Copy,
   Shield,
-  ShieldOff,
   Users,
-  Calendar,
   User,
   Settings,
   CheckCircle,
-  XCircle,
-  Activity,
-  BarChart3,
   History,
-  AlertTriangle,
   Search,
   Phone,
   UserCheck,
@@ -30,77 +21,55 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-// Import actions - ADD getRoleUsers to the imports
+// Import only the allowed actions
 import {
-  getManagementRoleById,
   getRolePermissions,
-  getRoleAnalytics,
-  getRoleAssignmentHistory,
-  deleteManagementRole,
-  activateRole,
-  deactivateRole,
-  cloneRole,
-  checkCanDeleteRole,
-  getRoleUsers, // ADD THIS IMPORT
-  removeRoleFromUser, // ADD THIS IMPORT
+  getManagementRoleHistory,
+  getManagementRoleUsers,
 } from "../../../state/act/actManagementRole";
 
-// Import slice actions and selectors - ADD new selectors
+// Import slice selectors
 import {
-  clearError,
-  clearSuccess,
-  selectCurrentRole,
   selectLoading,
   selectError,
   selectSuccess,
-  selectRoleAnalytics,
-  selectRolePermissions,
-  selectAssignmentHistory,
-  selectCanDeleteStatus,
-  selectRoleUsers, // ADD THIS
-  selectRoleUsersPagination, // ADD THIS
 } from "../../../state/slices/managementRole.js";
 
-import DeleteRoleModal from "../../../components/DeleteRoleModal";
 import LoadingGetData from "../../../components/LoadingGetData.jsx";
-import DeleteUserFromRoleModal from "../../../components/DeleteUserFromRoleModal"; // ADD THIS IMPORT
 
 function SpecifiedManagementRole() {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { id } = useParams();
-
   // Selectors
-  const currentRole = useSelector(selectCurrentRole);
   const loading = useSelector(selectLoading);
   const error = useSelector(selectError);
   const success = useSelector(selectSuccess);
-  const analytics = useSelector(selectRoleAnalytics);
-  const permissions = useSelector(selectRolePermissions);
-  const assignmentHistory = useSelector(selectAssignmentHistory);
-  const canDeleteStatus = useSelector(selectCanDeleteStatus);
-  const roleUsers = useSelector(selectRoleUsers); // ADD THIS
-  const roleUsersPagination = useSelector(selectRoleUsersPagination); // ADD THIS
+  const {
+    permissions,
+    assignmentHistory,
+    roleUsers,
+    roleUsersPagination,
+    assignmentHistoryPagination,
+  } = useSelector((state) => state.managementRoles);
 
   const { mymode } = useSelector((state) => state.mode);
-
+  const navigate = useNavigate();
   // Local state
   const [activeTab, setActiveTab] = useState("overview");
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [toDelete, setToDelete] = useState({ id: null, name: "" });
 
-  // ADD: Delete user modal state
-  const [showDeleteUserModal, setShowDeleteUserModal] = useState(false);
-  const [userToDelete, setUserToDelete] = useState(null);
-
-  // ADD: Users tab state
+  // Users tab state - matching API parameters
   const [usersSearchTerm, setUsersSearchTerm] = useState("");
   const [usersFilters, setUsersFilters] = useState({
-    isActive: "",
-    sortBy: 0, // NameArabic = 0
-    sortDirection: 0, // Asc = 0
+    page: 1,
+    pageSize: 10,
+    sortBy: "NameEnglish", // API default
+    sortDirection: "Asc", // API default
+    isActive: undefined, // Optional boolean
+  });
+
+  // History tab state - matching API parameters
+  const [historyFilters, setHistoryFilters] = useState({
     page: 1,
     pageSize: 10,
   });
@@ -110,60 +79,121 @@ function SpecifiedManagementRole() {
   const language = i18n.language;
   const isRTL = language === "ar";
 
-  // Load role data on component mount
   useEffect(() => {
-    if (id) {
-      dispatch(getManagementRoleById(id));
-      dispatch(getRolePermissions(id));
-      dispatch(getRoleAnalytics(id));
-      dispatch(getRoleAssignmentHistory(id));
-    }
-  }, [dispatch, id]);
+    dispatch(getRolePermissions(id));
+    dispatch(
+      getManagementRoleUsers({
+        id: id, // Using id as type parameter
+        params: {
+          page: usersFilters.page,
+          pageSize: usersFilters.pageSize,
+          search: usersSearchTerm || undefined,
+          sortBy: usersFilters.sortBy,
+          sortDirection: usersFilters.sortDirection,
+          isActive: usersFilters.isActive,
+        },
+      })
+    );
+    dispatch(
+      getManagementRoleHistory({
+        id: id,
+        params: {
+          page: historyFilters.page,
+          pageSize: historyFilters.pageSize,
+        },
+      })
+    );
+  }, [id]);
 
-  // ADD: Load users when users tab is active
   useEffect(() => {
-    if (id && activeTab === "users") {
-      dispatch(
-        getRoleUsers({
-          id,
-          params: {
-            search: usersSearchTerm,
-            ...usersFilters,
-          },
-        })
-      );
+    if (id && activeTab) {
+      switch (activeTab) {
+        case "overview":
+          // Overview data would need to be loaded separately if available
+          break;
+        case "permissions":
+          if (!permissions?.length) {
+            dispatch(getRolePermissions(id));
+          }
+          break;
+        case "users":
+          if (!roleUsers?.length) {
+            dispatch(
+              getManagementRoleUsers({
+                id: id, // Using id as type parameter
+                params: {
+                  page: usersFilters.page,
+                  pageSize: usersFilters.pageSize,
+                  search: usersSearchTerm || undefined,
+                  sortBy: usersFilters.sortBy,
+                  sortDirection: usersFilters.sortDirection,
+                  isActive: usersFilters.isActive,
+                },
+              })
+            );
+          }
+
+          break;
+        case "history":
+          if (!assignmentHistory?.length) {
+            dispatch(
+              getManagementRoleHistory({
+                id: id,
+                params: {
+                  page: historyFilters.page,
+                  pageSize: historyFilters.pageSize,
+                },
+              })
+            );
+          }
+          break;
+        default:
+          break;
+      }
     }
-  }, [dispatch, id, activeTab, usersSearchTerm, usersFilters]);
+  }, [activeTab]);
+
+  useEffect(() => {
+    dispatch(
+      getManagementRoleUsers({
+        id: id, // Using id as type parameter
+        params: {
+          page: usersFilters.page,
+          pageSize: usersFilters.pageSize,
+          search: usersSearchTerm || undefined,
+          sortBy: usersFilters.sortBy,
+          sortDirection: usersFilters.sortDirection,
+          isActive: usersFilters.isActive,
+        },
+      })
+    );
+  }, [usersFilters]);
+
+  useEffect(() => {
+    dispatch(
+      getManagementRoleHistory({
+        id: id,
+        params: {
+          page: historyFilters.page,
+          pageSize: historyFilters.pageSize,
+        },
+      })
+    );
+  }, [historyFilters]);
 
   // Handle success/error messages
+
   useEffect(() => {
     if (success) {
       toast.success(success);
-      dispatch(clearSuccess());
-
-      // Refresh role data after successful operations
-      if (
-        success.includes("updated") ||
-        success.includes("activated") ||
-        success.includes("deactivated") ||
-        success.includes("cloned")
-      ) {
-        dispatch(getManagementRoleById(id));
-      }
-
-      // Navigate back to list after deletion
-      if (success.includes("deleted")) {
-        navigate("/admin-panel/management-roles");
-      }
     }
-  }, [success, dispatch, id, navigate]);
+  }, [success]);
 
-  // useEffect(() => {
-  //   if (error) {
-  //     toast.error(error);
-  //     dispatch(clearError());
-  //   }
-  // }, [error, dispatch]);
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   // Format date
   const formatDate = (dateString) => {
@@ -178,56 +208,7 @@ function SpecifiedManagementRole() {
     });
   };
 
-  // Handle delete confirmation
-
-  const handleDeleteClick = async () => {
-    // Check if role can be deleted
-
-    toast.info(t("managementRoles.delete.checking"));
-
-    dispatch(checkCanDeleteRole(currentRole.id))
-      .unwrap()
-      .then((data) => {
-        const canDelete = data.canDelete.data;
-        if (canDelete.canDelete) {
-          setToDelete({
-            id: currentRole.id,
-            name:
-              language === "en"
-                ? currentRole.roleNameEn
-                : currentRole.roleNameAr,
-          });
-          setShowDeleteModal(true);
-        } else {
-          toast.error(canDelete.reason);
-        }
-      });
-  };
-
-  // Handle activate/deactivate
-  const handleToggleActive = async () => {
-    if (!currentRole) return;
-
-    if (currentRole.isActive) {
-      await dispatch(deactivateRole(currentRole.id));
-    } else {
-      await dispatch(activateRole(currentRole.id));
-    }
-  };
-
-  // Handle clone role
-  const handleClone = async () => {
-    if (!currentRole) return;
-    await dispatch(
-      cloneRole({
-        id: currentRole.id,
-        newRoleNameEn: `${currentRole.roleNameEn} (Copy)`,
-        newRoleNameAr: `${currentRole.roleNameAr} (نسخة)`,
-      })
-    );
-  };
-
-  // ADD: Users search and pagination handlers
+  // Users search and pagination handlers
   const handleUsersSearch = (searchTerm) => {
     setUsersSearchTerm(searchTerm);
     setUsersFilters((prev) => ({ ...prev, page: 1 }));
@@ -242,194 +223,67 @@ function SpecifiedManagementRole() {
       ...prev,
       sortBy,
       sortDirection,
-      page: 1,
     }));
   };
 
-  // ADD: Handle delete user from role
-  const handleDeleteUserFromRole = (user) => {
-    setUserToDelete(user);
-    setShowDeleteUserModal(true);
+  const handleUsersActiveFilter = (isActive) => {
+    setUsersFilters((prev) => ({
+      ...prev,
+      isActive,
+    }));
   };
 
-  // ADD: Handle successful user removal (refresh users list)
-  const handleUserRemovalSuccess = () => {
-    // Refresh users list
-    dispatch(
-      getRoleUsers({
-        id,
-        params: {
-          search: usersSearchTerm,
-          ...usersFilters,
-        },
-      })
-    );
-    // Refresh role data to update user count
-    dispatch(getManagementRoleById(id));
+  // History pagination handlers
+  const handleHistoryPageChange = (newPage) => {
+    setHistoryFilters((prev) => ({ ...prev, page: newPage }));
   };
 
-  // Permission groups for display
-  const permissionGroups = [
-    {
-      key: "core",
-      title: t("managementRoles.permissions.core") || "Core Management",
-      icon: <Shield size={16} />,
-      permissions: [
-        {
-          key: "userCanManageCategory",
-          label:
-            t("managementRoles.permissions.manageCategory") ||
-            "Manage Categories",
-        },
-        {
-          key: "userCanManageRole",
-          label: t("managementRoles.permissions.manageRole") || "Manage Roles",
-        },
-        {
-          key: "userCanManageUsers",
-          label: t("managementRoles.permissions.manageUsers") || "Manage Users",
-        },
-        {
-          key: "userCanManageRostors",
-          label:
-            t("managementRoles.permissions.manageRostors") || "Manage Rosters",
-        },
-      ],
-    },
-    {
-      key: "configuration",
-      title: t("managementRoles.permissions.configuration") || "Configuration",
-      icon: <Settings size={16} />,
-      permissions: [
-        {
-          key: "userCanContractingType",
-          label:
-            t("managementRoles.permissions.contractingType") ||
-            "Contracting Types",
-        },
-        {
-          key: "userCanShiftHoursType",
-          label:
-            t("managementRoles.permissions.shiftHoursType") ||
-            "Shift Hours Types",
-        },
-        {
-          key: "userCanScientificDegree",
-          label:
-            t("managementRoles.permissions.scientificDegree") ||
-            "Scientific Degrees",
-        },
-      ],
-    },
-    {
-      key: "departments",
-      title:
-        t("managementRoles.permissions.departments") || "Department Management",
-      icon: <Users size={16} />,
-      permissions: [
-        {
-          key: "userCanManageDepartments",
-          label:
-            t("managementRoles.permissions.manageDepartments") ||
-            "Manage Departments",
-        },
-        {
-          key: "userCanManageSubDepartments",
-          label:
-            t("managementRoles.permissions.manageSubDepartments") ||
-            "Manage Sub-Departments",
-        },
-      ],
-    },
-    {
-      key: "operations",
-      title: t("managementRoles.permissions.operations") || "Operations",
-      icon: <Activity size={16} />,
-      permissions: [
-        {
-          key: "userCanViewReports",
-          label: t("managementRoles.permissions.viewReports") || "View Reports",
-        },
-        {
-          key: "userCanManageSchedules",
-          label:
-            t("managementRoles.permissions.manageSchedules") ||
-            "Manage Schedules",
-        },
-        {
-          key: "userCanManageRequests",
-          label:
-            t("managementRoles.permissions.manageRequests") ||
-            "Manage Requests",
-        },
-      ],
-    },
-  ];
-
-  if (loading.details) {
+  // Loading states
+  if (loading.roleUsers || loading.permissions || loading.history) {
     return <LoadingGetData text={t("gettingData.roleData")} />;
   }
 
-  if (!currentRole) {
-    return (
-      <div
-        className={`min-h-screen flex items-center justify-center ${
-          isDark ? "bg-gray-900" : "bg-gray-50"
-        }`}
-      >
-        <div className="text-center">
-          <AlertTriangle
-            className={`mx-auto h-12 w-12 mb-4 ${
-              isDark ? "text-gray-400" : "text-gray-500"
-            }`}
-          />
-          <h3
-            className={`text-lg font-medium mb-2 ${
-              isDark ? "text-white" : "text-gray-900"
-            }`}
-          >
-            {t("managementRoles.notFound") || "Role Not Found"}
-          </h3>
-          <p className={`mb-4 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
-            {t("managementRoles.notFoundDescription") ||
-              "The requested role could not be found."}
-          </p>
-          <Link
-            to="/admin-panel/management-roles"
-            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <ArrowLeft size={16} className={isRTL ? "ml-2" : "mr-2"} />
-            {t("managementRoles.backToList") || "Back to Roles"}
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  // if (!currentRole) {
+  //   return (
+  //     <div
+  //       className={`min-h-screen flex items-center justify-center ${
+  //         isDark ? "bg-gray-900" : "bg-gray-50"
+  //       }`}
+  //     >
+  //       <div className="text-center">
+  //         <AlertTriangle
+  //           className={`mx-auto h-12 w-12 mb-4 ${
+  //             isDark ? "text-gray-400" : "text-gray-500"
+  //           }`}
+  //         />
+  //         <h3
+  //           className={`text-lg font-medium mb-2 ${
+  //             isDark ? "text-white" : "text-gray-900"
+  //           }`}
+  //         >
+  //           {t("managementRoles.notFound") || "Role Not Found"}
+  //         </h3>
+  //         <p className={`mb-4 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+  //           {t("managementRoles.notFoundDescription") ||
+  //             "The requested role could not be found."}
+  //         </p>
+  //         <Link
+  //           to="/admin-panel/management-roles"
+  //           className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+  //         >
+  //           <ArrowLeft size={16} className={isRTL ? "ml-2" : "mr-2"} />
+  //           {t("managementRoles.backToList") || "Back to Roles"}
+  //         </Link>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div
       className={`min-h-screen ${isDark ? "bg-gray-900" : "bg-gray-50"}`}
       dir={isRTL ? "rtl" : "ltr"}
     >
-      <DeleteRoleModal
-        isOpen={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        info={toDelete}
-        role={currentRole}
-      />
-
-      {/* ADD: Delete User From Role Modal */}
-      <DeleteUserFromRoleModal
-        isOpen={showDeleteUserModal}
-        onClose={() => {
-          setShowDeleteUserModal(false);
-          setUserToDelete(null);
-        }}
-        user={userToDelete}
-        role={currentRole}
-        onSuccess={handleUserRemovalSuccess}
-      />
-
       <div className="p-4 sm:p-6">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
@@ -452,228 +306,27 @@ function SpecifiedManagementRole() {
                       isDark ? "text-white" : "text-gray-900"
                     }`}
                   >
-                    {language === "en"
-                      ? currentRole.roleNameEn
-                      : currentRole.roleNameAr}
+                    {language == "ar"
+                      ? roleUsers[0]?.roleNameAr || id
+                      : roleUsers[0]?.roleNameEn || id}{" "}
                   </h1>
                 </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-2 w-full sm:w-auto">
-                {!currentRole.isSystemRole && (
-                  <>
-                    <Link to={`/admin-panel/management-roles/edit/${id}`}>
-                      <button
-                        className="flex-1 sm:flex-none bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors justify-center"
-                        disabled={loading.update}
-                      >
-                        <Edit size={16} />
-                        <span className="hidden sm:inline">
-                          {t("managementRoles.actions.edit") || "Edit"}
-                        </span>
-                      </button>
-                    </Link>
-                    <button
-                      onClick={handleToggleActive}
-                      className={`flex-1 sm:flex-none px-4 py-2 rounded-lg flex items-center gap-2 transition-colors justify-center ${
-                        currentRole.isActive
-                          ? "bg-orange-600 hover:bg-orange-700 text-white"
-                          : "bg-green-600 hover:bg-green-700 text-white"
-                      }`}
-                      disabled={loading.activate}
-                    >
-                      {currentRole.isActive ? (
-                        <ShieldOff size={16} />
-                      ) : (
-                        <Shield size={16} />
-                      )}
-                      <span className="hidden sm:inline">
-                        {currentRole.isActive
-                          ? t("managementRoles.actions.deactivate") ||
-                            "Deactivate"
-                          : t("managementRoles.actions.activate") || "Activate"}
-                      </span>
-                    </button>
-
-                    <button
-                      onClick={handleDeleteClick}
-                      className="flex-1 sm:flex-none bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors justify-center"
-                      disabled={loading.delete}
-                    >
-                      <Trash2 size={16} />
-                      <span className="hidden sm:inline">
-                        {t("managementRoles.actions.delete") || "Delete"}
-                      </span>
-                    </button>
-                  </>
-                )}
               </div>
             </div>
 
             {/* Status Badges */}
             <div className="flex flex-wrap gap-2 mb-6">
-              <span
-                className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  currentRole.isActive
-                    ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
-                    : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
-                }`}
-              >
-                {currentRole.isActive
-                  ? t("managementRoles.status.active") || "Active"
-                  : t("managementRoles.status.inactive") || "Inactive"}
-              </span>
-              <span
-                className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  currentRole.isSystemRole
-                    ? "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300"
-                    : "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
-                }`}
-              >
-                {currentRole.isSystemRole
-                  ? t("managementRoles.type.system") || "System Role"
-                  : t("managementRoles.type.custom") || "Custom Role"}
-              </span>
-              {currentRole.usersCount > 0 && (
+              {roleUsersPagination?.totalCount > 0 && (
                 <span className="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
                   <Users size={14} className="inline mr-1" />
-                  {currentRole.usersCount}{" "}
+                  {roleUsersPagination.totalCount}{" "}
                   {t("managementRoles.users.users") || "Users"}
                 </span>
               )}
             </div>
           </div>
 
-          {/* Statistics Cards - keeping existing code */}
-          {analytics && (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                {/* Active Users Count */}
-                <div
-                  className={`p-4 rounded-lg shadow ${
-                    isDark ? "bg-gray-800" : "bg-white"
-                  }`}
-                >
-                  <div className="flex items-center">
-                    <Users className="h-8 w-8 text-blue-600" />
-                    <div className="ml-4">
-                      <p
-                        className={`text-sm font-medium ${
-                          isDark ? "text-gray-400" : "text-gray-500"
-                        }`}
-                      >
-                        {t("managementRoles.analytics.activeUsers") ||
-                          "Active Users"}
-                      </p>
-                      <p
-                        className={`text-2xl font-semibold ${
-                          isDark ? "text-white" : "text-gray-900"
-                        }`}
-                      >
-                        {analytics.ActiveUsersCount || 0}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Recent Assignments */}
-                <div
-                  className={`p-4 rounded-lg shadow ${
-                    isDark ? "bg-gray-800" : "bg-white"
-                  }`}
-                >
-                  <div className="flex items-center">
-                    <Activity className="h-8 w-8 text-green-600" />
-                    <div className="ml-4">
-                      <p
-                        className={`text-sm font-medium ${
-                          isDark ? "text-gray-400" : "text-gray-500"
-                        }`}
-                      >
-                        {t("managementRoles.analytics.recentAssignments") ||
-                          "Recent Assignments"}
-                      </p>
-                      <p
-                        className={`text-2xl font-semibold ${
-                          isDark ? "text-white" : "text-gray-900"
-                        }`}
-                      >
-                        {analytics.RecentAssignments || 0}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Usage Percentage */}
-                <div
-                  className={`p-4 rounded-lg shadow ${
-                    isDark ? "bg-gray-800" : "bg-white"
-                  }`}
-                >
-                  <div className="flex items-center">
-                    <BarChart3 className="h-8 w-8 text-purple-600" />
-                    <div className="ml-4">
-                      <p
-                        className={`text-sm font-medium ${
-                          isDark ? "text-gray-400" : "text-gray-500"
-                        }`}
-                      >
-                        {t("managementRoles.analytics.usagePercentage") ||
-                          "Usage Percentage"}
-                      </p>
-                      <p
-                        className={`text-2xl font-semibold ${
-                          isDark ? "text-white" : "text-gray-900"
-                        }`}
-                      >
-                        {analytics.UsagePercentage
-                          ? `${analytics.UsagePercentage.toFixed(1)}%`
-                          : "0%"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Net Change */}
-                <div
-                  className={`p-4 rounded-lg shadow ${
-                    isDark ? "bg-gray-800" : "bg-white"
-                  }`}
-                >
-                  <div className="flex items-center">
-                    <Calendar className="h-8 w-8 text-orange-600" />
-                    <div className="ml-4">
-                      <p
-                        className={`text-sm font-medium ${
-                          isDark ? "text-gray-400" : "text-gray-500"
-                        }`}
-                      >
-                        {t("managementRoles.analytics.netChange") ||
-                          "Net Change"}
-                      </p>
-                      <p
-                        className={`text-2xl font-semibold ${
-                          analytics.NetChange > 0
-                            ? "text-green-600"
-                            : analytics.NetChange < 0
-                            ? "text-red-600"
-                            : isDark
-                            ? "text-white"
-                            : "text-gray-900"
-                        }`}
-                      >
-                        {analytics.NetChange > 0 ? "+" : ""}
-                        {analytics.NetChange || 0}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
-
-          {/* Tabs - ADD USERS TAB */}
+          {/* Tabs */}
           <div
             className={`border-b mb-6 ${
               isDark ? "border-gray-700" : "border-gray-200"
@@ -692,7 +345,7 @@ function SpecifiedManagementRole() {
                   icon: <Shield size={16} />,
                 },
                 {
-                  key: "users", // ADD THIS TAB
+                  key: "users",
                   label: t("managementRoles.tabs.users") || "Assigned Users",
                   icon: <Users size={16} />,
                 },
@@ -727,7 +380,7 @@ function SpecifiedManagementRole() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {activeTab === "overview" && (
               <>
-                {/* Basic Information - keeping existing code */}
+                {/* Basic Information */}
                 <div className="lg:col-span-2">
                   <div
                     className={`rounded-lg shadow border ${
@@ -746,56 +399,25 @@ function SpecifiedManagementRole() {
                           "Basic Information"}
                       </h3>
                       <div className="space-y-4">
-                        <div>
-                          <label
-                            className={`block text-sm font-medium ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            }`}
-                          >
-                            {t("managementRoles.form.roleNameAr") ||
-                              "Arabic Name"}
-                          </label>
-                          <p
-                            className={`mt-1 text-sm ${
-                              isDark ? "text-white" : "text-gray-900"
-                            }`}
-                          >
-                            {currentRole.roleNameAr}
-                          </p>
-                        </div>
-                        <div>
-                          <label
-                            className={`block text-sm font-medium ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            }`}
-                          >
-                            {t("managementRoles.form.roleNameEn") ||
-                              "English Name"}
-                          </label>
-                          <p
-                            className={`mt-1 text-sm ${
-                              isDark ? "text-white" : "text-gray-900"
-                            }`}
-                          >
-                            {currentRole.roleNameEn}
-                          </p>
-                        </div>
-                        {currentRole.description && (
+                        {roleUsers && (
                           <div>
                             <label
                               className={`block text-sm font-medium ${
                                 isDark ? "text-gray-300" : "text-gray-700"
                               }`}
                             >
-                              {t("managementRoles.form.description") ||
-                                "Description"}
+                              {language == "ar"
+                                ? t("managementRoles.form.roleNameAr")
+                                : t("managementRoles.form.roleNameEn")}
                             </label>
                             <p
                               className={`mt-1 text-sm ${
                                 isDark ? "text-white" : "text-gray-900"
                               }`}
                             >
-                              {currentRole.description}
+                              {language == "ar"
+                                ? roleUsers[0]?.roleNameAr || id
+                                : roleUsers[0]?.roleNameEn || id}{" "}
                             </p>
                           </div>
                         )}
@@ -804,7 +426,7 @@ function SpecifiedManagementRole() {
                   </div>
                 </div>
 
-                {/* Role Details - keeping existing code */}
+                {/* Role Details */}
                 <div>
                   <div
                     className={`rounded-lg shadow border ${
@@ -829,79 +451,6 @@ function SpecifiedManagementRole() {
                               isDark ? "text-gray-400" : "text-gray-500"
                             }`}
                           >
-                            {t("managementRoles.table.createdAt") || "Created"}
-                          </span>
-                          <span
-                            className={`text-sm ${
-                              isDark ? "text-white" : "text-gray-900"
-                            }`}
-                          >
-                            {formatDate(currentRole.createdAt)}
-                          </span>
-                        </div>
-                        {currentRole.updatedAt && (
-                          <div className="flex justify-between">
-                            <span
-                              className={`text-sm ${
-                                isDark ? "text-gray-400" : "text-gray-500"
-                              }`}
-                            >
-                              {t("managementRoles.table.updatedAt") ||
-                                "Updated"}
-                            </span>
-                            <span
-                              className={`text-sm ${
-                                isDark ? "text-white" : "text-gray-900"
-                              }`}
-                            >
-                              {formatDate(currentRole.updatedAt)}
-                            </span>
-                          </div>
-                        )}
-                        {currentRole.createdByName && (
-                          <div className="flex justify-between">
-                            <span
-                              className={`text-sm ${
-                                isDark ? "text-gray-400" : "text-gray-500"
-                              }`}
-                            >
-                              {t("managementRoles.table.createdBy") ||
-                                "Created By"}
-                            </span>
-                            <span
-                              className={`text-sm ${
-                                isDark ? "text-white" : "text-gray-900"
-                              }`}
-                            >
-                              {currentRole.createdByName}
-                            </span>
-                          </div>
-                        )}
-                        {currentRole.updatedByName && (
-                          <div className="flex justify-between">
-                            <span
-                              className={`text-sm ${
-                                isDark ? "text-gray-400" : "text-gray-500"
-                              }`}
-                            >
-                              {t("managementRoles.table.updatedBy") ||
-                                "Updated By"}
-                            </span>
-                            <span
-                              className={`text-sm ${
-                                isDark ? "text-white" : "text-gray-900"
-                              }`}
-                            >
-                              {currentRole.updatedByName}
-                            </span>
-                          </div>
-                        )}
-                        <div className="flex justify-between">
-                          <span
-                            className={`text-sm ${
-                              isDark ? "text-gray-400" : "text-gray-500"
-                            }`}
-                          >
                             {t("managementRoles.table.users") ||
                               "Assigned Users"}
                           </span>
@@ -910,7 +459,24 @@ function SpecifiedManagementRole() {
                               isDark ? "text-white" : "text-gray-900"
                             }`}
                           >
-                            {currentRole.usersCount || 0}
+                            {roleUsersPagination?.totalCount || 0}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span
+                            className={`text-sm ${
+                              isDark ? "text-gray-400" : "text-gray-500"
+                            }`}
+                          >
+                            {t("managementRoles.tabs.permissions") ||
+                              "Permissions"}
+                          </span>
+                          <span
+                            className={`text-sm ${
+                              isDark ? "text-white" : "text-gray-900"
+                            }`}
+                          >
+                            {permissions?.length}
                           </span>
                         </div>
                       </div>
@@ -937,57 +503,81 @@ function SpecifiedManagementRole() {
                     >
                       {t("managementRoles.tabs.permissions") ||
                         "Role Permissions"}
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {permissionGroups.map((group) => (
-                        <div
-                          key={group.key}
-                          className={`border rounded-lg p-4 ${
-                            isDark
-                              ? "border-gray-600 bg-gray-700/50"
-                              : "border-gray-200 bg-gray-50"
+                      {permissions?.length > 0 && (
+                        <span
+                          className={`ml-2 text-sm font-normal ${
+                            isDark ? "text-gray-400" : "text-gray-500"
                           }`}
                         >
-                          <div className="flex items-center gap-2 mb-4">
-                            {group.icon}
-                            <h4
-                              className={`font-medium ${
-                                isDark ? "text-white" : "text-gray-900"
+                          ({permissions?.length} permissions)
+                        </span>
+                      )}
+                    </h3>
+
+                    {loading.permissions ? (
+                      <div className="text-center py-8">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                        <p
+                          className={`mt-2 ${
+                            isDark ? "text-gray-400" : "text-gray-600"
+                          }`}
+                        >
+                          {t("managementRoles.loadingPermissions") ||
+                            "Loading permissions..."}
+                        </p>
+                      </div>
+                    ) : permissions?.length > 0 ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {permissions?.map((permission, index) => (
+                          <div
+                            key={index}
+                            className={`p-3 rounded-lg border flex items-center gap-3 ${
+                              isDark
+                                ? "border-gray-600 bg-gray-700"
+                                : "border-gray-200 bg-gray-50"
+                            }`}
+                          >
+                            <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
+                            <span
+                              className={`text-sm font-medium ${
+                                isDark ? "text-gray-200" : "text-gray-800"
                               }`}
                             >
-                              {group.title}
-                            </h4>
+                              {permission}
+                            </span>
                           </div>
-                          <div className="space-y-3">
-                            {group.permissions.map((permission) => (
-                              <div
-                                key={permission.key}
-                                className="flex items-center justify-between"
-                              >
-                                <span
-                                  className={`text-sm ${
-                                    isDark ? "text-gray-300" : "text-gray-700"
-                                  }`}
-                                >
-                                  {permission.label}
-                                </span>
-                                {currentRole[permission.key] ? (
-                                  <CheckCircle className="h-5 w-5 text-green-500" />
-                                ) : (
-                                  <XCircle className="h-5 w-5 text-red-500" />
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8">
+                        <Shield
+                          className={`mx-auto h-12 w-12 mb-4 ${
+                            isDark ? "text-gray-400" : "text-gray-500"
+                          }`}
+                        />
+                        <p
+                          className={`text-lg font-medium mb-2 ${
+                            isDark ? "text-white" : "text-gray-900"
+                          }`}
+                        >
+                          {t("managementRoles.permissions.noPermissions") ||
+                            "No Permissions"}
+                        </p>
+                        <p
+                          className={`${
+                            isDark ? "text-gray-400" : "text-gray-500"
+                          }`}
+                        >
+                          {t("managementRoles.permissions.noPermissionsDesc") ||
+                            "This role has no permissions assigned."}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             )}
 
-            {/* ADD USERS TAB CONTENT - Use the updated users tab code from artifact above */}
             {activeTab === "users" && (
               <div className="lg:col-span-3">
                 <div
@@ -1005,7 +595,7 @@ function SpecifiedManagementRole() {
                         }`}
                       >
                         {t("managementRoles.tabs.users") || "Assigned Users"}
-                        {roleUsers.length > 0 && (
+                        {roleUsersPagination?.totalCount > 0 && (
                           <span
                             className={`ml-2 text-sm font-normal ${
                               isDark ? "text-gray-400" : "text-gray-500"
@@ -1016,10 +606,9 @@ function SpecifiedManagementRole() {
                           </span>
                         )}
                       </h3>
-
-                      {/* Search and Filters */}
-                      <div className="flex gap-2 w-full sm:w-auto">
-                        <div className="relative flex-1 sm:w-64">
+                      <div className="flex flex-col gap-4 w-full">
+                        {/* Search Bar - Full width on all screens */}
+                        <div className="relative w-full">
                           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                           <input
                             type="text"
@@ -1037,62 +626,138 @@ function SpecifiedManagementRole() {
                           />
                         </div>
 
-                        <select
-                          value={usersFilters.sortBy}
-                          onChange={(e) =>
-                            handleUsersSortChange(
-                              parseInt(e.target.value),
-                              usersFilters.sortDirection
-                            )
-                          }
-                          className={`px-3 py-2 rounded-lg border transition-colors ${
-                            isDark
-                              ? "border-gray-600 bg-gray-700 text-white focus:border-blue-500"
-                              : "border-gray-300 bg-white text-gray-900 focus:border-blue-500"
-                          } focus:outline-none focus:ring-1 focus:ring-blue-500`}
-                        >
-                          <option value={0}>
-                            {t("managementRoles.filters.sortBy.nameArabic") ||
-                              "Arabic Name"}
-                          </option>
-                          <option value={1}>
-                            {t("managementRoles.filters.sortBy.nameEnglish") ||
-                              "English Name"}
-                          </option>
-                          <option value={2}>
-                            {t("managementRoles.filters.sortBy.mobile") ||
-                              "Mobile"}
-                          </option>
-                          <option value={3}>
-                            {t(
-                              "managementRoles.filters.sortBy.primaryCategory"
-                            ) || "Primary Category"}
-                          </option>
-                        </select>
+                        {/* Filters Grid - Responsive layout */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 w-full">
+                          {/* Sort By */}
+                          <div className="flex flex-col">
+                            <label
+                              className={`text-xs font-medium mb-1 ${
+                                isDark ? "text-gray-300" : "text-gray-700"
+                              }`}
+                            >
+                              {t("roster.filters.orderBy") || "Sort By"}
+                            </label>
+                            <select
+                              value={usersFilters.sortBy}
+                              onChange={(e) =>
+                                handleUsersSortChange(
+                                  e.target.value,
+                                  usersFilters.sortDirection
+                                )
+                              }
+                              className={`px-3 py-2 rounded-lg border transition-colors ${
+                                isDark
+                                  ? "border-gray-600 bg-gray-700 text-white focus:border-blue-500"
+                                  : "border-gray-300 bg-white text-gray-900 focus:border-blue-500"
+                              } focus:outline-none focus:ring-1 focus:ring-blue-500`}
+                            >
+                              <option value="1">
+                                {t("roster.filters.sortBy.nameEnglish") ||
+                                  "Name (English)"}
+                              </option>
+                              <option value="0">
+                                {t("roster.filters.sortBy.nameArabic") ||
+                                  "Name (Arabic)"}
+                              </option>
+                              <option value="2">
+                                {t("roster.filters.sortBy.mobile") || "Mobile"}
+                              </option>
+                            </select>
+                          </div>
 
-                        <select
-                          value={usersFilters.sortDirection}
-                          onChange={(e) =>
-                            handleUsersSortChange(
-                              usersFilters.sortBy,
-                              parseInt(e.target.value)
-                            )
-                          }
-                          className={`px-3 py-2 rounded-lg border transition-colors ${
-                            isDark
-                              ? "border-gray-600 bg-gray-700 text-white focus:border-blue-500"
-                              : "border-gray-300 bg-white text-gray-900 focus:border-blue-500"
-                          } focus:outline-none focus:ring-1 focus:ring-blue-500`}
-                        >
-                          <option value={0}>
-                            {t("managementRoles.filters.ascending") ||
-                              "Ascending"}
-                          </option>
-                          <option value={1}>
-                            {t("managementRoles.filters.descending") ||
-                              "Descending"}
-                          </option>
-                        </select>
+                          {/* Sort Direction */}
+                          <div className="flex flex-col">
+                            <label
+                              className={`text-xs font-medium mb-1 ${
+                                isDark ? "text-gray-300" : "text-gray-700"
+                              }`}
+                            >
+                              {t("roster.filters.orderDirection") ||
+                                "Direction"}
+                            </label>
+                            <select
+                              value={usersFilters.sortDirection}
+                              onChange={(e) =>
+                                handleUsersSortChange(
+                                  usersFilters.sortBy,
+                                  e.target.value
+                                )
+                              }
+                              className={`px-3 py-2 rounded-lg border transition-colors ${
+                                isDark
+                                  ? "border-gray-600 bg-gray-700 text-white focus:border-blue-500"
+                                  : "border-gray-300 bg-white text-gray-900 focus:border-blue-500"
+                              } focus:outline-none focus:ring-1 focus:ring-blue-500`}
+                            >
+                              <option value="Asc">
+                                {t("roster.filters.ascending") || "Ascending"}
+                              </option>
+                              <option value="Desc">
+                                {t("roster.filters.descending") || "Descending"}
+                              </option>
+                            </select>
+                          </div>
+
+                          {/* Status Filter */}
+                          <div className="flex flex-col sm:col-span-2 md:col-span-1">
+                            <label
+                              className={`text-xs font-medium mb-1 ${
+                                isDark ? "text-gray-300" : "text-gray-700"
+                              }`}
+                            >
+                              {t("roster.filters.status") || "Status"}
+                            </label>
+                            <select
+                              value={usersFilters.isActive ?? ""}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                handleUsersActiveFilter(
+                                  value === "" ? undefined : value === "true"
+                                );
+                              }}
+                              className={`px-3 py-2 rounded-lg border transition-colors ${
+                                isDark
+                                  ? "border-gray-600 bg-gray-700 text-white focus:border-blue-500"
+                                  : "border-gray-300 bg-white text-gray-900 focus:border-blue-500"
+                              } focus:outline-none focus:ring-1 focus:ring-blue-500`}
+                            >
+                              <option value="">
+                                {t("roster.filters.all") || "All Users"}
+                              </option>
+                              <option value="true">
+                                {t("roster.filters.activeOnly") ||
+                                  "Active Only"}
+                              </option>
+                              <option value="false">
+                                {t("roster.filters.inactiveOnly") ||
+                                  "Inactive Only"}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+
+                        {/* Optional: Add a Clear Filters Button */}
+                        <div className="flex justify-end">
+                          <button
+                            onClick={() => {
+                              setUsersSearchTerm("");
+                              setUsersFilters({
+                                isActive: "",
+                                sortBy: "NameEnglish",
+                                sortDirection: "Asc",
+                                page: 1,
+                                pageSize: 10,
+                              });
+                            }}
+                            className={`px-3 py-1 text-sm rounded-lg border transition-colors ${
+                              isDark
+                                ? "border-gray-600 bg-gray-700 text-gray-300 hover:bg-gray-600"
+                                : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                            }`}
+                          >
+                            {t("roster.filters.clear") || "Clear All"}
+                          </button>
+                        </div>
                       </div>
                     </div>
 
@@ -1137,8 +802,14 @@ function SpecifiedManagementRole() {
                                     isDark ? "text-gray-300" : "text-gray-500"
                                   }`}
                                 >
-                                  {t("managementRoles.table.category") ||
-                                    "Primary Category"}
+                                  {t("managementRoles.table.email") || "Email"}
+                                </th>
+                                <th
+                                  className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                                    isDark ? "text-gray-300" : "text-gray-500"
+                                  }`}
+                                >
+                                  {t("managementRoles.table.category")}
                                 </th>
                                 <th
                                   className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
@@ -1146,6 +817,22 @@ function SpecifiedManagementRole() {
                                   }`}
                                 >
                                   {t("managementRoles.table.role") || "Role"}
+                                </th>
+                                <th
+                                  className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                                    isDark ? "text-gray-300" : "text-gray-500"
+                                  }`}
+                                >
+                                  {t("managementRoles.table.lastLogin") ||
+                                    "Last Login"}
+                                </th>
+                                <th
+                                  className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                                    isDark ? "text-gray-300" : "text-gray-500"
+                                  }`}
+                                >
+                                  {t("managementRoles.table.status") ||
+                                    "Status"}
                                 </th>
                                 <th
                                   className={`px-6 py-3 text-center text-xs font-medium uppercase tracking-wider ${
@@ -1217,6 +904,19 @@ function SpecifiedManagementRole() {
                                     </div>
                                   </td>
                                   <td className="px-6 py-4 whitespace-nowrap">
+                                    <div className="flex items-center">
+                                      <span
+                                        className={`text-sm ${
+                                          isDark
+                                            ? "text-gray-300"
+                                            : "text-gray-900"
+                                        }`}
+                                      >
+                                        {user.email || "N/A"}
+                                      </span>
+                                    </div>
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap">
                                     <span
                                       className={`text-sm ${
                                         isDark
@@ -1231,36 +931,60 @@ function SpecifiedManagementRole() {
                                   </td>
                                   <td className="px-6 py-4 whitespace-nowrap">
                                     <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-                                      {user.role}
+                                      {language === "ar"
+                                        ? user?.roleNameAr
+                                        : user?.roleNameEn}
+                                    </span>
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap">
+                                    <span
+                                      className={`text-sm ${
+                                        isDark
+                                          ? "text-gray-300"
+                                          : "text-gray-900"
+                                      }`}
+                                    >
+                                      {user.lastLoginAt
+                                        ? formatDate(user.lastLoginAt)
+                                        : "Never"}
+                                    </span>
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap">
+                                    <span
+                                      className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                                        user.isActive
+                                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+                                          : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
+                                      }`}
+                                    >
+                                      {user.isActive
+                                        ? t("common.active") || "Active"
+                                        : t("common.inactive") || "Inactive"}
                                     </span>
                                   </td>
                                   <td className="px-6 py-4 whitespace-nowrap text-center">
                                     <div className="flex gap-2 justify-center">
-                                      <Link
-                                        to={`/admin-panel/management-roles/edit-assign-user-to-role/${user.id}`}
-                                      >
-                                        <button
-                                          className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors cursor-pointer"
-                                          title={
-                                            t("managementRoles.actions.edit") ||
-                                            "Edit"
-                                          }
-                                        >
-                                          <Edit size={16} />
-                                        </button>
-                                      </Link>
                                       <button
-                                        onClick={() =>
-                                          handleDeleteUserFromRole(user)
-                                        }
-                                        className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors cursor-pointer"
+                                        onClick={() => {
+                                          localStorage.setItem(
+                                            "doctorName",
+                                            JSON.stringify({
+                                              doctorNameAr: user.nameArabic,
+                                              doctorNameEn: user.nameEnglish,
+                                            })
+                                          );
+                                          navigate(
+                                            `/admin-panel/management-roles/role/user-history/${user.id}`
+                                          );
+                                        }}
+                                        className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors cursor-pointer"
                                         title={
                                           t(
-                                            "managementRoles.users.removeUser"
-                                          ) || "Remove User from Role"
+                                            "managementRoles.users.viewHistory"
+                                          ) || "View Assignment History"
                                         }
                                       >
-                                        <Trash2 size={16} />
+                                        <History size={16} />
                                       </button>
                                     </div>
                                   </td>
@@ -1269,8 +993,7 @@ function SpecifiedManagementRole() {
                             </tbody>
                           </table>
                         </div>
-
-                        {/* Pagination - keeping existing code */}
+                        {/* Pagination */}
                         {roleUsersPagination.totalPages > 1 && (
                           <div className="flex items-center justify-between px-6 py-3 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
                             <div className="flex-1 flex justify-between sm:hidden">
@@ -1278,9 +1001,9 @@ function SpecifiedManagementRole() {
                                 onClick={() =>
                                   handleUsersPageChange(usersFilters.page - 1)
                                 }
-                                disabled={!roleUsersPagination.hasPreviousPage}
+                                disabled={usersFilters.page === 1}
                                 className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
-                                  !roleUsersPagination.hasPreviousPage
+                                  usersFilters.page === 1
                                     ? "text-gray-400 cursor-not-allowed"
                                     : "text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
                                 }`}
@@ -1292,9 +1015,13 @@ function SpecifiedManagementRole() {
                                 onClick={() =>
                                   handleUsersPageChange(usersFilters.page + 1)
                                 }
-                                disabled={!roleUsersPagination.hasNextPage}
+                                disabled={
+                                  usersFilters.page >=
+                                  roleUsersPagination.totalPages
+                                }
                                 className={`ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
-                                  !roleUsersPagination.hasNextPage
+                                  usersFilters.page >=
+                                  roleUsersPagination.totalPages
                                     ? "text-gray-400 cursor-not-allowed"
                                     : "text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
                                 }`}
@@ -1309,27 +1036,26 @@ function SpecifiedManagementRole() {
                                     isDark ? "text-gray-400" : "text-gray-700"
                                   }`}
                                 >
-                                  {t("managementRoles.pagination.showing")}{" "}
+                                  {t("managementRoles.pagination.showing") ||
+                                    "Showing"}{" "}
                                   <span className="font-medium">
-                                    {roleUsersPagination.startIndex ||
-                                      (usersFilters.page - 1) *
-                                        usersFilters.pageSize +
-                                        1}
+                                    {(usersFilters.page - 1) *
+                                      usersFilters.pageSize +
+                                      1}
                                   </span>{" "}
-                                  {t("managementRoles.pagination.to")}{" "}
+                                  {t("managementRoles.pagination.to") || "to"}{" "}
                                   <span className="font-medium">
-                                    {roleUsersPagination.endIndex ||
-                                      Math.min(
-                                        usersFilters.page *
-                                          usersFilters.pageSize,
-                                        roleUsersPagination.totalCount
-                                      )}
+                                    {Math.min(
+                                      usersFilters.page * usersFilters.pageSize,
+                                      roleUsersPagination.totalCount
+                                    )}
                                   </span>{" "}
-                                  {t("managementRoles.pagination.of")}{" "}
+                                  {t("managementRoles.pagination.of") || "of"}{" "}
                                   <span className="font-medium">
                                     {roleUsersPagination.totalCount}
                                   </span>{" "}
-                                  {t("managementRoles.pagination.results")}
+                                  {t("managementRoles.pagination.results") ||
+                                    "results"}
                                 </p>
                               </div>
                               <div>
@@ -1343,11 +1069,9 @@ function SpecifiedManagementRole() {
                                         usersFilters.page - 1
                                       )
                                     }
-                                    disabled={
-                                      !roleUsersPagination.hasPreviousPage
-                                    }
+                                    disabled={usersFilters.page === 1}
                                     className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 text-sm font-medium ${
-                                      !roleUsersPagination.hasPreviousPage
+                                      usersFilters.page === 1
                                         ? "text-gray-400 cursor-not-allowed"
                                         : "text-gray-500 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
                                     }`}
@@ -1363,12 +1087,13 @@ function SpecifiedManagementRole() {
                                       ),
                                     },
                                     (_, i) => {
-                                      const pageNum = usersFilters.page - 2 + i;
+                                      const pageNum =
+                                        Math.max(1, usersFilters.page - 2) + i;
                                       if (
-                                        pageNum < 1 ||
                                         pageNum > roleUsersPagination.totalPages
                                       )
                                         return null;
+
                                       return (
                                         <button
                                           key={pageNum}
@@ -1393,9 +1118,13 @@ function SpecifiedManagementRole() {
                                         usersFilters.page + 1
                                       )
                                     }
-                                    disabled={!roleUsersPagination.hasNextPage}
+                                    disabled={
+                                      usersFilters.page >=
+                                      roleUsersPagination.totalPages
+                                    }
                                     className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 text-sm font-medium ${
-                                      !roleUsersPagination.hasNextPage
+                                      usersFilters.page >=
+                                      roleUsersPagination.totalPages
                                         ? "text-gray-400 cursor-not-allowed"
                                         : "text-gray-500 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
                                     }`}
@@ -1468,78 +1197,79 @@ function SpecifiedManagementRole() {
                             "Loading history..."}
                         </p>
                       </div>
-                    ) : assignmentHistory && assignmentHistory.length > 0 ? (
+                    ) : assignmentHistory && assignmentHistory?.length > 0 ? (
                       <div className="space-y-4">
-                        {assignmentHistory.map((entry, index) => (
+                        {assignmentHistory?.map((entry, index) => (
                           <div
                             key={index}
                             className={`border-l-4 ${
-                              entry.changeType === "ASSIGNED"
+                              entry.changeType === "تعيين"
                                 ? "border-green-500"
-                                : entry.changeType === "REMOVED"
+                                : entry.changeType === "إلغاء"
                                 ? "border-red-500"
                                 : "border-blue-500"
-                            } pl-4 py-2 ${
+                            } pl-4 py-3 ${
                               isDark ? "bg-gray-700/50" : "bg-blue-50"
                             } rounded`}
                           >
                             <div className="flex justify-between items-start">
-                              <div>
+                              <div className="flex-1">
                                 <p
                                   className={`font-medium ${
                                     isDark ? "text-white" : "text-gray-900"
                                   }`}
                                 >
-                                  {entry.changeType === "ASSIGNED"
-                                    ? t("managementRoles.history.assigned", {
-                                        roleName: entry.newRoleName,
-                                      })
-                                    : entry.changeType === "REMOVED"
-                                    ? t("managementRoles.history.removed", {
-                                        roleName: entry.oldRoleName,
-                                      })
-                                    : entry.changeType === "UPDATED"
-                                    ? t("managementRoles.history.modified", {
-                                        oldRoleName: entry.oldRoleName,
-                                        newRoleName: entry.newRoleName,
-                                      })
-                                    : entry.changeType}
+                                  {entry.oldRoleName && entry.newRoleName
+                                    ? `${entry.oldRoleName} → ${entry.newRoleName}`
+                                    : entry.newRoleName ||
+                                      entry.oldRoleName ||
+                                      entry.changeType}
                                 </p>
                                 {entry.changeReason && (
                                   <p
-                                    className={`text-sm ${
+                                    className={`text-sm mt-1 ${
                                       isDark ? "text-gray-300" : "text-gray-600"
                                     }`}
                                   >
-                                    {t("managementRoles.history.reason") ||
-                                      "Reason"}
-                                    : {entry.changeReason}
+                                    <span className="font-medium">
+                                      {t("managementRoles.history.reason") ||
+                                        "Reason"}
+                                      :
+                                    </span>{" "}
+                                    {entry.changeReason}
                                   </p>
                                 )}
-                              </div>
-                              <div className="text-right">
-                                <p
-                                  className={`text-xs ${
+                                <div
+                                  className={`text-xs mt-1 ${
                                     isDark ? "text-gray-400" : "text-gray-500"
                                   }`}
                                 >
-                                  {formatDate(entry.changedAt)}
-                                </p>
-                                {entry.changedByName && (
-                                  <p
-                                    className={`text-xs ${
-                                      isDark ? "text-gray-400" : "text-gray-500"
+                                  <span
+                                    className={`inline-block px-2 py-1 rounded text-xs font-medium mr-2 ${
+                                      entry.changeType === "Promoted"
+                                        ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+                                        : entry.changeType === "Demoted"
+                                        ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
+                                        : "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
                                     }`}
                                   >
-                                    {t("managementRoles.history.by") || "by"}{" "}
-                                    {entry.changedByName}
-                                  </p>
-                                )}
+                                    {entry.changeType}
+                                  </span>
+                                  {formatDate(entry.changedAt)}
+                                  {entry.changedByName && (
+                                    <span className="ml-2">
+                                      {t("managementRoles.history.by") || "by"}{" "}
+                                      <span className="font-medium">
+                                        {entry.changedByName}
+                                      </span>
+                                    </span>
+                                  )}
+                                </div>
                               </div>
                             </div>
                             {entry.notes && (
                               <div
-                                className={`text-sm mt-2 p-2 rounded ${
+                                className={`text-sm mt-3 p-2 rounded ${
                                   isDark
                                     ? "bg-gray-600/50 text-gray-300"
                                     : "bg-gray-100 text-gray-600"
@@ -1547,7 +1277,7 @@ function SpecifiedManagementRole() {
                               >
                                 <span className="font-medium">
                                   {t("managementRoles.history.notes") ||
-                                    "Notes"}
+                                    "notes"}
                                   :
                                 </span>{" "}
                                 {entry.notes}
@@ -1577,12 +1307,148 @@ function SpecifiedManagementRole() {
                           }`}
                         >
                           {t("managementRoles.history.noHistoryDescription") ||
-                            "This role has not been assigned to any users yet."}
+                            "This role has no assignment history yet."}
                         </p>
                       </div>
                     )}
                   </div>
                 </div>
+
+                {assignmentHistoryPagination.totalPages > 1 && (
+                  <div className="flex items-center justify-between px-6 py-3 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+                    <div className="flex-1 flex justify-between sm:hidden">
+                      <button
+                        onClick={() =>
+                          handleHistoryPageChange(historyFilters.page - 1)
+                        }
+                        disabled={historyFilters.page === 1}
+                        className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
+                          historyFilters.page === 1
+                            ? "text-gray-400 cursor-not-allowed"
+                            : "text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                        }`}
+                      >
+                        {t("managementRoles.pagination.previous") || "Previous"}
+                      </button>
+                      <button
+                        onClick={() =>
+                          handleHistoryPageChange(historyFilters.page + 1)
+                        }
+                        disabled={
+                          historyFilters.page >=
+                          assignmentHistoryPagination.totalPages
+                        }
+                        className={`ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
+                          historyFilters.page >=
+                          assignmentHistoryPagination.totalPages
+                            ? "text-gray-400 cursor-not-allowed"
+                            : "text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                        }`}
+                      >
+                        {t("managementRoles.pagination.next") || "Next"}
+                      </button>
+                    </div>
+                    <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                      <div>
+                        <p
+                          className={`text-sm ${
+                            isDark ? "text-gray-400" : "text-gray-700"
+                          }`}
+                        >
+                          {t("managementRoles.pagination.showing") || "Showing"}{" "}
+                          <span className="font-medium">
+                            {(historyFilters.page - 1) *
+                              historyFilters.pageSize +
+                              1}
+                          </span>{" "}
+                          {t("managementRoles.pagination.to") || "to"}{" "}
+                          <span className="font-medium">
+                            {Math.min(
+                              historyFilters.page * historyFilters.pageSize,
+                              assignmentHistoryPagination.totalCount
+                            )}
+                          </span>{" "}
+                          {t("managementRoles.pagination.of") || "of"}{" "}
+                          <span className="font-medium">
+                            {assignmentHistoryPagination.totalCount}
+                          </span>{" "}
+                          {t("managementRoles.pagination.results") || "results"}
+                        </p>
+                      </div>
+                      <div>
+                        <nav
+                          className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+                          aria-label="Pagination"
+                        >
+                          <button
+                            onClick={() =>
+                              handleHistoryPageChange(historyFilters.page - 1)
+                            }
+                            disabled={usersFilters.page === 1}
+                            className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 text-sm font-medium ${
+                              usersFilters.page === 1
+                                ? "text-gray-400 cursor-not-allowed"
+                                : "text-gray-500 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                            }`}
+                          >
+                            <ChevronLeft className="h-5 w-5" />
+                          </button>
+
+                          {Array.from(
+                            {
+                              length: Math.min(
+                                5,
+                                assignmentHistoryPagination.totalPages
+                              ),
+                            },
+                            (_, i) => {
+                              const pageNum =
+                                Math.max(1, historyFilters.page - 2) + i;
+                              if (
+                                pageNum > assignmentHistoryPagination.totalPages
+                              )
+                                return null;
+
+                              return (
+                                <button
+                                  key={pageNum}
+                                  onClick={() =>
+                                    handleHistoryPageChange(pageNum)
+                                  }
+                                  className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                                    pageNum === assignmentHistoryPagination.page
+                                      ? "z-10 bg-blue-50 border-blue-500 text-blue-600 dark:bg-blue-900 dark:text-blue-300"
+                                      : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                                  }`}
+                                >
+                                  {pageNum}
+                                </button>
+                              );
+                            }
+                          )}
+
+                          <button
+                            onClick={() =>
+                              handleHistoryPageChange(historyFilters.page + 1)
+                            }
+                            disabled={
+                              historyFilters.page >=
+                              assignmentHistoryPagination.totalPages
+                            }
+                            className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 text-sm font-medium ${
+                              historyFilters.page >=
+                              assignmentHistoryPagination.totalPages
+                                ? "text-gray-400 cursor-not-allowed"
+                                : "text-gray-500 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                            }`}
+                          >
+                            <ChevronRight className="h-5 w-5" />
+                          </button>
+                        </nav>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

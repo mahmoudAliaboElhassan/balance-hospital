@@ -838,24 +838,8 @@ function UseFormValidation() {
   });
 
   const VALIDATION_SCHEMA_ASSIGN_DEPARTMENT_HEAD = Yup.object({
-    userId: Yup.string().required(
+    UserId: Yup.string().required(
       t("validation.required") || "User is required"
-    ),
-    startDate: Yup.date()
-      .required(t("validation.required") || "Start date is required")
-      .min(
-        new Date(),
-        t("roster.validation.dateInFuture") ||
-          "Start date must be in the future"
-      ),
-    canViewDepartment: Yup.boolean(),
-    canEditDepartment: Yup.boolean(),
-    canViewDepartmentReports: Yup.boolean(),
-    canManageSchedules: Yup.boolean(),
-    canManageStaff: Yup.boolean(),
-    notes: Yup.string().max(
-      500,
-      t("validation.maxLength") || "Maximum 500 characters"
     ),
   });
   return {

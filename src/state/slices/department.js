@@ -7,8 +7,8 @@ import {
   updateDepartment,
   deleteDepartment,
   updateManagerPermission,
-  removeManager,
-  assignManager,
+  removeDepManager,
+  assignDepManager,
   availabelDepartmentsForCategory,
   linkDepartmentToCategory,
   getDepartmentByCategory,
@@ -396,24 +396,24 @@ export const departmentSlice = createSlice({
           timestamp: new Date().toISOString(),
         };
       })
-      .addCase(removeManager.pending, (state) => {
+      .addCase(removeDepManager.pending, (state) => {
         state.loadingRemoveManager = true;
       })
-      .addCase(removeManager.fulfilled, (state, action) => {
+      .addCase(removeDepManager.fulfilled, (state, action) => {
         state.loadingRemoveManager = false;
         state.selectedDepartment.manager = null;
         state.selectedDepartment.hasManager = false;
       })
-      .addCase(removeManager.rejected, (state, action) => {
+      .addCase(removeDepManager.rejected, (state, action) => {
         state.loadingRemoveManager = false;
       })
-      .addCase(assignManager.pending, (state) => {
+      .addCase(assignDepManager.pending, (state) => {
         state.loadingAssignManager = true;
       })
-      .addCase(assignManager.fulfilled, (state, action) => {
+      .addCase(assignDepManager.fulfilled, (state, action) => {
         state.loadingAssignManager = false;
       })
-      .addCase(assignManager.rejected, (state, action) => {
+      .addCase(assignDepManager.rejected, (state, action) => {
         state.loadingAssignManager = false;
       })
 

@@ -149,6 +149,9 @@ const ManagementRoles = lazy(() =>
 const SpecifiedManagementRole = lazy(() =>
   import("../pages/adminPanel/managementRoles/specifiedManagementRole")
 );
+const UserRoleHistory = lazy(() =>
+  import("../pages/adminPanel/managementRoles/userAssignmentHistory.jsx")
+);
 const CreateManagementRole = lazy(() =>
   import("../pages/adminPanel/managementRoles/createManagementRole")
 );
@@ -304,6 +307,7 @@ const ProtectedSpecifiedManagementRole = withGuard(
   SpecifiedManagementRole,
   "userCanManageRole"
 );
+const ProtectedUserHistory = withGuard(UserRoleHistory, "userCanManageRole");
 const ProtectedCreateManagementRole = withGuard(
   CreateManagementRole,
   "userCanManageRole"
@@ -526,6 +530,10 @@ const router = createBrowserRouter([
           {
             path: "management-roles/role/:id",
             element: withSuspense(ProtectedSpecifiedManagementRole),
+          },
+          {
+            path: "management-roles/role/user-history/:id",
+            element: withSuspense(ProtectedUserHistory),
           },
           {
             path: "management-roles/create",

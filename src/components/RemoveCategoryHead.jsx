@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { X, AlertTriangle, User, Building2 } from "lucide-react";
+import { X, AlertTriangle, User, Tag } from "lucide-react";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import i18next from "i18next";
-import { removeDepManager } from "../state/act/actDepartment";
+import { removeCategoryHead } from "../state/act/actCategory";
 
-const RemoveManagerModal = ({
+const RemoveCategoryHeadModal = ({
   isOpen,
   onClose,
-  departmentInfo,
-  managerName,
+  categoryInfo,
+  categoryHeadName,
+  categoryHeadId,
   loading = false,
 }) => {
   const { t, i18n } = useTranslation();
@@ -19,38 +20,45 @@ const RemoveManagerModal = ({
   const [reason, setReason] = useState("");
   const [error, setError] = useState("");
 
+  console.log("categoryInfo", categoryInfo);
+
   const isDark = mymode === "dark";
   const isRTL = i18n.language === "ar";
   const dispatch = useDispatch();
-  const { loadingRemoveManager } = useSelector((state) => state.department);
+  const { loadingRemoveCategoryHead } = useSelector((state) => state.category);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!reason.trim()) {
       setError(
-        t("department.removeManager.reasonRequired") || "Reason is required"
+        t("categoryHead.removeCategoryHead.reasonRequired") ||
+          "Reason is required"
       );
       return;
     }
 
     dispatch(
-      removeDepManager({
+      removeCategoryHead({
         data: {
-          DepartmentId: departmentInfo.id,
+          CategoryId: categoryInfo.id,
           Reason: reason.trim(),
-          UserId: departmentInfo.userId,
+          UserId: categoryHeadId,
         },
       })
     )
       .unwrap()
       .then(() => {
         toast.success(
-          t("department.removeManager.success", {
-            managerName,
-            departmentName: departmentInfo.name,
+          t("categoryHead.removeCategoryHead.success", {
+            categoryHeadName,
+            categoryName: isRTL
+              ? categoryInfo.nameArabic
+              : categoryInfo.nameEnglish,
           }) ||
-            `Manager ${managerName} removed from ${departmentInfo.name} successfully`,
+            `Category Head ${categoryHeadName} removed from ${
+              isRTL ? categoryInfo.nameArabic : categoryInfo.nameEnglish
+            } successfully`,
           {
             position: "top-right",
             autoClose: 3000,
@@ -61,21 +69,23 @@ const RemoveManagerModal = ({
           }
         );
         handleClose();
-        // Optionally refresh the department data or navigate
-        // Simple refresh, you might want to dispatch getDepartmentById instead
+        // Optionally refresh the category data or navigate
+        // Simple refresh, you might want to dispatch getCategoryHeads instead
       })
       .catch((error) => {
         handleClose();
-        console.log("Error removing manager:", error);
+        console.log("Error removing category head:", error);
 
         // Choose the right language message
         const message =
           i18next.language === "en"
-            ? error?.messageEn || error?.message || "Failed to remove manager"
-            : error?.messageAr || error?.message || "فشل في إزالة المدير";
+            ? error?.messageEn ||
+              error?.message ||
+              "Failed to remove category head"
+            : error?.messageAr || error?.message || "فشل في إزالة رئيس الفئة";
 
         Swal.fire({
-          title: t("department.removeManager.error.title") || "Error",
+          title: t("categoryHead.removeCategoryHead.error.title") || "Error",
           text: message,
           icon: "error",
           confirmButtonText: t("common.ok") || "OK",
@@ -122,12 +132,13 @@ const RemoveManagerModal = ({
                 isDark ? "text-white" : "text-gray-900"
               }`}
             >
-              {t("department.removeManager.title") || "Remove Manager"}
+              {t("categoryHead.removeCategoryHead.title") ||
+                "Remove Category Head"}
             </h3>
           </div>
           <button
             onClick={handleClose}
-            disabled={loadingRemoveManager}
+            disabled={loadingRemoveCategoryHead}
             className={`p-1 rounded-lg transition-colors ${
               isDark
                 ? "hover:bg-gray-700 text-gray-400 hover:text-white"
@@ -146,11 +157,11 @@ const RemoveManagerModal = ({
                 isDark ? "text-gray-300" : "text-gray-600"
               }`}
             >
-              {t("department.removeManager.confirmMessage") ||
-                "Are you sure you want to remove this manager from the department? This action cannot be undone."}
+              {t("categoryHead.removeCategoryHead.confirmMessage") ||
+                "Are you sure you want to remove this category head? This action cannot be undone."}
             </p>
 
-            {/* Department Info */}
+            {/* Category Info */}
             <div
               className={`p-4 rounded-lg border mb-4 ${
                 isDark
@@ -158,14 +169,14 @@ const RemoveManagerModal = ({
                   : "bg-gray-50 border-gray-200"
               }`}
             >
-              {/* Department Name */}
+              {/* Category Name */}
               <div className="flex items-center gap-3 mb-3">
                 <div
                   className={`p-1.5 rounded-full ${
                     isDark ? "bg-blue-900/30" : "bg-blue-100"
                   }`}
                 >
-                  <Building2 className="w-4 h-4 text-blue-600" />
+                  <Tag className="w-4 h-4 text-blue-600" />
                 </div>
                 <div>
                   <p
@@ -173,19 +184,22 @@ const RemoveManagerModal = ({
                       isDark ? "text-gray-400" : "text-gray-500"
                     }`}
                   >
-                    {t("department.removeManager.department") || "Department"}
+                    {t("categoryHead.removeCategoryHead.category") ||
+                      "Category"}
                   </p>
                   <p
                     className={`font-semibold text-sm ${
                       isDark ? "text-white" : "text-gray-900"
                     }`}
                   >
-                    {departmentInfo?.name || "N/A"}
+                    {isRTL
+                      ? categoryInfo?.nameArabic
+                      : categoryInfo?.nameEnglish || "N/A"}
                   </p>
                 </div>
               </div>
 
-              {/* Manager Name */}
+              {/* Category Head Name */}
               <div className="flex items-center gap-3">
                 <div
                   className={`p-1.5 rounded-full ${
@@ -200,14 +214,15 @@ const RemoveManagerModal = ({
                       isDark ? "text-gray-400" : "text-gray-500"
                     }`}
                   >
-                    {t("department.removeManager.manager") || "Current Manager"}
+                    {t("categoryHead.removeCategoryHead.categoryHead") ||
+                      "Current Category Head"}
                   </p>
                   <p
                     className={`font-semibold text-sm ${
                       isDark ? "text-white" : "text-gray-900"
                     }`}
                   >
-                    {managerName || "N/A"}
+                    {categoryHeadName || "N/A"}
                   </p>
                 </div>
               </div>
@@ -225,10 +240,11 @@ const RemoveManagerModal = ({
                 }`}
               >
                 <strong>
-                  {t("department.removeManager.warning.title") || "Warning:"}
+                  {t("categoryHead.removeCategoryHead.warning.title") ||
+                    "Warning:"}
                 </strong>{" "}
-                {t("department.removeManager.warning.message") ||
-                  "Removing the manager will revoke all their department-specific permissions and access."}
+                {t("categoryHead.removeCategoryHead.warning.message") ||
+                  "Removing the category head will revoke all their category-specific permissions and access."}
               </p>
             </div>
           </div>
@@ -240,7 +256,8 @@ const RemoveManagerModal = ({
                 isDark ? "text-gray-300" : "text-gray-700"
               }`}
             >
-              {t("department.removeManager.reason") || "Reason for removal"}{" "}
+              {t("categoryHead.removeCategoryHead.reason") ||
+                "Reason for removal"}{" "}
               <span className="text-red-500">*</span>
             </label>
             <textarea
@@ -250,11 +267,11 @@ const RemoveManagerModal = ({
                 if (error) setError("");
               }}
               placeholder={
-                t("department.removeManager.reasonPlaceholder") ||
-                "Please provide a reason for removing this manager..."
+                t("categoryHead.removeCategoryHead.reasonPlaceholder") ||
+                "Please provide a reason for removing this category head..."
               }
               rows={3}
-              disabled={loadingRemoveManager}
+              disabled={loadingRemoveCategoryHead}
               dir={isRTL ? "rtl" : "ltr"}
               className={`w-full p-3 border rounded-lg resize-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors ${
                 isDark
@@ -281,7 +298,7 @@ const RemoveManagerModal = ({
             <button
               type="button"
               onClick={handleClose}
-              disabled={loadingRemoveManager}
+              disabled={loadingRemoveCategoryHead}
               className={`px-4 py-2 rounded-lg border transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                 isDark
                   ? "border-gray-600 text-gray-300 hover:bg-gray-700"
@@ -292,13 +309,14 @@ const RemoveManagerModal = ({
             </button>
             <button
               type="submit"
-              disabled={loadingRemoveManager || !reason.trim()}
+              disabled={loadingRemoveCategoryHead || !reason.trim()}
               className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
-              {loadingRemoveManager && (
+              {loadingRemoveCategoryHead && (
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
               )}
-              {t("department.removeManager.confirm") || "Remove Manager"}
+              {t("categoryHead.removeCategoryHead.confirm") ||
+                "Remove Category Head"}
             </button>
           </div>
         </form>
@@ -307,4 +325,4 @@ const RemoveManagerModal = ({
   );
 };
 
-export default RemoveManagerModal;
+export default RemoveCategoryHeadModal;

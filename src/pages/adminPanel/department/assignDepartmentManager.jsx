@@ -5,14 +5,18 @@ import * as Yup from "yup";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
-import { assignManager } from "../../../state/act/actDepartment";
-import { useNavigate, useParams } from "react-router-dom";
+import { assignDepManager } from "../../../state/act/actDepartment";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { getUserSummaries } from "../../../state/slices/user";
 import { getDepartmentById } from "../../../state/act/actDepartment";
 import LoadingGetData from "../../../components/LoadingGetData";
 import { Search, User, ArrowLeft, Building } from "lucide-react";
 import UseFormValidation from "../../../hooks/use-form-validation";
 import UseInitialValues from "../../../hooks/use-initial-values";
+import {
+  assignCategoryHead,
+  getCategoryById,
+} from "../../../state/act/actCategory";
 
 function AssignDepartmentManager() {
   const { t, i18n } = useTranslation();
@@ -22,6 +26,9 @@ function AssignDepartmentManager() {
   const dropdownRef = useRef(null);
   const currentLang = i18n.language;
   const isRTL = currentLang === "ar";
+
+  const [searchParams] = useSearchParams();
+  const type = searchParams.get("type");
 
   // State for user search and selection
   const [userSearchTerm, setUserSearchTerm] = useState("");
@@ -40,6 +47,14 @@ function AssignDepartmentManager() {
   } = useSelector((state) => state.department);
 
   const {
+    loadingAssignCategoryHead,
+    selectedCategory,
+    loadingGetSingleCategory,
+  } = useSelector((state) => state.category);
+
+  console.log("selectedCategory", selectedCategory);
+
+  const {
     users,
     loading: usersLoading,
     error: usersError,
@@ -53,9 +68,21 @@ function AssignDepartmentManager() {
   // Load initial data
   useEffect(() => {
     if (id) {
-      dispatch(getDepartmentById(id));
+      if (type == "department") {
+        dispatch(getDepartmentById(id));
+      } else {
+        dispatch(getCategoryById({ categoryId: id }));
+      }
     }
-    dispatch(getUserSummaries({ page: 1, pageSize: 50 }));
+    dispatch(
+      getUserSummaries({
+        // page: 1,
+        // pageSize: 50,
+        isActive: true,
+        isApproved: true,
+        isEmailVerified: true,
+      })
+    );
   }, [dispatch, id]);
 
   // Handle user search with debouncing
@@ -99,7 +126,7 @@ function AssignDepartmentManager() {
 
     if (!value) {
       setSelectedUser(null);
-      setFieldValue("userId", "");
+      setFieldValue("UserId", "");
     }
   };
 
@@ -107,7 +134,7 @@ function AssignDepartmentManager() {
   const handleUserSelect = (user, setFieldValue) => {
     setSelectedUser(user);
     setUserSearchTerm(`${user.nameEnglish} (${user.mobile})`);
-    setFieldValue("userId", user.id);
+    setFieldValue("UserId", user.id);
     setShowUserDropdown(false);
   };
 
@@ -115,63 +142,101 @@ function AssignDepartmentManager() {
   const filteredUsers =
     users?.filter((user) => {
       if (!userSearchTerm) return true;
-      const searchLower = userSearchTerm.toLowerCase();
+      const searchLower = userSearchTerm?.toLowerCase();
       return (
-        user.nameEnglish.toLowerCase().includes(searchLower) ||
+        user.nameEnglish?.toLowerCase().includes(searchLower) ||
         user.nameArabic?.includes(userSearchTerm) ||
         user.mobile.includes(userSearchTerm) ||
-        user.role.toLowerCase().includes(searchLower)
+        user.role?.toLowerCase().includes(searchLower)
       );
     }) || [];
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    const submissionData = {
-      ...values,
-      startDate: new Date(values.startDate).toISOString(),
-    };
-
-    dispatch(assignManager({ id, data: submissionData }))
-      .unwrap()
-      .then(() => {
-        resetForm();
-        setSelectedUser(null);
-        setUserSearchTerm("");
-        toast.success(
-          t("departmentForm.success.managerAssigned") ||
-            "Manager assigned successfully",
-          {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          }
-        );
-        navigate("/admin-panel/departments");
-      })
-      .catch((error) => {
-        console.error("Manager assignment error:", error);
-        Swal.fire({
-          title: t("departmentForm.error.title") || "Error",
-          text:
-            currentLang === "en"
-              ? error?.errors[0] || error?.messageEn
-              : error?.errors[0] || error?.messageAr,
-          icon: "error",
-          confirmButtonText: t("common.ok") || "OK",
-          confirmButtonColor: "#ef4444",
-          background: isDark ? "#2d2d2d" : "#ffffff",
-          color: isDark ? "#f0f0f0" : "#111827",
+    if (type == "department") {
+      dispatch(assignDepManager({ data: { ...values, DepartmentId: id } }))
+        .unwrap()
+        .then(() => {
+          resetForm();
+          setSelectedUser(null);
+          setUserSearchTerm("");
+          toast.success(
+            t("departmentForm.success.managerAssigned") ||
+              "Manager assigned successfully",
+            {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+            }
+          );
+          navigate(`/admin-panel/department/${id}`);
+        })
+        .catch((error) => {
+          console.error("Manager assignment error:", error);
+          Swal.fire({
+            title: t("departmentForm.error.title") || "Error",
+            text:
+              currentLang === "en"
+                ? error?.errors[0] || error?.messageEn
+                : error?.errors[0] || error?.messageAr,
+            icon: "error",
+            confirmButtonText: t("common.ok") || "OK",
+            confirmButtonColor: "#ef4444",
+            background: isDark ? "#2d2d2d" : "#ffffff",
+            color: isDark ? "#f0f0f0" : "#111827",
+          });
+        })
+        .finally(() => {
+          setSubmitting(false);
         });
-      })
-      .finally(() => {
-        setSubmitting(false);
-      });
+    } else {
+      dispatch(assignCategoryHead({ data: { ...values, CategoryId: id } }))
+        .unwrap()
+        .then(() => {
+          resetForm();
+          setSelectedUser(null);
+          setUserSearchTerm("");
+          toast.success(
+            t("categoryForm.success.managerAssigned") ||
+              "Manager assigned successfully",
+            {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+            }
+          );
+          navigate(`/admin-panel/category/${id}`);
+        })
+        .catch((error) => {
+          console.error("Manager assignment error:", error);
+          Swal.fire({
+            title: t("categoryForm.error.assignManager") || "Error",
+            text:
+              currentLang === "en"
+                ? error?.errors[0] || error?.messageEn
+                : error?.errors[0] || error?.messageAr,
+            icon: "error",
+            confirmButtonText: t("common.ok") || "OK",
+            confirmButtonColor: "#ef4444",
+            background: isDark ? "#2d2d2d" : "#ffffff",
+            color: isDark ? "#f0f0f0" : "#111827",
+          });
+        })
+        .finally(() => {
+          setSubmitting(false);
+        });
+    }
   };
 
   if (loadingGetDepartmentById)
     return <LoadingGetData text={t("gettingData.departmentData")} />;
+  if (loadingGetSingleCategory)
+    return <LoadingGetData text={t("gettingData.categoryData")} />;
 
   return (
     <div
@@ -204,46 +269,51 @@ function AssignDepartmentManager() {
             </div>
 
             {/* Department Info */}
-            {selectedDepartment && (
-              <div
-                className={`p-4 rounded-lg border ${
-                  isDark
-                    ? "bg-gray-800 border-gray-700"
-                    : "bg-blue-50 border-blue-200"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`p-2 rounded-lg ${
-                      isDark ? "bg-gray-700" : "bg-blue-100"
+
+            <div
+              className={`p-4 rounded-lg border ${
+                isDark
+                  ? "bg-gray-800 border-gray-700"
+                  : "bg-blue-50 border-blue-200"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div
+                  className={`p-2 rounded-lg ${
+                    isDark ? "bg-gray-700" : "bg-blue-100"
+                  }`}
+                >
+                  <Building
+                    size={20}
+                    className={isDark ? "text-gray-300" : "text-blue-600"}
+                  />
+                </div>
+                <div>
+                  <h3
+                    className={`font-semibold ${
+                      isDark ? "text-white" : "text-gray-900"
                     }`}
                   >
-                    <Building
-                      size={20}
-                      className={isDark ? "text-gray-300" : "text-blue-600"}
-                    />
-                  </div>
-                  <div>
-                    <h3
-                      className={`font-semibold ${
-                        isDark ? "text-white" : "text-gray-900"
-                      }`}
-                    >
-                      {currentLang === "ar"
+                    {type == "department"
+                      ? currentLang === "ar"
                         ? selectedDepartment.nameArabic
-                        : selectedDepartment.nameEnglish}
-                    </h3>
-                    <p
-                      className={`text-sm ${
-                        isDark ? "text-gray-400" : "text-gray-600"
-                      }`}
-                    >
-                      {selectedDepartment.code} • {selectedDepartment.location}
-                    </p>
-                  </div>
+                        : selectedDepartment.nameEnglish
+                      : currentLang === "ar"
+                      ? selectedCategory.nameArabic
+                      : selectedCategory.nameEnglish}
+                  </h3>
+                  <p
+                    className={`text-sm ${
+                      isDark ? "text-gray-400" : "text-gray-600"
+                    }`}
+                  >
+                    {type == "department"
+                      ? `${selectedDepartment.code} • ${selectedDepartment.location}`
+                      : selectedCategory.code}
+                  </p>
                 </div>
               </div>
-            )}
+            </div>
           </div>
 
           {/* Form */}
@@ -283,8 +353,9 @@ function AssignDepartmentManager() {
                             isDark ? "text-gray-300" : "text-gray-700"
                           }`}
                         >
-                          {t("departmentForm.fields.departmentHead") ||
-                            "Select Manager"}{" "}
+                          {type == "department"
+                            ? t("departmentForm.fields.departmentHead")
+                            : t("departmentForm.fields.categoryHead")}
                           <span className="text-red-500">*</span>
                         </label>
                         <div className="relative" ref={dropdownRef}>
@@ -307,7 +378,7 @@ function AssignDepartmentManager() {
                                   ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
                                   : "bg-white border-gray-300 text-gray-900 placeholder-gray-400"
                               } ${
-                                errors.userId && touched.userId
+                                errors.UserId && touched.UserId
                                   ? "border-red-500 bg-red-50 dark:bg-red-900/20"
                                   : ""
                               }`}
@@ -357,7 +428,7 @@ function AssignDepartmentManager() {
                           </div>
 
                           <ErrorMessage
-                            name="userId"
+                            name="UserId"
                             component="div"
                             className="mt-1 text-sm text-red-600"
                           />
@@ -478,7 +549,7 @@ function AssignDepartmentManager() {
                       </div>
 
                       {/* Start Date */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                           <label
                             htmlFor="startDate"
@@ -510,11 +581,11 @@ function AssignDepartmentManager() {
                             className="mt-1 text-sm text-red-600"
                           />
                         </div>
-                      </div>
+                      </div> */}
                     </div>
 
                     {/* Permissions Section */}
-                    <div className="space-y-4">
+                    {/* <div className="space-y-4">
                       <h3
                         className={`text-lg font-semibold border-b pb-2 ${
                           isDark
@@ -638,7 +709,7 @@ function AssignDepartmentManager() {
                           </label>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
 
                     {/* Notes Section */}
                     <div>
@@ -704,14 +775,22 @@ function AssignDepartmentManager() {
                       </button>
                       <button
                         type="submit"
-                        disabled={isSubmitting || loadingAssignManager}
+                        disabled={
+                          isSubmitting ||
+                          loadingAssignManager ||
+                          loadingAssignCategoryHead
+                        }
                         className={`px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer transition-colors ${
-                          isSubmitting || loadingAssignManager
+                          isSubmitting ||
+                          loadingAssignManager ||
+                          loadingAssignCategoryHead
                             ? "bg-gray-400 cursor-not-allowed"
                             : "bg-blue-600 hover:bg-blue-700"
                         }`}
                       >
-                        {isSubmitting || loadingAssignManager ? (
+                        {isSubmitting ||
+                        loadingAssignManager ||
+                        loadingAssignCategoryHead ? (
                           <div className="flex items-center">
                             <svg
                               className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"

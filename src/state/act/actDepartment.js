@@ -174,14 +174,15 @@ export const updateManagerPermission = createAsyncThunk(
     }
   }
 );
-export const removeManager = createAsyncThunk(
-  "departmentSlice/removeManager",
-  async ({ id, reason }, thunkAPI) => {
+export const removeDepManager = createAsyncThunk(
+  "departmentSlice/removeDepManager",
+  async ({ data }, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
 
     try {
-      const res = await axiosInstance.delete(
-        `api/v1/Department/${id}/manager?reason=${reason}`,
+      const res = await axiosInstance.post(
+        `api/v1/role/department-manager/remove`,
+        data,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -197,14 +198,14 @@ export const removeManager = createAsyncThunk(
     }
   }
 );
-export const assignManager = createAsyncThunk(
-  "departmentSlice/assignManager",
-  async ({ id, data }, thunkAPI) => {
+export const assignDepManager = createAsyncThunk(
+  "departmentSlice/assignDepManager",
+  async ({ data }, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
 
     try {
       const res = await axiosInstance.post(
-        `api/v1/Department/${id}/manager`,
+        `api/v1/role/department-manager/assign`,
         data,
         {
           headers: {

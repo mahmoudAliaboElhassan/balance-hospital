@@ -56,15 +56,15 @@ function SpecificDepartment() {
   }, [dispatch, id]);
 
   // Fetch sub-departments for this specific department
-  useEffect(() => {
-    if (selectedDepartment?.id) {
-      dispatch(
-        getSubDepartments({
-          departmentId: selectedDepartment.id,
-        })
-      );
-    }
-  }, [dispatch, selectedDepartment?.id]);
+  // useEffect(() => {
+  //   if (selectedDepartment?.id) {
+  //     dispatch(
+  //       getSubDepartments({
+  //         departmentId: selectedDepartment.id,
+  //       })
+  //     );
+  //   }
+  // }, [dispatch, selectedDepartment?.id]);
 
   // Handle error cases
   useEffect(() => {
@@ -113,7 +113,7 @@ function SpecificDepartment() {
 
   // Manager action handlers
   const handleAssignManager = () => {
-    navigate(`/admin-panel/department/assign-manager/${id}`);
+    navigate(`/admin-panel/department/assign-manager/${id}?type=department`);
   };
 
   const handleEditManagerPermissions = () => {
@@ -877,7 +877,7 @@ function SpecificDepartment() {
                       isRTL ? "justify-start" : "justify-end"
                     }`}
                   >
-                    <button
+                    {/* <button
                       onClick={handleEditManagerPermissions}
                       className="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
                       title={
@@ -891,7 +891,7 @@ function SpecificDepartment() {
                       />
                       {t("department.manager.actions.editPermissions") ||
                         "Edit Permissions"}
-                    </button>
+                    </button> */}
 
                     <button
                       onClick={handleRemoveManager}
@@ -1551,6 +1551,7 @@ function SpecificDepartment() {
         departmentInfo={{
           id: selectedDepartment?.id,
           name: getDepartmentName(),
+          userId: selectedDepartment?.manager?.userId,
         }}
         managerName={getManagerName()}
       />

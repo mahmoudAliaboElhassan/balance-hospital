@@ -42,19 +42,31 @@ function UseInitialStates() {
     error: null,
     message: "",
     timestamp: null,
-
+    categoryHead: {},
     // Category Types (Public)
     categoryTypes: [],
+    categoryHeads: [],
+    categoryHeadsPagination: {
+      totalCount: 0,
+      pageNumber: 1,
+      pageSize: 10,
+      totalPages: 0,
+      hasNextPage: false,
+      hasPreviousPage: false,
+    },
     loadingGetCategoryTypes: false,
     categoryTypesError: null,
 
     // Loading states for categories
+    loadingGetCategoryHeads: false,
     loadingGetCategories: false,
     loadingCreateCategory: false,
     loadingGetSingleCategory: false,
     loadingUpdateCategory: false,
     loadingDeleteCategory: false,
     loadingRejectRequest: false,
+    loadingRemoveCategoryHead: false,
+    loadingAssignCategoryHead: false,
 
     // Create category states
     createSuccess: false,

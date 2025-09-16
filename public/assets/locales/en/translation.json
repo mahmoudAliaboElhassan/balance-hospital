@@ -221,10 +221,12 @@
     },
     "success": {
       "created": "Category created successfully!",
-      "updated": "Category updated successfully!"
+      "updated": "Category updated successfully!",
+      "managerAssigned": "Category Manager assigned successfully"
     },
     "error": {
       "title": "Error Creating Category",
+      "assignManager": "Error in Assigning Manager",
       "message": "An error occurred while creating the category. Please try again."
     },
     "editTitle": "Edit Category",
@@ -409,6 +411,7 @@
 
     "sections": {
       "manager": "Assign Department Manager",
+
       "basicInfo": "Basic Information",
       "permissions": "Permissions",
       "managerSelection": "Manager Selection"
@@ -421,6 +424,8 @@
       "location": "Location",
       "description": "Description",
       "departmentHead": "Department Manager *",
+      "categoryHead": "Category Manager *",
+
       "startDate": "Start Date *",
       "canViewDepartment": "Can view department",
       "canEditDepartment": "Can edit department",
@@ -457,7 +462,7 @@
       "created": "Department created successfully!",
       "updated": "Department updated successfully!",
       "deleted": "Department deleted successfully!",
-      "managerAssigned": "Manager assigned successfully"
+      "managerAssigned": "Department Manager assigned successfully"
     },
     "error": {
       "title": "Error",
@@ -895,6 +900,9 @@
     "clear": "Clear",
     "loading": "Loading...",
     "noData": "No data available",
+    "active": "Active",
+    "inactive": "Inactive",
+
     "error": "Error",
     "success": "Success",
     "warning": "Warning",
@@ -1351,6 +1359,15 @@
       "users": "Search users..."
     },
 
+    "userHistory": {
+      "title": "User Assignment History",
+      "subtitle": "Role assignment and change history for user",
+      "entries": "History Entries",
+      "timeline": "Role Assignment Timeline",
+      "noHistory": "No Assignment History",
+      "noHistoryDescription": "This user has no role assignment history yet."
+    },
+
     "filters": {
       "title": "Filters",
       "status": "Status",
@@ -1409,9 +1426,12 @@
       "status": "Status",
       "users": "Users",
       "mobile": "Mobile",
+      "email": "Email",
       "category": "Primary Category",
+      "lastLogin": "Last Login",
       "role": "Role",
       "createdAt": "Created At",
+      "isContextual": "IsContextual",
       "updatedAt": "Updated At",
       "createdBy": "Created By",
       "updatedBy": "Updated By",
@@ -1493,7 +1513,7 @@
 
     "history": {
       "reason": "Reason",
-      "by": "by",
+      "by": "by ",
       "notes": "Notes",
       "noHistory": "No Assignment History",
       "noHistoryDescription": "This role has not been assigned to any users yet.",
@@ -1686,6 +1706,7 @@
     "categoryData": "Loading category data…",
     "departments": "Loading departments…",
     "departmentData": "Loading department data…",
+    "categoryHeads": "Loading category heads...",
     "subDepartments": "Loading sub-departments…",
     "subDepartmentData": "Loading sub-department data…",
     "shiftHours": "Loading shift hours…",
@@ -1701,7 +1722,8 @@
     "workingHours": "Loading working hours...",
     "workingHour": "Loading working hour Data...",
     "availableDoctors": "Loading available doctors...",
-    "doctorSchedule": "Loading doctor schedule..."
+    "doctorSchedule": "Loading doctor schedule...",
+    "userHistory": "Loading user history...s"
   },
 
   "error": {
@@ -1806,6 +1828,9 @@
       "hideConflicts": "Hide conflicts",
       "showConflicts": "Show conflicts",
       "priorityScore": "Priority score",
+
+      "at": "Assigned At",
+      "by": "Assign By",
 
       "unassignTitle": "Unassign Doctor",
       "confirmMessage": "Are you sure you want to unassign this doctor from the shift?",
@@ -2142,6 +2167,8 @@
       "allCategories": "All Categories",
       "status": "Status",
       "title": "Filters",
+      "inactiveOnly": "InActive Only",
+      "activeOnly": "Active Only",
       "all": "All",
       "allYears": "All Years",
       "orderBy": "Sort By",
@@ -2153,6 +2180,7 @@
         "createdAt": "Creation Date",
         "nameArabic": "Arabic Name",
         "nameEnglish": "English Name",
+        "mobile": "Mobile",
         "code": "Code",
         "title": "Title",
         "year": "Year",
@@ -2409,6 +2437,33 @@
       "insufficientPermissions": "Insufficient permissions.",
       "linkDepartmentFailed": "Failed to link department",
       "unlinkDepartmentFailed": "Failed to unlink the department. Please try again."
+    }
+  },
+
+  "categoryHead": {
+    "title": "Category Heads",
+    "noCategoryHead": "No Category Head Assigned",
+    "noCategoryHeadDescription": "This category doesn't have a head assigned yet.",
+    "justAssigned": "Just assigned",
+    "oneDay": "1 day",
+    "days": "days",
+    "removeCategoryHead": {
+      "title": "Remove Category Head",
+      "confirmMessage": "Are you sure you want to remove this category head? This action cannot be undone.",
+      "category": "Category",
+      "categoryHead": "Current Category Head",
+      "warning": {
+        "title": "Warning:",
+        "message": "Removing the category head will revoke all their category-specific permissions and access."
+      },
+      "reason": "Reason for removal",
+      "reasonPlaceholder": "Please provide a reason for removing this category head...",
+      "reasonRequired": "Reason is required",
+      "confirm": "Remove Category Head",
+      "success": "Category Head {{categoryHeadName}} removed from {{categoryName}} successfully",
+      "error": {
+        "title": "Error"
+      }
     }
   }
 }

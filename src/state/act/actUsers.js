@@ -11,11 +11,13 @@ export const getUserSummaries = createAsyncThunk(
       //   const { page = 1, pageSize = 10, searchTerm = "" } = params;
 
       const res = await axiosInstance.get("/api/v1/Users/summaries", {
-        // params: {
-        //   page,
-        //   pageSize,
-        //   searchTerm,
-        // },
+        params: {
+          isEmailVerified: true,
+          isApproved: true,
+          // page,
+          // pageSize,
+          // searchTerm,
+        },
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

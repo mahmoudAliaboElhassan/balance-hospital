@@ -9,7 +9,10 @@ import {
   getCategoryTypes,
   getCategoryPendingRequests,
   approveDoctorRequest,
-  rejectDoctorRequest, // Add the new action import
+  rejectDoctorRequest,
+  getCategoryHeads,
+  assignCategoryHead,
+  removeCategoryHead, // Add the new action import
 } from "../act/actCategory";
 import i18next from "i18next";
 import "../../translation/i18n";
@@ -586,6 +589,56 @@ export const categorySlice = createSlice({
       })
       .addCase(rejectDoctorRequest.rejected, (state, action) => {
         state.loadingRejectRequest = false;
+      })
+
+      .addCase(getCategoryHeads.pending, (state, action) => {
+        state.loadingGetCategoryHeads = true;
+        state.error = "";
+      })
+      .addCase(getCategoryHeads.fulfilled, (state, action) => {
+        state.loadingGetCategoryHeads = false;
+
+        state.categoryHeads = action.payload.data?.items || [];
+        state.categoryHeadsPagination = {
+          totalCount: action.payload.data?.totalCount || 0,
+          pageNumber: action.payload.data?.page || 1,
+          pageSize: action.payload.data?.pageSize || 10,
+          totalPages: action.payload.data?.totalPages || 0,
+          hasNextPage: action.payload.data?.hasNext || false,
+          hasPreviousPage: action.payload.data?.hasPrevious || false,
+          startIndex: action.payload.data?.startIndex || 0,
+          endIndex: action.payload.data?.endIndex || 0,
+        };
+
+        console.log("Category heads loaded:", state.categoryHeads);
+      })
+      .addCase(getCategoryHeads.rejected, (state, action) => {
+        state.loadingGetCategoryHeads = false;
+        state.error = action.error.message || "Failed to fetch category heads";
+      })
+      .addCase(assignCategoryHead.pending, (state, action) => {
+        state.loadingAssignCategoryHead = true;
+      })
+      .addCase(assignCategoryHead.fulfilled, (state, action) => {
+        state.loadingAssignCategoryHead = false;
+      })
+      .addCase(assignCategoryHead.rejected, (state, action) => {
+        state.loadingAssignCategoryHead = false;
+      })
+      .addCase(removeCategoryHead.pending, (state, action) => {
+        state.loadingRemoveCategoryHead = true;
+      })
+      .addCase(removeCategoryHead.fulfilled, (state, action) => {
+        state.loadingRemoveCategoryHead = false;
+        const catIHeadId = action.payload.catHeadId;
+        console.log("action.payload", action.payload);
+        console.log("state.categoryHeads", state.categoryHeads);
+        state.categoryHeads = state.categoryHeads.filter(
+          (catHead) => catHead.categoryId !== catIHeadId
+        );
+      })
+      .addCase(removeCategoryHead.rejected, (state, action) => {
+        state.loadingRemoveCategoryHead = false;
       });
   },
 });

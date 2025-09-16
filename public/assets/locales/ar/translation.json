@@ -223,10 +223,12 @@
     },
     "success": {
       "created": "تم إنشاء التخصص بنجاح!",
-      "updated": "تم تحديث التخصص بنجاح!"
+      "updated": "تم تحديث التخصص بنجاح!",
+      "managerAssigned": "تم تعيين مدير التخصص بنجاح"
     },
     "error": {
       "title": "خطأ في الإنشاء",
+      "assignManager": "خطأ في تعيين مدير التخصص",
       "message": "حدث خطأ أثناء إنشاء التخصص، يرجى المحاولة مرة أخرى."
     },
     "editTitle": "تعديل التخصص",
@@ -420,6 +422,8 @@
       "location": "الموقع",
       "description": "الوصف",
       "departmentHead": "مدير المكان *",
+      "categoryHead": "مدير التخصص *",
+
       "startDate": "تاريخ البدء *",
       "canViewDepartment": "يمكنه عرض المكان",
       "canEditDepartment": "يمكنه تعديل المكان",
@@ -537,7 +541,7 @@
       "all": "كل الأقسام",
       "active": "النشط فقط",
       "inactive": "غير النشط فقط",
-      "category": "تصفية حسب الفئة",
+      "category": "تصفية حسب التخصص",
       "dateRange": "نطاق التاريخ",
       "createdFrom": "إنشئ من",
       "createdTo": "إنشئ إلى",
@@ -548,7 +552,7 @@
       "status": "الحالة",
       "ascending": "تصاعدي",
       "descending": "تنازلي",
-      "allCategories": "كل الفئات",
+      "allCategories": "كل التخصصات",
       "sortBy": {
         "nameEnglish": "الاسم بالإنجليزية",
         "nameArabic": "الاسم بالعربية",
@@ -685,6 +689,8 @@
     "apply": "تطبيق",
     "view": "عرض",
     "date": "التاريخ",
+    "active": "نشط",
+    "inactive": "غير نشط",
     "notes": "ملاحظات",
     "more": "أخرى",
     "search": "بحث",
@@ -1363,6 +1369,14 @@
     "loading-specific": "جاري تحميل بيانات الدور...",
     "deleteSuccess": "تم حذف الدور \"{{name}}\" بنجاح!",
     "fetchError": "فشل في جلب إحصائيات الأدوار",
+    "userHistory": {
+      "title": "سجل تعيين المستخدم",
+      "subtitle": "سجل تعيين وتغيير الأدوار للمستخدم",
+      "entries": "مدخلات السجل",
+      "timeline": "الخط الزمني لتعيين الأدوار",
+      "noHistory": "لا يوجد سجل تعيين",
+      "noHistoryDescription": "هذا المستخدم ليس لديه سجل تعيين أدوار بعد."
+    },
 
     "search": {
       "placeholder": "ابحث عن الأدوار...",
@@ -1428,6 +1442,9 @@
       "users": "المستخدمون",
       "mobile": "الجوال",
       "category": "التخصص الرئيسية",
+      "isContextual": "مزدوج الدور",
+      "email": "البريد الإلكتروني",
+      "lastLogin": "آخر تسجيل دخول",
       "role": "الدور",
       "createdAt": "تاريخ الإنشاء",
       "updatedAt": "تاريخ التحديث",
@@ -1511,7 +1528,7 @@
 
     "history": {
       "reason": "السبب",
-      "by": "بواسطة",
+      "by": " بواسطة ",
       "notes": "ملاحظات",
       "noHistory": "لا يوجد سجل تعيينات",
       "noHistoryDescription": "لم يتم تعيين هذا الدور لأي مستخدمين حتى الآن.",
@@ -1695,6 +1712,7 @@
     "roleData": "جاري تحميل بيانات الدور…",
     "categories": "جاري تحميل التخصصات",
     "categoryData": "جاري تحميل بيانات التخصص",
+    "categoryHeads": "جاري تحميل رؤساء التخصصات...",
     "departments": "جاري تحميل الأماكن…",
     "departmentData": "جاري تحميل بيانات المكان…",
     "subDepartments": "جاري تحميل الأماكن الفرعية…",
@@ -1712,7 +1730,8 @@
     "workingHours": "جارٍ تحميل متطلبات الشيفتات...",
     "workingHour": "جارٍ تحميل بيانات متطلبات الشيفت...",
     "availableDoctors": "جارٍ تحميل الأطباء المتاحين...",
-    "doctorSchedule": "جارٍ تحميل جدول الطبيب..."
+    "doctorSchedule": "جارٍ تحميل جدول الطبيب...",
+    "userHistory": "جارٍ تحميل سجل الطبيب..."
   },
 
   "error": {
@@ -1812,6 +1831,8 @@
       "workload": "عبء العمل",
       "assignments": "تعيينات",
       "hours": "ساعات",
+      "at": "تاريخ التعيين",
+      "by": "تم التعيين بواسطة",
       "hideConflicts": "إخفاء التعارضات",
       "showConflicts": "عرض التعارضات",
       "priorityScore": "درجة الأولوية",
@@ -2153,12 +2174,15 @@
       "orderBy": "فرز حسب",
       "clear": "مسح عوامل التصفية",
       "orderDirection": "اتجاه الفرز",
+      "inactiveOnly": "غير النشط فقط",
+      "activeOnly": "النشط فقط",
       "ascending": "تصاعدي",
       "descending": "تنازلي",
       "sortBy": {
         "createdAt": "تاريخ الإنشاء",
         "nameArabic": "الاسم العربي",
         "nameEnglish": "الاسم الإنجليزي",
+        "mobile": "رقم الهاتف",
         "code": "الرمز",
         "title": "العنوان",
         "year": "السنة",
@@ -2414,6 +2438,33 @@
       "linkDepartmentFailed": "فشل في ربط المكان",
       "accessDenied": "تم رفض الوصول.",
       "insufficientPermissions": "صلاحيات غير كافية."
+    }
+  },
+
+  "categoryHead": {
+    "title": "رؤساء التخصصات",
+    "noCategoryHead": "لا يوجد رئيس تخصص مُعيَّن",
+    "noCategoryHeadDescription": "هذه التخصص ليس لديها رئيس مُعيَّن بعد.",
+    "justAssigned": "تم التعيين للتو",
+    "oneDay": "يوم واحد",
+    "days": "أيام",
+    "removeCategoryHead": {
+      "title": "إزالة رئيس التخصص",
+      "confirmMessage": "هل أنت متأكد أنك تريد إزالة رئيس التخصص هذا؟ هذا الإجراء لا يمكن التراجع عنه.",
+      "category": "التخصص",
+      "categoryHead": "رئيس التخصص الحالي",
+      "warning": {
+        "title": "تحذير:",
+        "message": "إزالة رئيس التخصص ستلغي جميع صلاحياته وحقوق الوصول الخاصة بالفئة."
+      },
+      "reason": "سبب الإزالة",
+      "reasonPlaceholder": "يرجى إدخال سبب إزالة رئيس التخصص...",
+      "reasonRequired": "السبب مطلوب",
+      "confirm": "إزالة رئيس التخصص",
+      "success": "تمت إزالة رئيس التخصص {{categoryHeadName}} من {{categoryName}} بنجاح",
+      "error": {
+        "title": "خطأ"
+      }
     }
   }
 }

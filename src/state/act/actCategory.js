@@ -413,3 +413,86 @@ export const getCategoryPendingRequests = createAsyncThunk(
     }
   }
 );
+
+export const getCategoryHeads = createAsyncThunk(
+  "category/getCategoryHeads",
+  async ({ categoryId }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(
+        `api/v1/role/category-heads?CategoryId=${categoryId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue({
+        message:
+          error.response?.data?.messageAr ||
+          error.response?.data?.messageEn ||
+          "حدث خطأ في جلب أنواع الفئات",
+        errors: error.response?.data?.errors || [],
+        status: error.response?.status,
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
+);
+export const assignCategoryHead = createAsyncThunk(
+  "category/assignCategoryHead",
+  async ({ data }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(
+        `api/v1/Role/category-head/assign`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue({
+        message:
+          error.response?.data?.messageAr ||
+          error.response?.data?.messageEn ||
+          "حدث خطأ في جلب أنواع الفئات",
+        errors: error.response?.data?.errors || [],
+        status: error.response?.status,
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
+);
+export const removeCategoryHead = createAsyncThunk(
+  "category/removeCategoryHead",
+  async ({ data }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(
+        `/api/v1/Role/category-head/remove`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return { ...response.data, catHeadId: data.CategoryId };
+    } catch (error) {
+      return rejectWithValue({
+        message:
+          error.response?.data?.messageAr ||
+          error.response?.data?.messageEn ||
+          "حدث خطأ في جلب أنواع الفئات",
+        errors: error.response?.data?.errors || [],
+        status: error.response?.status,
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
+);
