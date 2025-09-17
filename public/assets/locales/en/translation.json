@@ -2465,5 +2465,11 @@
         "title": "Error"
       }
     }
+  },
+  "user": {
+    "yearsExperience": "years exp",
+    "currentHead": "Current Head",
+    "managerElsewhere": "Manager in Other Category",
+    "inactive": "Inactive"
   }
 }

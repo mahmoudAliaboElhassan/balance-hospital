@@ -17,6 +17,7 @@ import {
   assignCategoryHead,
   getCategoryById,
 } from "../../../state/act/actCategory";
+import { doctorForAssignment } from "../../../state/act/actUsers";
 
 function AssignDepartmentManager() {
   const { t, i18n } = useTranslation();
@@ -74,13 +75,18 @@ function AssignDepartmentManager() {
         dispatch(getCategoryById({ categoryId: id }));
       }
     }
+    // dispatch(
+    //   getUserSummaries({
+    //     // page: 1,
+    //     // pageSize: 50,
+    //     isActive: true,
+    //     isApproved: true,
+    //     isEmailVerified: true,
+    //   })
+    // );
     dispatch(
-      getUserSummaries({
-        // page: 1,
-        // pageSize: 50,
-        isActive: true,
-        isApproved: true,
-        isEmailVerified: true,
+      doctorForAssignment({
+        categoryId: id,
       })
     );
   }, [dispatch, id]);
@@ -134,7 +140,7 @@ function AssignDepartmentManager() {
   const handleUserSelect = (user, setFieldValue) => {
     setSelectedUser(user);
     setUserSearchTerm(`${user.nameEnglish} (${user.mobile})`);
-    setFieldValue("UserId", user.id);
+    setFieldValue("UserId", user.userId);
     setShowUserDropdown(false);
   };
 
@@ -296,11 +302,11 @@ function AssignDepartmentManager() {
                   >
                     {type == "department"
                       ? currentLang === "ar"
-                        ? selectedDepartment.nameArabic
-                        : selectedDepartment.nameEnglish
+                        ? selectedDepartment?.nameArabic
+                        : selectedDepartment?.nameEnglish
                       : currentLang === "ar"
-                      ? selectedCategory.nameArabic
-                      : selectedCategory.nameEnglish}
+                      ? selectedCategory?.nameArabic
+                      : selectedCategory?.nameEnglish}
                   </h3>
                   <p
                     className={`text-sm ${
@@ -308,8 +314,8 @@ function AssignDepartmentManager() {
                     }`}
                   >
                     {type == "department"
-                      ? `${selectedDepartment.code} • ${selectedDepartment.location}`
-                      : selectedCategory.code}
+                      ? `${selectedDepartment?.code} • ${selectedDepartment?.location}`
+                      : selectedCategory?.code}
                   </p>
                 </div>
               </div>
@@ -501,6 +507,7 @@ function AssignDepartmentManager() {
                                         />
                                       </div>
                                       <div>
+                                        {/* Main Name */}
                                         <div
                                           className={`text-sm font-medium ${
                                             isDark
@@ -509,23 +516,86 @@ function AssignDepartmentManager() {
                                           }`}
                                         >
                                           {user.nameEnglish}
+                                          {user.nameArabic && (
+                                            <span
+                                              className={`text-xs font-normal ${
+                                                isDark
+                                                  ? "text-gray-400"
+                                                  : "text-gray-500"
+                                              } ml-2`}
+                                            >
+                                              ({user.nameArabic})
+                                            </span>
+                                          )}
                                         </div>
+
+                                        {/* Contact & Status Info */}
                                         <div
-                                          className={`text-xs mt-1 ${
+                                          className={`text-xs mt-1 space-y-1 ${
                                             isDark
                                               ? "text-gray-400"
                                               : "text-gray-500"
                                           }`}
                                         >
-                                          {user.nameArabic &&
-                                            `${user.nameArabic} • `}
-                                          {user.mobile} • {user.role}
-                                        </div>
-                                        {user.primaryCategoryNameEn && (
-                                          <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-                                            {user.primaryCategoryNameEn}
+                                          <div className="flex items-center gap-2">
+                                            <span>{user.mobile}</span>
+                                            <span>•</span>
+                                            <span>{user.email}</span>
                                           </div>
-                                        )}
+
+                                          {/* Professional Info */}
+                                          <div className="flex items-center gap-2">
+                                            {user.scientificDegree && (
+                                              <>
+                                                <span>
+                                                  {user.scientificDegree}
+                                                </span>
+                                                <span>•</span>
+                                              </>
+                                            )}
+                                            <span>{user.contractingType}</span>
+                                          </div>
+
+                                          {/* Experience & Status */}
+                                          <div className="flex items-center gap-2">
+                                            <span>
+                                              {user.experienceYears}{" "}
+                                              {t("user.yearsExperience") ||
+                                                "years exp"}
+                                            </span>
+
+                                            {/* Status Badges */}
+                                            {user.isCurrentHead && (
+                                              <>
+                                                <span>•</span>
+                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+                                                  {t("user.currentHead") ||
+                                                    "Current Head"}
+                                                </span>
+                                              </>
+                                            )}
+
+                                            {user.isManagerInOtherCategory && (
+                                              <>
+                                                <span>•</span>
+                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
+                                                  {t("user.managerElsewhere") ||
+                                                    "Manager in Other Category"}
+                                                </span>
+                                              </>
+                                            )}
+
+                                            {!user.isActive && (
+                                              <>
+                                                <span>•</span>
+                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">
+                                                  {t("user.inactive") ||
+                                                    "Inactive"}
+                                                </span>
+                                              </>
+                                            )}
+                                          </div>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>

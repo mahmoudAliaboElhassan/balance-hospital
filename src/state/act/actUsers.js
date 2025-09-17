@@ -31,3 +31,35 @@ export const getUserSummaries = createAsyncThunk(
     }
   }
 );
+export const doctorForAssignment = createAsyncThunk(
+  "usersSlice/doctorForAssignment",
+  async ({ categoryId }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+
+    try {
+      //   const { page = 1, pageSize = 10, searchTerm = "" } = params;
+
+      const res = await axiosInstance.get(
+        `/api/v1/role/doctors-for-assignment?CategoryId=${categoryId}`,
+        {
+          params: {
+            isEmailVerified: true,
+            isApproved: true,
+            // page,
+            // pageSize,
+            // searchTerm,
+          },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      console.log("User for assignment fetched successfully:", res);
+      return res.data;
+    } catch (error) {
+      console.log("Error fetching user summaries:", error);
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);

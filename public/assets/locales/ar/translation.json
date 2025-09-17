@@ -2466,5 +2466,11 @@
         "title": "خطأ"
       }
     }
+  },
+  "user": {
+    "yearsExperience": "سنة خبرة",
+    "currentHead": "مدير  حالي",
+    "managerElsewhere": "رئيس في تخصص أخرى",
+    "inactive": "غير نشط"
   }
 }
