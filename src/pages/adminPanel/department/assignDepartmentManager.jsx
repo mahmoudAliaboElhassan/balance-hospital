@@ -71,8 +71,14 @@ function AssignDepartmentManager() {
     if (id) {
       if (type == "department") {
         dispatch(getDepartmentById(id));
+        dispatch(doctorForAssignment({}));
       } else {
         dispatch(getCategoryById({ categoryId: id }));
+        dispatch(
+          doctorForAssignment({
+            categoryId: id,
+          })
+        );
       }
     }
     // dispatch(
@@ -84,26 +90,17 @@ function AssignDepartmentManager() {
     //     isEmailVerified: true,
     //   })
     // );
-    dispatch(
-      doctorForAssignment({
-        categoryId: id,
-      })
-    );
   }, [dispatch, id]);
 
   // Handle user search with debouncing
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      if (userSearchTerm.length >= 2) {
+      if (type === "department") {
+        dispatch(doctorForAssignment({ search: userSearchTerm }));
+      } else {
         dispatch(
-          getUserSummaries({
-            page: 1,
-            pageSize: 50,
-            searchTerm: userSearchTerm,
-          })
+          doctorForAssignment({ search: userSearchTerm, categoryId: id })
         );
-      } else if (userSearchTerm.length === 0) {
-        dispatch(getUserSummaries({ page: 1, pageSize: 50 }));
       }
     }, 300);
 

@@ -33,22 +33,20 @@ export const getUserSummaries = createAsyncThunk(
 );
 export const doctorForAssignment = createAsyncThunk(
   "usersSlice/doctorForAssignment",
-  async ({ categoryId }, thunkAPI) => {
+  async (params = {}, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
 
     try {
-      //   const { page = 1, pageSize = 10, searchTerm = "" } = params;
+      const queryParams = new URLSearchParams();
 
+      if (params.search) queryParams.append("Search", params.search);
+      if (params.categoryId !== undefined)
+        queryParams.append("CategoryId", params.categoryId);
       const res = await axiosInstance.get(
-        `/api/v1/role/doctors-for-assignment?CategoryId=${categoryId}`,
+        `/api/v1/role/doctors-for-assignment${
+          queryParams.toString() ? `?${queryParams.toString()}` : ""
+        }`,
         {
-          params: {
-            isEmailVerified: true,
-            isApproved: true,
-            // page,
-            // pageSize,
-            // searchTerm,
-          },
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

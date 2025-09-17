@@ -425,7 +425,7 @@ export default function ManagementRoles() {
                                   t("managementRoles.actions.view") || "View"
                                 }
                               >
-                                <Eye size={16} />
+                                <Eye className="w-6 h-6" />
                               </button>
                             </Link>
                           </div>
@@ -565,7 +565,10 @@ export default function ManagementRoles() {
                             <Link
                               to={`/admin-panel/management-roles/role/${role.value}`}
                             >
-                              <button className="p-1 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded transition-colors cursor-pointer">
+                              <button
+                                tton
+                                className="p-1 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded transition-colors cursor-pointer"
+                              >
                                 <Eye size={14} />
                               </button>
                             </Link>
