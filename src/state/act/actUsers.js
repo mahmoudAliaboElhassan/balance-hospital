@@ -38,7 +38,7 @@ export const doctorForAssignment = createAsyncThunk(
 
     try {
       const queryParams = new URLSearchParams();
-
+      queryParams.append("IsActive", true);
       if (params.search) queryParams.append("Search", params.search);
       if (params.categoryId !== undefined)
         queryParams.append("CategoryId", params.categoryId);
