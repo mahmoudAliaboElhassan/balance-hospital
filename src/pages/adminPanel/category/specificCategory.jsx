@@ -681,7 +681,7 @@ const SpecificCategory = () => {
           </span>
         </div> */}
 
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <Award size={16} className="text-gray-500" />
           <span
             className={`text-sm ${isDark ? "text-gray-300" : "text-gray-600"}`}
@@ -690,7 +690,7 @@ const SpecificCategory = () => {
               ? t("department.hasManager")
               : t("department.noManager")}
           </span>
-        </div>
+        </div> */}
       </div>
 
       <div
@@ -698,18 +698,6 @@ const SpecificCategory = () => {
           isDark ? "border-gray-600" : "border-gray-200"
         }`}
       >
-        <div className="flex gap-2">
-          <Link to={`/admin-panel/department/${department.id}`}>
-            <button
-              className="inline-flex items-center gap-2 px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
-              title={t("department.actions.view")}
-            >
-              <Eye size={14} />
-              {t("department.actions.view")}
-            </button>
-          </Link>
-        </div>
-
         {/* Unlink Button */}
         <button
           className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors flex items-center gap-2"

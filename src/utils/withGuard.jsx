@@ -11,7 +11,10 @@ const ROUTE_PERMISSIONS = {
 
   // Departments
   "/admin-panel/departments": "userCanManageDepartments",
-  "/admin-panel/department": "userCanManageDepartments",
+  "/admin-panel/department": [
+    "userCanManageCategory",
+    "userCanManageDepartments",
+  ],
 
   // Sub-departments
   "/admin-panel/sub-departments": "userCanManageSubDepartments",
@@ -56,6 +59,20 @@ const isAdminOnlyRoute = (pathname) => {
     ADMIN_ONLY_ROUTES.some((route) => pathname === route)
   );
   return ADMIN_ONLY_ROUTES.some((route) => pathname === route);
+};
+
+const hasAnyPermission = (userPermissions, requiredPermissions) => {
+  if (typeof requiredPermissions === "string") {
+    return userPermissions[requiredPermissions] === true;
+  }
+
+  if (Array.isArray(requiredPermissions)) {
+    return requiredPermissions.some(
+      (permission) => userPermissions[permission] === true
+    );
+  }
+
+  return false;
 };
 
 // Function to get required permission for a route
@@ -141,7 +158,10 @@ export const withGuard = (Component, specificPermission = null) => {
         specificPermission || getRequiredPermission(location.pathname);
 
       if (requiredPermission && loginRoleResponseDto) {
-        const hasPermission = loginRoleResponseDto[requiredPermission] === true;
+        const hasPermission = hasAnyPermission(
+          loginRoleResponseDto,
+          requiredPermission
+        );
 
         if (!hasPermission) {
           return (

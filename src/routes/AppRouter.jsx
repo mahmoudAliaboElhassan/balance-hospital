@@ -205,22 +205,22 @@ const ProtectedCreateDepartment = withGuard(
   CreateDepartment,
   "userCanManageDepartments"
 );
-const ProtectedEditDepartment = withGuard(
-  EditDepartment,
-  "userCanManageDepartments"
-);
-const ProtectedSpecificDepartment = withGuard(
-  SpecificDepartment,
-  "userCanManageDepartments"
-);
+const ProtectedEditDepartment = withGuard(EditDepartment, [
+  "userCanManageCategory",
+  "userCanManageDepartments",
+]);
+const ProtectedSpecificDepartment = withGuard(SpecificDepartment, [
+  "userCanManageCategory",
+  "userCanManageDepartments",
+]);
 const ProtectedEditManagerPermission = withGuard(
   EditManagerPermission,
   "userCanManageDepartments"
 );
-const ProtectedAssignDepartmentManager = withGuard(
-  AssignDepartmentManager,
-  "userCanManageDepartments"
-);
+const ProtectedAssignDepartmentManager = withGuard(AssignDepartmentManager, [
+  "userCanManageCategory",
+  "userCanManageDepartments",
+]);
 const ProtectedCreateDepartmentSpecificCategory = withGuard(
   CreateDepartmentSpecificCategory,
   "userCanManageDepartments"
