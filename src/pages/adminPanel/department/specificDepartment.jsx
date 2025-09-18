@@ -917,8 +917,9 @@ function SpecificDepartment() {
                         "Edit Permissions"}
                     </button> */}
 
-                    {loginRoleResponseDto?.roleNameEn ===
-                      "System Administrator" && (
+                    {(loginRoleResponseDto?.roleNameEn ===
+                      "System Administrator" ||
+                      loginRoleResponseDto?.roleNameEn == "Category Head") && (
                       <button
                         onClick={handleRemoveManager}
                         className="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
@@ -965,8 +966,9 @@ function SpecificDepartment() {
                     {t("department.manager.noManagerDescription") ||
                       "This department doesn't have a manager assigned yet."}
                   </p>
-                  {loginRoleResponseDto?.roleNameEn ===
-                    "System Administrator" && (
+                  {(loginRoleResponseDto?.roleNameEn ===
+                    "System Administrator" ||
+                    loginRoleResponseDto?.roleNameEn == "Category Head") && (
                     <button
                       onClick={handleAssignManager}
                       className="inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"

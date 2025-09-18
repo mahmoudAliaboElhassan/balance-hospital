@@ -46,6 +46,7 @@ const ROUTE_PERMISSIONS = {
 const ADMIN_ONLY_ROUTES = [
   "/admin-panel/categories",
   "/admin-panel/departments",
+  "/admin-panel/rosters",
 ];
 
 // Function to check if route requires Admin role

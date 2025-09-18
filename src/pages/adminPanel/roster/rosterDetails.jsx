@@ -53,6 +53,8 @@ function RosterDetails() {
   );
   const { mymode } = useSelector((state) => state.mode);
 
+  const { loginRoleResponseDto } = useSelector((state) => state.auth);
+
   // Get current language direction
   const isRTL = i18n.language === "ar";
   const currentLang = i18n.language || "ar";
@@ -172,15 +174,17 @@ function RosterDetails() {
           >
             <div className="text-center py-12">
               <div className="text-red-500 text-lg mb-4">{errors.general}</div>
-              <Link
-                to="/admin-panel/rosters"
-                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                {isRTL ? <ArrowRight size={16} /> : <ArrowLeft size={16} />}
-                <span className={`${isRTL ? "mr-2" : "ml-2"}`}>
-                  {t("roster.actions.backToList")}
-                </span>
-              </Link>
+              {loginRoleResponseDto?.roleNameEn == "System Administrator" && (
+                <Link
+                  to="/admin-panel/rosters"
+                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  {isRTL ? <ArrowRight size={16} /> : <ArrowLeft size={16} />}
+                  <span className={`${isRTL ? "mr-2" : "ml-2"}`}>
+                    {t("roster.actions.backToList")}
+                  </span>
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -210,15 +214,17 @@ function RosterDetails() {
               >
                 {t("roster.notFound")}
               </div>
-              <Link
-                to="/admin-panel/rosters"
-                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                {isRTL ? <ArrowRight size={16} /> : <ArrowLeft size={16} />}
-                <span className={`${isRTL ? "mr-2" : "ml-2"}`}>
-                  {t("roster.actions.backToList")}
-                </span>
-              </Link>
+              {loginRoleResponseDto?.roleNameEn == "System Administrator" && (
+                <Link
+                  to="/admin-panel/rosters"
+                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  {isRTL ? <ArrowRight size={16} /> : <ArrowLeft size={16} />}
+                  <span className={`${isRTL ? "mr-2" : "ml-2"}`}>
+                    {t("roster.actions.backToList")}
+                  </span>
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -239,20 +245,21 @@ function RosterDetails() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-            <Link
-              to="/admin-panel/rosters"
-              className={`inline-flex items-center px-3 py-2 text-sm font-medium ${
-                isDark
-                  ? "text-gray-300 hover:text-white"
-                  : "text-gray-600 hover:text-gray-900"
-              } transition-colors`}
-            >
-              {isRTL ? <ArrowRight size={16} /> : <ArrowLeft size={16} />}
-              <span className={`${isRTL ? "mr-2" : "ml-2"}`}>
-                {t("roster.actions.backToList")}
-              </span>
-            </Link>
-
+            {loginRoleResponseDto?.roleNameEn == "System Administrator" && (
+              <Link
+                to="/admin-panel/rosters"
+                className={`inline-flex items-center px-3 py-2 text-sm font-medium ${
+                  isDark
+                    ? "text-gray-300 hover:text-white"
+                    : "text-gray-600 hover:text-gray-900"
+                } transition-colors`}
+              >
+                {isRTL ? <ArrowRight size={16} /> : <ArrowLeft size={16} />}
+                <span className={`${isRTL ? "mr-2" : "ml-2"}`}>
+                  {t("roster.actions.backToList")}
+                </span>
+              </Link>
+            )}
             <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
               <Link to={`/admin-panel/rosters/${selectedRoster.id}/edit`}>
                 <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors w-full sm:w-auto justify-center">
