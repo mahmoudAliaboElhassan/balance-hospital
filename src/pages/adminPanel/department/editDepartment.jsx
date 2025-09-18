@@ -48,6 +48,8 @@ function EditDepartment() {
     dispatch(getUserSummaries({ page: 1, pageSize: 50 }));
   }, [dispatch, id]);
 
+  const { departmentManagerId } = useSelector((state) => state.auth);
+
   // Handle user search with debouncing
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -103,7 +105,7 @@ function EditDepartment() {
                     : "Department not found"}
                 </div>
                 <button
-                  onClick={() => navigate("/admin-panel/departments")}
+                  onClick={() => navigate(`/admin-panel/department/${id}`)}
                   className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
                 >
                   {t("common.goBack")}
@@ -200,7 +202,7 @@ function EditDepartment() {
           pauseOnHover: true,
           draggable: true,
         });
-        navigate("/admin-panel/departments");
+        navigate(`/admin-panel/department/${id}`);
       })
       .catch((error) => {
         console.error("Department update error:", error);
@@ -234,7 +236,7 @@ function EditDepartment() {
           <div className="mb-6">
             <div className="flex items-center gap-4 mb-4">
               <button
-                onClick={() => navigate("/admin-panel/departments")}
+                onClick={() => navigate(`/admin-panel/department/${id}`)}
                 className={`p-2 rounded-lg border transition-colors ${
                   isDark
                     ? "border-gray-600 hover:bg-gray-700 text-gray-300"
@@ -521,7 +523,9 @@ function EditDepartment() {
                             ? "border-gray-600 text-gray-300 bg-gray-700 hover:bg-gray-600"
                             : "border-gray-300 text-gray-700 bg-white hover:bg-gray-50"
                         }`}
-                        onClick={() => navigate("/admin-panel/departments")}
+                        onClick={() =>
+                          navigate(`/admin-panel/department/${id}`)
+                        }
                       >
                         {t("departmentForm.buttons.cancel") || "Cancel"}
                       </button>

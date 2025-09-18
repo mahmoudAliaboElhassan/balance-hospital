@@ -31,8 +31,7 @@ export const authSlice = createSlice({
         state.loadingAuth = false;
         localStorage.setItem("token", action.payload.data.accessToken);
         state.token = action.payload.data.accessToken;
-        localStorage.setItem("role", action.payload.data.user.role);
-        state.role = action.payload.data.user.role;
+
         localStorage.setItem("expiresAt", action.payload.data.expiresAt);
         state.expiresAt = action.payload.data.expiresAt;
 

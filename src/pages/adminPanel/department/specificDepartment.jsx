@@ -17,6 +17,7 @@ function SpecificDepartment() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showRemoveManagerModal, setShowRemoveManagerModal] = useState(false);
+  const { loginRoleResponseDto } = useSelector((state) => state.auth);
 
   const {
     selectedDepartment,
@@ -216,13 +217,16 @@ function SpecificDepartment() {
             >
               {singleDepartmentError.message}
             </p>
-            <button
-              onClick={() => navigate("/admin-panel/departments")}
-              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
-            >
-              {t("department.details.backToDepartments") ||
-                "Back to Departments"}
-            </button>
+
+            {loginRoleResponseDto?.roleNameEn == "System Administrator" && (
+              <button
+                onClick={() => navigate("/admin-panel/departments")}
+                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              >
+                {t("department.details.backToDepartments") ||
+                  "Back to Departments"}
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -277,13 +281,15 @@ function SpecificDepartment() {
               {t("department.error.notFound") ||
                 "The requested department was not found."}
             </p>
-            <button
-              onClick={() => navigate("/admin-panel/departments")}
-              className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
-            >
-              {t("department.details.backToDepartments") ||
-                "Back to Departments"}
-            </button>
+            {loginRoleResponseDto?.roleNameEn == "System Administrator" && (
+              <button
+                onClick={() => navigate("/admin-panel/departments")}
+                className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              >
+                {t("department.details.backToDepartments") ||
+                  "Back to Departments"}
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -302,34 +308,36 @@ function SpecificDepartment() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <button
-            onClick={() => navigate("/admin-panel/departments")}
-            className={`inline-flex items-center ${
-              isDark
-                ? "text-blue-400 hover:text-blue-300"
-                : "text-blue-600 hover:text-blue-800"
-            } transition-colors duration-200 mb-4 group`}
-          >
-            <svg
-              className={`w-5 h-5 ${isRTL ? "mr-2" : "ml-2"} transform ${
-                isRTL
-                  ? "group-hover:translate-x-1 rotate-180"
-                  : "group-hover:-translate-x-1"
-              } transition-transform duration-200`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          {loginRoleResponseDto?.roleNameEn == "System Administrator" && (
+            <button
+              onClick={() => navigate("/admin-panel/departments")}
+              className={`inline-flex items-center ${
+                isDark
+                  ? "text-blue-400 hover:text-blue-300"
+                  : "text-blue-600 hover:text-blue-800"
+              } transition-colors duration-200 mb-4 group`}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10 19l-7-7m0 0l7-7m-7 7h18"
-              />
-            </svg>
-            {t("department.details.backToDepartments") || "Back to Departments"}
-          </button>
-
+              <svg
+                className={`w-5 h-5 ${isRTL ? "mr-2" : "ml-2"} transform ${
+                  isRTL
+                    ? "group-hover:translate-x-1 rotate-180"
+                    : "group-hover:-translate-x-1"
+                } transition-transform duration-200`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                />
+              </svg>
+              {t("department.details.backToDepartments") ||
+                "Back to Departments"}
+            </button>
+          )}
           <div
             className={`${
               isDark ? "bg-gray-800" : "bg-white"
@@ -345,9 +353,13 @@ function SpecificDepartment() {
                     isDark ? "text-gray-400" : "text-gray-500"
                   }`}
                 >
-                  <span className="text-lg">
-                    {t("department.table.category")}:
-                  </span>
+                  <label
+                    className={`block text-sm font-medium ${
+                      isDark ? "text-gray-400" : "text-gray-500"
+                    } mb-2`}
+                  >
+                    {t("departmentForm.fields.category")}
+                  </label>
                   <div className="flex flex-wrap gap-2 mt-1">
                     {getCategoryNames()?.length > 0 ? (
                       getCategoryNames()?.map((category, index) => (
@@ -393,6 +405,21 @@ function SpecificDepartment() {
                     ? t("department.status.active")
                     : t("department.status.inactive")}
                 </div>
+
+                <Link
+                  to={`/admin-panel/department/edit/${selectedDepartment.id}`}
+                  className="w-full md:w-auto"
+                >
+                  <button className="w-full md:w-auto bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-colors justify-center">
+                    <Edit size={20} />
+                    <span className="hidden sm:inline">
+                      {t("department.actions.edit")}
+                    </span>
+                    <span className="sm:hidden">
+                      {t("department.actions.edit")}
+                    </span>
+                  </button>
+                </Link>
               </div>
             </div>
 
@@ -512,9 +539,6 @@ function SpecificDepartment() {
                       isDark ? "text-gray-400" : "text-gray-500"
                     }`}
                   >
-                    <span className="text-lg">
-                      {t("department.table.category")}:
-                    </span>
                     <div className="flex flex-wrap gap-2 mt-1">
                       {getCategoryNames()?.length > 0 ? (
                         getCategoryNames()?.map((category, index) => (
@@ -893,21 +917,24 @@ function SpecificDepartment() {
                         "Edit Permissions"}
                     </button> */}
 
-                    <button
-                      onClick={handleRemoveManager}
-                      className="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
-                      title={
-                        t("department.manager.actions.removeManager") ||
-                        "Remove Manager"
-                      }
-                    >
-                      <UserX
-                        size={16}
-                        className={`${isRTL ? "mr-2" : "ml-2"}`}
-                      />
-                      {t("department.manager.actions.removeManager") ||
-                        "Remove Manager"}
-                    </button>
+                    {loginRoleResponseDto?.roleNameEn ===
+                      "System Administrator" && (
+                      <button
+                        onClick={handleRemoveManager}
+                        className="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                        title={
+                          t("department.manager.actions.removeManager") ||
+                          "Remove Manager"
+                        }
+                      >
+                        <UserX
+                          size={16}
+                          className={`${isRTL ? "mr-2" : "ml-2"}`}
+                        />
+                        {t("department.manager.actions.removeManager") ||
+                          "Remove Manager"}
+                      </button>
+                    )}
                   </div>
                 </div>
               ) : (
@@ -938,17 +965,20 @@ function SpecificDepartment() {
                     {t("department.manager.noManagerDescription") ||
                       "This department doesn't have a manager assigned yet."}
                   </p>
-                  <button
-                    onClick={handleAssignManager}
-                    className="inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
-                  >
-                    <UserPlus
-                      size={16}
-                      className={`${isRTL ? "mr-2" : "ml-2"}`}
-                    />
-                    {t("department.manager.actions.assignManager") ||
-                      "Assign Manager"}
-                  </button>
+                  {loginRoleResponseDto?.roleNameEn ===
+                    "System Administrator" && (
+                    <button
+                      onClick={handleAssignManager}
+                      className="inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                    >
+                      <UserPlus
+                        size={16}
+                        className={`${isRTL ? "mr-2" : "ml-2"}`}
+                      />
+                      {t("department.manager.actions.assignManager") ||
+                        "Assign Manager"}
+                    </button>
+                  )}
                 </div>
               )}
             </div>

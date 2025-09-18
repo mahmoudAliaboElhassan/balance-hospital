@@ -34,6 +34,8 @@ const CategoryHeadsManagement = ({
   const { t } = useTranslation();
   const language = i18next.language;
 
+  const { loginRoleResponseDto } = useSelector((state) => state.auth);
+
   // Filter category heads for the selected category
   const filteredCategoryHeads = categoryHeads.filter(
     (head) => head.categoryId === selectedCategory?.id
@@ -252,27 +254,30 @@ const CategoryHeadsManagement = ({
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex flex-col gap-2 ml-4">
-                  <button
-                    disabled={loadingRemoveCategoryHead}
-                    onClick={() => handleRemoveClick(categoryHead)}
-                    className="inline-flex items-center px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                    title={
-                      t("department.manager.actions.removeManager") ||
-                      "Remove Category Head"
-                    }
-                  >
-                    {loadingRemoveCategoryHead ? (
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-1"></div>
-                    ) : (
-                      <UserX
-                        size={14}
-                        className={`${isRTL ? "ml-1" : "mr-1"}`}
-                      />
-                    )}
-                    {t("department.manager.actions.removeManager") || "Remove"}
-                  </button>
-                </div>
+                {loginRoleResponseDto?.roleNameEn == "System Administrator" && (
+                  <div className="flex flex-col gap-2 ml-4">
+                    <button
+                      disabled={loadingRemoveCategoryHead}
+                      onClick={() => handleRemoveClick(categoryHead)}
+                      className="inline-flex items-center px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                      title={
+                        t("department.manager.actions.removeManager") ||
+                        "Remove Category Head"
+                      }
+                    >
+                      {loadingRemoveCategoryHead ? (
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-1"></div>
+                      ) : (
+                        <UserX
+                          size={14}
+                          className={`${isRTL ? "ml-1" : "mr-1"}`}
+                        />
+                      )}
+                      {t("department.manager.actions.removeManager") ||
+                        "Remove"}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           ))}
@@ -360,18 +365,20 @@ const CategoryHeadsManagement = ({
             {t("categoryHead.noCategoryHeadDescription") ||
               "This category doesn't have a head assigned yet."}
           </p>
-          <button
-            onClick={() =>
-              navigate(
-                `/admin-panel/department/assign-manager/${id}?type=category`
-              )
-            }
-            className="inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
-          >
-            <UserPlus size={16} className={`${isRTL ? "ml-2" : "mr-2"}`} />
-            {t("department.manager.actions.assignManager") ||
-              "Assign Category Head"}
-          </button>
+          {loginRoleResponseDto?.roleNameEn == "System Administrator" && (
+            <button
+              onClick={() =>
+                navigate(
+                  `/admin-panel/department/assign-manager/${id}?type=category`
+                )
+              }
+              className="inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+            >
+              <UserPlus size={16} className={`${isRTL ? "ml-2" : "mr-2"}`} />
+              {t("department.manager.actions.assignManager") ||
+                "Assign Category Head"}
+            </button>
+          )}
         </div>
       )}
 

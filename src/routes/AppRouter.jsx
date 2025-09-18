@@ -9,6 +9,7 @@ import withGuard from "../utils/withGuard";
 
 // Department specific imports (non-lazy for immediate use)
 import AssignDepartmentManager from "../pages/adminPanel/department/assignDepartmentManager";
+import AdminPanelIndex from "../pages/adminPanel/homePanel.jsx";
 
 // Roster Management Components
 const EditManagerPermission = lazy(() =>
@@ -389,7 +390,7 @@ const router = createBrowserRouter([
         element: withSuspense(ProtectedAdminPanel), // Authentication required for entire admin panel
         children: [
           // Default route - Shows categories by default
-          { index: true, element: withSuspense(ProtectedCategory) },
+          { index: true, element: withSuspense(AdminPanelIndex) },
 
           // ========== CATEGORY MANAGEMENT ==========
           // Permission Required: userCanManageCategory

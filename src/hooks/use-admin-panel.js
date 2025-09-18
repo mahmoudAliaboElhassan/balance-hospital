@@ -3,9 +3,10 @@ import { useSelector } from "react-redux";
 
 function UseAdminPanel() {
   const { t } = useTranslation();
-  const { loginRoleResponseDto } = useSelector((state) => state.auth);
+  const { loginRoleResponseDto, categoryManagerId, departmentManagerId } =
+    useSelector((state) => state.auth);
   console.log(loginRoleResponseDto["userCanManageCategory"]);
-  // All available routes with their permission requirements
+
   const allRoutes = [
     // {
     //   id: 0,
@@ -16,16 +17,28 @@ function UseAdminPanel() {
     // },
     {
       id: 1,
-      name: t("adminPanel.categories"),
+      name:
+        loginRoleResponseDto?.roleNameEn == "System Administrator"
+          ? t("adminPanel.categories")
+          : t("adminPanel.yourCategory"),
       icon: "📂",
-      path: "/admin-panel/categories",
+      path:
+        loginRoleResponseDto?.roleNameEn == "System Administrator"
+          ? "/admin-panel/categories"
+          : `/admin-panel/category/${categoryManagerId}`,
       permission: "userCanManageCategory",
     },
     {
       id: 3,
-      name: t("adminPanel.departments"),
+      name:
+        loginRoleResponseDto?.roleNameEn == "System Administrator"
+          ? t("adminPanel.departments")
+          : t("adminPanel.yourDepartment"),
       icon: "🏢",
-      path: "/admin-panel/departments",
+      path:
+        loginRoleResponseDto?.roleNameEn == "System Administrator"
+          ? "/admin-panel/departments"
+          : `/admin-panel/department/${departmentManagerId}`,
       permission: "userCanManageDepartments",
     },
     // {
@@ -63,14 +76,15 @@ function UseAdminPanel() {
       path: "/admin-panel/shift-hours-types",
       permission: "userCanShiftHoursType",
     },
-    {
-      id: 9,
-      name: t("adminPanel.roster"),
-      icon: "🗓️",
-      path: "/admin-panel/rosters",
-      permission: "userCanManageRostors",
-    },
   ];
+
+  const roster = {
+    id: 9,
+    name: t("adminPanel.roster"),
+    icon: "🗓️",
+    path: "/admin-panel/rosters",
+    permission: "userCanManageRostors",
+  };
 
   // Filter routes based on user permissions
   const adminPanelRoutes = allRoutes.filter((route) => {
@@ -82,6 +96,10 @@ function UseAdminPanel() {
     // Check if user has the required permission
     return loginRoleResponseDto[route.permission] === true;
   });
+
+  if (loginRoleResponseDto.roleNameEn == "System Administrator") {
+    adminPanelRoutes.push(roster);
+  }
 
   return { adminPanelRoutes };
 }

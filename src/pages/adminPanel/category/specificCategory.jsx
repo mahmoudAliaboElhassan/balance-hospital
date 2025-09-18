@@ -120,6 +120,8 @@ const SpecificCategory = () => {
   const { selectedCategory, loadingGetSingleCategory, singleCategoryError } =
     useSelector((state) => state.category);
 
+  const { loginRoleResponseDto } = useSelector((state) => state.auth);
+
   // Pending doctors selectors
   const {
     categoryPendingRequests,
@@ -872,12 +874,14 @@ const SpecificCategory = () => {
             >
               {singleCategoryError.message}
             </p>
-            <button
-              onClick={() => navigate("/admin-panel/categories")}
-              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
-            >
-              {t("specificCategory.error.backToCategories")}
-            </button>
+            {loginRoleResponseDto?.roleNameEn == "System Administrator" && (
+              <button
+                onClick={() => navigate("/admin-panel/categories")}
+                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              >
+                {t("specificCategory.error.backToCategories")}
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -924,12 +928,14 @@ const SpecificCategory = () => {
             >
               {t("specificCategory.notFound.title")}
             </h3>
-            <button
-              onClick={() => navigate("/admin-panel/categories")}
-              className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
-            >
-              {t("specificCategory.notFound.backToCategories")}
-            </button>
+            {loginRoleResponseDto?.roleNameEn == "System Administrator" && (
+              <button
+                onClick={() => navigate("/admin-panel/categories")}
+                className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              >
+                {t("specificCategory.notFound.backToCategories")}
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -995,33 +1001,35 @@ const SpecificCategory = () => {
 
         {/* Header */}
         <div className="mb-8">
-          <button
-            onClick={() => navigate("/admin-panel/categories")}
-            className={`inline-flex items-center ${
-              isDark
-                ? "text-blue-400 hover:text-blue-300"
-                : "text-blue-600 hover:text-blue-800"
-            } transition-colors duration-200 mb-4 group`}
-          >
-            <svg
-              className={`w-5 h-5 ${isRTL ? "mr-2" : "ml-2"} transform ${
-                isRTL
-                  ? "group-hover:translate-x-1 rotate-180"
-                  : "group-hover:-translate-x-1"
-              } transition-transform duration-200`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          {loginRoleResponseDto?.roleNameEn == "System Administrator" && (
+            <button
+              onClick={() => navigate("/admin-panel/categories")}
+              className={`inline-flex items-center ${
+                isDark
+                  ? "text-blue-400 hover:text-blue-300"
+                  : "text-blue-600 hover:text-blue-800"
+              } transition-colors duration-200 mb-4 group`}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10 19l-7-7m0 0l7-7m-7 7h18"
-              />
-            </svg>
-            {t("specificCategory.navigation.backToCategories")}
-          </button>
+              <svg
+                className={`w-5 h-5 ${isRTL ? "mr-2" : "ml-2"} transform ${
+                  isRTL
+                    ? "group-hover:translate-x-1 rotate-180"
+                    : "group-hover:-translate-x-1"
+                } transition-transform duration-200`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                />
+              </svg>
+              {t("specificCategory.navigation.backToCategories")}
+            </button>
+          )}
 
           <div
             className={`${
@@ -1111,6 +1119,21 @@ const SpecificCategory = () => {
                     {t("roster.actions.addNew")}
                   </span>
                   <span className="sm:hidden">{t("roster.actions.add")}</span>
+                </button>
+              </Link>
+
+              <Link
+                to={`/admin-panel/category/edit/${selectedCategory.id}`}
+                className="w-full md:w-auto"
+              >
+                <button className="w-full md:w-auto bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-colors justify-center">
+                  <Edit size={20} />
+                  <span className="hidden sm:inline">
+                    {t("categories.actions.edit")}
+                  </span>
+                  <span className="sm:hidden">
+                    {t("categories.actions.edit")}
+                  </span>
                 </button>
               </Link>
             </div>

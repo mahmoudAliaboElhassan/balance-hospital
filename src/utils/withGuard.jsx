@@ -42,6 +42,21 @@ const ROUTE_PERMISSIONS = {
   "/admin-panel/reports": "userCanViewReports",
 };
 
+// Routes that require Admin role specifically
+const ADMIN_ONLY_ROUTES = [
+  "/admin-panel/categories",
+  "/admin-panel/departments",
+];
+
+// Function to check if route requires Admin role
+const isAdminOnlyRoute = (pathname) => {
+  console.log(
+    "admin only",
+    ADMIN_ONLY_ROUTES.some((route) => pathname === route)
+  );
+  return ADMIN_ONLY_ROUTES.some((route) => pathname === route);
+};
+
 // Function to get required permission for a route
 const getRequiredPermission = (pathname) => {
   // Check for exact matches first
@@ -65,6 +80,7 @@ export const withGuard = (Component, specificPermission = null) => {
     const navigate = useNavigate();
     const { token, loginRoleResponseDto } = useSelector((state) => state.auth);
     const location = useLocation();
+    console.log("loginRoleResponseDto from withguard", loginRoleResponseDto);
 
     useEffect(() => {
       // Authentication check
@@ -90,8 +106,36 @@ export const withGuard = (Component, specificPermission = null) => {
       return null;
     }
 
-    // Authorization check (permission-based)
+    // Authorization check (permission-based and role-based)
     if (token && location.pathname.startsWith("/admin-panel")) {
+      // Check if route requires Admin role
+      if (isAdminOnlyRoute(location.pathname)) {
+        if (loginRoleResponseDto?.roleNameEn !== "System Administrator") {
+          console.log("not admin");
+          return (
+            <div className="flex items-center justify-center min-h-screen bg-gray-50">
+              <div className="text-center p-8 bg-white border border-red-200 rounded-lg shadow-lg max-w-md">
+                <div className="text-red-500 text-6xl mb-4">🚫</div>
+                <h2 className="text-2xl font-bold text-red-800 mb-2">
+                  {t("messages.error.accessDenied") || "Access Denied"}
+                </h2>
+                <p className="text-red-600 mb-4">
+                  {t("messages.error.insufficientPermissions") ||
+                    "You do not have permission to access this page."}
+                </p>
+                <button
+                  onClick={() => navigate("/admin-panel", { replace: true })}
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                >
+                  {t("common.backToHome") || "Back to Home"}
+                </button>
+              </div>
+            </div>
+          );
+        }
+      }
+
+      // Regular permission check for other routes
       const requiredPermission =
         specificPermission || getRequiredPermission(location.pathname);
 
@@ -128,17 +172,6 @@ export const withGuard = (Component, specificPermission = null) => {
 
   Wrapper.displayName = `withGuard(${Component.displayName || Component.name})`;
   return Wrapper;
-};
-
-// Hook for checking permissions in components
-export const usePermission = (permission) => {
-  const { loginRoleResponseDto } = useSelector((state) => state.auth);
-
-  if (!permission || !loginRoleResponseDto) {
-    return true; // Allow if no permission specified
-  }
-
-  return loginRoleResponseDto[permission] === true;
 };
 
 export default withGuard;

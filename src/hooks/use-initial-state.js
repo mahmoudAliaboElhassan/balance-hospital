@@ -31,7 +31,7 @@ function UseInitialStates() {
 
     loginRoleResponseDto:
       typeof window !== "undefined"
-        ? JSON.parse(localStorage.getItem("loginRoleResponseDto") || "null")
+        ? JSON.parse(localStorage.getItem("loginRoleResponseDto") || "{}")
         : null,
   };
 

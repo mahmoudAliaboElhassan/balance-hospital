@@ -109,6 +109,8 @@
   "adminPanel": {
     "dashboard": "Dashboard",
     "categories": "Categories",
+    "yourCategory": "Your Category",
+    "yourDepartment": "Your Department",
     "pendingDoctorRequests": "Pending Doctor Requests",
     "departments": "Departments",
     "subDepartments": "Sub Departments",

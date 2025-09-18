@@ -155,7 +155,7 @@ const Login = () => {
             `/admin-panel/department/${data.data.user.departmentManager?.departmentId}`
           );
         } else if (
-          data.data.user.loginRoleResponseDto.roleNameAr === "رئيس فئة" &&
+          data.data.user.loginRoleResponseDto.roleNameAr === "رئيس تخصص" &&
           data.data.user.categoryManager?.categoryId
         ) {
           console.log("hello cat head");

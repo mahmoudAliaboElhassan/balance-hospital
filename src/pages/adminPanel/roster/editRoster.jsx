@@ -115,9 +115,9 @@ const UpdateRoster = () => {
     if (!selectedRoster) return {};
 
     const submissionDeadline = selectedRoster.submissionDeadline
-      ? new Date(selectedRoster.submissionDeadline).toISOString().slice(0, 16)
+      ? new Date(selectedRoster.submissionDeadline)?.toISOString()?.slice(0, 16)
       : "";
-    console.log("selectedRoster", selectedRoster.endDate.split("-")[2]);
+    console.log("selectedRoster", selectedRoster?.endDate?.split("-")[2]);
 
     return {
       categoryId: selectedRoster.categoryId?.toString() || "",
