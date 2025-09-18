@@ -192,7 +192,11 @@ export const departmentSlice = createSlice({
 
         // ضيف القسم المرتبط للقائمة
         state.departmentsByCategory.push(dep);
-
+        state.departmentLinkedIds.push(depId);
+        localStorage.setItem(
+          "departmentLinkedIds",
+          JSON.stringify(state.departmentLinkedIds)
+        );
         // شيله من قائمة الأقسام غير المرتبطة
         state.departments = state.departments.filter((d) => d.id !== depId);
       })
@@ -210,6 +214,13 @@ export const departmentSlice = createSlice({
         state.departmentsByCategory = state.departmentsByCategory.filter(
           (dep) => dep.id !== depId
         );
+        state.departmentLinkedIds = state.departmentLinkedIds.filter(
+          (id) => id != depId
+        );
+        localStorage.setItem(
+          "departmentLinkedIds",
+          JSON.stringify(state.departmentLinkedIds)
+        );
       })
       .addCase(unlinkDepartmentFromCategory.rejected, (state, action) => {
         state.loadingUnlinkDepartment = false;
@@ -221,6 +232,9 @@ export const departmentSlice = createSlice({
       .addCase(getDepartmentByCategory.fulfilled, (state, action) => {
         state.loadingGetDepartmentsByCategory = false;
         state.departmentsByCategory = action.payload.data;
+        const Ids = action.payload.data.map((cat) => cat.id);
+        state.departmentLinkedIds = Ids;
+        localStorage.setItem("departmentLinkedIds", JSON.stringify(Ids));
       })
       .addCase(getDepartmentByCategory.rejected, (state, action) => {
         state.loadingGetDepartmentsByCategory = false;

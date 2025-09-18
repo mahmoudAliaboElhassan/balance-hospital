@@ -150,7 +150,7 @@ function UseInitialStates() {
       page: 1,
       pageSize: 10,
     },
-
+    departmentLinkedIds: localStorage.getItem("departmentLinkedIds"),
     // Department data
     departments: [],
     departmentsByCategory: [],

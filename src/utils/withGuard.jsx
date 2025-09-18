@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import Forbidden from "../components/forbidden";
 
 // Route to permission mapping
 const ROUTE_PERMISSIONS = {
@@ -54,10 +55,6 @@ const ADMIN_ONLY_ROUTES = [
 
 // Function to check if route requires Admin role
 const isAdminOnlyRoute = (pathname) => {
-  console.log(
-    "admin only",
-    ADMIN_ONLY_ROUTES.some((route) => pathname === route)
-  );
   return ADMIN_ONLY_ROUTES.some((route) => pathname === route);
 };
 
@@ -98,7 +95,6 @@ export const withGuard = (Component, specificPermission = null) => {
     const navigate = useNavigate();
     const { token, loginRoleResponseDto } = useSelector((state) => state.auth);
     const location = useLocation();
-    console.log("loginRoleResponseDto from withguard", loginRoleResponseDto);
 
     useEffect(() => {
       // Authentication check
@@ -129,27 +125,7 @@ export const withGuard = (Component, specificPermission = null) => {
       // Check if route requires Admin role
       if (isAdminOnlyRoute(location.pathname)) {
         if (loginRoleResponseDto?.roleNameEn !== "System Administrator") {
-          console.log("not admin");
-          return (
-            <div className="flex items-center justify-center min-h-screen bg-gray-50">
-              <div className="text-center p-8 bg-white border border-red-200 rounded-lg shadow-lg max-w-md">
-                <div className="text-red-500 text-6xl mb-4">🚫</div>
-                <h2 className="text-2xl font-bold text-red-800 mb-2">
-                  {t("messages.error.accessDenied") || "Access Denied"}
-                </h2>
-                <p className="text-red-600 mb-4">
-                  {t("messages.error.insufficientPermissions") ||
-                    "You do not have permission to access this page."}
-                </p>
-                <button
-                  onClick={() => navigate("/admin-panel", { replace: true })}
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                >
-                  {t("common.backToHome") || "Back to Home"}
-                </button>
-              </div>
-            </div>
-          );
+          return <Forbidden />;
         }
       }
 
@@ -164,26 +140,7 @@ export const withGuard = (Component, specificPermission = null) => {
         );
 
         if (!hasPermission) {
-          return (
-            <div className="flex items-center justify-center min-h-screen bg-gray-50">
-              <div className="text-center p-8 bg-white border border-red-200 rounded-lg shadow-lg max-w-md">
-                <div className="text-red-500 text-6xl mb-4">🚫</div>
-                <h2 className="text-2xl font-bold text-red-800 mb-2">
-                  {t("messages.error.accessDenied") || "Access Denied"}
-                </h2>
-                <p className="text-red-600 mb-4">
-                  {t("messages.error.insufficientPermissions") ||
-                    "You do not have permission to access this page."}
-                </p>
-                <button
-                  onClick={() => navigate("/admin-panel", { replace: true })}
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                >
-                  {t("common.backToHome") || "Back to Home"}
-                </button>
-              </div>
-            </div>
-          );
+          return <Forbidden />;
         }
       }
     }

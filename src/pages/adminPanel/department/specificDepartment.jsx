@@ -11,6 +11,7 @@ import LoadingGetData from "../../../components/LoadingGetData";
 import { useTranslation } from "react-i18next";
 import { Edit, Eye, UserPlus, UserCog, UserX, Shield } from "lucide-react";
 import RemoveManagerModal from "../../../components/RemoveMangerModal";
+import Forbidden from "../../../components/forbidden";
 
 function SpecificDepartment() {
   const { depId: id } = useParams();
@@ -18,13 +19,21 @@ function SpecificDepartment() {
   const navigate = useNavigate();
   const [showRemoveManagerModal, setShowRemoveManagerModal] = useState(false);
   const { loginRoleResponseDto } = useSelector((state) => state.auth);
-
   const {
     selectedDepartment,
     loadingGetSingleDepartment,
     singleDepartmentError,
+    departmentLinkedIds,
   } = useSelector((state) => state.department);
 
+  const depIdsLinked = JSON?.parse(departmentLinkedIds);
+  console.log(depIdsLinked, typeof depIdsLinked);
+  const canManage = depIdsLinked?.some((depId) => depId == id);
+
+  console.log("canManage", canManage);
+  if (!canManage && loginRoleResponseDto?.roleNameEn == "Category Head") {
+    return <Forbidden />;
+  }
   // Get sub-departments
   const { subDepartments, loadingGetSubDepartments } = useSelector(
     (state) => state.subDepartment
