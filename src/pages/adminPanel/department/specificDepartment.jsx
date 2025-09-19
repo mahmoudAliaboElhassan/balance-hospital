@@ -26,18 +26,27 @@ function SpecificDepartment() {
     departmentLinkedIds,
   } = useSelector((state) => state.department);
 
-  const depIdsLinked = JSON?.parse(departmentLinkedIds);
-  console.log(depIdsLinked, typeof depIdsLinked);
-  const canManage = depIdsLinked?.some((depId) => depId == id);
+  // const depIdsLinked = departmentLinkedIds
+  //   ? JSON.parse(departmentLinkedIds)
+  //   : [];
+  console.log(departmentLinkedIds, typeof departmentLinkedIds);
+
+  // Normalize to array for consistent handling
+  const depIdsArray = Array.isArray(departmentLinkedIds)
+    ? departmentLinkedIds
+    : [departmentLinkedIds];
+  const canManage = depIdsArray.some((depId) => depId == id);
 
   console.log("canManage", canManage);
+  console.log("depIdsArray", depIdsArray);
+
   if (!canManage && loginRoleResponseDto?.roleNameEn == "Category Head") {
     return <Forbidden />;
   }
   // Get sub-departments
-  const { subDepartments, loadingGetSubDepartments } = useSelector(
-    (state) => state.subDepartment
-  );
+  // const { subDepartments, loadingGetSubDepartments } = useSelector(
+  //   (state) => state.subDepartment
+  // );
 
   // Get categories for displaying category name
   const { categories } = useSelector((state) => state.category);
