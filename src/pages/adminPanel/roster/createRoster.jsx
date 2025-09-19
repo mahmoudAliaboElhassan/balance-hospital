@@ -859,7 +859,7 @@ const CreateRoster = () => {
                                   )}
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
                                   {/* Department */}
                                   <div>
                                     <label
@@ -925,7 +925,7 @@ const CreateRoster = () => {
                                   </div>
 
                                   {/* Sub Department */}
-                                  <div>
+                                  {/* <div>
                                     <label
                                       className={`block text-sm font-medium ${
                                         isDark
@@ -973,7 +973,7 @@ const CreateRoster = () => {
                                           ))}
                                       </Field>
                                     )}
-                                  </div>
+                                  </div> */}
 
                                   {/* Notes */}
                                   <div className="md:col-span-2">

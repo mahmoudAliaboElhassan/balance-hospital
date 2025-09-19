@@ -198,7 +198,7 @@
       "description": "Enter category description (optional)"
     },
     "hints": {
-      "code": "Must contain only uppercase English letters, numbers, and underscores"
+      "code": "Must contain only uppercase English letters"
     },
     "validation": {
       "nameArabic": {
