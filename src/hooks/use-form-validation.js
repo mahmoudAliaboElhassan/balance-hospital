@@ -95,12 +95,12 @@ function UseFormValidation() {
   const VALIDATION_SCHEMA_ADD_DEPARTMENT = Yup.object().shape({
     code: Yup.string()
       .required(t("department.form.validation.codeRequired"))
-      .length(4, t("department.form.validation.codeLength"))
-      .matches(
-        // Latin letters, digits, whitespace, and punctuation
-        /^[A-Za-z]/,
-        t("validation.englishOnly")
-      ),
+      .length(4, t("department.form.validation.codeLength")),
+    // .matches(
+    //   // Latin letters, digits, whitespace, and punctuation
+    //   /^[A-Za-z]/,
+    //   t("validation.englishOnly")
+    // )
     nameArabic: Yup.string()
       .required(t("department.form.validation.nameArabicRequired"))
       .min(2, t("validation.minLength", { count: 2 }))
