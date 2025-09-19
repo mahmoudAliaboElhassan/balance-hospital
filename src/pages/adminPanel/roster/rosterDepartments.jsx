@@ -546,8 +546,16 @@ function RosterDepartments() {
                                       "Contracting Types"}
                                   </h4>
                                   <ChevronUp
+                                    title={
+                                      t(
+                                        "roster.contractingTypes.hideContractingTypes"
+                                      ) || "Hide Contracting Types"
+                                    }
+                                    onClick={() =>
+                                      handleViewContractingTypes(shift)
+                                    }
                                     size={16}
-                                    className={`${
+                                    className={`cursor-pointer ${
                                       isDark ? "text-gray-400" : "text-gray-500"
                                     }`}
                                   />
