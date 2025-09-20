@@ -307,7 +307,6 @@
     "subtitle": "طلبات انضمام الأطباء لهذا التخصص",
     "backButton": "عودة",
     "count": "العدد",
-
     "messages": {
       "approvalSuccess": "تمت الموافقة على الطلب بنجاح",
       "rejectionSuccess": "تم رفض الطلب بنجاح"
@@ -319,7 +318,8 @@
       "degree": "الدرجة العلمية",
       "status": "الحالة",
       "requestedAt": "تاريخ الطلب",
-      "actions": "الإجراءات"
+      "actions": "الإجراءات",
+      "scheules": "بيانات الطبيب"
     },
     "loading": {
       "categories": "جاري تحميل بيانات التخصص…",
@@ -2478,6 +2478,7 @@
 
   "selectRole": {
     "title": "اختر دورك",
+    "title2": "غير الدور",
     "subtitle": "اختر الدور الذي يصف مسؤولياتك بشكل أفضل",
     "continue": "متابعة",
     "categoryManager": {

@@ -61,6 +61,9 @@ const AdminPanel = lazy(() => import("../pages/adminPanel"));
 
 // Category Management Components
 const Category = lazy(() => import("../pages/adminPanel/category"));
+const DoctorDetails = lazy(() =>
+  import("../pages/adminPanel/category/doctorData.jsx")
+);
 const CreateCategory = lazy(() =>
   import("../pages/adminPanel/category/createCategory")
 );
@@ -186,6 +189,10 @@ const ProtectedAdminPanel = withGuard(AdminPanel);
 
 // Category Management (Requires userCanManageCategory permission)
 const ProtectedCategory = withGuard(Category, "userCanManageCategory");
+const ProtectedDocotrDetails = withGuard(
+  DoctorDetails,
+  "userCanManageCategory"
+);
 const ProtectedCreateCategory = withGuard(
   CreateCategory,
   "userCanManageCategory"
@@ -397,6 +404,10 @@ const router = createBrowserRouter([
           // ========== CATEGORY MANAGEMENT ==========
           // Permission Required: userCanManageCategory
           { path: "categories", element: withSuspense(ProtectedCategory) },
+          {
+            path: "doctors/:id",
+            element: withSuspense(ProtectedDocotrDetails),
+          },
           {
             path: "category/create",
             element: withSuspense(ProtectedCreateCategory),

@@ -78,6 +78,14 @@ function UseAdminPanel() {
     },
   ];
 
+  const specifyRole = {
+    id: 10,
+    name: t("selectRole.title2"),
+    icon: "🎭",
+    path: "/specify-role",
+    permission: null, // No specific permission check needed for role specification
+  };
+
   const roster = {
     id: 9,
     name: t("adminPanel.roster"),
@@ -100,7 +108,9 @@ function UseAdminPanel() {
   if (loginRoleResponseDto.roleNameEn == "System Administrator") {
     adminPanelRoutes.push(roster);
   }
-
+  if (departmentManagerId && categoryManagerId) {
+    adminPanelRoutes.push(specifyRole);
+  }
   return { adminPanelRoutes };
 }
 

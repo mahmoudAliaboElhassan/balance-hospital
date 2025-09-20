@@ -157,19 +157,19 @@ const Login = () => {
 
         localStorage.setItem(
           "categoryArabicName",
-          data.data.user.categoryManager.categoryNameAr
+          data.data.user.categoryManager?.categoryNameAr
         );
         localStorage.setItem(
           "categoryEnglishName",
-          data.data.user.categoryManager.categoryNameEn
+          data.data.user.categoryManager?.categoryNameEn
         );
         localStorage.setItem(
           "departmentArabicName",
-          data.data.user.departmentManager.departmentNameAr
+          data.data.user.departmentManager?.departmentNameAr
         );
         localStorage.setItem(
           "departmentEnglishName",
-          data.data.user.departmentManager.departmentNameEn
+          data.data.user.departmentManager?.departmentNameEn
         );
         if (
           data.data.user.loginRoleResponseDto.roleNameEn ==

@@ -549,17 +549,17 @@ const SpecificCategory = () => {
     }
   };
   // Handle create department for this category
-  const handleCreateDepartment = () => {
-    if (selectedCategory) {
-      // Save category information to localStorage
-      localStorage.setItem("categoryId", selectedCategory.id);
-      localStorage.setItem("categoryEnglishName", selectedCategory.nameEnglish);
-      localStorage.setItem("categoryArabicName", selectedCategory.nameArabic);
+  // const handleCreateDepartment = () => {
+  //   if (selectedCategory) {
+  //     // Save category information to localStorage
+  //     localStorage.setItem("categoryId", selectedCategory.id);
+  //     localStorage.setItem("categoryEnglishName", selectedCategory.nameEnglish);
+  //     localStorage.setItem("categoryArabicName", selectedCategory.nameArabic);
 
-      // Navigate to create department page
-      navigate("/admin-panel/department/create-specific");
-    }
-  };
+  //     // Navigate to create department page
+  //     navigate("/admin-panel/department/create-specific");
+  //   }
+  // };
 
   // Render action buttons for pending doctors
   const renderPendingActionButtons = (request) => {
@@ -1392,6 +1392,15 @@ const SpecificCategory = () => {
                               isDark ? "text-white" : "text-gray-900"
                             }`}
                           >
+                            {t("pendingDoctorRequests.table.scheules")}
+                          </th>
+                          <th
+                            className={`${
+                              isRTL ? "text-right" : "text-left"
+                            } p-4 font-semibold ${
+                              isDark ? "text-white" : "text-gray-900"
+                            }`}
+                          >
                             {t("pendingDoctorRequests.table.actions")}
                           </th>
                         </tr>
@@ -1471,6 +1480,15 @@ const SpecificCategory = () => {
                               >
                                 {formatPendingDate(request.requestedAt)}
                               </div>
+                            </td>{" "}
+                            <td className="p-4">
+                              <Link
+                                to={`/admin-panel/doctors/${request.userId}`}
+                              >
+                                <button className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors">
+                                  <Eye size={16} />
+                                </button>{" "}
+                              </Link>
                             </td>
                             <td className="p-4">
                               <div className="flex gap-1">
@@ -1578,7 +1596,24 @@ const SpecificCategory = () => {
 
                           {/* Actions */}
                           <div className="mt-6 pt-4 border-t border-gray-200">
-                            {renderPendingActionButtons(request)}
+                            <div className="flex gap-2">
+                              {/* Action buttons (Approve/Reject) */}
+                              {renderPendingActionButtons(request)}
+
+                              {/* View details button */}
+                              <Link
+                                to={`/admin-panel/doctors/${request.userId}`}
+                                className="flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-blue-900 text-white hover:bg-blue-700"
+                              >
+                                <Eye size={16} />
+                                <span className="hidden sm:inline">
+                                  {t(
+                                    "pendingDoctorRequests.requestCard.actions.viewDetails",
+                                    "View"
+                                  )}
+                                </span>
+                              </Link>
+                            </div>
                           </div>
                         </div>
                       ))}

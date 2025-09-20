@@ -10,6 +10,7 @@ import {
   setDepartmentManagerRole,
 } from "../../state/slices/auth.js";
 import i18next from "i18next";
+import Forbidden from "../../components/forbidden.jsx";
 
 // Icons
 const CategoryIcon = ({ className = "" }) => (
@@ -78,9 +79,8 @@ const SpecifyRole = () => {
   const [selectedRole, setSelectedRole] = useState(null);
   const { t } = useTranslation();
   const { mymode } = useSelector((state) => state.mode);
-  const { categoryManagerId, departmentManagerId } = useSelector(
-    (state) => state.auth
-  );
+  const { categoryManagerId, departmentManagerId, loginRoleResponseDto } =
+    useSelector((state) => state.auth);
   const { direction } = UseDirection();
   const isRTL = direction.direction === "rtl";
   const navigate = useNavigate();
@@ -92,6 +92,11 @@ const SpecifyRole = () => {
   const departmentEnglishName = localStorage.getItem("departmentEnglishName");
 
   const language = i18next.language;
+
+  if (loginRoleResponseDto?.roleNameEn != "Category & Department Head") {
+    console.log(categoryManagerId, departmentManagerId);
+    return <Forbidden />;
+  }
 
   const categoryName =
     language === "ar" ? categoryArabicName : categoryEnglishName;

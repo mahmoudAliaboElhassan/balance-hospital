@@ -317,7 +317,8 @@
       "degree": "Degree",
       "status": "Status",
       "requestedAt": "Requested At",
-      "actions": "Actions"
+      "actions": "Actions",
+      "scheules": "Doctor Data"
     },
 
     "loading": {
@@ -2477,6 +2478,7 @@
 
   "selectRole": {
     "title": "Select Your Role",
+    "title2": "Switch Your Role",
     "subtitle": "Choose the role that best describes your responsibilities",
     "continue": "Continue",
     "categoryManager": {
