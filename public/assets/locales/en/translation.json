@@ -2473,5 +2473,34 @@
     "currentHead": "Current Head",
     "managerElsewhere": "Manager in Other Category",
     "inactive": "Inactive"
+  },
+
+  "selectRole": {
+    "title": "Select Your Role",
+    "subtitle": "Choose the role that best describes your responsibilities",
+    "continue": "Continue",
+    "categoryManager": {
+      "title": "Category Manager",
+      "description": "Manage categories and oversee departments",
+      "features": {
+        "rosters": "Add and manage rosters",
+        "approve": "Approve/reject doctor applications",
+        "doctors": "Manage doctors and staff",
+        "editCategory": "Edit category settings",
+        "assignDepartment": "Assign department managers",
+        "removeDepartment": "Remove department managers"
+      }
+    },
+    "departmentManager": {
+      "title": "Department Manager",
+      "description": "Manage department operations and resources",
+      "features": {
+        "manageDepartment": "Manage department operations",
+        "staff": "Oversee department staff",
+        "schedules": "Manage schedules and shifts",
+        "resources": "Allocate department resources",
+        "reports": "Generate department reports"
+      }
+    }
   }
 }

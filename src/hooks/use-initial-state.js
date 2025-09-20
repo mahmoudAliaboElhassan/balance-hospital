@@ -10,6 +10,8 @@ function UseInitialStates() {
   const initialStateAuth = {
     token:
       typeof window !== "undefined" ? localStorage.getItem("token") || "" : "",
+    hyprid:
+      typeof window !== "undefined" ? localStorage.getItem("hyprid") || "" : "",
     role:
       typeof window !== "undefined" ? localStorage.getItem("role") || "" : "",
     user: null,

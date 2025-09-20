@@ -1,5 +1,5 @@
 import LanguageToggle from "./lang";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import logo from "../assets/logo.jpg";
 import Mode from "./mode";
@@ -16,8 +16,10 @@ const Header = () => {
   const { t } = useTranslation();
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleLogOut = () => {
     dispatch(logOut());
+    navigate("/role-select");
     // optionally redirect or clear other state…
   };
 

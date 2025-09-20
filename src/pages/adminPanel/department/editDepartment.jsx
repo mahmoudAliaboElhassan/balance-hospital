@@ -15,6 +15,7 @@ import { getCategoryTypes } from "../../../state/act/actCategory";
 import { getUserSummaries } from "../../../state/slices/user";
 import LoadingGetData from "../../../components/LoadingGetData";
 import { Search, User, ArrowLeft } from "lucide-react";
+import Forbidden from "../../../components/forbidden";
 
 function EditDepartment() {
   const { t, i18n } = useTranslation();
@@ -39,7 +40,35 @@ function EditDepartment() {
     selectedDepartment,
     loadingGetSingleDepartment,
     singleDepartmentError,
+    departmentLinkedIds,
   } = useSelector((state) => state.department);
+
+  const { departmentManagerId, loginRoleResponseDto } = useSelector(
+    (state) => state.auth
+  );
+
+  if (
+    departmentManagerId != id &&
+    loginRoleResponseDto?.roleNameEn == "Department Manager"
+  ) {
+    console.log("not allowed");
+    return <Forbidden />;
+  }
+
+  console.log(departmentLinkedIds, typeof departmentLinkedIds);
+
+  // Normalize to array for consistent handling
+  const depIdsArray = Array.isArray(departmentLinkedIds)
+    ? departmentLinkedIds
+    : [departmentLinkedIds];
+  const canManage = depIdsArray.some((depId) => depId == id);
+
+  console.log("canManage", canManage);
+  console.log("depIdsArray", depIdsArray);
+
+  if (!canManage && loginRoleResponseDto?.roleNameEn == "Category Head") {
+    return <Forbidden />;
+  }
 
   // Load initial data
   useEffect(() => {
@@ -47,8 +76,6 @@ function EditDepartment() {
     dispatch(getCategoryTypes());
     dispatch(getUserSummaries({ page: 1, pageSize: 50 }));
   }, [dispatch, id]);
-
-  const { departmentManagerId } = useSelector((state) => state.auth);
 
   // Handle user search with debouncing
   useEffect(() => {

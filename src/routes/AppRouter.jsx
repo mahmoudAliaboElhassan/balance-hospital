@@ -10,6 +10,7 @@ import withGuard from "../utils/withGuard";
 // Department specific imports (non-lazy for immediate use)
 import AssignDepartmentManager from "../pages/adminPanel/department/assignDepartmentManager";
 import AdminPanelIndex from "../pages/adminPanel/homePanel.jsx";
+import SpecifyRole from "../pages/adminPanel/specifyRole.jsx";
 
 // Roster Management Components
 const EditManagerPermission = lazy(() =>
@@ -384,6 +385,7 @@ const router = createBrowserRouter([
       { path: "forget-password", element: withSuspense(ForgetPassword) },
       { path: "reset-password", element: withSuspense(ResetPassword) },
 
+      { path: "specify-role", element: withSuspense(SpecifyRole) },
       // ========== PROTECTED ADMIN PANEL ==========
       {
         path: "admin-panel",

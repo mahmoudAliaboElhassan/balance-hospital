@@ -126,6 +126,14 @@ const Login = () => {
   // Yup validation schema
   const { VALIDATION_SCHEMA_LOGIN } = UseFormValidation();
 
+  const [selectedRole, setSelectedRole] = useState(null);
+
+  const handleRoleSelect = (roleId) => {
+    setSelectedRole(roleId);
+    // Handle navigation or next steps
+    console.log("Selected role:", roleId);
+  };
+
   // Handle form submission
   const handleSubmit = async (values, { setSubmitting }) => {
     dispatch(
@@ -146,11 +154,33 @@ const Login = () => {
           draggable: true,
         });
         console.log("data", data);
+
+        localStorage.setItem(
+          "categoryArabicName",
+          data.data.user.categoryManager.categoryNameAr
+        );
+        localStorage.setItem(
+          "categoryEnglishName",
+          data.data.user.categoryManager.categoryNameEn
+        );
+        localStorage.setItem(
+          "departmentArabicName",
+          data.data.user.departmentManager.departmentNameAr
+        );
+        localStorage.setItem(
+          "departmentEnglishName",
+          data.data.user.departmentManager.departmentNameEn
+        );
         if (
+          data.data.user.loginRoleResponseDto.roleNameEn ==
+          "Category & Department Head"
+        ) {
+          navigate("/specify-role");
+        } else if (
           data.data.user.loginRoleResponseDto.roleNameAr === "رئيس قسم" &&
           data.data.user.departmentManager?.departmentId
         ) {
-          console.log("hello dep head");
+          console.log("hello dep head", data.data.user.departmentManager);
           navigate(
             `/admin-panel/department/${data.data.user.departmentManager?.departmentId}`
           );
@@ -305,7 +335,6 @@ const Login = () => {
               {t("login.subtitle")}
             </p>
           </div>
-
           <Formik
             initialValues={INITIAL_VALUES_LOGIN}
             validationSchema={VALIDATION_SCHEMA_LOGIN}

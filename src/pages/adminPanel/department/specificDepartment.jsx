@@ -26,9 +26,16 @@ function SpecificDepartment() {
     departmentLinkedIds,
   } = useSelector((state) => state.department);
 
-  // const depIdsLinked = departmentLinkedIds
-  //   ? JSON.parse(departmentLinkedIds)
-  //   : [];
+  const { departmentManagerId } = useSelector((state) => state.auth);
+
+  if (
+    departmentManagerId != id &&
+    loginRoleResponseDto?.roleNameEn == "Department Manager"
+  ) {
+    console.log("not allowed");
+    return <Forbidden />;
+  }
+
   console.log(departmentLinkedIds, typeof departmentLinkedIds);
 
   // Normalize to array for consistent handling
@@ -105,30 +112,30 @@ function SpecificDepartment() {
   };
 
   // Get department secondary name (opposite language)
-  const getDepartmentSecondaryName = () => {
-    if (!selectedDepartment) return "";
-    return currentLang === "en"
-      ? selectedDepartment.nameArabic
-      : selectedDepartment.nameEnglish;
-  };
+  // const getDepartmentSecondaryName = () => {
+  //   if (!selectedDepartment) return "";
+  //   return currentLang === "en"
+  //     ? selectedDepartment.nameArabic
+  //     : selectedDepartment.nameEnglish;
+  // };
 
-  const handleCreateSubDepartment = () => {
-    if (selectedDepartment) {
-      // Save category information to localStorage
-      localStorage.setItem("departmentId", selectedDepartment.id);
-      localStorage.setItem(
-        "departmentEnglishName",
-        selectedDepartment.nameEnglish
-      );
-      localStorage.setItem(
-        "departmentArabicName",
-        selectedDepartment.nameArabic
-      );
+  // const handleCreateSubDepartment = () => {
+  //   if (selectedDepartment) {
+  //     // Save category information to localStorage
+  //     localStorage.setItem("departmentId", selectedDepartment.id);
+  //     localStorage.setItem(
+  //       "departmentEnglishName",
+  //       selectedDepartment.nameEnglish
+  //     );
+  //     localStorage.setItem(
+  //       "departmentArabicName",
+  //       selectedDepartment.nameArabic
+  //     );
 
-      // Navigate to create department page
-      navigate("/admin-panel/sub-department/create-specific");
-    }
-  };
+  //     // Navigate to create department page
+  //     navigate("/admin-panel/sub-department/create-specific");
+  //   }
+  // };
 
   // Manager action handlers
   const handleAssignManager = () => {

@@ -7,6 +7,7 @@ import {
   resendForgetPasswordCode,
   resetPassword,
 } from "../act/actAuth";
+import { m } from "framer-motion";
 const { initialStateAuth } = UseInitialStates();
 
 export const authSlice = createSlice({
@@ -17,9 +18,67 @@ export const authSlice = createSlice({
       localStorage.removeItem("token");
       localStorage.removeItem("role");
       localStorage.removeItem("expiresAt");
+      localStorage.removeItem("departmentManagerId");
+      localStorage.removeItem("categoryManagerId");
+      localStorage.removeItem("hyprid");
       state.token = "";
       state.role = "";
+      state.departmentManagerId = "";
+      state.categoryManagerId = "";
       state.expiresAt = "";
+      state.hyprid = "";
+    },
+
+    setCategoryManagerRole: (state) => {
+      const updatedRole = {
+        ...state.loginRoleResponseDto,
+        roleNameAr: "رئيس تخصص",
+        roleNameEn: "Category Manager",
+        userCanManageCategory: true,
+        userCanManageRole: false,
+        userCanManageRostors: false,
+        userCanManageUsers: false,
+        userCanContractingType: false,
+        userCanShiftHoursType: false,
+        userCanScientificDegree: false,
+        userCanManageDepartments: false,
+        userCanManageSubDepartments: false,
+        userCanViewReports: false,
+        userCanManageSchedules: false,
+        userCanManageRequests: false,
+      };
+
+      localStorage.setItem("loginRoleResponseDto", JSON.stringify(updatedRole));
+      state.loginRoleResponseDto = updatedRole;
+      localStorage.setItem("hyprid", "category");
+      state.hyprid = "category";
+    },
+
+    // New action for department manager role specification
+    setDepartmentManagerRole: (state) => {
+      const updatedRole = {
+        ...state.loginRoleResponseDto,
+        roleNameAr: "رئيس قسم",
+        roleNameEn: "Department Manager",
+        userCanManageCategory: false,
+        userCanManageRole: false,
+        userCanManageRostors: false,
+        userCanManageUsers: false,
+        userCanContractingType: false,
+        userCanShiftHoursType: false,
+        userCanScientificDegree: false,
+        userCanManageDepartments: true,
+        userCanManageSubDepartments: false,
+        userCanViewReports: false,
+        userCanManageSchedules: false,
+        userCanManageRequests: false,
+      };
+
+      localStorage.setItem("loginRoleResponseDto", JSON.stringify(updatedRole));
+      state.loginRoleResponseDto = updatedRole;
+
+      localStorage.setItem("hyprid", "department");
+      state.hyprid = "department";
     },
   },
   extraReducers: (builder) => {
@@ -41,6 +100,11 @@ export const authSlice = createSlice({
         );
         state.loginRoleResponseDto =
           action.payload.data.user.loginRoleResponseDto;
+
+        console.log(
+          "data from slice",
+          action.payload.data.user.departmentManager?.departmentId
+        );
 
         localStorage.setItem(
           "departmentManagerId",
@@ -94,5 +158,6 @@ export const authSlice = createSlice({
 });
 
 export default authSlice.reducer;
-export const { logOut } = authSlice.actions;
+export const { logOut, setDepartmentManagerRole, setCategoryManagerRole } =
+  authSlice.actions;
 export { logIn };
