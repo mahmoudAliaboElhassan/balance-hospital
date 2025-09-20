@@ -108,7 +108,7 @@ function UseAdminPanel() {
   if (loginRoleResponseDto.roleNameEn == "System Administrator") {
     adminPanelRoutes.push(roster);
   }
-  if (departmentManagerId && categoryManagerId) {
+  if (departmentManagerId != "undefined" && categoryManagerId != "undefined") {
     adminPanelRoutes.push(specifyRole);
   }
   return { adminPanelRoutes };

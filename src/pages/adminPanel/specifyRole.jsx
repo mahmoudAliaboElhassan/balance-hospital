@@ -93,7 +93,7 @@ const SpecifyRole = () => {
 
   const language = i18next.language;
 
-  if (loginRoleResponseDto?.roleNameEn != "Category & Department Head") {
+  if (departmentManagerId == "undefined" || categoryManagerId == "undefined") {
     console.log(categoryManagerId, departmentManagerId);
     return <Forbidden />;
   }

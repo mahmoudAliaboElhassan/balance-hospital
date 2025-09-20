@@ -111,14 +111,15 @@ export const authSlice = createSlice({
           action.payload.data.user.departmentManager?.departmentId
         );
         state.departmentManagerId =
-          action.payload.data.user.departmentManager?.departmentId;
+          action.payload.data.user.departmentManager?.departmentId ||
+          "undefined";
 
         localStorage.setItem(
           "categoryManagerId",
           action.payload.data.user.categoryManager?.categoryId
         );
         state.categoryManagerId =
-          action.payload.data.user.categoryManager?.categoryId;
+          action.payload.data.user.categoryManager?.categoryId || "undefined";
       })
 
       .addCase(logIn.rejected, (state, action) => {
