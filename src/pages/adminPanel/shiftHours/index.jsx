@@ -30,6 +30,7 @@ import LoadingGetData from "../../../components/LoadingGetData";
 import { getShiftHoursTypes } from "../../../state/act/actShiftHours";
 import DeleteShiftHoursTypeModal from "../../../components/DeleteShiftHoursTypeModal";
 import "../../../styles/general.css";
+import i18next from "i18next";
 
 function ShiftHours() {
   const { t, i18n } = useTranslation();
@@ -130,14 +131,14 @@ function ShiftHours() {
   };
   // Format date
   const formatDate = (dateString) => {
-    const locale = i18n.language === "ar" ? "ar-EG" : "en-US";
-    return new Date(dateString).toLocaleDateString(locale, {
+    if (!dateString) return t("common.notAvailable");
+    return new Intl.DateTimeFormat(i18next.language, {
       year: "numeric",
-      month: "short",
+      month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    });
+    }).format(new Date(dateString));
   };
 
   // Format hours for display

@@ -2197,6 +2197,8 @@
     },
     "filtered": "Filterd",
     "doctors": "Doctors",
+    "noDoctorsInFilter": "لا يوجد أطباء لهذا الفلتر",
+    "clearFilter": "Clear Filter",
     "filters": {
       "search": "Search",
       "searchPlaceholder": "Search by title or description",

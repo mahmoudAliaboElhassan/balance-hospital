@@ -2219,6 +2219,8 @@
       "closed": "مغلق",
       "archived": "مؤرشف"
     },
+    "clearFilter": "مسح الفلتر",
+    "noDoctorsInFilter": "No doctors found for this filter",
     "filtered": "المفلترين",
     "doctors": "طبيب",
     "filters": {

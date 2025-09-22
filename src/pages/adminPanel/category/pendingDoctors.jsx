@@ -36,6 +36,7 @@ import {
   clearApprovalError,
 } from "../../../state/slices/category";
 import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 const PendingDoctorRequests = () => {
   const dispatch = useDispatch();
@@ -240,20 +241,14 @@ const PendingDoctorRequests = () => {
 
   // Format date
   const formatDate = (dateString) => {
-    if (!dateString) return t("pendingDoctorRequests.fields.notSpecified");
-
-    try {
-      const locale = currentLanguage === "ar" ? "ar-EG" : "en-US";
-      return new Date(dateString).toLocaleDateString(locale, {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } catch (error) {
-      return t("pendingDoctorRequests.fields.invalidDate");
-    }
+    if (!dateString) return t("common.notAvailable");
+    return new Intl.DateTimeFormat(i18next.language, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(new Date(dateString));
   };
 
   // Status filter options

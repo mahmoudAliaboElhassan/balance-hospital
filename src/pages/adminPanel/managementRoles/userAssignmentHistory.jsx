@@ -28,6 +28,7 @@ import {
 
 import LoadingGetData from "../../../components/LoadingGetData.jsx";
 import { getUserAssignmentHistory } from "../../../state/act/actManagementRole.js";
+import i18next from "i18next";
 
 function UserAssignmentHistory() {
   const { t, i18n } = useTranslation();
@@ -90,15 +91,14 @@ function UserAssignmentHistory() {
 
   // Format date
   const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    const locale = i18n.language === "ar" ? "ar-EG" : "en-US";
-    return new Date(dateString).toLocaleDateString(locale, {
+    if (!dateString) return t("common.notAvailable");
+    return new Intl.DateTimeFormat(i18next.language, {
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    });
+    }).format(new Date(dateString));
   };
 
   // Pagination handlers

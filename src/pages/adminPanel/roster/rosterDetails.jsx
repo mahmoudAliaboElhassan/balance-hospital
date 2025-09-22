@@ -34,6 +34,7 @@ import {
   PenTool,
   Send,
 } from "lucide-react";
+import i18next from "i18next";
 
 function RosterDetails() {
   const { rosterId } = useParams();
@@ -124,13 +125,14 @@ function RosterDetails() {
 
   // Format date
   const formatDate = (dateString) => {
-    if (!dateString) return "-";
-    const date = new Date(dateString);
-    return date.toLocaleDateString(currentLang === "ar" ? "ar-SA" : "en-US", {
+    if (!dateString) return t("common.notAvailable");
+    return new Intl.DateTimeFormat(i18next.language, {
       year: "numeric",
       month: "long",
       day: "numeric",
-    });
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(new Date(dateString));
   };
 
   // Format date with time

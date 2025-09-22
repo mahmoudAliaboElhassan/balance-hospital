@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { getDepartments } from "../../../state/act/actDepartment";
 import CollapsibleDateCard from "./collapsWorkingHour";
+import i18next from "i18next";
 
 function WorkingHours() {
   const { rosterId } = useParams();
@@ -91,13 +92,14 @@ function WorkingHours() {
 
   // Format date
   const formatDate = (dateString) => {
-    if (!dateString) return "-";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
+    if (!dateString) return t("common.notAvailable");
+    return new Intl.DateTimeFormat(i18next.language, {
       year: "numeric",
-      month: "short",
+      month: "long",
       day: "numeric",
-    });
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(new Date(dateString));
   };
 
   // Format time

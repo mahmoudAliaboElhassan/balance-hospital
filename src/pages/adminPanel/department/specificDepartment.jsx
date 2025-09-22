@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { Edit, Eye, UserPlus, UserCog, UserX, Shield } from "lucide-react";
 import RemoveManagerModal from "../../../components/RemoveMangerModal";
 import Forbidden from "../../../components/forbidden";
+import i18next from "i18next";
 
 function SpecificDepartment() {
   const { depId: id } = useParams();
@@ -177,17 +178,14 @@ function SpecificDepartment() {
 
   // Format date based on language
   const formatDate = (dateString) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    const locale = currentLang === "en" ? "en-US" : "ar-EG";
-    const options = {
+    if (!dateString) return t("common.notAvailable");
+    return new Intl.DateTimeFormat(i18next.language, {
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    };
-    return date.toLocaleDateString(locale, options);
+    }).format(new Date(dateString));
   };
 
   // Loading Component

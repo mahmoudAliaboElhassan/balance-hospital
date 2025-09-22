@@ -36,6 +36,7 @@ import {
 } from "../../../state/slices/managementRole.js";
 
 import LoadingGetData from "../../../components/LoadingGetData.jsx";
+import i18next from "i18next";
 
 function SpecifiedManagementRole() {
   const { t, i18n } = useTranslation();
@@ -197,15 +198,14 @@ function SpecifiedManagementRole() {
 
   // Format date
   const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    const locale = i18n.language === "ar" ? "ar-EG" : "en-US";
-    return new Date(dateString).toLocaleDateString(locale, {
+    if (!dateString) return t("common.notAvailable");
+    return new Intl.DateTimeFormat(i18next.language, {
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    });
+    }).format(new Date(dateString));
   };
 
   // Users search and pagination handlers

@@ -25,6 +25,7 @@ import {
 } from "../../../state/slices/category";
 import { Link } from "react-router-dom";
 import DeleteCategoryModal from "../../../components/DeleteCategoryModal";
+import i18next from "i18next";
 
 function Category() {
   const { t, i18n } = useTranslation();
@@ -88,14 +89,14 @@ function Category() {
 
   // Format date
   const formatDate = (dateString) => {
-    const locale = i18n.language === "ar" ? "ar-EG" : "en-US";
-    return new Date(dateString).toLocaleDateString(locale, {
+    if (!dateString) return t("common.notAvailable");
+    return new Intl.DateTimeFormat(i18next.language, {
       year: "numeric",
-      month: "short",
+      month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    });
+    }).format(new Date(dateString));
   };
 
   // Generate page numbers for pagination

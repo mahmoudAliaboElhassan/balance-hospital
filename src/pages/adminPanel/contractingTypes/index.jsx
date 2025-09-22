@@ -30,6 +30,7 @@ import {
 import { Link } from "react-router-dom";
 import DeleteContractingTypeModal from "../../../components/DeleteContractingType";
 import "../../../styles/general.css";
+import i18next from "i18next";
 
 function ContractingTypes() {
   const { t, i18n } = useTranslation();
@@ -176,14 +177,14 @@ function ContractingTypes() {
 
   // Format date
   const formatDate = (dateString) => {
-    const locale = language === "ar" ? "ar-EG" : "en-US";
-    return new Date(dateString).toLocaleDateString(locale, {
+    if (!dateString) return t("common.notAvailable");
+    return new Intl.DateTimeFormat(i18next.language, {
       year: "numeric",
-      month: "short",
+      month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    });
+    }).format(new Date(dateString));
   };
 
   // Generate page numbers for pagination

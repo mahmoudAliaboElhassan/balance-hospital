@@ -30,6 +30,7 @@ import {
 } from "../../../state/slices/department";
 import { Link } from "react-router-dom";
 import DeleteDepartmentModal from "../../../components/DeleteDepartmentModal";
+import i18next from "i18next";
 
 function Department() {
   const { t, i18n } = useTranslation();
@@ -104,14 +105,14 @@ function Department() {
 
   // Format date
   const formatDate = (dateString) => {
-    const locale = i18n.language === "ar" ? "ar-EG" : "en-US";
-    return new Date(dateString).toLocaleDateString(locale, {
+    if (!dateString) return t("common.notAvailable");
+    return new Intl.DateTimeFormat(i18next.language, {
       year: "numeric",
-      month: "short",
+      month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    });
+    }).format(new Date(dateString));
   };
 
   // Generate page numbers for pagination

@@ -410,17 +410,16 @@ const SpecificCategory = () => {
 
   // Format date based on language
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const locale = currentLang === "en" ? "en-US" : "ar-EG";
-    const options = {
+    if (!dateString) return t("common.notAvailable");
+    return new Intl.DateTimeFormat(i18next.language, {
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    };
-    return date.toLocaleDateString(locale, options);
+    }).format(new Date(dateString));
   };
+
   const [depClickId, setDepClickId] = useState(null);
   const handleLinkDepartment = async (departmentId) => {
     try {
