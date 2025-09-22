@@ -367,7 +367,7 @@ const ProtectedWorkingHour = withGuard(WorkingHour, "userCanManageRostors");
 const ProtectedAssignDoctor = withGuard(AssignDoctor, "userCanManageRostors");
 const ProtectedDoctorSchedule = withGuard(
   DoctorSchedule,
-  "userCanManageRostors"
+  "userCanManageCategory"
 );
 
 // =============================================================================
