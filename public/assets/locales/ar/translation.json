@@ -2234,6 +2234,9 @@
       "orderDirection": "اتجاه الفرز",
       "inactiveOnly": "غير النشط فقط",
       "activeOnly": "النشط فقط",
+      "physician": "طبيب",
+      "consultant": "استشاري",
+      "specialist": "أخصائي",
       "ascending": "تصاعدي",
       "descending": "تنازلي",
       "sortBy": {
