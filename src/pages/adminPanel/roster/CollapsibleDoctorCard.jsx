@@ -16,7 +16,9 @@ import {
   AlertCircle,
   MapPin,
   Briefcase,
+  Eye,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const CollapsibleDoctorCard = ({ doctorData }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -26,6 +28,7 @@ const CollapsibleDoctorCard = ({ doctorData }) => {
   const isRTL = i18n.language === "ar";
   const currentLang = i18n.language || "ar";
   const isDark = mymode === "dark";
+  const navigate = useNavigate();
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -186,6 +189,21 @@ const CollapsibleDoctorCard = ({ doctorData }) => {
                 </div>
               </div>
             </div>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/admin-panel/rosters/doctors/${doctorData.doctorId}`);
+              }}
+              className={`p-2 rounded-lg transition-colors ${
+                isDark
+                  ? "hover:bg-gray-700 text-gray-400 hover:text-blue-400"
+                  : "hover:bg-gray-100 text-gray-600 hover:text-blue-600"
+              }`}
+              title={t("roster.viewDoctorDetails")}
+              aria-label={t("roster.viewDoctorDetails")}
+            >
+              <Eye className="h-5 w-5" />
+            </button>
 
             {/* Chevron Icon */}
             <div className="flex items-center">

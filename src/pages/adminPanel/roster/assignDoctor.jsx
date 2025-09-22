@@ -700,8 +700,8 @@ function AssignDoctor() {
             title: t("roster.assign.conflict.title"),
             text:
               currentLang === "en"
-                ? error?.messageEn || t("roster.assign.conflict.message")
-                : error?.messageAr || t("roster.assign.conflict.message"),
+                ? error?.errors[0] || t("roster.assign.conflict.message")
+                : error?.errors[0] || t("roster.assign.conflict.message"),
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: t("roster.assign.conflict.override"),
@@ -719,10 +719,10 @@ function AssignDoctor() {
             title: t("roster.assign.error.title"),
             text:
               currentLang === "en"
-                ? error?.messageEn ||
+                ? error?.errors[0] ||
                   error?.message ||
                   t("roster.assign.error.message")
-                : error?.messageAr ||
+                : error?.errors[0] ||
                   error?.message ||
                   t("roster.assign.error.message"),
             icon: "error",
