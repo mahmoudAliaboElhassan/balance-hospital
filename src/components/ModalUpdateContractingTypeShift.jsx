@@ -7,11 +7,11 @@ import Swal from "sweetalert2";
 import { Save, X } from "lucide-react";
 import * as Yup from "yup";
 import {
+  getAvailbleScientficDegrees,
   getShiftContractingTypes,
   updateShiftContractingType,
 } from "../state/act/actRosterManagement";
 import { useEffect } from "react";
-import { getContractingTypes } from "../state/act/actContractingType";
 import LoadingGetData from "./LoadingGetData";
 import UseFormValidation from "../hooks/use-form-validation";
 
@@ -37,7 +37,7 @@ function ModalEditContractingTypeModal({
 
   useEffect(() => {
     // Fetch available contracting types when modal opens
-    dispatch(getContractingTypes());
+    dispatch(getAvailbleScientficDegrees());
   }, [dispatch]);
 
   // Validation schema - removed contractingTypeId validation since it's disabled
@@ -54,6 +54,7 @@ function ModalEditContractingTypeModal({
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
+      console.log("Form values on submit:", values);
       const updateData = {
         contractingTypeId: parseInt(values.contractingTypeId),
         defaultRequiredDoctors: parseInt(values.defaultRequiredDoctors),
@@ -127,7 +128,7 @@ function ModalEditContractingTypeModal({
             } rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto`}
         >
           {loadingGetContractingTypes ? (
-            <LoadingGetData text={t("gettingData.contractingTypes")} />
+            <LoadingGetData text={t("gettingData.scientificDegrees")} />
           ) : (
             <div className="p-4">
               <div className="flex items-center justify-between mb-4">

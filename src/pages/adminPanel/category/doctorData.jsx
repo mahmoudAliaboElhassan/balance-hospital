@@ -1,9 +1,10 @@
 import React from "react";
 import { useParams } from "react-router-dom";
+import DoctorsPerRoster from "../roster/doctorsPerRoster";
 
 function DoctorData() {
   const { id } = useParams();
-  return <div>DoctorData {id}</div>;
+  return <div></div>;
 }
 
 export default DoctorData;

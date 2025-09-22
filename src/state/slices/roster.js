@@ -56,6 +56,7 @@ import {
   addRosterDepartment,
   getRosterByCategory,
   deleteRoster,
+  getDoctorsPerRoster,
 } from "../act/actRosterManagement";
 import i18next from "i18next";
 
@@ -79,6 +80,7 @@ const initialState = {
   // ===== CONTRACTING DATA (بيانات التعاقدات) =====
   contractingRequirements: [],
   availableContractingTypes: [],
+  doctorsPerRoster: [],
   contractingAnalytics: null,
   contractingValidation: null,
 
@@ -633,6 +635,21 @@ const rosterManagementSlice = createSlice({
       .addCase(deleteRoster.rejected, (state, action) => {
         state.loading.delete = false;
         state.errors.shifts = action.payload;
+      });
+
+    builder
+      .addCase(getDoctorsPerRoster.pending, (state) => {
+        state.loading.fetch = true;
+        state.errors.general = null;
+      })
+      .addCase(getDoctorsPerRoster.fulfilled, (state, action) => {
+        state.loading.fetch = false;
+        state.doctorsPerRoster = action.payload?.data || [];
+      })
+      .addCase(getDoctorsPerRoster.rejected, (state, action) => {
+        state.loading.fetch = false;
+        state.errors.general =
+          action.payload || i18next.t("roster.error.fetchFailed");
       });
 
     // ===================================================================
@@ -1407,6 +1424,9 @@ export const selectFilteredRosters = (state) => {
     return true;
   });
 };
+
+export const selectDoctorsPerRoster = (state) =>
+  state.rosterManagement.doctorsPerRoster;
 
 // Statistics Selectors (محددات الإحصائيات)
 export const selectRosterStatistics = (state) => {

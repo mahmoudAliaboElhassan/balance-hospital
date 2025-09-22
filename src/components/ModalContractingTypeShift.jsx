@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import { Plus, Trash2, Save, X, Users } from "lucide-react";
 import {
   addShiftContractingTypes,
+  getAvailbleScientficDegrees,
   getShiftContractingTypes,
 } from "../state/act/actRosterManagement";
 import { getContractingTypes } from "../state/act/actContractingType";
@@ -28,6 +29,8 @@ function ModalContractingTypesDepartment({ selectedShift, onClose }) {
   const currentLang = i18next.language;
   const isRTL = currentLang === "ar";
 
+  console.log("selectedShift", selectedShift);
+
   // Validation schema for contracting types
   const { VALIDATION_SCHEMA_ADD_ROSTER_CONTRACTING_TYPES } =
     UseFormValidation();
@@ -35,12 +38,13 @@ function ModalContractingTypesDepartment({ selectedShift, onClose }) {
 
   useEffect(() => {
     // Fetch available contracting types when modal opens
-    dispatch(getContractingTypes());
+    dispatch(getAvailbleScientficDegrees());
   }, [dispatch]);
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       const contractingData = {
+        rosterDepartmentShiftId: selectedShift.id,
         contractingTypes: values.contractingTypes.map((contractingType) => ({
           contractingTypeId: parseInt(contractingType.contractingTypeId),
           defaultRequiredDoctors: parseInt(
@@ -116,7 +120,7 @@ function ModalContractingTypesDepartment({ selectedShift, onClose }) {
             } rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto`}
         >
           {loadingGetContractingTypes ? (
-            <LoadingGetData text={t("gettingData.contractingTypes")} />
+            <LoadingGetData text={t("gettingData.scientificDegrees")} />
           ) : (
             <div className="p-4">
               <div className="flex items-center justify-between mb-4">
@@ -170,7 +174,7 @@ function ModalContractingTypesDepartment({ selectedShift, onClose }) {
                               }`}
                             >
                               {t(
-                                "roster.contractingTypes.fields.contractingTypes"
+                                "roster.contractingTypes.fields.contractingType"
                               )}
                             </h3>
                             <button

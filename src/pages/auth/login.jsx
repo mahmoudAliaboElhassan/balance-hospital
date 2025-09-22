@@ -153,7 +153,7 @@ const Login = () => {
           pauseOnHover: true,
           draggable: true,
         });
-        console.log("data", data);
+        console.log("data", data.data.user);
 
         localStorage.setItem(
           "categoryArabicName",

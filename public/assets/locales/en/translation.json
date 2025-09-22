@@ -1709,6 +1709,7 @@
     "categoryData": "Loading category data…",
     "departments": "Loading departments…",
     "departmentData": "Loading department data…",
+    "loadingDoctors": "Loading doctors…",
     "categoryHeads": "Loading category heads...",
     "subDepartments": "Loading sub-departments…",
     "subDepartmentData": "Loading sub-department data…",
@@ -1991,34 +1992,34 @@
     },
 
     "contractingTypes": {
-      "title": "Contracting Types Management",
-      "editTitle": "Edit Contracting Type",
-      "subtitle": "Define required contracting types for the shift",
-      "noContractingTypes": "No contracting types added",
-      "contractingTypeNumber": "Contracting Type #{number}",
+      "title": "Scientific Degrees Management",
+      "editTitle": "Scientific Degree Degree",
+      "subtitle": "Define required Scientific Degrees for the shift",
+      "noContractingTypes": "No Scientific Degrees added",
+      "contractingTypeNumber": "Scientific Degrees #{number}",
       "charactersCount": "characters",
-      "viewContractingTypes": "View Contracting Types",
-      "hideContractingTypes": "Hide Contracting Types",
+      "viewContractingTypes": "View Scientific Degrees",
+      "hideContractingTypes": "Hide Scientific Degrees",
 
-      "addContractingTypes": "Add Contracting Types",
+      "addContractingTypes": "Add Scientific Degrees",
       "fields": {
-        "contractingTypes": "Contracting Types",
-        "contractingType": "Contracting Type",
+        "contractingTypes": "Scientific Degrees",
+        "contractingType": "Scientific Degree",
         "defaultRequired": "Default Required Doctors",
         "defaultMax": "Default Maximum Doctors",
         "notes": "Notes",
         "overwriteExisting": "Overwrite Existing",
-        "overwriteExistingHelp": "Existing contracting types will be replaced with the new ones"
+        "overwriteExistingHelp": "Existing Scientific Degrees will be replaced with the new ones"
       },
       "placeholders": {
         "selectContractingType": "Select contracting type",
         "notes": "Additional notes about this contracting type..."
       },
       "buttons": {
-        "addContractingType": "Add Contracting Type",
+        "addContractingType": "Add Scientific Degrees",
         "remove": "Remove",
         "cancel": "Cancel",
-        "addContractingTypes": "Add Contracting Types",
+        "addContractingTypes": "Add Scientific Degrees",
         "adding": "Adding..."
       },
       "success": {
@@ -2027,14 +2028,14 @@
       },
       "error": {
         "title": "Error Adding Contracting Types",
-        "removeTitle": "Failed to remove contracting type",
-        "updateTitle": "Failed to update contracting type",
-        "updateMessage": "An error occurred while updating the contracting type",
-        "removeMessage": "An error occurred while removing the contracting type",
-        "message": "An error occurred while adding contracting types. Please try again."
+        "removeTitle": "Failed to remove Scientific Degree",
+        "updateTitle": "Failed to update Scientific Degree",
+        "updateMessage": "An error occurred while updating the Scientific Degree",
+        "removeMessage": "An error occurred while removing the Scientific Degree",
+        "message": "An error occurred while adding Scientific Degrees. Please try again."
       },
       "validation": {
-        "atLeastOneRequired": "At least one contracting type is required",
+        "atLeastOneRequired": "At least one Scientific Degree is required",
         "contractingTypeRequired": "Contracting type is required",
         "minRequired": "Minimum is 1 doctor",
         "maxRequired": "Maximum is 50 doctors",
@@ -2132,6 +2133,7 @@
       "edit": "Edit Roster",
       "editRoster": "Edit Roster",
       "addNew": "Add New Roster",
+      "manageDoctors": "Manage Docotrs",
       "cancel": "Cancel",
       "add": "Add",
       "addDepartment": "Add Another Department",
@@ -2299,6 +2301,29 @@
       "december": "December"
     },
 
+    "assignments": "Assignments",
+    "hours": "Hours",
+    "requests": "Requests",
+    "attendanceStats": "Attendance Statistics",
+    "present": "Present",
+    "noShow": "No Show",
+    "late": "Late",
+    "pending": "Pending",
+    "byDepartment": "By Department",
+    "byShiftType": "By Shift Type",
+    "requestSummary": "Request Summary",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "noDoctorsFound": "No doctors found for this roster",
+    "doctorsPerRoster": "Doctors per Roster",
+    "doctorsPerRosterDescription": "View all doctors assigned to this roster and their statistics",
+    "summaryStatistics": "Summary Statistics",
+    "totalDoctors": "Total Doctors",
+    "totalHours": "Total Hours",
+    "totalRequests": "Total Requests",
+    "totalPresent": "Present",
+    "totalPending": "Pending",
+    "doctorsList": "Doctors List",
     "validation": {
       "titleRequired": "Roster title is required",
       "titleMinLength": "Title must be at least 3 characters",

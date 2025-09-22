@@ -267,6 +267,14 @@ function RosterDetails() {
                   {t("roster.actions.edit")}
                 </button>
               </Link>
+
+              <Link to={`/admin-panel/rosters/${selectedRoster.id}/doctors`}>
+                <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors w-full sm:w-auto justify-center">
+                  <User size={16} />
+                  {t("roster.actions.manageDoctors")}
+                </button>
+              </Link>
+
               <Link
                 to={`/admin-panel/rosters/${selectedRoster.id}/working-hours`}
               >
@@ -826,7 +834,21 @@ function RosterDetails() {
                     {t("roster.actions.editRoster")}
                   </button>
                 </Link>
-
+                <Link
+                  to={`/admin-panel/rosters/${selectedRoster.id}/doctors`}
+                  className="block"
+                >
+                  <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-lg flex items-center justify-center p-3 rounded-lg flex items-center justify-center gap-2 transition-all duration-200 transform hover:scale-105">
+                    <User size={18} />
+                    {t("roster.actions.manageDoctors")}
+                  </button>
+                </Link>
+                {/* <Link to={`/admin-panel/rosters/${selectedRoster.id}/doctors`}>
+                  <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors w-full sm:w-auto justify-center">
+                    <User size={16} />
+                    {t("roster.actions.manageDoctors")}
+                  </button>
+                </Link> */}
                 <Link
                   to={`/admin-panel/rosters/${selectedRoster.id}/working-hours`}
                 >

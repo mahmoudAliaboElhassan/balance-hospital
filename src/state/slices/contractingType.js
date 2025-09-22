@@ -9,6 +9,7 @@ import {
 } from "../act/actContractingType";
 import i18next from "i18next";
 import "../../translation/i18n";
+import { getAvailbleScientficDegrees } from "../act/actRosterManagement";
 
 // Initial state
 const initialState = {
@@ -235,6 +236,50 @@ export const contractingTypeSlice = createSlice({
         }
       })
       .addCase(getContractingTypes.rejected, (state, action) => {
+        state.loadingGetContractingTypes = false;
+        state.contractingTypes = [];
+        state.pagination = initialState.pagination;
+        state.error = {
+          message:
+            action.payload?.messageEn ||
+            action.payload?.messageAr ||
+            i18next.t("contractingTypes.fetchError"),
+          errors: action.payload?.errors || [],
+          timestamp: new Date().toISOString(),
+        };
+      })
+
+      .addCase(getAvailbleScientficDegrees.pending, (state) => {
+        state.loadingGetContractingTypes = true;
+        state.error = null;
+      })
+      .addCase(getAvailbleScientficDegrees.fulfilled, (state, action) => {
+        state.loadingGetContractingTypes = false;
+        state.error = null;
+
+        const response = action.payload;
+        if (response.success) {
+          // Set data and pagination from API response
+          state.contractingTypes = response.data || [];
+          state.message = response.messageAr || response.messageEn;
+          state.timestamp = response.timestamp;
+
+          // Update pagination from API response
+          if (response.pagination) {
+            state.pagination = {
+              page: response.pagination.page,
+              pageSize: response.pagination.pageSize,
+              totalCount: response.pagination.totalCount,
+              totalPages: response.pagination.totalPages,
+              hasNextPage: response.pagination.hasNextPage,
+              hasPreviousPage: response.pagination.hasPreviousPage,
+              startIndex: response.pagination.startIndex,
+              endIndex: response.pagination.endIndex,
+            };
+          }
+        }
+      })
+      .addCase(getAvailbleScientficDegrees.rejected, (state, action) => {
         state.loadingGetContractingTypes = false;
         state.contractingTypes = [];
         state.pagination = initialState.pagination;

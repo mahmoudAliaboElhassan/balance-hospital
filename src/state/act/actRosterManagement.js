@@ -744,3 +744,35 @@ export const getDoctorRequests = createAsyncThunk(
     }
   }
 );
+export const getAvailbleScientficDegrees = createAsyncThunk(
+  "rosterManagement/getAvailbleScientficDegrees",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.get(
+        `/api/v1/ScientificDegree?IsActive=true`,
+        {
+          headers: getAuthHeaders(),
+        }
+      );
+      return res.data;
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+export const getDoctorsPerRoster = createAsyncThunk(
+  "rosterManagement/getDoctorsPerRoster",
+  async ({ rosterId }, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.get(
+        `/api/v1/rosterDisplay/${rosterId}/doctor-stats`,
+        {
+          headers: getAuthHeaders(),
+        }
+      );
+      return res.data;
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
