@@ -2054,7 +2054,7 @@
       "contractingTypeNumber": "الدرجه العلميه رقم #{number}",
       "charactersCount": "حرف",
       "viewContractingTypes": "عرض الدرجات العلميه",
-      "hideContractingTypes": "إخفاء أنواع العقود",
+      "hideContractingTypes": "إخفاء الدرجات العلميه",
 
       "addContractingTypes": "إضافة الدرجات العلميه",
       "fields": {
@@ -2219,7 +2219,8 @@
       "closed": "مغلق",
       "archived": "مؤرشف"
     },
-
+    "filtered": "المفلترين",
+    "doctors": "طبيب",
     "filters": {
       "search": "بحث",
       "searchPlaceholder": "ابحث بالعنوان أو الوصف",
@@ -2239,6 +2240,7 @@
       "specialist": "أخصائي",
       "ascending": "تصاعدي",
       "descending": "تنازلي",
+
       "sortBy": {
         "createdAt": "تاريخ الإنشاء",
         "nameArabic": "الاسم العربي",

@@ -2195,7 +2195,8 @@
       "closed": "Closed",
       "archived": "Archived"
     },
-
+    "filtered": "Filterd",
+    "doctors": "Doctors",
     "filters": {
       "search": "Search",
       "searchPlaceholder": "Search by title or description",
