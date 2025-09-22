@@ -61,3 +61,23 @@ export const doctorForAssignment = createAsyncThunk(
     }
   }
 );
+export const getDoctorData = createAsyncThunk(
+  "usersSlice/getDoctorData",
+  async ({ userId }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+
+    try {
+      const res = await axiosInstance.get(`/api/v1/Users/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      console.log("User Data  fetched successfully:", res);
+      return res.data;
+    } catch (error) {
+      console.log("Error fetching user Data:", error);
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);

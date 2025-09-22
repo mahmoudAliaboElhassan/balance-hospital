@@ -1,8 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { doctorForAssignment, getUserSummaries } from "../act/actUsers";
+import {
+  doctorForAssignment,
+  getDoctorData,
+  getUserSummaries,
+} from "../act/actUsers";
 
 const initialState = {
   users: [],
+  userData: {},
   pagination: {
     totalCount: 0,
     page: 1,
@@ -85,14 +90,6 @@ const usersSlice = createSlice({
         state.loading.list = false;
         if (action.payload.success) {
           state.users = action.payload.data || [];
-          // state.pagination = {
-          //   totalCount: action.payload.data?.totalCount || 0,
-          //   page: action.payload.data?.page || 1,
-          //   pageSize: action.payload.data?.pageSize || 10,
-          //   totalPages: action.payload.data?.totalPages || 0,
-          //   hasNextPage: action.payload.data?.hasNextPage || false,
-          //   hasPreviousPage: action.payload.data?.hasPreviousPage || false,
-          // };
         }
       })
       .addCase(doctorForAssignment.rejected, (state, action) => {
@@ -101,6 +98,23 @@ const usersSlice = createSlice({
           action.payload?.messageEn ||
           action.payload ||
           "Failed to fetch user summaries";
+      })
+      .addCase(getDoctorData.pending, (state) => {
+        state.loading.list = true;
+        state.error = "";
+      })
+      .addCase(getDoctorData.fulfilled, (state, action) => {
+        state.loading.list = false;
+        if (action.payload.success) {
+          state.userData = action.payload.data || [];
+        }
+      })
+      .addCase(getDoctorData.rejected, (state, action) => {
+        state.loading.list = false;
+        state.error =
+          action.payload?.messageEn ||
+          action.payload ||
+          "Failed to fetch user Data";
       });
   },
 });
