@@ -178,6 +178,9 @@ const CreateRoster = lazy(() =>
 const DoctorPerRoster = lazy(() =>
   import("../pages/adminPanel/roster/doctorsPerRoster.jsx")
 );
+const ManageDoctors = lazy(() =>
+  import("../pages/adminPanel/roster/manageDoctors.jsx")
+);
 const RosterDetails = lazy(() =>
   import("../pages/adminPanel/roster/rosterDetails")
 );
@@ -211,6 +214,10 @@ const ProtectedPendingDoctorRequests = withGuard(
 );
 const ProtectedDoctorPerRoster = withGuard(
   DoctorPerRoster,
+  "userCanManageCategory"
+);
+const ProtectedManageDoctors = withGuard(
+  ManageDoctors,
   "userCanManageCategory"
 );
 
@@ -626,6 +633,10 @@ const router = createBrowserRouter([
           {
             path: "rosters/:id/doctors",
             element: withSuspense(ProtectedDoctorPerRoster),
+          },
+          {
+            path: "rosters/:id/manage-doctors",
+            element: withSuspense(ProtectedManageDoctors),
           },
 
           // ========== FUTURE ROUTES (COMMENTED FOR REFERENCE) ==========

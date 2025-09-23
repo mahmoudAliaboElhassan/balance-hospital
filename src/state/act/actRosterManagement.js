@@ -669,22 +669,6 @@ export const submitDoctorRequest = createAsyncThunk(
  * Get doctor requests for roster
  * الحصول على طلبات الدكاترة للروستر
  */
-export const getDoctorRequestsForRoster = createAsyncThunk(
-  "rosterManagement/getDoctorRequestsForRoster",
-  async ({ rosterId, status }, { rejectWithValue }) => {
-    try {
-      const queryParams = buildQueryParams({ status });
-      const url = `/api/v1/rosterassignment/roster/${rosterId}/doctor-requests${
-        queryParams ? `?${queryParams}` : ""
-      }`;
-
-      const res = await axiosInstance.get(url, { headers: getAuthHeaders() });
-      return res.data;
-    } catch (error) {
-      return handleError(error, rejectWithValue);
-    }
-  }
-);
 
 /**
  * Approve doctor request
@@ -730,20 +714,20 @@ export const rejectDoctorRequest = createAsyncThunk(
  * Get doctor's requests
  * الحصول على طلبات الدكتور
  */
-export const getDoctorRequests = createAsyncThunk(
-  "rosterManagement/getDoctorRequests",
-  async ({ doctorId }, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.get(
-        `/api/v1/rosterassignment/doctors/${doctorId}/requests`,
-        { headers: getAuthHeaders() }
-      );
-      return res.data;
-    } catch (error) {
-      return handleError(error, rejectWithValue);
-    }
-  }
-);
+// export const getDoctorRequests = createAsyncThunk(
+//   "rosterManagement/getDoctorRequests",
+//   async ({ doctorId }, { rejectWithValue }) => {
+//     try {
+//       const res = await axiosInstance.get(
+//         `/api/v1/rosterassignment/doctors/${doctorId}/requests`,
+//         { headers: getAuthHeaders() }
+//       );
+//       return res.data;
+//     } catch (error) {
+//       return handleError(error, rejectWithValue);
+//     }
+//   }
+// );
 export const getAvailbleScientficDegrees = createAsyncThunk(
   "rosterManagement/getAvailbleScientficDegrees",
   async (_, { rejectWithValue }) => {
@@ -766,6 +750,22 @@ export const getDoctorsPerRoster = createAsyncThunk(
     try {
       const res = await axiosInstance.get(
         `/api/v1/rosterDisplay/${rosterId}/doctor-stats`,
+        {
+          headers: getAuthHeaders(),
+        }
+      );
+      return res.data;
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+export const getDoctorsReuests = createAsyncThunk(
+  "rosterManagement/getDoctorsReuests",
+  async ({ rosterId, status }, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.get(
+        `/api/v1/rosterassignment/roster/${rosterId}/doctor-requests?status=${status}`,
         {
           headers: getAuthHeaders(),
         }

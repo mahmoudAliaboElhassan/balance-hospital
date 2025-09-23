@@ -273,7 +273,17 @@ function RosterDetails() {
               <Link to={`/admin-panel/rosters/${selectedRoster.id}/doctors`}>
                 <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors w-full sm:w-auto justify-center">
                   <User size={16} />
-                  {t("roster.actions.manageDoctors")}
+                  {t("roster.actions.doctors")}
+                </button>
+              </Link>
+              <Link
+                to={`/admin-panel/rosters/${selectedRoster.id}/manage-doctors`}
+              >
+                <button className="relative rounded-lg p-[2px] bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-400 transition-transform duration-200 w-full sm:w-auto">
+                  <span className="flex items-center gap-2 justify-center bg-gray-900 text-white px-4 py-2 rounded-md w-full sm:w-auto">
+                    <User size={16} />
+                    {t("roster.actions.manageDoctors")}
+                  </span>
                 </button>
               </Link>
 
@@ -842,15 +852,22 @@ function RosterDetails() {
                 >
                   <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-lg flex items-center justify-center p-3 rounded-lg flex items-center justify-center gap-2 transition-all duration-200 transform hover:scale-105">
                     <User size={18} />
-                    {t("roster.actions.manageDoctors")}
+                    {t("roster.actions.doctors")}
                   </button>
                 </Link>
-                {/* <Link to={`/admin-panel/rosters/${selectedRoster.id}/doctors`}>
-                  <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors w-full sm:w-auto justify-center">
-                    <User size={16} />
-                    {t("roster.actions.manageDoctors")}
+
+                <Link
+                  to={`/admin-panel/rosters/${selectedRoster.id}/manage-doctors`}
+                  className="block"
+                >
+                  <button className="w-full relative rounded-lg p-[2px] bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-400 transition-all duration-200 transform hover:scale-105">
+                    <span className="flex items-center justify-center gap-2 w-full h-full bg-gray-900 rounded-md p-3 text-white">
+                      <User size={18} />
+                      {t("roster.actions.manageDoctors")}
+                    </span>
                   </button>
-                </Link> */}
+                </Link>
+
                 <Link
                   to={`/admin-panel/rosters/${selectedRoster.id}/working-hours`}
                 >

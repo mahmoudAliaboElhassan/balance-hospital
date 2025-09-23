@@ -685,7 +685,7 @@
     "maxHoursPerWeek": "أقصى عدد ساعات في الأسبوع",
     "overtimeAllowed": "مسموح بساعات إضافية",
     "noOvertime": "غير مسموح بساعات إضافية",
-    "primaryCategory": "الفئة الرئيسية",
+    "primaryCategory": "التخصص الرئيسية",
     "scientificDegree": "الدرجة العلمية",
     "code": "الكود",
     "activityInformation": "معلومات النشاط والنظام",
@@ -2183,7 +2183,8 @@
       "createComplete": "إنشاء روستر كامل",
       "view": "عرض التفاصيل",
       "edit": "تعديل الروستر",
-      "manageDoctors": "إدارة الأطباء",
+      "manageDoctors": "إدارة طلبات الأطباء'",
+      "doctors": "الأطباء في الجدول",
       "addDepartment": "إضافة مكان آخر",
       "editRoster": "تعديل الروستر",
       "unAssignDoctor": "إزالة تعيين الدكتور",
@@ -2546,7 +2547,7 @@
     "continue": "متابعة",
     "categoryManager": {
       "title": "مدير التخصص",
-      "description": "إدارة الفئات والإشراف على الأماكن",
+      "description": "إدارة التخصصات والإشراف على الأماكن",
       "features": {
         "rosters": "إضافة وإدارة الجداول",
         "approve": "الموافقة/رفض طلبات الأطباء",

@@ -49,14 +49,14 @@ import {
 
   // NEW: Doctor Requests Workflow
   submitDoctorRequest,
-  getDoctorRequestsForRoster,
   approveDoctorRequest,
   rejectDoctorRequest,
-  getDoctorRequests,
+  // getDoctorRequests,
   addRosterDepartment,
   getRosterByCategory,
   deleteRoster,
   getDoctorsPerRoster,
+  getDoctorsReuests,
 } from "../act/actRosterManagement";
 import i18next from "i18next";
 
@@ -127,6 +127,7 @@ const initialState = {
     // Phase Operations
     createBasic: false,
     addShifts: false,
+    getDoctorsReuests: false,
     addContracting: false,
     addWorkingHours: false,
     getShiftContractingTypes: false,
@@ -1074,27 +1075,6 @@ const rosterManagementSlice = createSlice({
         state.errors.doctorRequests = action.payload;
       });
 
-    // Get Doctor Requests for Roster
-    builder
-      .addCase(getDoctorRequestsForRoster.pending, (state) => {
-        state.loading.doctorRequests = true;
-        state.errors.doctorRequests = null;
-      })
-      .addCase(getDoctorRequestsForRoster.fulfilled, (state, action) => {
-        state.loading.doctorRequests = false;
-        state.doctorRequestsForRoster = action.payload?.data || [];
-
-        // Also update pending requests if status is PENDING
-        const pendingRequests = (action.payload?.data || []).filter(
-          (request) => request.status === "PENDING"
-        );
-        state.pendingRequests = pendingRequests;
-      })
-      .addCase(getDoctorRequestsForRoster.rejected, (state, action) => {
-        state.loading.doctorRequests = false;
-        state.errors.doctorRequests = action.payload;
-      });
-
     // Approve Doctor Request
     builder
       .addCase(approveDoctorRequest.pending, (state) => {
@@ -1160,19 +1140,19 @@ const rosterManagementSlice = createSlice({
       });
 
     // Get Doctor's Requests
-    builder
-      .addCase(getDoctorRequests.pending, (state) => {
-        state.loading.doctorRequests = true;
-        state.errors.doctorRequests = null;
-      })
-      .addCase(getDoctorRequests.fulfilled, (state, action) => {
-        state.loading.doctorRequests = false;
-        state.doctorRequests = action.payload?.data || [];
-      })
-      .addCase(getDoctorRequests.rejected, (state, action) => {
-        state.loading.doctorRequests = false;
-        state.errors.doctorRequests = action.payload;
-      });
+    // builder
+    //   .addCase(getDoctorRequests.pending, (state) => {
+    //     state.loading.doctorRequests = true;
+    //     state.errors.doctorRequests = null;
+    //   })
+    //   .addCase(getDoctorRequests.fulfilled, (state, action) => {
+    //     state.loading.doctorRequests = false;
+    //     state.doctorRequests = action.payload?.data || [];
+    //   })
+    //   .addCase(getDoctorRequests.rejected, (state, action) => {
+    //     state.loading.doctorRequests = false;
+    //     state.errors.doctorRequests = action.payload;
+    //   });
     builder
       .addCase(addRosterDepartment.pending, (state) => {
         state.loading.addRosterDepartment = true;
@@ -1182,6 +1162,16 @@ const rosterManagementSlice = createSlice({
       })
       .addCase(addRosterDepartment.rejected, (state, action) => {
         state.loading.addRosterDepartment = false;
+      });
+    builder
+      .addCase(getDoctorsReuests.pending, (state) => {
+        state.loading.getDoctorsReuests = true;
+      })
+      .addCase(getDoctorsReuests.fulfilled, (state, action) => {
+        state.loading.getDoctorsReuests = false;
+      })
+      .addCase(getDoctorsReuests.rejected, (state, action) => {
+        state.loading.getDoctorsReuests = false;
       });
   },
 });
