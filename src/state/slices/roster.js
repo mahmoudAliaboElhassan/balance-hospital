@@ -955,9 +955,17 @@ const rosterManagementSlice = createSlice({
         state.success.unassignDoctor = true;
 
         const scheduleId = action.payload.scheduleId;
-        state.doctorSchedule = state.doctorSchedule.assignments.filter(
-          (entry) => entry.scheduleId !== scheduleId
+        console.log("scheduleId", scheduleId);
+        const unAssigned = state.doctorSchedule?.assignments.find(
+          (ass) => ass.scheduleId == scheduleId
         );
+        state.doctorSchedule.assignments = state.doctorSchedule.assignments.map(
+          (ass) => ({
+            ...ass,
+            status: scheduleId == ass.scheduleId ? "Cancelled" : ass.status,
+          })
+        );
+        unAssigned.status = "Cancelled";
         // Local state update logic can be added here
       })
       .addCase(unassignDoctorFromShift.rejected, (state, action) => {

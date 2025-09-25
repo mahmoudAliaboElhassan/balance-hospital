@@ -429,7 +429,7 @@ function DoctorSchedule() {
                           >
                             {assignment.status}
                           </span>
-                          {
+                          {assignment.status !== "Cancelled" && (
                             <button
                               onClick={() => {
                                 setDoctorData({
@@ -450,7 +450,7 @@ function DoctorSchedule() {
                             >
                               <UserX size={14} />
                             </button>
-                          }
+                          )}
                         </div>
                       </div>
 
