@@ -1740,6 +1740,7 @@
     "roles": "جاري تحميل الأدوار…",
     "roleData": "جاري تحميل بيانات الدور…",
     "doctorData": "جاري تحميل بيانات الطبيب",
+    "doctorRequests": "جاري تحميل طلبات الأطباء...",
     "categories": "جاري تحميل التخصصات",
     "categoryData": "جاري تحميل بيانات التخصص",
     "categoryHeads": "جاري تحميل رؤساء التخصصات...",
@@ -2567,6 +2568,57 @@
         "resources": "توزيع موارد المكان",
         "reports": "إنشاء تقارير المكان"
       }
+    }
+  },
+
+  "doctorRequests": {
+    "title": "إدارة طلبات الأطباء",
+    "notesTooShort": "الملاحظات قصيرة جدًا",
+    "notesRequired": "الملاحظات مطلوبة",
+    "reject": {
+      "title": "رفض طلب الطبيب",
+      "confirmMessage": "هل أنت متأكد أنك تريد ترفض الطلب ؟",
+      "warning": "الإجراء  لا يمكن التراجع عنه",
+      "processedNotes": "ملاحظات بعد الرفض",
+      "notesPlaceholder": "اكتب ملاحظات الرفض (مطلوب)",
+      "confirm": "تأكيد الرفض",
+      "success": "تم رفض طلب الدكتور {{doctorName}} بنجاح"
+    },
+    "approve": {
+      "title": "الموافقة على طلب الطبيب",
+      "confirmMessage": "هل أنت متأكد أنك تريد توافق على الطلب ؟",
+      "processedNotes": "ملاحظات بعد الموافقة",
+      "notesPlaceholder": "اكتب ملاحظات (اختياري)",
+      "confirm": "تأكيد الموافقة",
+      "success": "تمت الموافقة على طلب الدكتور {{doctorName}} بنجاح"
+    },
+    "description": "مراجعة وإدارة طلبات ساعات عمل الأطباء",
+    "noRequests": "لا توجد طلبات للحالة: {{status}}",
+    "status": {
+      "none": "بدون",
+      "pending": "قيد الانتظار",
+      "rejected": "مرفوض",
+      "approved": "مقبول"
+    },
+    "stats": {
+      "totalRequests": "إجمالي الطلبات",
+      "total": "الإجمالي"
+    },
+    "fields": {
+      "department": "القسم",
+      "shift": "الوردية",
+      "time": "الوقت",
+      "hours": "الساعات",
+      "type": "النوع",
+      "notes": "ملاحظات",
+      "issues": "مشكلات",
+      "requestedAt": "تاريخ الطلب"
+    },
+    "actions": {
+      "approve": "قبول",
+      "reject": "رفض",
+      "approving": "جاري القبول...",
+      "rejecting": "جاري الرفض..."
     }
   }
 }

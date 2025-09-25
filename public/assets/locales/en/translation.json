@@ -1734,6 +1734,7 @@
     "roles": "Loading roles…",
     "roleData": "Loading role data…",
     "doctorData": "Loading Doctor data…",
+    "doctorRequests": "Loading doctor requests...",
     "categories": "Loading categories…",
     "categoryData": "Loading category data…",
     "departments": "Loading departments…",
@@ -2566,6 +2567,58 @@
         "resources": "Allocate department resources",
         "reports": "Generate department reports"
       }
+    }
+  },
+
+  "doctorRequests": {
+    "title": "Manage Doctor Requests",
+    "notesTooShort": "Notes are too short",
+    "notesRequired": "Notes are required",
+    "reject": {
+      "title": "Reject Doctor Request",
+      "confirmMessage": "Are you sure you want to reject this request?",
+      "warning": "This action cannot be undone",
+      "processedNotes": "Notes after rejection",
+      "notesPlaceholder": "Enter rejection notes (required)",
+      "confirm": "Confirm Rejection",
+      "success": "Doctor {{doctorName}}'s request has been rejected successfully"
+    },
+    "approve": {
+      "title": "Approve Doctor Request",
+      "confirmMessage": "Are you sure you want to approve this request?",
+      "processedNotes": "Notes after approval",
+      "notesPlaceholder": "Enter notes (optional)",
+      "confirm": "Confirm Approval",
+      "success": "Doctor {{doctorName}}'s request has been approved successfully"
+    },
+
+    "description": "Review and manage doctor working hours requests",
+    "noRequests": "No requests found for status: {{status}}",
+    "status": {
+      "none": "None",
+      "pending": "Pending",
+      "rejected": "Rejected",
+      "approved": "Approved"
+    },
+    "stats": {
+      "totalRequests": "Total Requests",
+      "total": "Total"
+    },
+    "fields": {
+      "department": "Department",
+      "shift": "Shift",
+      "time": "Time",
+      "hours": "Hours",
+      "type": "Type",
+      "notes": "Notes",
+      "issues": "Issues",
+      "requestedAt": "Requested At"
+    },
+    "actions": {
+      "approve": "Approve",
+      "reject": "Reject",
+      "approving": "Approving...",
+      "rejecting": "Rejecting..."
     }
   }
 }

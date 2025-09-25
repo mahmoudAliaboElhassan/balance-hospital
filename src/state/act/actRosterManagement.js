@@ -760,12 +760,15 @@ export const getDoctorsPerRoster = createAsyncThunk(
     }
   }
 );
-export const getDoctorsReuests = createAsyncThunk(
-  "rosterManagement/getDoctorsReuests",
+// Redux Actions for Doctor Requests Management
+
+// Update the existing getDoctorsRequests action to store data in state
+export const getDoctorsRequests = createAsyncThunk(
+  "rosterManagement/getDoctorsRequests",
   async ({ rosterId, status }, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get(
-        `/api/v1/rosterassignment/roster/${rosterId}/doctor-requests?status=${status}`,
+        `/api/v1/rosterassignment/rosters/${rosterId}/working-hours-requests?status=${status}`,
         {
           headers: getAuthHeaders(),
         }
@@ -776,3 +779,64 @@ export const getDoctorsReuests = createAsyncThunk(
     }
   }
 );
+
+// Action to approve a doctor request
+export const approveRequest = createAsyncThunk(
+  "rosterManagement/approveRequest",
+  async ({ requestId, processedNotes }, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.put(
+        `/api/v1/RosterAssignment/working-hours-requests/${requestId}/approve`,
+        { processedNotes },
+        {
+          headers: getAuthHeaders(),
+        }
+      );
+      return { requestId, data: res.data };
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+
+// Action to reject a doctor request
+export const rejectRequest = createAsyncThunk(
+  "rosterManagement/rejectRequest",
+  async ({ requestId, processedNotes }, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.put(
+        `/api/v1/RosterAssignment/working-hours-requests/${requestId}/reject`,
+        { processedNotes },
+        {
+          headers: getAuthHeaders(),
+        }
+      );
+      return { requestId, data: res.data };
+    } catch (error) {
+      return handleError(error, rejectWithValue);
+    }
+  }
+);
+
+// Enum for request states (for reference)
+export const DoctorWorkingHoursRequestState = {
+  // None: 0,
+  Pending: 1,
+  Rejected: 2,
+  Approved: 3,
+};
+
+export const getStatusName = (status) => {
+  switch (status) {
+    case 0:
+      return "None";
+    case 1:
+      return "Pending";
+    case 2:
+      return "Rejected";
+    case 3:
+      return "Approved";
+    default:
+      return "Unknown";
+  }
+};

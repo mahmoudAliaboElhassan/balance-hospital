@@ -51,12 +51,13 @@ import {
   submitDoctorRequest,
   approveDoctorRequest,
   rejectDoctorRequest,
-  // getDoctorRequests,
   addRosterDepartment,
   getRosterByCategory,
   deleteRoster,
   getDoctorsPerRoster,
-  getDoctorsReuests,
+  rejectRequest,
+  approveRequest,
+  getDoctorsRequests,
 } from "../act/actRosterManagement";
 import i18next from "i18next";
 
@@ -69,6 +70,12 @@ const initialState = {
   rosters: [],
   selectedRoster: null,
   rosterList: [], // للقائمة المبسطة
+
+  doctorRequests: {
+    data: null,
+    filteredRequests: [],
+    currentStatus: 1, // Default to Pending
+  },
 
   // ===== DEPARTMENT SHIFTS (شفتات الأقسام) =====
 
@@ -94,7 +101,6 @@ const initialState = {
 
   // ===== NEW: DOCTOR REQUESTS DATA (بيانات طلبات الدكاترة) =====
   doctorRequestsForRoster: [],
-  doctorRequests: [],
   pendingRequests: [],
 
   // ===== WORKING HOURS DATA (بيانات ساعات العمل) =====
@@ -127,7 +133,9 @@ const initialState = {
     // Phase Operations
     createBasic: false,
     addShifts: false,
-    getDoctorsReuests: false,
+    getDoctorsRequests: false,
+    approveRequest: false,
+    rejectRequest: false,
     addContracting: false,
     addWorkingHours: false,
     getShiftContractingTypes: false,
@@ -1164,14 +1172,61 @@ const rosterManagementSlice = createSlice({
         state.loading.addRosterDepartment = false;
       });
     builder
-      .addCase(getDoctorsReuests.pending, (state) => {
-        state.loading.getDoctorsReuests = true;
+      // Get doctor requests cases
+      .addCase(getDoctorsRequests.pending, (state) => {
+        state.loading.getDoctorsRequests = true;
       })
-      .addCase(getDoctorsReuests.fulfilled, (state, action) => {
-        state.loading.getDoctorsReuests = false;
+      .addCase(getDoctorsRequests.fulfilled, (state, action) => {
+        state.loading.getDoctorsRequests = false;
+        console.log("action.payload", action.payload);
+        state.doctorRequests.data = action.payload.data;
+        state.doctorRequests.filteredRequests =
+          action.payload?.data.requestsByDate || [];
       })
-      .addCase(getDoctorsReuests.rejected, (state, action) => {
-        state.loading.getDoctorsReuests = false;
+      .addCase(getDoctorsRequests.rejected, (state, action) => {
+        state.loading.getDoctorsRequests = false;
+        state.doctorRequests.data = null;
+        state.doctorRequests.filteredRequests = [];
+      })
+
+      // Approve request cases
+      .addCase(approveRequest.pending, (state) => {
+        state.loading.approveRequest = true;
+      })
+      .addCase(approveRequest.fulfilled, (state, action) => {
+        state.loading.approveRequest = false;
+        // Update the request status in the local state
+      })
+      .addCase(approveRequest.rejected, (state, action) => {
+        state.loading.approveRequest = false;
+      })
+
+      // Reject request cases
+      .addCase(rejectRequest.pending, (state) => {
+        state.loading.rejectRequest = true;
+      })
+      .addCase(rejectRequest.fulfilled, (state, action) => {
+        state.loading.rejectRequest = false;
+        // Update the request status in the local state
+        const { requestId } = action.payload;
+        if (state.doctorRequests.data?.requestsByDate) {
+          state.doctorRequests.data.requestsByDate.forEach((dateGroup) => {
+            const request = dateGroup.requests.find(
+              (req) => req.id === requestId
+            );
+            if (request) {
+              request.status = "Rejected";
+              dateGroup.rejectedRequests += 1;
+              dateGroup.pendingRequests -= 1;
+            }
+          });
+          // Update totals
+          state.doctorRequests.data.rejectedRequests += 1;
+          state.doctorRequests.data.pendingRequests -= 1;
+        }
+      })
+      .addCase(rejectRequest.rejected, (state, action) => {
+        state.loading.rejectRequest = false;
       });
   },
 });
@@ -1283,6 +1338,19 @@ export const selectIsPublishing = (state) =>
   state.rosterManagement.loading.publish;
 export const selectIsAssigning = (state) =>
   state.rosterManagement.loading.assign;
+
+export const selectDoctorRequests = (state) =>
+  state.rosterManagement.doctorRequests.data;
+export const selectFilteredRequests = (state) =>
+  state.rosterManagement.doctorRequests.filteredRequests;
+export const selectCurrentStatus = (state) =>
+  state.rosterManagement.doctorRequests.currentStatus;
+export const selectDoctorRequestsLoading = (state) =>
+  state.rosterManagement.loading.getDoctorsRequests;
+export const selectApproveRequestLoading = (state) =>
+  state.rosterManagement.loading.approveRequest;
+export const selectRejectRequestLoading = (state) =>
+  state.rosterManagement.loading.rejectRequest;
 
 // Error Selectors (محددات الأخطاء)
 export const selectErrors = (state) => state.rosterManagement.errors;
