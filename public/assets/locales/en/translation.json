@@ -1845,6 +1845,7 @@
   "roster": {
     "title": "Roster Management",
     "departmentCalendar": "Department Calendar",
+
     "subtitle": "Manage hospital staff rosters and schedules",
     "noRosters": "No rosters found. Create your first roster to get started.",
     "createFirstRoster": "Create your first roster to start scheduling doctors and departments.",
@@ -2231,6 +2232,7 @@
       "draftPartial": "Draft (Partial)",
       "draftReady": "Ready for Publish",
       "published": "Published",
+      "draft_basic": "Basic Draft",
       "closed": "Closed",
       "archived": "Archived"
     },

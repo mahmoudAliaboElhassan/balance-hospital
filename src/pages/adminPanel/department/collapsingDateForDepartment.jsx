@@ -73,7 +73,7 @@ const CollapsibleDateCardForDepartment = ({
                   ${isDark ? "text-gray-400" : "text-gray-600"}
                 `}
               >
-                {i18n.language === "ar"
+                {i18n.language === "en"
                   ? dayData.dayOfWeekNameAr
                   : dayData.dayOfWeekNameEn}
               </p>
@@ -243,7 +243,7 @@ const CollapsibleDateCardForDepartment = ({
                       </p>
                       {shift.shortfallDoctors > 0 && (
                         <p className="text-xs text-red-500 mt-1">
-                          -{shift.shortfallDoctors} {t("roster.shortfall")}
+                          -{shift.shortfallDoctors} {t("department.shortfall")}
                         </p>
                       )}
                     </div>

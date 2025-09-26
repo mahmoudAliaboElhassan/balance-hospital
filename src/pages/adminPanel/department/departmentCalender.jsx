@@ -29,13 +29,12 @@ function DepartmentCalender() {
   // Filter data by rosterId
 
   useEffect(() => {
-    if (!departmentRosterData)
-      dispatch(
-        getDepartmentRosterCalender({
-          departmentId: id,
-          ids: [rosterId],
-        })
-      );
+    dispatch(
+      getDepartmentRosterCalender({
+        departmentId: id,
+        ids: [rosterId],
+      })
+    );
   }, [departmentRosterData, rosterLookup, rosterId]);
 
   // Utility functions for CollapsibleDateCard
