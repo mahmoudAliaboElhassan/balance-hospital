@@ -2659,5 +2659,12 @@
       "approving": "Approving...",
       "rejecting": "Rejecting..."
     }
+  },
+
+  "stats": {
+    "totalDays": "Total Days",
+    "completeDays": "Complete Days",
+    "partialDays": "Partial Days",
+    "emptyDays": "Empty Days"
   }
 }

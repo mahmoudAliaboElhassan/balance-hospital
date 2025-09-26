@@ -2655,5 +2655,12 @@
       "approving": "جاري القبول...",
       "rejecting": "جاري الرفض..."
     }
+  },
+
+  "stats": {
+    "totalDays": "إجمالي الأيام",
+    "completeDays": "الأيام المكتملة",
+    "partialDays": "الأيام الجزئية",
+    "emptyDays": "الأيام الفارغة"
   }
 }

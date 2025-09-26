@@ -26,7 +26,6 @@ function DepartmentCalender() {
   const departmentName = isRTL
     ? localStorage.getItem("departmentArabicName")
     : localStorage.getItem("departmentEnglishName");
-  // Filter data by rosterId
 
   useEffect(() => {
     dispatch(
@@ -35,11 +34,12 @@ function DepartmentCalender() {
         ids: [rosterId],
       })
     );
-  }, [departmentRosterData, rosterLookup, rosterId]);
+  }, [rosterId]);
 
-  // Utility functions for CollapsibleDateCard
-
-  console.log("departmentRosterData", departmentRosterData);
+  if (loadinGetDepartmentCalender) {
+    return <LoadingGetData text={t("gettingData.departmentCalendar")} />;
+  }
+  console.log("departmentRosterData", departmentRosterData?.[0]?.stats);
 
   const formatTime = (timeString) => {
     if (!timeString) return "";
@@ -65,21 +65,115 @@ function DepartmentCalender() {
     return "bg-red-600 dark:bg-red-500";
   };
 
-  // Load data if not available
-  //   useEffect(() => {
-  //     if (!departmentRosterData || departmentRosterData.length === 0) {
-  //       dispatch(
-  //         getDepartmentRosterCalender({
-  //           departmentId: id,
-  //           ids: rosterId,
-  //         })
-  //       );
-  //     }
-  //   }, [dispatch, departmentRosterData]);
+  // Stats component
+  const StatsSection = ({ stats }) => {
+    const completionPercentage = stats?.completionPercentage || 0;
 
-  if (loadinGetDepartmentCalender) {
-    return <LoadingGetData text={t("gettingData.departmentCalendar")} />;
-  }
+    const statsCards = [
+      {
+        key: "totalDays",
+        value: stats?.totalDays || 0,
+        label: t("stats.totalDays", "Total Days"),
+        icon: "📅",
+        bgColor: "bg-blue-100 dark:bg-blue-900/30",
+        textColor: "text-blue-800 dark:text-blue-200",
+        borderColor: "border-blue-200 dark:border-blue-800",
+      },
+      {
+        key: "completeDays",
+        value: stats?.completeDays || 0,
+        label: t("stats.completeDays", "Complete Days"),
+        icon: "✅",
+        bgColor: "bg-green-100 dark:bg-green-900/30",
+        textColor: "text-green-800 dark:text-green-200",
+        borderColor: "border-green-200 dark:border-green-800",
+      },
+      {
+        key: "partialDays",
+        value: stats?.partialDays || 0,
+        label: t("stats.partialDays", "Partial Days"),
+        icon: "⏳",
+        bgColor: "bg-yellow-100 dark:bg-yellow-900/30",
+        textColor: "text-yellow-800 dark:text-yellow-200",
+        borderColor: "border-yellow-200 dark:border-yellow-800",
+      },
+      {
+        key: "emptyDays",
+        value: stats?.emptyDays || 0,
+        label: t("stats.emptyDays", "Empty Days"),
+        icon: "❌",
+        bgColor: "bg-red-100 dark:bg-red-900/30",
+        textColor: "text-red-800 dark:text-red-200",
+        borderColor: "border-red-200 dark:border-red-800",
+      },
+    ];
+
+    return (
+      <div className="mb-6">
+        {/* Overall Completion */}
+        <div
+          className={`rounded-lg p-6 mb-4 ${
+            isDark ? "bg-gray-800" : "bg-white"
+          } shadow-sm border ${isDark ? "border-gray-700" : "border-gray-200"}`}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h3
+              className={`text-lg font-semibold ${
+                isDark ? "text-white" : "text-gray-900"
+              }`}
+            >
+              {t("stats.overallCompletion", "Overall Completion")}
+            </h3>
+            <span
+              className={`text-2xl font-bold ${getFillColor(
+                completionPercentage
+              )}`}
+            >
+              {completionPercentage}%
+            </span>
+          </div>
+
+          {/* Progress Bar */}
+          <div
+            className={`w-full h-3 rounded-full ${
+              isDark ? "bg-gray-700" : "bg-gray-200"
+            }`}
+          >
+            <div
+              className={`h-full rounded-full transition-all duration-300 ${getFillBgColor(
+                completionPercentage
+              )}`}
+              style={{ width: `${completionPercentage}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {statsCards.map((card) => (
+            <div
+              key={card.key}
+              className={`rounded-lg p-4 border ${card.bgColor} ${card.borderColor}`}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p
+                    className={`text-sm font-medium ${card.textColor} opacity-80`}
+                  >
+                    {card.label}
+                  </p>
+                  <p className={`text-2xl font-bold ${card.textColor}`}>
+                    {card.value}
+                  </p>
+                </div>
+                <div className="text-2xl opacity-70">{card.icon}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   if (error) {
     return (
@@ -132,6 +226,8 @@ function DepartmentCalender() {
     return acc;
   }, []);
 
+  const stats = departmentRosterData?.[0]?.stats;
+
   return (
     <div
       className={`min-h-screen ${isDark ? "bg-gray-900" : "bg-gray-50"} p-6`}
@@ -153,6 +249,9 @@ function DepartmentCalender() {
             {departmentRosterData[0].rosterTitle}
           </p>
         </div>
+
+        {/* Stats Section */}
+        {stats && <StatsSection stats={stats} />}
 
         {/* Calendar Days */}
         <div className="space-y-4">
