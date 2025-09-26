@@ -478,6 +478,22 @@
   "department": {
     "title": "Departments",
     "addNew": "Add New Department",
+
+    "month": "Month",
+    "totalRosters": "Total Rosters",
+    "lastUpdated": "Last Updated",
+    "totalShifts": "Total Shifts",
+    "requiredDoctors": "Required Doctors",
+    "assignedDoctors": "Assigned Doctors",
+    "completion": "Completion",
+    "categories": "Categories",
+    "shifts": "Shifts",
+    "required": "Required",
+    "assigned": "Assigned",
+    "maxDoctors": "Maximum Doctors",
+    "rosters": "Rosters",
+    "shortfall": "Shortfall",
+
     "add": "Add",
     "fetchError": "Failed to fetch departments",
     "noData": "No departments available",
@@ -486,6 +502,20 @@
     "linkedCategories": "Linked categories",
     "hasManager": "Has manager",
     "noManager": "No manager",
+
+    "monthlyStats": {
+      "title": "Monthly Performance",
+      "error": "Failed to load monthly statistics",
+      "noData": "No monthly data available",
+      "completion": "Completion",
+      "categories": "Categories",
+      "rosters": "Rosters",
+      "shifts": "Shifts",
+      "shortfall": "Shortfall",
+      "doctorsAssigned": "doctors assigned",
+      "lastUpdated": "Updated"
+    },
+
     "removeManager": {
       "title": "Remove Manager",
       "confirmMessage": "Are you sure you want to remove this manager from the department? This action cannot be undone.",
@@ -912,6 +942,7 @@
     "refresh": "Refresh",
     "startDate": "Start Date",
     "backToHome": "Back to Home",
+    "warnings": "Warnings",
     "endDate": "End Date",
     "department": "Department",
     "notAvailable": "Not Available",
@@ -1734,7 +1765,10 @@
     "roles": "Loading roles…",
     "roleData": "Loading role data…",
     "doctorData": "Loading Doctor data…",
+    "departmentCalendar": "Loading department calendar...",
     "doctorRequests": "Loading doctor requests...",
+    "departmentMonthView": "Loading department month view...",
+    "monthlyStats": "Loading monthly statistics...",
     "categories": "Loading categories…",
     "categoryData": "Loading category data…",
     "departments": "Loading departments…",
@@ -1810,6 +1844,7 @@
 
   "roster": {
     "title": "Roster Management",
+    "departmentCalendar": "Department Calendar",
     "subtitle": "Manage hospital staff rosters and schedules",
     "noRosters": "No rosters found. Create your first roster to get started.",
     "createFirstRoster": "Create your first roster to start scheduling doctors and departments.",
@@ -1974,6 +2009,7 @@
     "completion": "Completion",
     "completionPercentage": "Completion Percentage",
     "completed": "Completed",
+    "incomplete": "InComplete",
     "allowed": "Allowed",
     "notAllowed": "Not Allowed",
 
@@ -2191,6 +2227,7 @@
       "draft": "Draft",
       "draftBasic": "Draft (Basic)",
       "draftDetailed": "Draft (Detailed)",
+      "draft_complete": "Draft (Complete)",
       "draftPartial": "Draft (Partial)",
       "draftReady": "Ready for Publish",
       "published": "Published",

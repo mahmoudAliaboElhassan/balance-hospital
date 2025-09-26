@@ -13,6 +13,9 @@ import {
   linkDepartmentToCategory,
   getDepartmentByCategory,
   unlinkDepartmentFromCategory,
+  getDepartmentMonthList,
+  getDepartmentMonthView,
+  getDepartmentRosterCalender,
 } from "../act/actDepartment";
 import i18next from "i18next";
 import "../../translation/i18n";
@@ -429,6 +432,83 @@ export const departmentSlice = createSlice({
       })
       .addCase(assignDepManager.rejected, (state, action) => {
         state.loadingAssignManager = false;
+      })
+      .addCase(getDepartmentMonthList.pending, (state) => {
+        state.loadinGetDepartmentMonthList = true;
+        state.departmentMonthListError = null;
+      })
+      .addCase(getDepartmentMonthList.fulfilled, (state, action) => {
+        state.loadinGetDepartmentMonthList = false;
+        state.departmentMonthList = action.payload.data || [];
+        state.departmentMonthListError = null;
+        console.log("Department monthly list data:", action.payload.data);
+      })
+      .addCase(getDepartmentMonthList.rejected, (state, action) => {
+        state.loadinGetDepartmentMonthList = false;
+        state.departmentMonthListError = action.payload;
+        state.departmentMonthList = [];
+      })
+      .addCase(getDepartmentRosterCalender.pending, (state) => {
+        state.loadinGetDepartmentCalender = true;
+      })
+      .addCase(getDepartmentRosterCalender.fulfilled, (state, action) => {
+        state.loadinGetDepartmentCalender = false;
+        // Store the roster data indexed by rosterId for easy filtering
+        state.departmentRosterData = action.payload.data.perRoster || [];
+
+        state.rosterLookup = {};
+        if (action.payload.data) {
+          action.payload.data.perRoster.forEach((roster) => {
+            if (roster.rosterId) {
+              state.rosterLookup[roster.rosterId] = roster;
+            }
+          });
+        }
+
+        console.log("action.payload", action.payload);
+      })
+      .addCase(getDepartmentRosterCalender.rejected, (state, action) => {
+        state.loadinGetDepartmentCalender = false;
+        state.error = action.payload || action.error?.message;
+      })
+      .addCase(getDepartmentMonthView.pending, (state) => {
+        state.loadingGetDepartmentMonthView = true;
+        state.error = null;
+      })
+      .addCase(getDepartmentMonthView.fulfilled, (state, action) => {
+        state.loadingGetDepartmentMonthView = false;
+        state.error = null;
+
+        // Store the complete response data
+        state.departmentMonthView = action.payload.data;
+
+        // You can also destructure and store specific parts if needed
+        const { data } = action.payload;
+        state.currentDepartment = {
+          id: data.departmentId,
+          nameAr: data.departmentNameAr,
+          nameEn: data.departmentNameEn,
+          month: data.month,
+          year: data.year,
+        };
+
+        // Store categories and rosters
+        state.departmentCategories = data.categories;
+        state.departmentTotals = data.totals;
+        state.totalRosters = data.totalRosters;
+        state.lastUpdated = data.lastUpdated;
+        state.hasMissingData = data.hasMissingData;
+        state.warnings = data.warnings;
+      })
+      .addCase(getDepartmentMonthView.rejected, (state, action) => {
+        state.loadingGetDepartmentMonthView = false;
+        state.error = action.payload;
+
+        // Reset data on error
+        state.departmentMonthView = null;
+        state.currentDepartment = null;
+        state.departmentCategories = [];
+        state.departmentTotals = null;
       })
 
       // Delete Department

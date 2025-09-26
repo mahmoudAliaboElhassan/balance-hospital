@@ -164,6 +164,20 @@ function UseInitialStates() {
     message: "",
     timestamp: null,
 
+    loadingGetDepartmentMonthView: false,
+    departmentMonthView: null,
+    currentDepartment: null,
+    departmentCategories: [],
+    departmentTotals: null,
+    totalRosters: 0,
+    lastUpdated: null,
+    hasMissingData: false,
+    warnings: [],
+    error: null,
+
+    departmentMonthList: [],
+    departmentMonthListError: null,
+
     // Loading states
     loadingGetDepartments: false,
     loadingGetSingleDepartment: false,
@@ -174,6 +188,10 @@ function UseInitialStates() {
     loadingAssignManager: false,
     loadingLinkDepartmentToCategory: false,
     loadingGetDepartmentsByCategory: false,
+    loadinGetDepartmentMonthList: false,
+    loadinGetDepartmentCalender: false,
+    departmentRosterData: null,
+    rosterLookup: null,
 
     // Single department
     selectedDepartment: null,

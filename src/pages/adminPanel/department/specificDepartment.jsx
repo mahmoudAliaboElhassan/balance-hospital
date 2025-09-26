@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { getDepartmentById } from "../../../state/act/actDepartment";
-import { getSubDepartments } from "../../../state/act/actSubDepartment";
 import {
   clearSingleDepartment,
   clearSingleDepartmentError,
@@ -12,7 +11,8 @@ import { useTranslation } from "react-i18next";
 import { Edit, Eye, UserPlus, UserCog, UserX, Shield } from "lucide-react";
 import RemoveManagerModal from "../../../components/RemoveMangerModal";
 import Forbidden from "../../../components/forbidden";
-import i18next from "i18next";
+import RosterDepartmentMonths from "../../../components/RosterDepartmentMonths";
+import { formatDate } from "../../../utils/formtDate";
 
 function SpecificDepartment() {
   const { depId: id } = useParams();
@@ -143,9 +143,9 @@ function SpecificDepartment() {
     navigate(`/admin-panel/department/assign-manager/${id}?type=department`);
   };
 
-  const handleEditManagerPermissions = () => {
-    navigate(`/admin-panel/department/edit-manager-permissions/${id}`);
-  };
+  // const handleEditManagerPermissions = () => {
+  //   navigate(`/admin-panel/department/edit-manager-permissions/${id}`);
+  // };
 
   const handleRemoveManager = () => {
     setShowRemoveManagerModal(true);
@@ -174,18 +174,6 @@ function SpecificDepartment() {
             : category.categoryNameArabic,
       }));
     }
-  };
-
-  // Format date based on language
-  const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable");
-    return new Intl.DateTimeFormat(i18next.language, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(dateString));
   };
 
   // Loading Component
@@ -941,7 +929,8 @@ function SpecificDepartment() {
                         "Edit Permissions"}
                     </button> */}
 
-                    {loginRoleResponseDto?.roleNameEn != "Category Head" && (
+                    {loginRoleResponseDto?.roleNameEn ==
+                      "System Administrator" && (
                       <button
                         onClick={handleRemoveManager}
                         className="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
@@ -988,7 +977,8 @@ function SpecificDepartment() {
                     {t("department.manager.noManagerDescription") ||
                       "This department doesn't have a manager assigned yet."}
                   </p>
-                  {loginRoleResponseDto?.roleNameEn != "Category Head" && (
+                  {loginRoleResponseDto?.roleNameEn ==
+                    "System Administrator" && (
                     <button
                       onClick={handleAssignManager}
                       className="inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
@@ -1487,6 +1477,7 @@ function SpecificDepartment() {
                 )}
               </div>
             </div>
+            <RosterDepartmentMonths />
 
             {/* Metadata Card */}
             <div

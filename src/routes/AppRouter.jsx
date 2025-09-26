@@ -88,6 +88,12 @@ const EditDepartment = lazy(() =>
 const SpecificDepartment = lazy(() =>
   import("../pages/adminPanel/department/specificDepartment")
 );
+const DepartmentCalender = lazy(() =>
+  import("../pages/adminPanel/department/departmentCalender")
+);
+const DepartmentMonth = lazy(() =>
+  import("../pages/adminPanel/department/departmentMonth")
+);
 const CreateDepartmentSpecificCategory = lazy(() =>
   import("../pages/adminPanel/department/createDepartmentSpecificCategory")
 );
@@ -232,6 +238,14 @@ const ProtectedEditDepartment = withGuard(EditDepartment, [
   "userCanManageDepartments",
 ]);
 const ProtectedSpecificDepartment = withGuard(SpecificDepartment, [
+  "userCanManageCategory",
+  "userCanManageDepartments",
+]);
+const ProtectedDepartmentCalender = withGuard(DepartmentCalender, [
+  "userCanManageCategory",
+  "userCanManageDepartments",
+]);
+const ProtectedMonthDepartment = withGuard(DepartmentMonth, [
   "userCanManageCategory",
   "userCanManageDepartments",
 ]);
@@ -450,9 +464,18 @@ const router = createBrowserRouter([
             path: "department/edit/:depId",
             element: withSuspense(ProtectedEditDepartment),
           },
+
           {
             path: "department/:depId",
             element: withSuspense(ProtectedSpecificDepartment),
+          },
+          {
+            path: "department/calender/:depId/:rosterId",
+            element: withSuspense(ProtectedDepartmentCalender),
+          },
+          {
+            path: "department/:depId/:month/:year",
+            element: withSuspense(ProtectedMonthDepartment),
           },
           {
             path: "department/edit-manager-permissions/:depId",

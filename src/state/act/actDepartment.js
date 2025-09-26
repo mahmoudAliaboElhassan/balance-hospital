@@ -316,3 +316,74 @@ export const getDepartmentByCategory = createAsyncThunk(
     }
   }
 );
+export const getDepartmentMonthList = createAsyncThunk(
+  "departmentSlice/getDepartmentMonthList",
+  async ({ departmentId }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+
+    try {
+      const res = await axiosInstance.get(
+        `api/v1/DepartmentManager/department/${departmentId}/months-list`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("departments month list :", res);
+      return res.data;
+    } catch (error) {
+      console.log("Error department month list:", error);
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+export const getDepartmentMonthView = createAsyncThunk(
+  "departmentSlice/getDepartmentMonthView",
+  async ({ departmentId, month, year }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+
+    try {
+      const res = await axiosInstance.get(
+        `/api/v1/DepartmentManager/department/${departmentId}/month-view?month=${month}&year=${year}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("departments month list :", res);
+      return res.data;
+    } catch (error) {
+      console.log("Error department month list:", error);
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+export const getDepartmentRosterCalender = createAsyncThunk(
+  "departmentSlice/getDepartmentRosterCalender",
+  async ({ departmentId, ids }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+    const params = new URLSearchParams();
+    ids.forEach((id) => params.append("ids", id));
+
+    try {
+      const res = await axiosInstance.get(
+        `/api/v1/DepartmentManager/${departmentId}/calendar?${params.toString()}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("calender calender calender calender :", res);
+      return res.data;
+    } catch (error) {
+      console.log("Error department month list:", error);
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
