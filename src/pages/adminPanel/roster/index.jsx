@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useTranslation } from "react-i18next";
-import "../../../styles/general.css";
+import React, { useEffect, useState, useCallback } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useTranslation } from "react-i18next"
+import "../../../styles/general.css"
 
 import {
   Search,
@@ -20,7 +20,7 @@ import {
   Users,
   Clock,
   BarChart3,
-} from "lucide-react";
+} from "lucide-react"
 import {
   clearAllErrors,
   clearFilters,
@@ -30,46 +30,46 @@ import {
   setFilters,
   setPageSize,
   setPagination,
-} from "../../../state/slices/roster";
-import { Link, useNavigate } from "react-router-dom";
-import { getRostersPaged } from "../../../state/act/actRosterManagement";
-import ModalUpdateRosterStatus from "../../../components/ModalUpdateRosterStatus";
-import ModalDeleteRoster from "../../../components/ModalDeleteRoster";
-import i18next from "i18next";
+} from "../../../state/slices/roster"
+import { Link, useNavigate } from "react-router-dom"
+import { getRostersPaged } from "../../../state/act/actRosterManagement"
+import ModalUpdateRosterStatus from "../../../components/ModalUpdateRosterStatus"
+import ModalDeleteRoster from "../../../components/ModalDeleteRoster"
+import i18next from "i18next"
 
 function Roster() {
-  const { t, i18n } = useTranslation();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
-  const [statusModalOpen, setStatusModalOpen] = useState(false);
-  const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  const [toDelete, setToDelete] = useState({ id: null, name: "" });
+  const [statusModalOpen, setStatusModalOpen] = useState(false)
+  const [openDeleteModal, setOpenDeleteModal] = useState(false)
+  const [toDelete, setToDelete] = useState({ id: null, name: "" })
   const [statusToUpdate, setStatusToUpdate] = useState({
     id: null,
     title: "",
     currentStatus: "",
-  });
-  const [searchInput, setSearchInput] = useState("");
-  const [showFilters, setShowFilters] = useState(false);
-  const [showMobileTable, setShowMobileTable] = useState(false);
-  const [searchTimeout, setSearchTimeout] = useState(null);
+  })
+  const [searchInput, setSearchInput] = useState("")
+  const [showFilters, setShowFilters] = useState(false)
+  const [showMobileTable, setShowMobileTable] = useState(false)
+  const [searchTimeout, setSearchTimeout] = useState(null)
 
   const { rosterList, pagination, loading, errors, ui } = useSelector(
     (state) => state.rosterManagement
-  );
-  const { mymode } = useSelector((state) => state.mode);
+  )
+  const { mymode } = useSelector((state) => state.mode)
 
   // Check if we're in dark mode
-  const isDark = mymode === "dark";
+  const isDark = mymode === "dark"
   // Check if current language is RTL
-  const language = i18n.language;
-  const isRTL = language === "ar";
+  const language = i18n.language
+  const isRTL = language === "ar"
 
   // Initialize search input from filters
   useEffect(() => {
-    setSearchInput(ui.filters.search || "");
-  }, [ui.filters.search]);
+    setSearchInput(ui.filters.search || "")
+  }, [ui.filters.search])
 
   // Fetch roster when filters change
   useEffect(() => {
@@ -77,7 +77,7 @@ function Roster() {
       page: pagination.currentPage || 1,
       pageSize: pagination.pageSize || 10,
       ...ui.filters,
-    };
+    }
 
     // Remove null/undefined values
     Object.keys(params).forEach((key) => {
@@ -86,60 +86,60 @@ function Roster() {
         params[key] === undefined ||
         params[key] === ""
       ) {
-        delete params[key];
+        delete params[key]
       }
-    });
+    })
 
-    dispatch(getRostersPaged(params));
-  }, [dispatch, ui.filters, pagination.currentPage, pagination.pageSize]);
+    dispatch(getRostersPaged(params))
+  }, [dispatch, ui.filters, pagination.currentPage, pagination.pageSize])
 
   // Handle search with debounce
   const handleSearchChange = useCallback(
     (value) => {
-      setSearchInput(value);
+      setSearchInput(value)
 
       if (searchTimeout) {
-        clearTimeout(searchTimeout);
+        clearTimeout(searchTimeout)
       }
 
       const timeout = setTimeout(() => {
-        dispatch(setFilters({ searchTerm: value }));
-        dispatch(setCurrentPage(1));
-      }, 500);
+        dispatch(setFilters({ searchTerm: value }))
+        dispatch(setCurrentPage(1))
+      }, 500)
 
-      setSearchTimeout(timeout);
+      setSearchTimeout(timeout)
     },
     [dispatch, searchTimeout]
-  );
+  )
 
   // Handle filter changes
   const handleFilterChange = (key, value) => {
-    dispatch(setFilters({ [key]: value }));
-    dispatch(setCurrentPage(1));
-  };
+    dispatch(setFilters({ [key]: value }))
+    dispatch(setCurrentPage(1))
+  }
 
   // Handle pagination
   const handlePageChange = (newPage) => {
-    console.log("pagination.currentPage", pagination.currentPage);
-    console.log("newPage", newPage);
-    dispatch(setCurrentPage(newPage));
-  };
+    console.log("pagination.currentPage", pagination.currentPage)
+    console.log("newPage", newPage)
+    dispatch(setCurrentPage(newPage))
+  }
 
   const handlePageSizeChange = (newPageSize) => {
-    dispatch(setPageSize(parseInt(newPageSize)));
-  };
+    dispatch(setPageSize(parseInt(newPageSize)))
+  }
 
   // Format date
   const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable");
+    if (!dateString) return t("common.notAvailable")
     return new Intl.DateTimeFormat(i18next.language, {
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    }).format(new Date(dateString));
-  };
+    }).format(new Date(dateString))
+  }
 
   // Format month/year display
   const formatMonthYear = (month, year) => {
@@ -172,11 +172,11 @@ function Roster() {
         "Nov",
         "Dec",
       ],
-    };
+    }
 
-    const months = monthNames[language] || monthNames.en;
-    return `${months[month - 1]} ${year}`;
-  };
+    const months = monthNames[language] || monthNames.en
+    return `${months[month - 1]} ${year}`
+  }
 
   // Get status color and display name
   const getStatusInfo = (status) => {
@@ -213,40 +213,40 @@ function Roster() {
         color: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
         name: t("roster.status.archived"),
       },
-    };
+    }
 
     return (
       statusMap[status] || {
         color: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300",
         name: status,
       }
-    );
-  };
+    )
+  }
 
   // Generate page numbers for pagination
   const getPageNumbers = () => {
-    const pages = [];
-    const totalPages = pagination?.totalPages || 1;
-    const currentPage = pagination?.currentPage || 1;
+    const pages = []
+    const totalPages = pagination?.totalPages || 1
+    const currentPage = pagination?.currentPage || 1
 
-    const maxPages = window.innerWidth < 768 ? 3 : 5;
-    let startPage = Math.max(1, currentPage - Math.floor(maxPages / 2));
-    let endPage = Math.min(totalPages, startPage + maxPages - 1);
+    const maxPages = window.innerWidth < 768 ? 3 : 5
+    let startPage = Math.max(1, currentPage - Math.floor(maxPages / 2))
+    let endPage = Math.min(totalPages, startPage + maxPages - 1)
 
     if (endPage - startPage < maxPages - 1) {
-      startPage = Math.max(1, endPage - maxPages + 1);
+      startPage = Math.max(1, endPage - maxPages + 1)
     }
 
     for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
+      pages.push(i)
     }
 
-    return pages;
-  };
+    return pages
+  }
 
   // Mobile card component for each roster
   const RosterCard = ({ roster }) => {
-    const statusInfo = getStatusInfo(roster.status);
+    const statusInfo = getStatusInfo(roster.status)
 
     return (
       <div
@@ -289,8 +289,8 @@ function Roster() {
                 id: roster.id,
                 title: roster.title,
                 currentStatus: roster.status,
-              });
-              setStatusModalOpen(true);
+              })
+              setStatusModalOpen(true)
             }}
             className={`px-2 py-1 rounded-full text-xs font-medium transition-colors hover:opacity-80 cursor-pointer ${statusInfo.color}`}
             title={t("roster.actions.updateStatus")}
@@ -344,8 +344,8 @@ function Roster() {
                 id: roster.id,
                 title: roster.title,
                 currentStatus: roster.status,
-              });
-              setStatusModalOpen(true);
+              })
+              setStatusModalOpen(true)
             }}
           >
             <BarChart3 size={16} />
@@ -373,8 +373,8 @@ function Roster() {
           </button> */}
         </div>
       </div>
-    );
-  };
+    )
+  }
 
   return (
     <div
@@ -435,28 +435,32 @@ function Roster() {
             <div className="p-4">
               {/* Search Bar */}
               <div className="flex flex-col sm:flex-row gap-4 mb-4">
-                <div className="flex-1 relative">
-                  <Search
-                    className={`absolute ${
-                      isRTL ? "right-3" : "left-3"
-                    } top-1/2 transform -translate-y-1/2 ${
-                      isDark ? "text-gray-400" : "text-gray-500"
-                    }`}
-                    size={20}
-                  />
-                  <input
-                    type="text"
-                    placeholder={t("roster.filters.searchPlaceholder")}
-                    value={searchInput}
-                    onChange={(e) => handleSearchChange(e.target.value)}
-                    className={`w-full ${
-                      isRTL ? "pr-10 pl-4" : "pl-10 pr-4"
-                    } py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                <div className="flex-1 flex items-center gap-2">
+                  {/* Search Icon Container - Completely separate from input */}
+                  <div
+                    className={`flex items-center justify-center w-10 h-10 rounded-lg border transition-all duration-200 ${
                       isDark
-                        ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400"
-                        : "border-gray-300 bg-white text-gray-900 placeholder-gray-500"
+                        ? "border-gray-600 bg-gray-700 text-gray-400"
+                        : "border-gray-300 bg-white text-gray-500"
                     }`}
-                  />
+                  >
+                    <Search size={20} />
+                  </div>
+
+                  {/* Input Container */}
+                  <div className="relative flex-1">
+                    <input
+                      type="text"
+                      placeholder={t("roster.filters.searchPlaceholder")}
+                      value={searchInput}
+                      onChange={(e) => handleSearchChange(e.target.value)}
+                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                        isDark
+                          ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400"
+                          : "border-gray-300 bg-white text-gray-900 placeholder-gray-500"
+                      }`}
+                    />
+                  </div>
                 </div>
                 <button
                   onClick={() => setShowFilters(!showFilters)}
@@ -494,8 +498,8 @@ function Roster() {
                       value={ui.filters.status || "all"}
                       onChange={(e) => {
                         const value =
-                          e.target.value === "all" ? null : e.target.value;
-                        handleFilterChange("status", value);
+                          e.target.value === "all" ? null : e.target.value
+                        handleFilterChange("status", value)
                       }}
                       className={`w-full p-2 border rounded-lg ${
                         isDark
@@ -540,8 +544,8 @@ function Roster() {
                         const value =
                           e.target.value === "all"
                             ? null
-                            : parseInt(e.target.value);
-                        handleFilterChange("year", value);
+                            : parseInt(e.target.value)
+                        handleFilterChange("year", value)
                       }}
                       className={`w-full p-2 border rounded-lg ${
                         isDark
@@ -574,8 +578,8 @@ function Roster() {
                         const value =
                           e.target.value === "all"
                             ? null
-                            : parseInt(e.target.value);
-                        handleFilterChange("month", value);
+                            : parseInt(e.target.value)
+                        handleFilterChange("month", value)
                       }}
                       className={`w-full p-2 border rounded-lg ${
                         isDark
@@ -825,7 +829,7 @@ function Roster() {
                     </tr>
                   ) : (
                     rosterList.map((roster) => {
-                      const statusInfo = getStatusInfo(roster.status);
+                      const statusInfo = getStatusInfo(roster.status)
                       return (
                         <tr
                           key={roster.id}
@@ -884,8 +888,8 @@ function Roster() {
                                   id: roster.id,
                                   title: roster.title,
                                   currentStatus: roster.status,
-                                });
-                                setStatusModalOpen(true);
+                                })
+                                setStatusModalOpen(true)
                               }}
                               className={`px-3 py-1 rounded-full text-xs font-medium transition-colors hover:opacity-80 cursor-pointer ${statusInfo.color}`}
                               title={t("roster.actions.updateStatus")}
@@ -926,8 +930,8 @@ function Roster() {
                                     id: roster.id,
                                     title: roster.title,
                                     currentStatus: roster.status,
-                                  });
-                                  setStatusModalOpen(true);
+                                  })
+                                  setStatusModalOpen(true)
                                 }}
                               >
                                 <BarChart3 size={16} />
@@ -955,7 +959,7 @@ function Roster() {
                             </div>
                           </td>
                         </tr>
-                      );
+                      )
                     })
                   )}
                 </tbody>
@@ -1063,7 +1067,7 @@ function Roster() {
                     </tr>
                   ) : (
                     rosterList.map((roster) => {
-                      const statusInfo = getStatusInfo(roster.status);
+                      const statusInfo = getStatusInfo(roster.status)
                       return (
                         <tr
                           key={roster.id}
@@ -1103,8 +1107,8 @@ function Roster() {
                                   id: roster.id,
                                   title: roster.title,
                                   currentStatus: roster.status,
-                                });
-                                setStatusModalOpen(true);
+                                })
+                                setStatusModalOpen(true)
                               }}
                               className={`px-2 py-1 rounded-full text-xs font-medium transition-colors hover:opacity-80 cursor-pointer ${statusInfo.color}`}
                               title={t("roster.actions.updateStatus")}
@@ -1128,8 +1132,8 @@ function Roster() {
                                     id: roster.id,
                                     title: roster.title,
                                     currentStatus: roster.status,
-                                  });
-                                  setStatusModalOpen(true);
+                                  })
+                                  setStatusModalOpen(true)
                                 }}
                               >
                                 <BarChart3 size={14} />
@@ -1157,7 +1161,7 @@ function Roster() {
                             </div>
                           </td>
                         </tr>
-                      );
+                      )
                     })
                   )}
                 </tbody>
@@ -1276,6 +1280,6 @@ function Roster() {
         </div>
       </div>
     </div>
-  );
+  )
 }
-export default Roster;
+export default Roster

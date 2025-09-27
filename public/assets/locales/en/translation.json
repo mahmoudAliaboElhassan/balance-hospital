@@ -363,7 +363,7 @@
       "showing": "Showing {{start}}–{{end}} of {{total}} results",
       "resultsCount": "Showing {start} to {end} of {total} results",
       "category": "Category: {categoryName}",
-      "perPage": "{count} per page",
+      "perPage": " per page",
       "previous": "Previous",
       "next": "Next"
     },

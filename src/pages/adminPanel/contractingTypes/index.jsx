@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useTranslation } from "react-i18next";
+import React, { useEffect, useState, useCallback } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useTranslation } from "react-i18next"
 import {
   Search,
   Filter,
@@ -13,8 +13,8 @@ import {
   Menu,
   X,
   Users,
-} from "lucide-react";
-import { getContractingTypes } from "../../../state/act/actContractingType";
+} from "lucide-react"
+import { getContractingTypes } from "../../../state/act/actContractingType"
 import {
   clearError,
   setCurrentPage,
@@ -26,29 +26,29 @@ import {
   setDateRangeFilter,
   setSortFilter,
   clearFilters,
-} from "../../../state/slices/contractingType";
-import { Link } from "react-router-dom";
-import DeleteContractingTypeModal from "../../../components/DeleteContractingType";
-import "../../../styles/general.css";
-import i18next from "i18next";
+} from "../../../state/slices/contractingType"
+import { Link } from "react-router-dom"
+import DeleteContractingTypeModal from "../../../components/DeleteContractingType"
+import "../../../styles/general.css"
+import i18next from "i18next"
 
 function ContractingTypes() {
-  const { t, i18n } = useTranslation();
-  const dispatch = useDispatch();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [toDelete, setToDelete] = useState({ id: null, name: "" });
-  const [showFilters, setShowFilters] = useState(false);
-  const [showMobileTable, setShowMobileTable] = useState(false);
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+  const [modalOpen, setModalOpen] = useState(false)
+  const [toDelete, setToDelete] = useState({ id: null, name: "" })
+  const [showFilters, setShowFilters] = useState(false)
+  const [showMobileTable, setShowMobileTable] = useState(false)
 
   // Filter input states
-  const [searchInput, setSearchInput] = useState("");
-  const [minHoursInput, setMinHoursInput] = useState("");
-  const [maxHoursInput, setMaxHoursInput] = useState("");
-  const [fromDateInput, setFromDateInput] = useState("");
-  const [toDateInput, setToDateInput] = useState("");
+  const [searchInput, setSearchInput] = useState("")
+  const [minHoursInput, setMinHoursInput] = useState("")
+  const [maxHoursInput, setMaxHoursInput] = useState("")
+  const [fromDateInput, setFromDateInput] = useState("")
+  const [toDateInput, setToDateInput] = useState("")
 
   // Debounced search
-  const [searchTimeout, setSearchTimeout] = useState(null);
+  const [searchTimeout, setSearchTimeout] = useState(null)
 
   const {
     contractingTypes,
@@ -56,25 +56,25 @@ function ContractingTypes() {
     filters,
     loadingGetContractingTypes,
     error,
-  } = useSelector((state) => state.contractingType);
+  } = useSelector((state) => state.contractingType)
 
-  const { mymode } = useSelector((state) => state.mode);
+  const { mymode } = useSelector((state) => state.mode)
 
   // Check if we're in dark mode
-  const isDark = mymode === "dark";
+  const isDark = mymode === "dark"
 
   // Check if current language is RTL
-  const language = i18n.language;
-  const isRTL = language === "ar";
+  const language = i18n.language
+  const isRTL = language === "ar"
 
   // Initialize filter inputs from current filters
   useEffect(() => {
-    setSearchInput(filters.search || "");
-    setMinHoursInput(filters.minHoursPerWeek || "");
-    setMaxHoursInput(filters.maxHoursPerWeek || "");
-    setFromDateInput(filters.createdFromDate || "");
-    setToDateInput(filters.createdToDate || "");
-  }, [filters]);
+    setSearchInput(filters.search || "")
+    setMinHoursInput(filters.minHoursPerWeek || "")
+    setMaxHoursInput(filters.maxHoursPerWeek || "")
+    setFromDateInput(filters.createdFromDate || "")
+    setToDateInput(filters.createdToDate || "")
+  }, [filters])
 
   // Fetch contracting types when component mounts or filters change
   useEffect(() => {
@@ -90,58 +90,58 @@ function ContractingTypes() {
       sortDirection: filters.sortDirection,
       page: filters.page,
       pageSize: filters.pageSize,
-    };
+    }
 
-    dispatch(getContractingTypes(params));
-  }, [dispatch, filters]);
+    dispatch(getContractingTypes(params))
+  }, [dispatch, filters])
 
   // Clear error on mount
   useEffect(() => {
-    dispatch(clearError());
-  }, [dispatch]);
+    dispatch(clearError())
+  }, [dispatch])
 
   // Handle search with debounce
   const handleSearchChange = useCallback(
     (value) => {
-      setSearchInput(value);
+      setSearchInput(value)
 
       if (searchTimeout) {
-        clearTimeout(searchTimeout);
+        clearTimeout(searchTimeout)
       }
 
       const timeout = setTimeout(() => {
-        dispatch(setSearchFilter(value));
-      }, 500);
+        dispatch(setSearchFilter(value))
+      }, 500)
 
-      setSearchTimeout(timeout);
+      setSearchTimeout(timeout)
     },
     [dispatch, searchTimeout]
-  );
+  )
 
   // Handle pagination
   const handlePageChange = (newPage) => {
-    dispatch(setCurrentPage(newPage));
-  };
+    dispatch(setCurrentPage(newPage))
+  }
 
   const handlePageSizeChange = (newPageSize) => {
-    dispatch(setPageSize(parseInt(newPageSize)));
-  };
+    dispatch(setPageSize(parseInt(newPageSize)))
+  }
 
   // Handle filter changes
   const handleStatusChange = (value) => {
-    dispatch(setStatusFilter(value));
-  };
+    dispatch(setStatusFilter(value))
+  }
 
   const handleOvertimeChange = (value) => {
-    const overtimeValue = value === "" ? undefined : value === "true";
-    dispatch(setOvertimeFilter(overtimeValue));
-  };
+    const overtimeValue = value === "" ? undefined : value === "true"
+    dispatch(setOvertimeFilter(overtimeValue))
+  }
 
   const handleHoursRangeChange = () => {
-    const minHours = minHoursInput === "" ? undefined : parseInt(minHoursInput);
-    const maxHours = maxHoursInput === "" ? undefined : parseInt(maxHoursInput);
-    dispatch(setHoursRangeFilter({ minHours, maxHours }));
-  };
+    const minHours = minHoursInput === "" ? undefined : parseInt(minHoursInput)
+    const maxHours = maxHoursInput === "" ? undefined : parseInt(maxHoursInput)
+    dispatch(setHoursRangeFilter({ minHours, maxHours }))
+  }
 
   const handleDateRangeChange = () => {
     dispatch(
@@ -149,65 +149,65 @@ function ContractingTypes() {
         fromDate: fromDateInput,
         toDate: toDateInput,
       })
-    );
-  };
+    )
+  }
 
   const handleSortChange = (sortBy, sortDirection) => {
-    dispatch(setSortFilter({ sortBy, sortDirection }));
-  };
+    dispatch(setSortFilter({ sortBy, sortDirection }))
+  }
 
   const handleClearFilters = () => {
-    dispatch(clearFilters());
-    setSearchInput("");
-    setMinHoursInput("");
-    setMaxHoursInput("");
-    setFromDateInput("");
-    setToDateInput("");
-  };
+    dispatch(clearFilters())
+    setSearchInput("")
+    setMinHoursInput("")
+    setMaxHoursInput("")
+    setFromDateInput("")
+    setToDateInput("")
+  }
 
   // Handle delete action
   const handleDeleteClick = (contractingType) => {
     const name =
       language === "ar"
         ? contractingType.nameArabic
-        : contractingType.nameEnglish;
-    setToDelete({ id: contractingType.id, name });
-    setModalOpen(true);
-  };
+        : contractingType.nameEnglish
+    setToDelete({ id: contractingType.id, name })
+    setModalOpen(true)
+  }
 
   // Format date
   const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable");
+    if (!dateString) return t("common.notAvailable")
     return new Intl.DateTimeFormat(i18next.language, {
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    }).format(new Date(dateString));
-  };
+    }).format(new Date(dateString))
+  }
 
   // Generate page numbers for pagination
   const getPageNumbers = () => {
-    const pages = [];
-    const totalPages = pagination?.totalPages || 1;
-    const currentPage = pagination?.page || 1;
+    const pages = []
+    const totalPages = pagination?.totalPages || 1
+    const currentPage = pagination?.page || 1
 
     // Show up to 3 page numbers on mobile, 5 on desktop
-    const maxPages = window.innerWidth < 768 ? 3 : 5;
-    let startPage = Math.max(1, currentPage - Math.floor(maxPages / 2));
-    let endPage = Math.min(totalPages, startPage + maxPages - 1);
+    const maxPages = window.innerWidth < 768 ? 3 : 5
+    let startPage = Math.max(1, currentPage - Math.floor(maxPages / 2))
+    let endPage = Math.min(totalPages, startPage + maxPages - 1)
 
     if (endPage - startPage < maxPages - 1) {
-      startPage = Math.max(1, endPage - maxPages + 1);
+      startPage = Math.max(1, endPage - maxPages + 1)
     }
 
     for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
+      pages.push(i)
     }
 
-    return pages;
-  };
+    return pages
+  }
 
   // Mobile card component for each contracting type
   const ContractingTypeCard = ({ contractingType }) => (
@@ -275,7 +275,7 @@ function ContractingTypes() {
         </button>
       </div>
     </div>
-  );
+  )
 
   return (
     <div
@@ -355,28 +355,32 @@ function ContractingTypes() {
             <div className="p-4">
               {/* Search Bar */}
               <div className="flex flex-col sm:flex-row gap-4 mb-4">
-                <div className="flex-1 relative">
-                  <Search
-                    className={`absolute ${
-                      isRTL ? "right-3" : "left-3"
-                    } top-1/2 transform -translate-y-1/2 ${
-                      isDark ? "text-gray-400" : "text-gray-500"
-                    }`}
-                    size={20}
-                  />
-                  <input
-                    type="text"
-                    placeholder={t("contractingTypes.search.placeholder")}
-                    value={searchInput}
-                    onChange={(e) => handleSearchChange(e.target.value)}
-                    className={`w-full ${
-                      isRTL ? "pr-10 pl-4" : "pl-10 pr-4"
-                    } py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                <div className="flex-1 flex items-center gap-2">
+                  {/* Search Icon Container - Completely separate from input */}
+                  <div
+                    className={`flex items-center justify-center w-10 h-10 rounded-lg border transition-all duration-200 ${
                       isDark
-                        ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400"
-                        : "border-gray-300 bg-white text-gray-900 placeholder-gray-500"
+                        ? "border-gray-600 bg-gray-700 text-gray-400"
+                        : "border-gray-300 bg-white text-gray-500"
                     }`}
-                  />
+                  >
+                    <Search size={20} />
+                  </div>
+
+                  {/* Input Container */}
+                  <div className="relative flex-1">
+                    <input
+                      type="text"
+                      placeholder={t("contractingTypes.search.placeholder")}
+                      value={searchInput}
+                      onChange={(e) => handleSearchChange(e.target.value)}
+                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                        isDark
+                          ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400"
+                          : "border-gray-300 bg-white text-gray-900 placeholder-gray-500"
+                      }`}
+                    />
+                  </div>
                 </div>
                 <button
                   onClick={() => setShowFilters(!showFilters)}
@@ -943,7 +947,7 @@ function ContractingTypes() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default ContractingTypes;
+export default ContractingTypes

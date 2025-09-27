@@ -349,52 +349,58 @@ const Login = () => {
                   >
                     {t("login.email")}
                   </label>
-                  <div className="relative">
+
+                  <div className="flex items-center space-x-2">
+                    {/* Icon Container - Completely separate from input */}
                     <div
-                      className={`absolute inset-y-0 ${
-                        directionalClasses.iconLeft
-                      } flex items-center pointer-events-none z-10 ${getIconClasses(
+                      className={`flex items-center justify-center w-10 h-10 rounded-md border transition-all duration-200 ${getIconClasses(
                         getIconState(
                           "email",
                           values.email,
                           focusedField === "email",
                           errors.email && touched.email
                         )
-                      )}`}
+                      )} ${
+                        errors.email && touched.email
+                          ? themeClasses.inputError
+                          : themeClasses.input
+                      }`}
                     >
                       <MailIcon />
                     </div>
-                    <Field
-                      type="email"
-                      name="email"
-                      placeholder={t("login.emailPlaceholder")}
-                      onFocus={() => setFocusedField("email")}
-                      onBlur={() => setFocusedField(null)}
-                      className={`signin-input w-full ${
-                        directionalClasses.inputPaddingWithLeftIcon
-                      } py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-300 group-focus-within:shadow-sm ${
-                        errors.email && touched.email
-                          ? themeClasses.inputError
-                          : `${themeClasses.input}`
-                      }`}
-                    />
 
-                    {/* Field state indicator */}
-                    {values.email && !errors.email && (
-                      <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                        <div
-                          className={`w-1.5 h-1.5 rounded-full ${themeClasses.iconFocused} animate-pulse`}
-                        ></div>
-                      </div>
-                    )}
+                    {/* Input Container */}
+                    <div className="relative flex-1">
+                      <Field
+                        type="email"
+                        name="email"
+                        placeholder={t("login.emailPlaceholder")}
+                        onFocus={() => setFocusedField("email")}
+                        onBlur={() => setFocusedField(null)}
+                        className={`signin-input w-full px-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-300 group-focus-within:shadow-sm ${
+                          errors.email && touched.email
+                            ? themeClasses.inputError
+                            : `${themeClasses.input}`
+                        }`}
+                      />
+
+                      {/* Field state indicator */}
+                      {values.email && !errors.email && (
+                        <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                          <div
+                            className={`w-1.5 h-1.5 rounded-full ${themeClasses.iconFocused} animate-pulse`}
+                          ></div>
+                        </div>
+                      )}
+                    </div>
                   </div>
+
                   <ErrorMessage
                     name="email"
                     component="div"
                     className="text-red-500 text-xs mt-1 animate-in slide-in-from-top-1 duration-200"
                   />
                 </div>
-
                 {/* Password Field */}
                 <div className="space-y-2 group">
                   <label
@@ -402,60 +408,67 @@ const Login = () => {
                   >
                     {t("login.password")}
                   </label>
-                  <div className="relative">
+
+                  <div className="flex items-center space-x-2">
+                    {/* Lock Icon Container - Completely separate from input */}
                     <div
-                      className={`absolute inset-y-0 ${
-                        directionalClasses.iconLeft
-                      } flex items-center pointer-events-none z-10 ${getIconClasses(
+                      className={`flex items-center justify-center w-10 h-10 rounded-md border transition-all duration-200 ${getIconClasses(
                         getIconState(
                           "password",
                           values.password,
                           focusedField === "password",
                           errors.password && touched.password
                         )
-                      )}`}
+                      )} ${
+                        errors.password && touched.password
+                          ? themeClasses.inputError
+                          : themeClasses.input
+                      }`}
                     >
                       <LockIcon />
                     </div>
-                    <Field
-                      type={showPassword ? "text" : "password"}
-                      name="password"
-                      placeholder={t("login.passwordPlaceholder")}
-                      onFocus={() => setFocusedField("password")}
-                      onBlur={() => setFocusedField(null)}
-                      className={`signin-input w-full ${
-                        directionalClasses.inputPaddingWithBothIcons
-                      } py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-300 group-focus-within:shadow-sm ${
-                        errors.password && touched.password
-                          ? themeClasses.inputError
-                          : `${themeClasses.input}`
-                      }`}
-                    />
-                    <button
-                      type="button"
-                      onClick={togglePasswordVisibility}
-                      className={`absolute inset-y-0 ${
-                        directionalClasses.iconRight
-                      } flex items-center transition-all duration-200 z-10 ${
-                        focusedField === "password"
-                          ? themeClasses.iconFocused
-                          : themeClasses.iconDefault
-                      } ${
-                        themeClasses.iconHover
-                      } hover:scale-110 focus:outline-none focus:scale-110`}
-                    >
-                      {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-                    </button>
 
-                    {/* Field state indicator */}
-                    {values.password && !errors.password && (
-                      <div className="absolute inset-y-0 right-10 flex items-center pointer-events-none">
-                        <div
-                          className={`w-1.5 h-1.5 rounded-full ${themeClasses.iconFocused} animate-pulse`}
-                        ></div>
-                      </div>
-                    )}
+                    {/* Input Container */}
+                    <div className="relative flex-1">
+                      <Field
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        placeholder={t("login.passwordPlaceholder")}
+                        onFocus={() => setFocusedField("password")}
+                        onBlur={() => setFocusedField(null)}
+                        className={`signin-input w-[95%] pl-4 pr-12 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-300 group-focus-within:shadow-sm ${
+                          errors.password && touched.password
+                            ? themeClasses.inputError
+                            : `${themeClasses.input}`
+                        }`}
+                      />
+
+                      {/* Eye toggle button - stays inside input */}
+                      <button
+                        type="button"
+                        onClick={togglePasswordVisibility}
+                        className={`absolute inset-y-0 left-[100%] flex items-center transition-all duration-200 z-10 ${
+                          focusedField === "password"
+                            ? themeClasses.iconFocused
+                            : themeClasses.iconDefault
+                        } ${
+                          themeClasses.iconHover
+                        } hover:scale-110 focus:outline-none focus:scale-110`}
+                      >
+                        {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                      </button>
+
+                      {/* Field state indicator - positioned before eye button */}
+                      {values.password && !errors.password && (
+                        <div className="absolute inset-y-0 right-10 flex items-center pointer-events-none">
+                          <div
+                            className={`w-1.5 h-1.5 rounded-full ${themeClasses.iconFocused} animate-pulse`}
+                          ></div>
+                        </div>
+                      )}
+                    </div>
                   </div>
+
                   <ErrorMessage
                     name="password"
                     component="div"

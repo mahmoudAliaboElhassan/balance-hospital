@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import i18next from "i18next";
-import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
+import React, { useEffect, useState, useMemo, useCallback } from "react"
+import { useParams, useNavigate, Link } from "react-router-dom"
+import i18next from "i18next"
+import { useTranslation } from "react-i18next"
+import { useDispatch, useSelector } from "react-redux"
+import { Formik, Form, Field, ErrorMessage } from "formik"
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
 import {
   ArrowLeft,
   UserPlus,
@@ -20,49 +20,49 @@ import {
   Save,
   Building,
   Clock,
-} from "lucide-react";
-import * as Yup from "yup";
+} from "lucide-react"
+import * as Yup from "yup"
 import {
   assignDoctorToShift,
   getAvailableDoctorsForShift,
   getWorkingHour,
-} from "../../../state/act/actRosterManagement";
-import LoadingGetData from "../../../components/LoadingGetData";
+} from "../../../state/act/actRosterManagement"
+import LoadingGetData from "../../../components/LoadingGetData"
 
 // Constants
-const MAX_NOTES_LENGTH = 500;
+const MAX_NOTES_LENGTH = 500
 const WORKLOAD_THRESHOLDS = {
   HIGH: 90,
   MEDIUM: 70,
-};
+}
 
 // Helper functions
 const getDoctorStatusColor = (doctor, isDark) => {
   if (!doctor.isAvailable) {
-    return isDark ? "bg-red-900/20 text-red-400" : "bg-red-100 text-red-800";
+    return isDark ? "bg-red-900/20 text-red-400" : "bg-red-100 text-red-800"
   }
   if (doctor.hasConflict) {
     return isDark
       ? "bg-yellow-900/20 text-yellow-400"
-      : "bg-yellow-100 text-yellow-800";
+      : "bg-yellow-100 text-yellow-800"
   }
   return isDark
     ? "bg-green-900/20 text-green-400"
-    : "bg-green-100 text-green-800";
-};
+    : "bg-green-100 text-green-800"
+}
 
 const getDoctorStatusIcon = (doctor) => {
-  if (!doctor.isAvailable) return <X size={14} />;
-  if (doctor.hasConflict) return <AlertCircle size={14} />;
-  return <CheckCircle size={14} />;
-};
+  if (!doctor.isAvailable) return <X size={14} />
+  if (doctor.hasConflict) return <AlertCircle size={14} />
+  return <CheckCircle size={14} />
+}
 
 const getWorkloadColor = (percentage) => {
-  if (percentage > WORKLOAD_THRESHOLDS.HIGH) return "text-red-500 bg-red-500";
+  if (percentage > WORKLOAD_THRESHOLDS.HIGH) return "text-red-500 bg-red-500"
   if (percentage > WORKLOAD_THRESHOLDS.MEDIUM)
-    return "text-yellow-500 bg-yellow-500";
-  return "text-green-500 bg-green-500";
-};
+    return "text-yellow-500 bg-yellow-500"
+  return "text-green-500 bg-green-500"
+}
 
 // Sub-components
 const DoctorAvatar = ({ doctor, isDark }) => {
@@ -73,7 +73,7 @@ const DoctorAvatar = ({ doctor, isDark }) => {
         alt=""
         className="w-10 h-10 rounded-full object-cover"
       />
-    );
+    )
   }
 
   return (
@@ -84,12 +84,12 @@ const DoctorAvatar = ({ doctor, isDark }) => {
     >
       <Users size={20} className={isDark ? "text-gray-400" : "text-gray-500"} />
     </div>
-  );
-};
+  )
+}
 
 const WorkloadIndicator = ({ doctor, isDark, t }) => {
-  const workloadPercentage = doctor.workloadPercentage || 0;
-  const colorClasses = getWorkloadColor(workloadPercentage);
+  const workloadPercentage = doctor.workloadPercentage || 0
+  const colorClasses = getWorkloadColor(workloadPercentage)
 
   return (
     <div className="mt-2">
@@ -118,8 +118,8 @@ const WorkloadIndicator = ({ doctor, isDark, t }) => {
         {doctor.currentMonthHours} {t("roster.assign.hours")}
       </div>
     </div>
-  );
-};
+  )
+}
 
 const ConflictDetails = ({
   doctor,
@@ -128,7 +128,7 @@ const ConflictDetails = ({
   isDark,
   t,
 }) => {
-  if (!doctor.hasConflict || !doctor.conflictDetails?.length) return null;
+  if (!doctor.hasConflict || !doctor.conflictDetails?.length) return null
 
   return (
     <div className="mt-2">
@@ -165,8 +165,8 @@ const ConflictDetails = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 const DoctorCard = ({
   doctor,
@@ -180,16 +180,16 @@ const DoctorCard = ({
   t,
 }) => {
   const handleClick = useCallback(() => {
-    onSelect(doctor);
-  }, [doctor, onSelect]);
+    onSelect(doctor)
+  }, [doctor, onSelect])
 
   const handleToggleConflicts = useCallback(
     (e) => {
-      e.stopPropagation();
-      onToggleConflicts(doctor.doctorId);
+      e.stopPropagation()
+      onToggleConflicts(doctor.doctorId)
     },
     [doctor.doctorId, onToggleConflicts]
-  );
+  )
 
   return (
     <div
@@ -219,7 +219,7 @@ const DoctorCard = ({
               >
                 {currentLang === "ar"
                   ? doctor.doctorNameArabic
-                  : doctor.doctorNameEnglish}
+                  : doctor.doctorName}
               </h3>
               <span
                 className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getDoctorStatusColor(
@@ -300,8 +300,8 @@ const DoctorCard = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const EmptyState = ({ searchTerm, isDark, t }) => (
   <div
@@ -319,39 +319,39 @@ const EmptyState = ({ searchTerm, isDark, t }) => (
         : t("roster.assign.noAvailableDoctors")}
     </p>
   </div>
-);
+)
 
 const ShiftInfo = ({ workingHour, isDark, isRTL, t }) => {
-  if (!workingHour) return null;
+  if (!workingHour) return null
 
   // Format date
   const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable");
+    if (!dateString) return t("common.notAvailable")
     return new Intl.DateTimeFormat(i18next.language, {
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    }).format(new Date(dateString));
-  };
+    }).format(new Date(dateString))
+  }
 
   // Format time
   const formatTime = (timeString) => {
-    if (!timeString) return "-";
-    const time = new Date(timeString);
+    if (!timeString) return "-"
+    const time = new Date(timeString)
     return time.toLocaleTimeString(isRTL ? "ar-SA" : "en-US", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
-    });
-  };
+    })
+  }
 
   // Extract shift and department info from the nested structure
-  const shift = workingHour.shift || {};
-  const department = workingHour.department || {};
-  const contractingType = workingHour.contractingType || {};
-  const currentLang = i18next.language;
+  const shift = workingHour.shift || {}
+  const department = workingHour.department || {}
+  const contractingType = workingHour.contractingType || {}
+  const currentLang = i18next.language
   return (
     <div
       className={`rounded-lg border p-4 mb-6 ${
@@ -586,25 +586,25 @@ const ShiftInfo = ({ workingHour, isDark, isRTL, t }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 // Main component
 function AssignDoctor() {
-  const { workingHourId } = useParams();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { workingHourId } = useParams()
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
   const { loading, availableDoctorsForShift, errors, workingHour } =
-    useSelector((state) => state.rosterManagement);
-  const { mymode } = useSelector((state) => state.mode);
-  const isDark = mymode === "dark";
+    useSelector((state) => state.rosterManagement)
+  const { mymode } = useSelector((state) => state.mode)
+  const isDark = mymode === "dark"
 
-  const { t } = useTranslation();
-  const currentLang = i18next.language;
-  const isRTL = currentLang === "ar";
+  const { t } = useTranslation()
+  const currentLang = i18next.language
+  const isRTL = currentLang === "ar"
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedDoctor, setSelectedDoctor] = useState(null);
-  const [showConflictDetails, setShowConflictDetails] = useState({});
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedDoctor, setSelectedDoctor] = useState(null)
+  const [showConflictDetails, setShowConflictDetails] = useState({})
 
   // Validation schema
   const validationSchema = useMemo(
@@ -619,7 +619,7 @@ function AssignDoctor() {
         overrideConflicts: Yup.boolean(),
       }),
     [t]
-  );
+  )
 
   const initialValues = useMemo(
     () => ({
@@ -628,37 +628,37 @@ function AssignDoctor() {
       overrideConflicts: false,
     }),
     []
-  );
+  )
 
   // Fetch working hour details and available doctors when component mounts
   useEffect(() => {
     if (workingHourId) {
-      dispatch(getWorkingHour({ workingHourId }));
+      dispatch(getWorkingHour({ workingHourId }))
       dispatch(
         getAvailableDoctorsForShift({
           workingHourId: workingHourId,
         })
-      );
+      )
     }
-  }, [dispatch, workingHourId]);
+  }, [dispatch, workingHourId])
 
   // Filter doctors based on search term
   const filteredDoctors = useMemo(() => {
-    if (!searchTerm) return availableDoctorsForShift;
+    if (!searchTerm) return availableDoctorsForShift
 
-    const searchLower = searchTerm.toLowerCase();
+    const searchLower = searchTerm.toLowerCase()
     return availableDoctorsForShift.filter((doctor) => {
-      const doctorName = (doctor.doctorName || "").toLowerCase();
-      const doctorNameArabic = (doctor.doctorNameArabic || "").toLowerCase();
-      const specialty = (doctor.specialty || "").toLowerCase();
+      const doctorName = (doctor.doctorName || "").toLowerCase()
+      const doctorNameArabic = (doctor.doctorNameArabic || "").toLowerCase()
+      const specialty = (doctor.specialty || "").toLowerCase()
 
       return (
         doctorName.includes(searchLower) ||
         doctorNameArabic.includes(searchLower) ||
         specialty.includes(searchLower)
-      );
-    });
-  }, [availableDoctorsForShift, searchTerm]);
+      )
+    })
+  }, [availableDoctorsForShift, searchTerm])
 
   const showSweetAlert = useCallback(
     (options) => {
@@ -666,10 +666,10 @@ function AssignDoctor() {
         background: isDark ? "#1f2937" : "#ffffff",
         color: isDark ? "#f9fafb" : "#111827",
         ...options,
-      });
+      })
     },
     [isDark]
-  );
+  )
 
   const handleSubmit = useCallback(
     async (values, { setSubmitting }) => {
@@ -679,9 +679,9 @@ function AssignDoctor() {
           workingHoursId: parseInt(workingHourId),
           notes: values.notes || "",
           overrideConflicts: values.overrideConflicts,
-        };
+        }
 
-        await dispatch(assignDoctorToShift(assignmentData)).unwrap();
+        await dispatch(assignDoctorToShift(assignmentData)).unwrap()
 
         toast.success(t("roster.assign.success.assigned"), {
           position: "top-right",
@@ -690,11 +690,11 @@ function AssignDoctor() {
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
-        });
+        })
 
-        navigate(-1); // Go back to previous page
+        navigate(-1) // Go back to previous page
       } catch (error) {
-        console.error("Doctor assignment error:", error);
+        console.error("Doctor assignment error:", error)
 
         if (error?.status === 409) {
           const result = await showSweetAlert({
@@ -709,11 +709,11 @@ function AssignDoctor() {
             cancelButtonText: t("common.cancel"),
             confirmButtonColor: "#f59e0b",
             cancelButtonColor: "#6b7280",
-          });
+          })
 
           if (result.isConfirmed) {
-            values.overrideConflicts = true;
-            return handleSubmit(values, { setSubmitting });
+            values.overrideConflicts = true
+            return handleSubmit(values, { setSubmitting })
           }
         } else {
           await showSweetAlert({
@@ -729,30 +729,30 @@ function AssignDoctor() {
             icon: "error",
             confirmButtonText: t("common.ok"),
             confirmButtonColor: "#ef4444",
-          });
+          })
         }
       } finally {
-        setSubmitting(false);
+        setSubmitting(false)
       }
     },
     [dispatch, workingHourId, navigate, t, currentLang, showSweetAlert]
-  );
+  )
 
   const handleDoctorSelect = useCallback((doctor, setFieldValue) => {
-    setSelectedDoctor(doctor);
-    setFieldValue("doctorId", doctor.doctorId);
-  }, []);
+    setSelectedDoctor(doctor)
+    setFieldValue("doctorId", doctor.doctorId)
+  }, [])
 
   const toggleConflictDetails = useCallback((doctorId) => {
     setShowConflictDetails((prev) => ({
       ...prev,
       [doctorId]: !prev[doctorId],
-    }));
-  }, []);
+    }))
+  }, [])
 
   const handleSearchChange = useCallback((e) => {
-    setSearchTerm(e.target.value);
-  }, []);
+    setSearchTerm(e.target.value)
+  }, [])
 
   if (loading?.fetch || loading?.availableDoctors) {
     return (
@@ -763,7 +763,7 @@ function AssignDoctor() {
             : t("gettingData.availableDoctors")
         }
       />
-    );
+    )
   }
 
   if (errors.workingHours || errors.availableDoctors) {
@@ -796,7 +796,7 @@ function AssignDoctor() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -871,31 +871,35 @@ function AssignDoctor() {
                     >
                       {t("roster.assign.searchDoctors")}
                     </label>
-                    <div className="relative">
-                      <Search
-                        size={18}
-                        className={`absolute ${
-                          isRTL ? "right-3" : "left-3"
-                        } top-1/2 transform -translate-y-1/2 ${
-                          isDark ? "text-gray-400" : "text-gray-500"
-                        }`}
-                      />
-                      <input
-                        type="text"
-                        placeholder={t("roster.assign.searchPlaceholder")}
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                        className={`w-full ${
-                          isRTL ? "pr-10 pl-4" : "pl-10 pr-4"
-                        } py-2 border rounded-lg text-sm ${
+
+                    <div className="flex items-center gap-2">
+                      {/* Search Icon Container - Completely separate from input */}
+                      <div
+                        className={`flex items-center justify-center w-10 h-10 rounded-lg border transition-all duration-200 ${
                           isDark
-                            ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
-                            : "bg-white border-gray-300 text-gray-900 placeholder-gray-500"
-                        } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
-                      />
+                            ? "border-gray-600 bg-gray-700 text-gray-400"
+                            : "border-gray-300 bg-white text-gray-500"
+                        }`}
+                      >
+                        <Search size={18} />
+                      </div>
+
+                      {/* Input Container */}
+                      <div className="relative flex-1">
+                        <input
+                          type="text"
+                          placeholder={t("roster.assign.searchPlaceholder")}
+                          value={searchTerm}
+                          onChange={handleSearchChange}
+                          className={`w-full px-4 py-2 border rounded-lg text-sm ${
+                            isDark
+                              ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                              : "bg-white border-gray-300 text-gray-900 placeholder-gray-500"
+                          } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                        />
+                      </div>
                     </div>
                   </div>
-
                   {/* Available Doctors List */}
                   <div>
                     <label
@@ -1065,7 +1069,7 @@ function AssignDoctor() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default AssignDoctor;
+export default AssignDoctor

@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState, useCallback } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
 import {
   Search,
   Filter,
@@ -21,7 +21,7 @@ import {
   Users,
   Grid,
   List,
-} from "lucide-react";
+} from "lucide-react"
 import {
   getCategoryTypes,
   getCategoryPendingRequests,
@@ -34,14 +34,14 @@ import {
   approveDoctorRequest,
   clearApprovalSuccess,
   clearApprovalError,
-} from "../../../state/slices/category";
-import { useTranslation } from "react-i18next";
-import i18next from "i18next";
+} from "../../../state/slices/category"
+import { useTranslation } from "react-i18next"
+import i18next from "i18next"
 
 const PendingDoctorRequests = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { t, currentLanguage } = useTranslation();
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { t, currentLanguage } = useTranslation()
 
   const {
     categoryTypes,
@@ -58,28 +58,28 @@ const PendingDoctorRequests = () => {
     approvalError,
     approvalSuccess,
     approvalMessage,
-  } = useSelector((state) => state.category);
+  } = useSelector((state) => state.category)
 
   const [localFilters, setLocalFilters] = useState({
     status: filters.status,
-  });
+  })
 
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null)
 
   // Fetch category types on component mount
   useEffect(() => {
-    dispatch(getCategoryTypes());
-  }, [dispatch]);
+    dispatch(getCategoryTypes())
+  }, [dispatch])
 
   // Set selected category when categoryTypes are loaded or selectedCategoryId changes
   useEffect(() => {
     if (categoryTypes.length > 0 && selectedCategoryId) {
       const category = categoryTypes.find(
         (cat) => cat.id === selectedCategoryId
-      );
-      setSelectedCategory(category);
+      )
+      setSelectedCategory(category)
     }
-  }, [categoryTypes, selectedCategoryId]);
+  }, [categoryTypes, selectedCategoryId])
 
   // Fetch category-specific pending requests when category is selected
   useEffect(() => {
@@ -89,75 +89,75 @@ const PendingDoctorRequests = () => {
           categoryId: selectedCategoryId,
           filters,
         })
-      );
+      )
     }
-  }, [dispatch, selectedCategoryId, filters]);
+  }, [dispatch, selectedCategoryId, filters])
 
   // Handle approval success
   useEffect(() => {
     if (approvalSuccess) {
       // Optionally show a success message or toast
-      console.log(approvalMessage || "Request processed successfully");
+      console.log(approvalMessage || "Request processed successfully")
 
       // Clear the success state after a delay
       const timer = setTimeout(() => {
-        dispatch(clearApprovalSuccess());
-      }, 3000);
+        dispatch(clearApprovalSuccess())
+      }, 3000)
 
-      return () => clearTimeout(timer);
+      return () => clearTimeout(timer)
     }
-  }, [approvalSuccess, approvalMessage, dispatch]);
+  }, [approvalSuccess, approvalMessage, dispatch])
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      dispatch(clearCategoryPendingRequests());
-      dispatch(clearApprovalSuccess());
-      dispatch(clearApprovalError());
-    };
-  }, [dispatch]);
+      dispatch(clearCategoryPendingRequests())
+      dispatch(clearApprovalSuccess())
+      dispatch(clearApprovalError())
+    }
+  }, [dispatch])
 
   // Handle category selection
   const handleCategorySelect = useCallback(
     (categoryId) => {
-      dispatch(setSelectedCategoryId(categoryId));
+      dispatch(setSelectedCategoryId(categoryId))
     },
     [dispatch]
-  );
+  )
 
   // Handle status filter change
   const handleStatusChange = useCallback(
     (status) => {
-      setLocalFilters((prev) => ({ ...prev, status }));
-      dispatch(setCategoryPendingRequestsStatusFilter(status));
+      setLocalFilters((prev) => ({ ...prev, status }))
+      dispatch(setCategoryPendingRequestsStatusFilter(status))
     },
     [dispatch]
-  );
+  )
 
   // Handle pagination
   const handlePageChange = useCallback(
     (page) => {
-      dispatch(setCategoryPendingRequestsCurrentPage(page));
+      dispatch(setCategoryPendingRequestsCurrentPage(page))
     },
     [dispatch]
-  );
+  )
 
   const handlePageSizeChange = useCallback(
     (pageSize) => {
-      dispatch(setCategoryPendingRequestsPageSize(pageSize));
+      dispatch(setCategoryPendingRequestsPageSize(pageSize))
     },
     [dispatch]
-  );
+  )
 
   // Handle error dismissal
   const handleDismissError = useCallback(() => {
-    dispatch(clearCategoryPendingRequestsError());
-  }, [dispatch]);
+    dispatch(clearCategoryPendingRequestsError())
+  }, [dispatch])
 
   // Handle approval error dismissal
   const handleDismissApprovalError = useCallback(() => {
-    dispatch(clearApprovalError());
-  }, [dispatch]);
+    dispatch(clearApprovalError())
+  }, [dispatch])
 
   // Handle refresh
   const handleRefresh = useCallback(() => {
@@ -167,33 +167,33 @@ const PendingDoctorRequests = () => {
           categoryId: selectedCategoryId,
           filters,
         })
-      );
+      )
     }
-  }, [dispatch, selectedCategoryId, filters]);
+  }, [dispatch, selectedCategoryId, filters])
 
   // Handle navigation back
   const handleGoBack = useCallback(() => {
-    navigate(-1);
-  }, [navigate]);
+    navigate(-1)
+  }, [navigate])
 
   // Updated request handlers
   const handleApproveRequest = useCallback(
     (userId) => {
-      dispatch(approveDoctorRequest({ userId, isApproved: true }));
+      dispatch(approveDoctorRequest({ userId, isApproved: true }))
     },
     [dispatch]
-  );
+  )
 
   const handleRejectRequest = useCallback(
     (userId) => {
-      dispatch(approveDoctorRequest({ userId, isApproved: false }));
+      dispatch(approveDoctorRequest({ userId, isApproved: false }))
     },
     [dispatch]
-  );
+  )
 
   const handleViewRequest = useCallback((requestId) => {
-    console.log("View request:", requestId);
-  }, []);
+    console.log("View request:", requestId)
+  }, [])
 
   // Get status configuration
   const getStatusConfig = (status) => {
@@ -213,7 +213,7 @@ const PendingDoctorRequests = () => {
         text: t("pendingDoctorRequests.status.rejected"),
         icon: X,
       },
-    };
+    }
 
     return (
       configs[status] || {
@@ -221,13 +221,13 @@ const PendingDoctorRequests = () => {
         text: status,
         icon: AlertCircle,
       }
-    );
-  };
+    )
+  }
 
   // Render status badge
   const renderStatusBadge = (status) => {
-    const config = getStatusConfig(status);
-    const IconComponent = config.icon;
+    const config = getStatusConfig(status)
+    const IconComponent = config.icon
 
     return (
       <span
@@ -236,20 +236,20 @@ const PendingDoctorRequests = () => {
         <IconComponent className="w-3 h-3" />
         {config.text}
       </span>
-    );
-  };
+    )
+  }
 
   // Format date
   const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable");
+    if (!dateString) return t("common.notAvailable")
     return new Intl.DateTimeFormat(i18next.language, {
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    }).format(new Date(dateString));
-  };
+    }).format(new Date(dateString))
+  }
 
   // Status filter options
   const statusFilterOptions = [
@@ -273,11 +273,11 @@ const PendingDoctorRequests = () => {
       label: t("pendingDoctorRequests.filters.statusOptions.rejected"),
       count: null,
     },
-  ];
+  ]
 
   // Render action buttons based on status
   const renderActionButtons = (request) => {
-    const isProcessing = loadingApproveRequest;
+    const isProcessing = loadingApproveRequest
 
     return (
       <div className="flex gap-2">
@@ -313,8 +313,8 @@ const PendingDoctorRequests = () => {
           </button>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   // Loading category types
   if (loadingGetCategoryTypes) {
@@ -331,7 +331,7 @@ const PendingDoctorRequests = () => {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   // Category types error
@@ -370,7 +370,7 @@ const PendingDoctorRequests = () => {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   // Requests error
@@ -467,7 +467,7 @@ const PendingDoctorRequests = () => {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -919,17 +919,14 @@ const PendingDoctorRequests = () => {
                           {Array.from(
                             { length: Math.min(pagination.totalPages, 5) },
                             (_, i) => {
-                              const startPage = Math.max(
-                                1,
-                                pagination.page - 2
-                              );
+                              const startPage = Math.max(1, pagination.page - 2)
                               const pageNumber = Math.min(
                                 startPage + i,
                                 pagination.totalPages
-                              );
+                              )
 
                               if (pageNumber > pagination.totalPages)
-                                return null;
+                                return null
 
                               return (
                                 <button
@@ -943,7 +940,7 @@ const PendingDoctorRequests = () => {
                                 >
                                   {pageNumber}
                                 </button>
-                              );
+                              )
                             }
                           )}
                         </div>
@@ -965,7 +962,7 @@ const PendingDoctorRequests = () => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PendingDoctorRequests;
+export default PendingDoctorRequests

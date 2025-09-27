@@ -1,18 +1,18 @@
-import { useState, useRef, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { useDispatch, useSelector } from "react-redux";
+import { useState, useRef, useEffect } from "react"
+import { useTranslation } from "react-i18next"
+import { useFormik } from "formik"
+import * as Yup from "yup"
+import { useDispatch, useSelector } from "react-redux"
 import {
   resendForgetPasswordCode,
   resetPassword,
-} from "../../state/act/actAuth";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import i18next from "i18next";
-import { useNavigate } from "react-router-dom";
-import UseInitialValues from "../../hooks/use-initial-values";
-import UseFormValidation from "../../hooks/use-form-validation";
+} from "../../state/act/actAuth"
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
+import i18next from "i18next"
+import { useNavigate } from "react-router-dom"
+import UseInitialValues from "../../hooks/use-initial-values"
+import UseFormValidation from "../../hooks/use-form-validation"
 
 // Icon Components
 const LockIcon = ({ className = "" }) => (
@@ -32,7 +32,7 @@ const LockIcon = ({ className = "" }) => (
     <circle cx="12" cy="16" r="1"></circle>
     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
   </svg>
-);
+)
 
 const ShieldCheckIcon = ({ className = "" }) => (
   <svg
@@ -50,7 +50,7 @@ const ShieldCheckIcon = ({ className = "" }) => (
     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
     <path d="m9 12 2 2 4-4"></path>
   </svg>
-);
+)
 
 const EyeIcon = ({ className = "" }) => (
   <svg
@@ -68,7 +68,7 @@ const EyeIcon = ({ className = "" }) => (
     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
     <circle cx="12" cy="12" r="3"></circle>
   </svg>
-);
+)
 
 const EyeOffIcon = ({ className = "" }) => (
   <svg
@@ -86,29 +86,29 @@ const EyeOffIcon = ({ className = "" }) => (
     <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
     <line x1="1" y1="1" x2="23" y2="23"></line>
   </svg>
-);
+)
 
 export default function ResetPassword() {
-  const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const currentLang = i18next.language;
-  const { loadingAuth } = useSelector((state) => state.auth);
-  const { mymode } = useSelector((state) => state.mode);
+  const { t } = useTranslation()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const currentLang = i18next.language
+  const { loadingAuth } = useSelector((state) => state.auth)
+  const { mymode } = useSelector((state) => state.mode)
 
-  const [token, setToken] = useState(new Array(6).fill(""));
-  const [focusedIndex, setFocusedIndex] = useState(0);
-  const [focusedField, setFocusedField] = useState(null);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [token, setToken] = useState(new Array(6).fill(""))
+  const [focusedIndex, setFocusedIndex] = useState(0)
+  const [focusedField, setFocusedField] = useState(null)
+  const [showNewPassword, setShowNewPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [identifier] = useState(
     localStorage.getItem("identifier") || "user@example.com"
-  );
-  const inputRefs = useRef([]);
+  )
+  const inputRefs = useRef([])
 
   // Yup validation schema
-  const { VALIDATION_SCHEMA_RESET_PASSWORD } = UseFormValidation();
-  const { INITIAL_VALUES_RESET_PASSWORD } = UseInitialValues();
+  const { VALIDATION_SCHEMA_RESET_PASSWORD } = UseFormValidation()
+  const { INITIAL_VALUES_RESET_PASSWORD } = UseInitialValues()
   const formik = useFormik({
     initialValues: INITIAL_VALUES_RESET_PASSWORD,
     validationSchema: VALIDATION_SCHEMA_RESET_PASSWORD,
@@ -130,16 +130,16 @@ export default function ResetPassword() {
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
-          });
+          })
 
           // Navigate to login after success
           setTimeout(() => {
-            navigate("/login");
-          }, 1500);
+            navigate("/login")
+          }, 1500)
         })
 
         .catch((error) => {
-          console.log("Reset error:", error);
+          console.log("Reset error:", error)
 
           // Error handling with SweetAlert
           Swal.fire({
@@ -155,28 +155,28 @@ export default function ResetPassword() {
             confirmButtonColor: "#ef4444",
             background: mymode === "dark" ? "#1f2937" : "#ffffff",
             color: mymode === "dark" ? "#f9fafb" : "#111827",
-          });
-        });
+          })
+        })
     },
-  });
+  })
 
   // Enhanced icon state logic
   const getIconState = (fieldName, hasValue, hasFocus, hasError) => {
     if (hasError) {
-      return "error";
+      return "error"
     }
     if (hasFocus) {
-      return "focused";
+      return "focused"
     }
     if (hasValue) {
-      return "filled";
+      return "filled"
     }
-    return "default";
-  };
+    return "default"
+  }
 
   // Comprehensive theme-based classes
   const getThemeClasses = () => {
-    const isDark = mymode === "dark";
+    const isDark = mymode === "dark"
     return {
       // Container and layout
       container: isDark
@@ -236,126 +236,126 @@ export default function ResetPassword() {
       success: isDark ? "text-green-400" : "text-green-500",
       warning: isDark ? "text-yellow-400" : "text-yellow-500",
       error: isDark ? "text-red-400" : "text-red-500",
-    };
-  };
+    }
+  }
 
-  const themeClasses = getThemeClasses();
+  const themeClasses = getThemeClasses()
 
   // Get icon classes based on state
   const getIconClasses = (iconState) => {
-    const baseClasses = "transition-all duration-300 ease-in-out transform";
+    const baseClasses = "transition-all duration-300 ease-in-out transform"
 
     switch (iconState) {
       case "focused":
-        return `${baseClasses} ${themeClasses.iconFocused} scale-105 drop-shadow-sm`;
+        return `${baseClasses} ${themeClasses.iconFocused} scale-105 drop-shadow-sm`
       case "filled":
-        return `${baseClasses} ${themeClasses.iconFilled} scale-100`;
+        return `${baseClasses} ${themeClasses.iconFilled} scale-100`
       case "error":
-        return `${baseClasses} ${themeClasses.iconError} scale-105 animate-pulse`;
+        return `${baseClasses} ${themeClasses.iconError} scale-105 animate-pulse`
       default:
-        return `${baseClasses} ${themeClasses.iconDefault} scale-95`;
+        return `${baseClasses} ${themeClasses.iconDefault} scale-95`
     }
-  };
+  }
 
   // Enhanced token input classes
   const getTokenClasses = (index, data) => {
     const baseClasses =
-      "w-10 h-12 text-center text-xl font-semibold rounded-lg outline-none transition-all duration-300 hover:shadow-sm";
+      "w-10 h-12 text-center text-xl font-semibold rounded-lg outline-none transition-all duration-300 hover:shadow-sm"
 
     if (focusedIndex === index) {
-      return `${baseClasses} ${themeClasses.tokenFocused} border-2 scale-105 shadow-lg`;
+      return `${baseClasses} ${themeClasses.tokenFocused} border-2 scale-105 shadow-lg`
     }
     if (formik.touched.token && formik.errors.token) {
-      return `${baseClasses} ${themeClasses.tokenError} border-2 animate-pulse`;
+      return `${baseClasses} ${themeClasses.tokenError} border-2 animate-pulse`
     }
     if (data) {
-      return `${baseClasses} ${themeClasses.tokenFilled} border-2`;
+      return `${baseClasses} ${themeClasses.tokenFilled} border-2`
     }
-    return `${baseClasses} ${themeClasses.tokenDefault} border border-dashed ${themeClasses.tokenHover}`;
-  };
+    return `${baseClasses} ${themeClasses.tokenDefault} border border-dashed ${themeClasses.tokenHover}`
+  }
 
   // Token handling functions
   const handleTokenChange = (element, index) => {
     if (isNaN(Number(element.value)) || element.value === " ") {
-      element.value = "";
-      return;
+      element.value = ""
+      return
     }
 
-    const newToken = [...token];
-    newToken[index] = element.value;
-    setToken(newToken);
+    const newToken = [...token]
+    newToken[index] = element.value
+    setToken(newToken)
 
     // Update formik token value
-    const tokenString = newToken.join("");
-    formik.setFieldValue("token", tokenString);
+    const tokenString = newToken.join("")
+    formik.setFieldValue("token", tokenString)
 
     // Clear token error if exists
     if (formik.errors.token) {
-      formik.setFieldError("token", "");
+      formik.setFieldError("token", "")
     }
 
     // Move to next input
     if (element.value && index < 5) {
-      const nextInput = inputRefs.current[index + 1];
+      const nextInput = inputRefs.current[index + 1]
       if (nextInput) {
-        nextInput.focus();
+        nextInput.focus()
       }
     }
-  };
+  }
 
   const handleTokenKeyDown = (e, index) => {
     if (e.key === "Backspace" && !token[index] && index > 0) {
-      const prevInput = inputRefs.current[index - 1];
+      const prevInput = inputRefs.current[index - 1]
       if (prevInput) {
-        prevInput.focus();
+        prevInput.focus()
       }
     }
-  };
+  }
 
   const handleTokenPaste = (e) => {
-    e.preventDefault();
-    const pasteData = e.clipboardData.getData("text").slice(0, 6);
-    if (!/^\d+$/.test(pasteData)) return;
+    e.preventDefault()
+    const pasteData = e.clipboardData.getData("text").slice(0, 6)
+    if (!/^\d+$/.test(pasteData)) return
 
-    const newToken = new Array(6).fill("");
+    const newToken = new Array(6).fill("")
     for (let i = 0; i < pasteData.length; i++) {
-      newToken[i] = pasteData[i];
+      newToken[i] = pasteData[i]
     }
-    setToken(newToken);
+    setToken(newToken)
 
     // Update formik token value
-    const tokenString = newToken.join("");
-    formik.setFieldValue("token", tokenString);
+    const tokenString = newToken.join("")
+    formik.setFieldValue("token", tokenString)
 
     // Clear token error if exists
     if (formik.errors.token) {
-      formik.setFieldError("token", "");
+      formik.setFieldError("token", "")
     }
 
-    const lastFullInput = Math.min(pasteData.length - 1, 5);
+    const lastFullInput = Math.min(pasteData.length - 1, 5)
     if (lastFullInput >= 0) {
-      const targetInput = inputRefs.current[lastFullInput];
+      const targetInput = inputRefs.current[lastFullInput]
       if (targetInput) {
-        targetInput.focus();
+        targetInput.focus()
       }
     }
-  };
+  }
 
   const handleTokenBlur = () => {
-    formik.setFieldTouched("token", true);
-    const tokenString = token.join("");
-    formik.setFieldValue("token", tokenString);
-  };
+    formik.setFieldTouched("token", true)
+    const tokenString = token.join("")
+    formik.setFieldValue("token", tokenString)
+  }
 
   const handleResendCode = async () => {
     // Reset token
-    setToken(new Array(6).fill(""));
-    formik.setFieldValue("token", "");
-    formik.setFieldError("token", "");
+    setToken(new Array(6).fill(""))
+    formik.setFieldValue("token", "")
+    formik.setFieldError("token", "")
 
-    const resetMethod = localStorage.getItem("resetMethod");
-    const valueReset = localStorage.getItem("valueReset");
-    const curerentLanguage = i18next.language;
+    const resetMethod = localStorage.getItem("resetMethod")
+    const valueReset = localStorage.getItem("valueReset")
+    const curerentLanguage = i18next.language
 
     dispatch(resendForgetPasswordCode({ [resetMethod]: valueReset }))
       .unwrap()
@@ -363,10 +363,10 @@ export default function ResetPassword() {
         toast.success(t("resetPassword.resend_success"), {
           position: "top-right",
           autoClose: 3000,
-        });
+        })
       })
       .catch((error) => {
-        console.log("Reset error:", error);
+        console.log("Reset error:", error)
         Swal.fire({
           title: t("resetPassword.resend_error"),
           text:
@@ -380,17 +380,17 @@ export default function ResetPassword() {
           confirmButtonColor: "#ef4444",
           background: mymode === "dark" ? "#1f2937" : "#ffffff",
           color: mymode === "dark" ? "#f9fafb" : "#111827",
-        });
-      });
-  };
+        })
+      })
+  }
 
   // Focus first input on mount
   useEffect(() => {
-    const firstInput = inputRefs.current[0];
+    const firstInput = inputRefs.current[0]
     if (firstInput) {
-      firstInput.focus();
+      firstInput.focus()
     }
-  }, []);
+  }, [])
 
   return (
     <div
@@ -450,7 +450,7 @@ export default function ResetPassword() {
                 <input
                   key={index}
                   ref={(el) => {
-                    inputRefs.current[index] = el;
+                    inputRefs.current[index] = el
                   }}
                   type="tel"
                   maxLength={1}
@@ -459,12 +459,12 @@ export default function ResetPassword() {
                   onChange={(e) => handleTokenChange(e.target, index)}
                   onKeyDown={(e) => handleTokenKeyDown(e, index)}
                   onFocus={(e) => {
-                    e.target.select();
-                    setFocusedIndex(index);
+                    e.target.select()
+                    setFocusedIndex(index)
                   }}
                   onBlur={() => {
-                    setFocusedIndex(-1);
-                    handleTokenBlur();
+                    setFocusedIndex(-1)
+                    handleTokenBlur()
                   }}
                   className={getTokenClasses(index, data)}
                 />
@@ -502,6 +502,7 @@ export default function ResetPassword() {
           </div>
 
           {/* Enhanced New Password */}
+          {/* Enhanced New Password */}
           <div className="space-y-2 group">
             <label
               htmlFor="newPassword"
@@ -509,59 +510,72 @@ export default function ResetPassword() {
             >
               {t("new_password")}
             </label>
-            <div className="relative">
+
+            <div className="flex items-center space-x-2">
+              {/* Lock Icon Container - Completely separate from input */}
               <div
-                className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10 ${getIconClasses(
+                className={`flex items-center justify-center w-10 h-10 rounded-lg border transition-all duration-200 ${getIconClasses(
                   getIconState(
                     "newPassword",
                     formik.values.newPassword,
                     focusedField === "newPassword",
                     formik.errors.newPassword && formik.touched.newPassword
                   )
-                )}`}
-              >
-                <LockIcon />
-              </div>
-              <input
-                type={showNewPassword ? "text" : "password"}
-                name="newPassword"
-                value={formik.values.newPassword}
-                onChange={formik.handleChange}
-                onFocus={() => setFocusedField("newPassword")}
-                onBlur={() => {
-                  setFocusedField(null);
-                  formik.handleBlur;
-                }}
-                placeholder={t("new_password_placeholder")}
-                className={`w-full pl-9 pr-10 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all duration-300 group-focus-within:shadow-sm ${
+                )} ${
                   formik.touched.newPassword && formik.errors.newPassword
                     ? `${themeClasses.input} ${themeClasses.inputError}`
                     : themeClasses.input
                 }`}
-              />
-              <button
-                type="button"
-                onClick={() => setShowNewPassword(!showNewPassword)}
-                className={`absolute inset-y-0 right-0 pr-3 flex items-center transition-all duration-200 z-10 ${
-                  focusedField === "newPassword"
-                    ? themeClasses.iconFocused
-                    : themeClasses.iconDefault
-                } ${
-                  themeClasses.iconHover
-                } hover:scale-110 focus:outline-none focus:scale-110`}
               >
-                {showNewPassword ? <EyeOffIcon /> : <EyeIcon />}
-              </button>
+                <LockIcon />
+              </div>
 
-              {/* Field state indicator */}
-              {formik.values.newPassword && !formik.errors.newPassword && (
-                <div className="absolute inset-y-0 right-10 flex items-center pointer-events-none">
-                  <div
-                    className={`w-1.5 h-1.5 rounded-full animate-pulse ${themeClasses.iconFocused}`}
-                  ></div>
-                </div>
-              )}
+              {/* Input Container */}
+              <div className="relative flex-1">
+                <input
+                  type={showNewPassword ? "text" : "password"}
+                  name="newPassword"
+                  value={formik.values.newPassword}
+                  onChange={formik.handleChange}
+                  onFocus={() => setFocusedField("newPassword")}
+                  onBlur={() => {
+                    setFocusedField(null)
+                    formik.handleBlur
+                  }}
+                  placeholder={t("new_password_placeholder")}
+                  className={`w-[95%] pl-4 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all duration-300 group-focus-within:shadow-sm ${
+                    formik.touched.newPassword && formik.errors.newPassword
+                      ? `${themeClasses.input} ${themeClasses.inputError}`
+                      : themeClasses.input
+                  }`}
+                />
+
+                {/* Eye toggle button - stays inside input */}
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className={`absolute inset-y-0 left-[100%] pr-3 flex items-center transition-all duration-200 z-10 ${
+                    focusedField === "newPassword"
+                      ? themeClasses.iconFocused
+                      : themeClasses.iconDefault
+                  } ${
+                    themeClasses.iconHover
+                  } hover:scale-110 focus:outline-none focus:scale-110`}
+                >
+                  {showNewPassword ? <EyeOffIcon /> : <EyeIcon />}
+                </button>
+
+                {/* Field state indicator */}
+                {formik.values.newPassword && !formik.errors.newPassword && (
+                  <div className="absolute inset-y-0 right-10 flex items-center pointer-events-none">
+                    <div
+                      className={`w-1.5 h-1.5 rounded-full animate-pulse ${themeClasses.iconFocused}`}
+                    ></div>
+                  </div>
+                )}
+              </div>
             </div>
+
             {formik.touched.newPassword && formik.errors.newPassword && (
               <p
                 className={`text-sm mt-1 animate-in slide-in-from-top-1 duration-200 ${themeClasses.error}`}
@@ -579,9 +593,11 @@ export default function ResetPassword() {
             >
               {t("confirm_password")}
             </label>
-            <div className="relative">
+
+            <div className="flex items-center space-x-2">
+              {/* Shield Icon Container - Completely separate from input */}
               <div
-                className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10 ${getIconClasses(
+                className={`flex items-center justify-center w-10 h-10 rounded-lg border transition-all duration-200 ${getIconClasses(
                   getIconState(
                     "confirmNewPassword",
                     formik.values.confirmNewPassword,
@@ -589,59 +605,71 @@ export default function ResetPassword() {
                     formik.errors.confirmNewPassword &&
                       formik.touched.confirmNewPassword
                   )
-                )}`}
-              >
-                <ShieldCheckIcon />
-              </div>
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                name="confirmNewPassword"
-                value={formik.values.confirmNewPassword}
-                onChange={formik.handleChange}
-                onFocus={() => setFocusedField("confirmNewPassword")}
-                onBlur={() => {
-                  setFocusedField(null);
-                  formik.handleBlur;
-                }}
-                placeholder={t("confirm_password_placeholder")}
-                className={`w-full pl-9 pr-10 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all duration-300 group-focus-within:shadow-sm ${
+                )} ${
                   formik.touched.confirmNewPassword &&
                   formik.errors.confirmNewPassword
                     ? `${themeClasses.input} ${themeClasses.inputError}`
                     : themeClasses.input
                 }`}
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className={`absolute inset-y-0 right-0 pr-3 flex items-center transition-all duration-200 z-10 ${
-                  focusedField === "confirmNewPassword"
-                    ? themeClasses.iconFocused
-                    : themeClasses.iconDefault
-                } ${
-                  themeClasses.iconHover
-                } hover:scale-110 focus:outline-none focus:scale-110`}
               >
-                {showConfirmPassword ? <EyeOffIcon /> : <EyeIcon />}
-              </button>
+                <ShieldCheckIcon />
+              </div>
 
-              {/* Password match indicator */}
-              {formik.values.confirmNewPassword &&
-                formik.values.newPassword && (
-                  <div className="absolute inset-y-0 right-10 flex items-center pointer-events-none">
-                    {formik.values.confirmNewPassword ===
-                    formik.values.newPassword ? (
-                      <div
-                        className={`w-1.5 h-1.5 rounded-full animate-pulse ${themeClasses.success}`}
-                      ></div>
-                    ) : (
-                      <div
-                        className={`w-1.5 h-1.5 rounded-full animate-pulse ${themeClasses.warning}`}
-                      ></div>
-                    )}
-                  </div>
-                )}
+              {/* Input Container */}
+              <div className="relative flex-1">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirmNewPassword"
+                  value={formik.values.confirmNewPassword}
+                  onChange={formik.handleChange}
+                  onFocus={() => setFocusedField("confirmNewPassword")}
+                  onBlur={() => {
+                    setFocusedField(null)
+                    formik.handleBlur
+                  }}
+                  placeholder={t("confirm_password_placeholder")}
+                  className={`w-[95%] pl-4 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all duration-300 group-focus-within:shadow-sm ${
+                    formik.touched.confirmNewPassword &&
+                    formik.errors.confirmNewPassword
+                      ? `${themeClasses.input} ${themeClasses.inputError}`
+                      : themeClasses.input
+                  }`}
+                />
+
+                {/* Eye toggle button - stays inside input */}
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className={`absolute inset-y-0 left-[100%] pr-3 flex items-center transition-all duration-200 z-10 ${
+                    focusedField === "confirmNewPassword"
+                      ? themeClasses.iconFocused
+                      : themeClasses.iconDefault
+                  } ${
+                    themeClasses.iconHover
+                  } hover:scale-110 focus:outline-none focus:scale-110`}
+                >
+                  {showConfirmPassword ? <EyeOffIcon /> : <EyeIcon />}
+                </button>
+
+                {/* Password match indicator */}
+                {formik.values.confirmNewPassword &&
+                  formik.values.newPassword && (
+                    <div className="absolute inset-y-0 right-10 flex items-center pointer-events-none">
+                      {formik.values.confirmNewPassword ===
+                      formik.values.newPassword ? (
+                        <div
+                          className={`w-1.5 h-1.5 rounded-full animate-pulse ${themeClasses.success}`}
+                        ></div>
+                      ) : (
+                        <div
+                          className={`w-1.5 h-1.5 rounded-full animate-pulse ${themeClasses.warning}`}
+                        ></div>
+                      )}
+                    </div>
+                  )}
+              </div>
             </div>
+
             {formik.touched.confirmNewPassword &&
               formik.errors.confirmNewPassword && (
                 <p
@@ -655,7 +683,7 @@ export default function ResetPassword() {
           {/* Enhanced Submit Button */}
           <button
             type="submit"
-            disabled={loadingAuth || formik.isSubmitting || !formik.isValid}
+            disabled={loadingAuth || formik.isSubmitting}
             className={`w-full disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 cursor-pointer hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98] ${themeClasses.button}`}
           >
             {loadingAuth || formik.isSubmitting ? (
@@ -687,5 +715,5 @@ export default function ResetPassword() {
         </form>
       </div>
     </div>
-  );
+  )
 }

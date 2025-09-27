@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useTranslation } from "react-i18next";
-import "../../../styles/general.css";
+import React, { useEffect, useState, useCallback } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useTranslation } from "react-i18next"
+import "../../../styles/general.css"
 
 import {
   Search,
@@ -14,112 +14,112 @@ import {
   Plus,
   Menu,
   X,
-} from "lucide-react";
-import { getCategories } from "../../../state/act/actCategory";
+} from "lucide-react"
+import { getCategories } from "../../../state/act/actCategory"
 import {
   clearError,
   clearFilters,
   setCurrentPage,
   setFilters,
   setPageSize,
-} from "../../../state/slices/category";
-import { Link } from "react-router-dom";
-import DeleteCategoryModal from "../../../components/DeleteCategoryModal";
-import i18next from "i18next";
+} from "../../../state/slices/category"
+import { Link } from "react-router-dom"
+import DeleteCategoryModal from "../../../components/DeleteCategoryModal"
+import i18next from "i18next"
 
 function Category() {
-  const { t, i18n } = useTranslation();
-  const dispatch = useDispatch();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [toDelete, setToDelete] = useState({ id: null, name: "" });
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+  const [modalOpen, setModalOpen] = useState(false)
+  const [toDelete, setToDelete] = useState({ id: null, name: "" })
   const { categories, pagination, filters, loadingGetCategories, error } =
-    useSelector((state) => state.category);
-  const { mymode } = useSelector((state) => state.mode);
+    useSelector((state) => state.category)
+  const { mymode } = useSelector((state) => state.mode)
 
-  const [searchInput, setSearchInput] = useState(filters.search);
-  const [showFilters, setShowFilters] = useState(false);
-  const [showMobileTable, setShowMobileTable] = useState(false);
+  const [searchInput, setSearchInput] = useState(filters.search)
+  const [showFilters, setShowFilters] = useState(false)
+  const [showMobileTable, setShowMobileTable] = useState(false)
 
   // Debounced search
-  const [searchTimeout, setSearchTimeout] = useState(null);
+  const [searchTimeout, setSearchTimeout] = useState(null)
 
   // Check if we're in dark mode
-  const isDark = mymode === "dark";
+  const isDark = mymode === "dark"
 
   // Check if current language is RTL
-  const language = i18n.language;
-  const isRTL = language === "ar";
+  const language = i18n.language
+  const isRTL = language === "ar"
 
   // Fetch categories when filters change
   useEffect(() => {
-    dispatch(getCategories(filters));
-  }, [dispatch, filters]);
+    dispatch(getCategories(filters))
+  }, [dispatch, filters])
 
   // Handle search with debounce
   const handleSearchChange = useCallback(
     (value) => {
-      setSearchInput(value);
+      setSearchInput(value)
 
       if (searchTimeout) {
-        clearTimeout(searchTimeout);
+        clearTimeout(searchTimeout)
       }
 
       const timeout = setTimeout(() => {
-        dispatch(setFilters({ search: value, page: 1 }));
-      }, 500);
+        dispatch(setFilters({ search: value, page: 1 }))
+      }, 500)
 
-      setSearchTimeout(timeout);
+      setSearchTimeout(timeout)
     },
     [dispatch, searchTimeout]
-  );
+  )
 
   // Handle filter changes
   const handleFilterChange = (key, value) => {
-    dispatch(setFilters({ [key]: value, page: 1 }));
-  };
+    dispatch(setFilters({ [key]: value, page: 1 }))
+  }
 
   // Handle pagination
   const handlePageChange = (newPage) => {
-    dispatch(setCurrentPage(newPage));
-  };
+    dispatch(setCurrentPage(newPage))
+  }
 
   const handlePageSizeChange = (newPageSize) => {
-    dispatch(setPageSize(parseInt(newPageSize)));
-  };
+    dispatch(setPageSize(parseInt(newPageSize)))
+  }
 
   // Format date
   const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable");
+    if (!dateString) return t("common.notAvailable")
     return new Intl.DateTimeFormat(i18next.language, {
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    }).format(new Date(dateString));
-  };
+    }).format(new Date(dateString))
+  }
 
   // Generate page numbers for pagination
   const getPageNumbers = () => {
-    const pages = [];
-    const totalPages = pagination?.totalPages || 1;
-    const currentPage = pagination?.page || 1;
+    const pages = []
+    const totalPages = pagination?.totalPages || 1
+    const currentPage = pagination?.page || 1
 
     // Show up to 3 page numbers on mobile, 5 on desktop
-    const maxPages = window.innerWidth < 768 ? 3 : 5;
-    let startPage = Math.max(1, currentPage - Math.floor(maxPages / 2));
-    let endPage = Math.min(totalPages, startPage + maxPages - 1);
+    const maxPages = window.innerWidth < 768 ? 3 : 5
+    let startPage = Math.max(1, currentPage - Math.floor(maxPages / 2))
+    let endPage = Math.min(totalPages, startPage + maxPages - 1)
 
     if (endPage - startPage < maxPages - 1) {
-      startPage = Math.max(1, endPage - maxPages + 1);
+      startPage = Math.max(1, endPage - maxPages + 1)
     }
 
     for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
+      pages.push(i)
     }
 
-    return pages;
-  };
+    return pages
+  }
 
   // Mobile card component for each category
   const CategoryCard = ({ category }) => (
@@ -244,15 +244,15 @@ function Category() {
               id: category.id,
               name:
                 language == "en" ? category.nameEnglish : category.nameArabic,
-            });
-            setModalOpen(true);
+            })
+            setModalOpen(true)
           }}
         >
           <Trash2 size={16} />
         </button>
       </div>
     </div>
-  );
+  )
 
   return (
     <div
@@ -332,29 +332,34 @@ function Category() {
             <div className="p-4">
               {/* Search Bar */}
               <div className="flex flex-col sm:flex-row gap-4 mb-4">
-                <div className="flex-1 relative">
-                  <Search
-                    className={`absolute ${
-                      isRTL ? "right-3" : "left-3"
-                    } top-1/2 transform -translate-y-1/2 ${
-                      isDark ? "text-gray-400" : "text-gray-500"
-                    }`}
-                    size={20}
-                  />
-                  <input
-                    type="text"
-                    placeholder={t("categories.search.placeholder")}
-                    value={searchInput}
-                    onChange={(e) => handleSearchChange(e.target.value)}
-                    className={`w-full ${
-                      isRTL ? "pr-10 pl-4" : "pl-10 pr-4"
-                    } py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                <div className="flex-1 flex items-center gap-2">
+                  {/* Search Icon Container - Completely separate from input */}
+                  <div
+                    className={`flex items-center justify-center w-10 h-10 rounded-lg border transition-all duration-200 ${
                       isDark
-                        ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400"
-                        : "border-gray-300 bg-white text-gray-900 placeholder-gray-500"
+                        ? "border-gray-600 bg-gray-700 text-gray-400"
+                        : "border-gray-300 bg-white text-gray-500"
                     }`}
-                  />
+                  >
+                    <Search size={20} />
+                  </div>
+
+                  {/* Input Container */}
+                  <div className="relative flex-1">
+                    <input
+                      type="text"
+                      placeholder={t("categories.search.placeholder")}
+                      value={searchInput}
+                      onChange={(e) => handleSearchChange(e.target.value)}
+                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                        isDark
+                          ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400"
+                          : "border-gray-300 bg-white text-gray-900 placeholder-gray-500"
+                      }`}
+                    />
+                  </div>
                 </div>
+
                 <button
                   onClick={() => setShowFilters(!showFilters)}
                   className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2 justify-center sm:justify-start cursor-pointer ${
@@ -371,7 +376,6 @@ function Category() {
                   {t("categories.filters.title")}
                 </button>
               </div>
-
               {/* Advanced Filters */}
               {showFilters && (
                 <div
@@ -397,8 +401,8 @@ function Category() {
                         const value =
                           e.target.value === "all"
                             ? null
-                            : e.target.value === "true";
-                        handleFilterChange("isActive", value);
+                            : e.target.value === "true"
+                        handleFilterChange("isActive", value)
                       }}
                       className={`w-full p-2 border rounded-lg ${
                         isDark
@@ -740,8 +744,8 @@ function Category() {
                                     language == "en"
                                       ? category.nameEnglish
                                       : category.nameArabic,
-                                });
-                                setModalOpen(true);
+                                })
+                                setModalOpen(true)
                               }}
                               className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors cursor-pointer"
                               title={t("categories.actions.delete")}
@@ -896,8 +900,8 @@ function Category() {
                                     language == "en"
                                       ? category.nameEnglish
                                       : category.nameArabic,
-                                });
-                                setModalOpen(true);
+                                })
+                                setModalOpen(true)
                               }}
                             >
                               <Trash2 size={14} />
@@ -1007,7 +1011,7 @@ function Category() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default Category;
+export default Category

@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useTranslation } from "react-i18next";
+import React, { useEffect, useState, useCallback } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useTranslation } from "react-i18next"
 import {
   Search,
   Filter,
@@ -15,7 +15,7 @@ import {
   Clock,
   Hash,
   Calendar,
-} from "lucide-react";
+} from "lucide-react"
 
 import {
   clearError,
@@ -24,19 +24,19 @@ import {
   setFilters,
   setPageSize,
   clearFilters,
-} from "../../../state/slices/shiftHours";
-import { Link } from "react-router-dom";
-import LoadingGetData from "../../../components/LoadingGetData";
-import { getShiftHoursTypes } from "../../../state/act/actShiftHours";
-import DeleteShiftHoursTypeModal from "../../../components/DeleteShiftHoursTypeModal";
-import "../../../styles/general.css";
-import i18next from "i18next";
+} from "../../../state/slices/shiftHours"
+import { Link } from "react-router-dom"
+import LoadingGetData from "../../../components/LoadingGetData"
+import { getShiftHoursTypes } from "../../../state/act/actShiftHours"
+import DeleteShiftHoursTypeModal from "../../../components/DeleteShiftHoursTypeModal"
+import "../../../styles/general.css"
+import i18next from "i18next"
 
 function ShiftHours() {
-  const { t, i18n } = useTranslation();
-  const dispatch = useDispatch();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [toDelete, setToDelete] = useState({ id: null, name: "" });
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+  const [modalOpen, setModalOpen] = useState(false)
+  const [toDelete, setToDelete] = useState({ id: null, name: "" })
 
   const {
     shiftHoursTypes,
@@ -44,108 +44,106 @@ function ShiftHours() {
     pagination,
     filters,
     error,
-  } = useSelector((state) => state.shiftHour);
+  } = useSelector((state) => state.shiftHour)
 
-  const { mymode } = useSelector((state) => state.mode);
+  const { mymode } = useSelector((state) => state.mode)
 
-  const [searchInput, setSearchInput] = useState(filters.search || "");
-  const [showFilters, setShowFilters] = useState(false);
-  const [showMobileTable, setShowMobileTable] = useState(false);
+  const [searchInput, setSearchInput] = useState(filters.search || "")
+  const [showFilters, setShowFilters] = useState(false)
+  const [showMobileTable, setShowMobileTable] = useState(false)
 
   // Debounced search
-  const [searchTimeout, setSearchTimeout] = useState(null);
+  const [searchTimeout, setSearchTimeout] = useState(null)
 
   // Check if we're in dark mode
-  const isDark = mymode === "dark";
+  const isDark = mymode === "dark"
 
   // Check if current language is RTL
-  const language = i18n.language;
-  const isRTL = language === "ar";
+  const language = i18n.language
+  const isRTL = language === "ar"
 
   // Fetch shift hours types with current filters
   useEffect(() => {
-    dispatch(getShiftHoursTypes(filters));
-  }, [dispatch, filters]);
+    dispatch(getShiftHoursTypes(filters))
+  }, [dispatch, filters])
 
   // Clear error on mount
   useEffect(() => {
-    dispatch(clearError());
-  }, [dispatch]);
+    dispatch(clearError())
+  }, [dispatch])
 
   const handleSearchChange = useCallback(
     (value) => {
-      setSearchInput(value);
+      setSearchInput(value)
 
       if (searchTimeout) {
-        clearTimeout(searchTimeout);
+        clearTimeout(searchTimeout)
       }
 
       const timeout = setTimeout(() => {
-        dispatch(setFilters({ search: value, page: 1 }));
-      }, 500);
+        dispatch(setFilters({ search: value, page: 1 }))
+      }, 500)
 
-      setSearchTimeout(timeout);
+      setSearchTimeout(timeout)
     },
     [dispatch, searchTimeout]
-  );
+  )
 
   // Handle filter changes
   const handleFilterChange = (key, value) => {
-    console.log(`Filter changed: ${key} = ${value}`);
-    dispatch(setFilters({ [key]: value, page: 1 }));
-  };
+    console.log(`Filter changed: ${key} = ${value}`)
+    dispatch(setFilters({ [key]: value, page: 1 }))
+  }
 
   // Handle status filter change
   const handleStatusChange = (newStatus) => {
-    dispatch(setShiftHoursStatusFilter(newStatus));
-  };
+    dispatch(setShiftHoursStatusFilter(newStatus))
+  }
 
   // Handle pagination
   const handlePageChange = (newPage) => {
-    dispatch(setCurrentPage(newPage));
-  };
+    dispatch(setCurrentPage(newPage))
+  }
 
   const handlePageSizeChange = (newPageSize) => {
-    dispatch(setPageSize(parseInt(newPageSize)));
-  };
+    dispatch(setPageSize(parseInt(newPageSize)))
+  }
 
   // Handle delete action
   const handleDeleteClick = (shiftHoursType) => {
     const name =
-      language === "ar"
-        ? shiftHoursType.nameArabic
-        : shiftHoursType.nameEnglish;
-    setToDelete({ id: shiftHoursType.id, name });
-    setModalOpen(true);
-  };
+      language === "ar" ? shiftHoursType.nameArabic : shiftHoursType.nameEnglish
+    setToDelete({ id: shiftHoursType.id, name })
+    setModalOpen(true)
+  }
 
   // Get shift hours type name based on current language
   const getShiftHoursTypeName = (shiftHoursType) => {
     return language === "ar"
       ? shiftHoursType.nameArabic
-      : shiftHoursType.nameEnglish;
-  };
+      : shiftHoursType.nameEnglish
+  }
   const handleClearFilters = () => {
-    dispatch(clearFilters());
-    setSearchInput("");
-  };
+    dispatch(clearFilters())
+    setSearchInput("")
+  }
   // Format date
   const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable");
+    if (!dateString) return t("common.notAvailable")
     return new Intl.DateTimeFormat(i18next.language, {
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    }).format(new Date(dateString));
-  };
+    }).format(new Date(dateString))
+  }
 
   // Format hours for display
   const formatHours = (hours) => {
-    if (!hours) return "0";
-    return parseFloat(hours).toString();
-  };
+    if (!hours) return "0"
+    return parseFloat(hours).toString()
+  }
 
   // Get period display text
   const getPeriodDisplay = (period) => {
@@ -153,31 +151,31 @@ function ShiftHours() {
       daily: t("shiftHoursTypes.periods.daily"),
       weekly: t("shiftHoursTypes.periods.weekly"),
       monthly: t("shiftHoursTypes.periods.monthly"),
-    };
-    return periodMap[period] || period;
-  };
+    }
+    return periodMap[period] || period
+  }
 
   // Generate page numbers for pagination
   const getPageNumbers = () => {
-    const pages = [];
-    const totalPages = pagination?.totalPages || 1;
-    const currentPage = pagination?.page || 1;
+    const pages = []
+    const totalPages = pagination?.totalPages || 1
+    const currentPage = pagination?.page || 1
 
     // Show up to 3 page numbers on mobile, 5 on desktop
-    const maxPages = window.innerWidth < 768 ? 3 : 5;
-    let startPage = Math.max(1, currentPage - Math.floor(maxPages / 2));
-    let endPage = Math.min(totalPages, startPage + maxPages - 1);
+    const maxPages = window.innerWidth < 768 ? 3 : 5
+    let startPage = Math.max(1, currentPage - Math.floor(maxPages / 2))
+    let endPage = Math.min(totalPages, startPage + maxPages - 1)
 
     if (endPage - startPage < maxPages - 1) {
-      startPage = Math.max(1, endPage - maxPages + 1);
+      startPage = Math.max(1, endPage - maxPages + 1)
     }
 
     for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
+      pages.push(i)
     }
 
-    return pages;
-  };
+    return pages
+  }
 
   // Mobile card component for each shift hours type
   const ShiftHoursTypeCard = ({ shiftHoursType }) => (
@@ -308,7 +306,7 @@ function ShiftHours() {
         </button>
       </div>
     </div>
-  );
+  )
 
   // if (loadingGetShiftHoursTypes) {
   //   return <LoadingGetData />;
@@ -392,28 +390,32 @@ function ShiftHours() {
             <div className="p-4">
               {/* Search Bar */}
               <div className="flex flex-col sm:flex-row gap-4 mb-4">
-                <div className="flex-1 relative">
-                  <Search
-                    className={`absolute ${
-                      isRTL ? "right-3" : "left-3"
-                    } top-1/2 transform -translate-y-1/2 ${
-                      isDark ? "text-gray-400" : "text-gray-500"
-                    }`}
-                    size={20}
-                  />
-                  <input
-                    type="text"
-                    placeholder={t("shiftHoursTypes.search.placeholder")}
-                    value={searchInput}
-                    onChange={(e) => handleSearchChange(e.target.value)}
-                    className={`w-full ${
-                      isRTL ? "pr-10 pl-4" : "pl-10 pr-4"
-                    } py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                <div className="flex-1 flex items-center gap-2">
+                  {/* Search Icon Container - Completely separate from input */}
+                  <div
+                    className={`flex items-center justify-center w-10 h-10 rounded-lg border transition-all duration-200 ${
                       isDark
-                        ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400"
-                        : "border-gray-300 bg-white text-gray-900 placeholder-gray-500"
+                        ? "border-gray-600 bg-gray-700 text-gray-400"
+                        : "border-gray-300 bg-white text-gray-500"
                     }`}
-                  />
+                  >
+                    <Search size={20} />
+                  </div>
+
+                  {/* Input Container */}
+                  <div className="relative flex-1">
+                    <input
+                      type="text"
+                      placeholder={t("shiftHoursTypes.search.placeholder")}
+                      value={searchInput}
+                      onChange={(e) => handleSearchChange(e.target.value)}
+                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                        isDark
+                          ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400"
+                          : "border-gray-300 bg-white text-gray-900 placeholder-gray-500"
+                      }`}
+                    />
+                  </div>
                 </div>
                 <button
                   onClick={() => setShowFilters(!showFilters)}
@@ -1077,7 +1079,7 @@ function ShiftHours() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default ShiftHours;
+export default ShiftHours
