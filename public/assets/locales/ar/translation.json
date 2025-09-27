@@ -363,7 +363,7 @@
       "showing": "عرض {{start}} - {{end}} من {{total}} عنصر",
       "resultsCount": "عرض {start} إلى {end} من {total} نتيجة",
       "category": "التخصص: {categoryName}",
-      "perPage": "{count} لكل صفحة",
+      "perPage": " لكل صفحة",
       "previous": "السابق",
       "next": "التالي"
     },
@@ -2217,7 +2217,7 @@
       "createComplete": "إنشاء روستر كامل",
       "view": "عرض التفاصيل",
       "edit": "تعديل الروستر",
-      "manageDoctors": "إدارة طلبات الأطباء'",
+      "manageDoctors": "إدارة طلبات الأطباء",
       "doctors": "الأطباء في الجدول",
       "addDepartment": "إضافة مكان آخر",
       "editRoster": "تعديل الروستر",

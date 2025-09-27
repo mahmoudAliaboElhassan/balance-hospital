@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import React, { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useParams, useNavigate, Link } from "react-router-dom"
 import {
   getCategoryById,
   getCategoryHeads,
-} from "../../../state/act/actCategory";
+} from "../../../state/act/actCategory"
 import {
   clearSingleCategory,
   clearSingleCategoryError,
@@ -18,16 +18,16 @@ import {
   clearApprovalSuccess,
   rejectDoctorRequest,
   clearApprovalError,
-} from "../../../state/slices/category";
+} from "../../../state/slices/category"
 import {
   availabelDepartmentsForCategory,
   getDepartmentByCategory,
   linkDepartmentToCategory,
   unlinkDepartmentFromCategory,
-} from "../../../state/act/actDepartment";
-import LoadingGetData from "../../../components/LoadingGetData";
-import { useTranslation } from "react-i18next";
-import i18next from "i18next";
+} from "../../../state/act/actDepartment"
+import LoadingGetData from "../../../components/LoadingGetData"
+import { useTranslation } from "react-i18next"
+import i18next from "i18next"
 import {
   Building,
   Users,
@@ -54,32 +54,32 @@ import {
   LinkIcon,
   ArrowUpRight,
   ExternalLink,
-} from "lucide-react";
-import { getRosterByCategory } from "../../../state/act/actRosterManagement";
-import ModalUpdateRosterStatus from "../../../components/ModalUpdateRosterStatus";
-import "../../../styles/general.css";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import CategoryHeadsManagement from "../../../components/categoryHeads";
+} from "lucide-react"
+import { getRosterByCategory } from "../../../state/act/actRosterManagement"
+import ModalUpdateRosterStatus from "../../../components/ModalUpdateRosterStatus"
+import "../../../styles/general.css"
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
+import CategoryHeadsManagement from "../../../components/categoryHeads"
 
 const SpecificCategory = () => {
-  const { catId: id } = useParams();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const { catId: id } = useParams()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
-  const [statusModalOpen, setStatusModalOpen] = useState(false);
+  const [statusModalOpen, setStatusModalOpen] = useState(false)
   const [statusToUpdate, setStatusToUpdate] = useState({
     id: null,
     title: "",
     currentStatus: "",
-  });
-  const [showMobileRosterTable, setShowMobileRosterTable] = useState(false);
-  const [showPendingDoctors, setShowPendingDoctors] = useState(true);
+  })
+  const [showMobileRosterTable, setShowMobileRosterTable] = useState(false)
+  const [showPendingDoctors, setShowPendingDoctors] = useState(true)
 
   // Local filters for pending doctors
   const [localFilters, setLocalFilters] = useState({
     status: "",
-  });
+  })
 
   const formatMonthYear = (month, year) => {
     const monthNames = {
@@ -111,16 +111,16 @@ const SpecificCategory = () => {
         "Nov",
         "Dec",
       ],
-    };
+    }
 
-    const months = monthNames[currentLang] || monthNames.en;
-    return `${months[month - 1]} ${year}`;
-  };
+    const months = monthNames[currentLang] || monthNames.en
+    return `${months[month - 1]} ${year}`
+  }
 
   const { selectedCategory, loadingGetSingleCategory, singleCategoryError } =
-    useSelector((state) => state.category);
+    useSelector((state) => state.category)
 
-  const { loginRoleResponseDto } = useSelector((state) => state.auth);
+  const { loginRoleResponseDto } = useSelector((state) => state.auth)
 
   // Pending doctors selectors
   const {
@@ -134,11 +134,9 @@ const SpecificCategory = () => {
     approvalError,
     approvalSuccess,
     approvalMessage,
-  } = useSelector((state) => state.category);
+  } = useSelector((state) => state.category)
 
-  const { rosterList, loading } = useSelector(
-    (state) => state.rosterManagement
-  );
+  const { rosterList, loading } = useSelector((state) => state.rosterManagement)
 
   // Get departments from the department slice
   const {
@@ -149,18 +147,18 @@ const SpecificCategory = () => {
     departmentsByCategory,
     loadingLinkDepartmentToCategory,
     loadingUnlinkDepartment,
-  } = useSelector((state) => state.department);
+  } = useSelector((state) => state.department)
 
   // Get mode and translation function
-  const { mymode } = useSelector((state) => state.mode);
-  const { t } = useTranslation();
+  const { mymode } = useSelector((state) => state.mode)
+  const { t } = useTranslation()
 
-  console.log("departmentsByCategory", departmentsByCategory);
+  console.log("departmentsByCategory", departmentsByCategory)
 
   // Get current language direction and theme
-  const isRTL = mymode === "ar";
-  const currentLang = i18next.language;
-  const isDark = mymode === "dark";
+  const isRTL = mymode === "ar"
+  const currentLang = i18next.language
+  const isDark = mymode === "dark"
 
   const getStatusInfo = (status) => {
     const statusMap = {
@@ -196,15 +194,15 @@ const SpecificCategory = () => {
         color: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
         name: t("roster.status.archived"),
       },
-    };
+    }
 
     return (
       statusMap[status] || {
         color: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300",
         name: status,
       }
-    );
-  };
+    )
+  }
 
   // Get status configuration for pending doctors
   const getPendingStatusConfig = (status) => {
@@ -219,7 +217,7 @@ const SpecificCategory = () => {
         text: t("pendingDoctorRequests.status.approved"),
         icon: Check,
       },
-    };
+    }
 
     return (
       configs[status] || {
@@ -227,13 +225,13 @@ const SpecificCategory = () => {
         text: status,
         icon: AlertCircle,
       }
-    );
-  };
+    )
+  }
 
   // Render status badge for pending doctors
   const renderPendingStatusBadge = (status) => {
-    const config = getPendingStatusConfig(status);
-    const IconComponent = config.icon;
+    const config = getPendingStatusConfig(status)
+    const IconComponent = config.icon
 
     return (
       <span
@@ -242,72 +240,72 @@ const SpecificCategory = () => {
         <IconComponent className="w-3 h-3" />
         {config.text}
       </span>
-    );
-  };
+    )
+  }
 
   // Format date for pending doctors
   const formatPendingDate = (dateString) => {
-    if (!dateString) return t("pendingDoctorRequests.fields.notSpecified");
+    if (!dateString) return t("pendingDoctorRequests.fields.notSpecified")
 
     try {
-      const locale = currentLang === "ar" ? "ar-EG" : "en-US";
+      const locale = currentLang === "ar" ? "ar-EG" : "en-US"
       return new Date(dateString).toLocaleDateString(locale, {
         year: "numeric",
         month: "long",
         day: "numeric",
         hour: "2-digit",
         minute: "2-digit",
-      });
+      })
     } catch (error) {
-      return t("pendingDoctorRequests.fields.invalidDate");
+      return t("pendingDoctorRequests.fields.invalidDate")
     }
-  };
+  }
 
   // Handle pending doctor actions
   const handleApproveRequest = (userId) => {
     dispatch(approveDoctorRequest({ userId }))
       .unwrap()
       .then(() => {
-        toast.success(t("pendingDoctorRequests.messages.approvalSuccess"));
-        setLocalFilters((prev) => ({ ...prev, status: "" }));
-        dispatch(setCategoryPendingRequestsStatusFilter({ status: "" }));
+        toast.success(t("pendingDoctorRequests.messages.approvalSuccess"))
+        setLocalFilters((prev) => ({ ...prev, status: "" }))
+        dispatch(setCategoryPendingRequestsStatusFilter({ status: "" }))
       })
       .catch((error) => {
         toast.error(
           error.message || t("pendingDoctorRequests.errors.approvalError")
-        );
-      });
-  };
+        )
+      })
+  }
 
   const handleRejectRequest = (userId) => {
     dispatch(rejectDoctorRequest({ userId }))
       .unwrap()
       .then(() => {
-        toast.success(t("pendingDoctorRequests.messages.rejectionSuccess"));
-        setLocalFilters((prev) => ({ ...prev, status: "" }));
-        dispatch(setCategoryPendingRequestsStatusFilter({ status: "" }));
+        toast.success(t("pendingDoctorRequests.messages.rejectionSuccess"))
+        setLocalFilters((prev) => ({ ...prev, status: "" }))
+        dispatch(setCategoryPendingRequestsStatusFilter({ status: "" }))
       })
       .catch((error) => {
         toast.error(
           error.message || t("pendingDoctorRequests.errors.rejectionError")
-        );
-      });
-  };
+        )
+      })
+  }
 
   // Handle status filter change for pending doctors
   const handlePendingStatusChange = (status) => {
-    setLocalFilters((prev) => ({ ...prev, status }));
-    dispatch(setCategoryPendingRequestsStatusFilter(status));
-  };
+    setLocalFilters((prev) => ({ ...prev, status }))
+    dispatch(setCategoryPendingRequestsStatusFilter(status))
+  }
 
   // Handle pagination for pending doctors
   const handlePendingPageChange = (page) => {
-    dispatch(setCategoryPendingRequestsCurrentPage(page));
-  };
+    dispatch(setCategoryPendingRequestsCurrentPage(page))
+  }
 
   const handlePendingPageSizeChange = (pageSize) => {
-    dispatch(setCategoryPendingRequestsPageSize(pageSize));
-  };
+    dispatch(setCategoryPendingRequestsPageSize(pageSize))
+  }
 
   // Handle refresh pending doctors
   const handleRefreshPendingDoctors = () => {
@@ -317,44 +315,41 @@ const SpecificCategory = () => {
           categoryId: id,
           filters,
         })
-      );
+      )
     }
-  };
+  }
 
   useEffect(() => {
     if (id) {
       // Clear previous data before fetching
-      dispatch(clearSingleCategory());
+      dispatch(clearSingleCategory())
       dispatch(getCategoryById({ categoryId: id }))
         .unwrap()
         .then((response) => {
-          localStorage.setItem("categoryId", response.data.id);
-          localStorage.setItem(
-            "categoryEnglishName",
-            response.data.nameEnglish
-          );
-          localStorage.setItem("categoryArabicName", response.data.nameArabic);
-        });
+          localStorage.setItem("categoryId", response.data.id)
+          localStorage.setItem("categoryEnglishName", response.data.nameEnglish)
+          localStorage.setItem("categoryArabicName", response.data.nameArabic)
+        })
       // Fetch departments for this specific category
-      dispatch(availabelDepartmentsForCategory({ categoryId: id }));
-      dispatch(getRosterByCategory({ categoryId: id }));
-      dispatch(getCategoryHeads({ categoryId: id }));
+      dispatch(availabelDepartmentsForCategory({ categoryId: id }))
+      dispatch(getRosterByCategory({ categoryId: id }))
+      dispatch(getCategoryHeads({ categoryId: id }))
 
       // Fetch pending doctors for this category
       dispatch(
         getCategoryPendingRequests({ categoryId: id, filters: { status: "" } })
-      );
+      )
     }
 
     // Cleanup on unmount
     return () => {
-      dispatch(clearSingleCategory());
-      dispatch(clearSingleCategoryError());
-      dispatch(clearCategoryPendingRequests());
-      dispatch(clearApprovalSuccess());
-      dispatch(clearApprovalError());
-    };
-  }, [dispatch, id]);
+      dispatch(clearSingleCategory())
+      dispatch(clearSingleCategoryError())
+      dispatch(clearCategoryPendingRequests())
+      dispatch(clearApprovalSuccess())
+      dispatch(clearApprovalError())
+    }
+  }, [dispatch, id])
 
   // Fetch pending doctors when filters change
   useEffect(() => {
@@ -364,9 +359,9 @@ const SpecificCategory = () => {
           categoryId: id,
           filters,
         })
-      );
+      )
     }
-  }, [dispatch, id, filters]);
+  }, [dispatch, id, filters])
 
   useEffect(() => {
     if (id && !isNaN(id)) {
@@ -374,53 +369,53 @@ const SpecificCategory = () => {
         getDepartmentByCategory({
           categoryId: id,
         })
-      );
+      )
     }
-  }, [dispatch, id, filters]);
+  }, [dispatch, id, filters])
 
   // Handle approval success
   useEffect(() => {
     if (approvalSuccess) {
-      console.log(approvalMessage || "Request processed successfully");
+      console.log(approvalMessage || "Request processed successfully")
       const timer = setTimeout(() => {
-        dispatch(clearApprovalSuccess());
-      }, 3000);
-      return () => clearTimeout(timer);
+        dispatch(clearApprovalSuccess())
+      }, 3000)
+      return () => clearTimeout(timer)
     }
-  }, [approvalSuccess, approvalMessage, dispatch]);
+  }, [approvalSuccess, approvalMessage, dispatch])
 
   // Handle error cases
   useEffect(() => {
     if (singleCategoryError) {
       if (singleCategoryError.status === 404) {
-        console.error("Category not found");
+        console.error("Category not found")
       } else if (singleCategoryError.status === 403) {
-        console.error("Access denied");
+        console.error("Access denied")
       }
     }
-  }, [singleCategoryError, navigate]);
+  }, [singleCategoryError, navigate])
 
   // Get category name based on current language
   const getCategoryName = () => {
-    if (!selectedCategory) return "";
+    if (!selectedCategory) return ""
     return currentLang === "en"
       ? selectedCategory.nameEnglish
-      : selectedCategory.nameArabic;
-  };
+      : selectedCategory.nameArabic
+  }
 
   // Format date based on language
   const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable");
+    if (!dateString) return t("common.notAvailable")
     return new Intl.DateTimeFormat(i18next.language, {
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    }).format(new Date(dateString));
-  };
+    }).format(new Date(dateString))
+  }
 
-  const [depClickId, setDepClickId] = useState(null);
+  const [depClickId, setDepClickId] = useState(null)
   const handleLinkDepartment = async (departmentId) => {
     try {
       // Show confirmation dialog
@@ -433,18 +428,18 @@ const SpecificCategory = () => {
         cancelButtonColor: "#d33",
         confirmButtonText: t("confirmations.linkDepartment.confirm"),
         cancelButtonText: t("confirmations.linkDepartment.cancel"),
-      });
+      })
 
       if (result.isConfirmed) {
         // Dispatch the action with unwrap
-        setDepClickId(departmentId);
+        setDepClickId(departmentId)
         await dispatch(
           linkDepartmentToCategory({
             id: departmentId,
             categoryId: id,
           })
-        ).unwrap();
-        setDepClickId(null);
+        ).unwrap()
+        setDepClickId(null)
 
         // Show success toast
         toast.success(t("messages.success.departmentLinked"), {
@@ -454,11 +449,11 @@ const SpecificCategory = () => {
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
-        });
+        })
       }
     } catch (error) {
-      console.error("Error linking department:", error);
-      setDepClickId(null);
+      console.error("Error linking department:", error)
+      setDepClickId(null)
 
       // Show error toast
       // toast.error(error.message || t("messages.error.linkDepartmentFailed"), {
@@ -476,11 +471,11 @@ const SpecificCategory = () => {
         text: error.errors[0] || t("messages.error.linkDepartmentFailed"),
         icon: "error",
         confirmButtonText: t("common.ok"),
-      });
+      })
     }
-  };
+  }
 
-  const [unlinkDepId, setUnlinkDepId] = useState(null);
+  const [unlinkDepId, setUnlinkDepId] = useState(null)
   // Add this handler function
 
   const handleUnlinkDepartment = async (departmentId) => {
@@ -495,10 +490,10 @@ const SpecificCategory = () => {
         cancelButtonColor: "#3085d6",
         confirmButtonText: t("confirmations.unlinkDepartment.confirm"),
         cancelButtonText: t("confirmations.unlinkDepartment.cancel"),
-      });
-      console.log(departmentId);
+      })
+      console.log(departmentId)
       if (result.isConfirmed) {
-        setUnlinkDepId(departmentId);
+        setUnlinkDepId(departmentId)
 
         // Dispatch the unlink action - adjust this based on your Redux action
         await dispatch(
@@ -507,9 +502,9 @@ const SpecificCategory = () => {
             categoryId: id,
             revocationReason: "er",
           })
-        ).unwrap();
+        ).unwrap()
 
-        setUnlinkDepId(null);
+        setUnlinkDepId(null)
 
         // Show success toast
         toast.success(t("messages.success.departmentUnlinked"), {
@@ -519,14 +514,14 @@ const SpecificCategory = () => {
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
-        });
+        })
 
         // Refresh the departments list
         // dispatch(getDepartmentByCategory({ categoryId: id }));
       }
     } catch (error) {
-      console.error("Error unlinking department:", error);
-      setUnlinkDepId(null);
+      console.error("Error unlinking department:", error)
+      setUnlinkDepId(null)
 
       // Show error toast
       // toast.error(error.message || t("messages.error.unlinkDepartmentFailed"), {
@@ -544,9 +539,9 @@ const SpecificCategory = () => {
         text: error.errors[0] || t("messages.error.unlinkDepartmentFailed"),
         icon: "error",
         confirmButtonText: t("common.ok"),
-      });
+      })
     }
-  };
+  }
   // Handle create department for this category
   // const handleCreateDepartment = () => {
   //   if (selectedCategory) {
@@ -562,7 +557,7 @@ const SpecificCategory = () => {
 
   // Render action buttons for pending doctors
   const renderPendingActionButtons = (request) => {
-    const isProcessing = loadingApproveRequest || loadingRejectRequest;
+    const isProcessing = loadingApproveRequest || loadingRejectRequest
 
     return (
       <div className="flex gap-2">
@@ -598,8 +593,8 @@ const SpecificCategory = () => {
           </button>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   // Status filter options for pending doctors
   const statusFilterOptions = [
@@ -615,7 +610,7 @@ const SpecificCategory = () => {
       value: "Approved",
       label: t("pendingDoctorRequests.filters.statusOptions.approved"),
     },
-  ];
+  ]
 
   // Department Card Component
   const DepartmentCard = ({ department }) => (
@@ -715,11 +710,11 @@ const SpecificCategory = () => {
         </button>
       </div>
     </div>
-  );
+  )
 
   // Roster Card Component for Mobile
   const RosterCard = ({ roster }) => {
-    const statusInfo = getStatusInfo(roster.status);
+    const statusInfo = getStatusInfo(roster.status)
 
     return (
       <div
@@ -762,8 +757,8 @@ const SpecificCategory = () => {
                 id: roster.id,
                 title: roster.title,
                 currentStatus: roster.status,
-              });
-              setStatusModalOpen(true);
+              })
+              setStatusModalOpen(true)
             }}
             className={`px-2 py-1 rounded-full text-xs font-medium transition-colors hover:opacity-80 cursor-pointer ${statusInfo.color}`}
             title={t("roster.actions.updateStatus")}
@@ -790,8 +785,8 @@ const SpecificCategory = () => {
                 id: roster.id,
                 title: roster.title,
                 currentStatus: roster.status,
-              });
-              setStatusModalOpen(true);
+              })
+              setStatusModalOpen(true)
             }}
           >
             <BarChart3 size={16} />
@@ -806,12 +801,12 @@ const SpecificCategory = () => {
           </Link>
         </div>
       </div>
-    );
-  };
+    )
+  }
 
   // Loading Component
   if (loadingGetSingleCategory) {
-    return <LoadingGetData text={t("gettingData.categoryData")} />;
+    return <LoadingGetData text={t("gettingData.categoryData")} />
   }
 
   // Error Component
@@ -872,7 +867,7 @@ const SpecificCategory = () => {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   // Not Found Component
@@ -926,7 +921,7 @@ const SpecificCategory = () => {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   // Main Component
@@ -1317,7 +1312,7 @@ const SpecificCategory = () => {
                   {pagination && (
                     <div className="mb-6 flex items-center justify-between">
                       <div className="text-sm text-gray-600">
-                        {t("pendingDoctorRequests.pagination.showing", {
+                        {t("categories.pagination.showing", {
                           start: pagination.startIndex || 1,
                           end:
                             pagination.endIndex ||
@@ -1624,38 +1619,15 @@ const SpecificCategory = () => {
                     <div className="mt-8 bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
                       <div className="flex items-center justify-between flex-wrap gap-4">
                         <div className="flex items-center gap-4">
-                          <span className="text-sm text-gray-600">
-                            {t(
-                              "pendingDoctorRequests.pagination.resultsCount",
-                              {
-                                start: pagination.startIndex || 1,
-                                end:
-                                  pagination.endIndex ||
-                                  categoryPendingRequests.length,
-                                total: pagination.totalCount,
-                              }
-                            )}
+                          <span className="text-sm text-white">
+                            {t("categories.pagination.showing", {
+                              start: pagination.startIndex || 1,
+                              end:
+                                pagination.endIndex ||
+                                categoryPendingRequests.length,
+                              total: pagination.totalCount,
+                            })}
                           </span>
-
-                          <select
-                            value={filters.pageSize}
-                            onChange={(e) =>
-                              handlePendingPageSizeChange(
-                                Number(e.target.value)
-                              )
-                            }
-                            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          >
-                            <option value={10}>
-                              10 {t("pendingDoctorRequests.pagination.perPage")}
-                            </option>
-                            <option value={20}>
-                              20 {t("pendingDoctorRequests.pagination.perPage")}
-                            </option>
-                            <option value={50}>
-                              50 {t("pendingDoctorRequests.pagination.perPage")}
-                            </option>
-                          </select>
                         </div>
 
                         <div className="flex gap-2">
@@ -1676,14 +1648,14 @@ const SpecificCategory = () => {
                                 const startPage = Math.max(
                                   1,
                                   pagination.page - 2
-                                );
+                                )
                                 const pageNumber = Math.min(
                                   startPage + i,
                                   pagination.totalPages
-                                );
+                                )
 
                                 if (pageNumber > pagination.totalPages)
-                                  return null;
+                                  return null
 
                                 return (
                                   <button
@@ -1699,7 +1671,7 @@ const SpecificCategory = () => {
                                   >
                                     {pageNumber}
                                   </button>
-                                );
+                                )
                               }
                             )}
                           </div>
@@ -1721,6 +1693,23 @@ const SpecificCategory = () => {
               )}
             </>
           )}
+          <select
+            value={filters.pageSize}
+            onChange={(e) =>
+              handlePendingPageSizeChange(Number(e.target.value))
+            }
+            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value={10}>
+              10 {t("pendingDoctorRequests.pagination.perPage")}
+            </option>
+            <option value={20}>
+              20 {t("pendingDoctorRequests.pagination.perPage")}
+            </option>
+            <option value={50}>
+              50 {t("pendingDoctorRequests.pagination.perPage")}
+            </option>
+          </select>
         </div>
 
         <div className="lg:col-span-2 space-y-6">
@@ -1873,7 +1862,7 @@ const SpecificCategory = () => {
                   </tr>
                 ) : rosterList && rosterList.length > 0 ? (
                   rosterList.map((roster) => {
-                    const statusInfo = getStatusInfo(roster.status);
+                    const statusInfo = getStatusInfo(roster.status)
                     return (
                       <tr
                         key={roster.id}
@@ -1915,8 +1904,8 @@ const SpecificCategory = () => {
                                 id: roster.id,
                                 title: roster.title,
                                 currentStatus: roster.status,
-                              });
-                              setStatusModalOpen(true);
+                              })
+                              setStatusModalOpen(true)
                             }}
                             className={`px-3 py-1 rounded-full text-xs font-medium transition-colors hover:opacity-80 cursor-pointer ${statusInfo.color}`}
                             title={t("roster.actions.updateStatus")}
@@ -1940,8 +1929,8 @@ const SpecificCategory = () => {
                                   id: roster.id,
                                   title: roster.title,
                                   currentStatus: roster.status,
-                                });
-                                setStatusModalOpen(true);
+                                })
+                                setStatusModalOpen(true)
                               }}
                             >
                               <BarChart3 size={16} />
@@ -1954,7 +1943,7 @@ const SpecificCategory = () => {
                           </div>
                         </td>
                       </tr>
-                    );
+                    )
                   })
                 ) : (
                   <tr>
@@ -2531,7 +2520,7 @@ const SpecificCategory = () => {
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default SpecificCategory;
+export default SpecificCategory

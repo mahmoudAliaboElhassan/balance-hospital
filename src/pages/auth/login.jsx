@@ -1,20 +1,20 @@
-"use client";
+"use client"
 
-import React, { useState } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { logIn } from "../../state/act/actAuth";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import i18next from "i18next";
-import UseInitialValues from "../../hooks/use-initial-values";
-import UseFormValidation from "../../hooks/use-form-validation";
-import UseDirection from "../../hooks/use-direction";
-import { useNavigate } from "react-router-dom";
-import withGuard from "../../utils/withGuard";
+import React, { useState } from "react"
+import { Formik, Form, Field, ErrorMessage } from "formik"
+import * as Yup from "yup"
+import { logIn } from "../../state/act/actAuth"
+import { useDispatch, useSelector } from "react-redux"
+import { Link } from "react-router-dom"
+import { useTranslation } from "react-i18next"
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
+import i18next from "i18next"
+import UseInitialValues from "../../hooks/use-initial-values"
+import UseFormValidation from "../../hooks/use-form-validation"
+import UseDirection from "../../hooks/use-direction"
+import { useNavigate } from "react-router-dom"
+import withGuard from "../../utils/withGuard"
 
 const UserIcon = ({ className = "" }) => (
   <svg
@@ -32,7 +32,7 @@ const UserIcon = ({ className = "" }) => (
     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
     <circle cx="12" cy="7" r="4"></circle>
   </svg>
-);
+)
 
 const MailIcon = ({ className = "" }) => (
   <svg
@@ -50,7 +50,7 @@ const MailIcon = ({ className = "" }) => (
     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
     <polyline points="22,6 12,13 2,6"></polyline>
   </svg>
-);
+)
 
 const LockIcon = ({ className = "" }) => (
   <svg
@@ -69,7 +69,7 @@ const LockIcon = ({ className = "" }) => (
     <circle cx="12" cy="16" r="1"></circle>
     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
   </svg>
-);
+)
 
 const EyeIcon = ({ className = "" }) => (
   <svg
@@ -87,7 +87,7 @@ const EyeIcon = ({ className = "" }) => (
     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
     <circle cx="12" cy="12" r="3"></circle>
   </svg>
-);
+)
 
 const EyeOffIcon = ({ className = "" }) => (
   <svg
@@ -105,34 +105,34 @@ const EyeOffIcon = ({ className = "" }) => (
     <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
     <line x1="1" y1="1" x2="23" y2="23"></line>
   </svg>
-);
+)
 
 const Login = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [focusedField, setFocusedField] = useState(null);
-  const { t } = useTranslation();
-  const { loadingAuth } = useSelector((state) => state.auth);
-  const { mymode } = useSelector((state) => state.mode);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false)
+  const [focusedField, setFocusedField] = useState(null)
+  const { t } = useTranslation()
+  const { loadingAuth } = useSelector((state) => state.auth)
+  const { mymode } = useSelector((state) => state.mode)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   // Initial form values
-  const { INITIAL_VALUES_LOGIN } = UseInitialValues();
-  const currentLang = i18next.language;
+  const { INITIAL_VALUES_LOGIN } = UseInitialValues()
+  const currentLang = i18next.language
 
-  const { direction } = UseDirection();
-  const isRTL = direction.direction === "rtl";
+  const { direction } = UseDirection()
+  const isRTL = direction.direction === "rtl"
 
   // Yup validation schema
-  const { VALIDATION_SCHEMA_LOGIN } = UseFormValidation();
+  const { VALIDATION_SCHEMA_LOGIN } = UseFormValidation()
 
-  const [selectedRole, setSelectedRole] = useState(null);
+  const [selectedRole, setSelectedRole] = useState(null)
 
   const handleRoleSelect = (roleId) => {
-    setSelectedRole(roleId);
+    setSelectedRole(roleId)
     // Handle navigation or next steps
-    console.log("Selected role:", roleId);
-  };
+    console.log("Selected role:", roleId)
+  }
 
   // Handle form submission
   const handleSubmit = async (values, { setSubmitting }) => {
@@ -152,52 +152,52 @@ const Login = () => {
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
-        });
-        console.log("data", data.data.user);
+        })
+        console.log("data", data.data.user)
 
         localStorage.setItem(
           "categoryArabicName",
           data.data.user.categoryManager?.categoryNameAr
-        );
+        )
         localStorage.setItem(
           "categoryEnglishName",
           data.data.user.categoryManager?.categoryNameEn
-        );
+        )
         localStorage.setItem(
           "departmentArabicName",
           data.data.user.departmentManager?.departmentNameAr
-        );
+        )
         localStorage.setItem(
           "departmentEnglishName",
           data.data.user.departmentManager?.departmentNameEn
-        );
+        )
         if (
           data.data.user.loginRoleResponseDto.roleNameEn ==
           "Category & Department Head"
         ) {
-          navigate("/specify-role");
+          navigate("/specify-role")
         } else if (
           data.data.user.loginRoleResponseDto.roleNameAr === "رئيس قسم" &&
           data.data.user.departmentManager?.departmentId
         ) {
-          console.log("hello dep head", data.data.user.departmentManager);
+          console.log("hello dep head", data.data.user.departmentManager)
           navigate(
             `/admin-panel/department/${data.data.user.departmentManager?.departmentId}`
-          );
+          )
         } else if (
           data.data.user.loginRoleResponseDto.roleNameAr === "رئيس تخصص" &&
           data.data.user.categoryManager?.categoryId
         ) {
-          console.log("hello cat head");
+          console.log("hello cat head")
           navigate(
             `/admin-panel/category/${data.data.user.categoryManager?.categoryId}`
-          );
+          )
         } else {
-          navigate("/admin-panel");
+          navigate("/admin-panel")
         }
       })
       .catch((error) => {
-        console.log("error", error);
+        console.log("error", error)
         // Error handling with SweetAlert
         Swal.fire({
           title: t("login.error.title"),
@@ -210,36 +210,36 @@ const Login = () => {
           confirmButtonColor: "#ef4444",
           background: mymode === "dark" ? "#1f2937" : "#ffffff",
           color: mymode === "dark" ? "#f9fafb" : "#111827",
-        });
-      });
-  };
+        })
+      })
+  }
 
   // Generate margin class based on direction
   const getMarginClass = () => {
-    return isRTL ? "mr-2" : "ml-2";
-  };
+    return isRTL ? "mr-2" : "ml-2"
+  }
 
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+    setShowPassword(!showPassword)
+  }
 
   // Enhanced icon state logic
   const getIconState = (fieldName, hasValue, hasFocus, hasError) => {
     if (hasError) {
-      return "error";
+      return "error"
     }
     if (hasFocus) {
-      return "focused";
+      return "focused"
     }
     if (hasValue) {
-      return "filled";
+      return "filled"
     }
-    return "default";
-  };
+    return "default"
+  }
 
   // Theme-based classes
   const getThemeClasses = () => {
-    const isDark = mymode === "dark";
+    const isDark = mymode === "dark"
     return {
       container: isDark
         ? "bg-gray-900 text-gray-100"
@@ -274,10 +274,10 @@ const Login = () => {
       link: isDark
         ? "text-blue-400 hover:text-blue-300"
         : "text-blue-600 hover:text-blue-700",
-    };
-  };
+    }
+  }
 
-  const themeClasses = getThemeClasses();
+  const themeClasses = getThemeClasses()
 
   // Helper function to get directional classes
   const getDirectionalClasses = () => {
@@ -288,26 +288,26 @@ const Login = () => {
       // Input padding classes
       inputPaddingWithLeftIcon: isRTL ? "pr-9 pl-3" : "pl-9 pr-3",
       inputPaddingWithBothIcons: isRTL ? "pr-9 pl-10" : "pl-9 pr-10",
-    };
-  };
+    }
+  }
 
-  const directionalClasses = getDirectionalClasses();
+  const directionalClasses = getDirectionalClasses()
 
   // Get icon classes based on state
   const getIconClasses = (iconState) => {
-    const baseClasses = "transition-all duration-300 ease-in-out transform";
+    const baseClasses = "transition-all duration-300 ease-in-out transform"
 
     switch (iconState) {
       case "focused":
-        return `${baseClasses} ${themeClasses.iconFocused} scale-105 drop-shadow-sm`;
+        return `${baseClasses} ${themeClasses.iconFocused} scale-105 drop-shadow-sm`
       case "filled":
-        return `${baseClasses} ${themeClasses.iconFilled} scale-100`;
+        return `${baseClasses} ${themeClasses.iconFilled} scale-100`
       case "error":
-        return `${baseClasses} ${themeClasses.iconError} scale-105 animate-pulse`;
+        return `${baseClasses} ${themeClasses.iconError} scale-105 animate-pulse`
       default:
-        return `${baseClasses} ${themeClasses.iconDefault} scale-95`;
+        return `${baseClasses} ${themeClasses.iconDefault} scale-95`
     }
-  };
+  }
 
   return (
     <div
@@ -513,7 +513,7 @@ const Login = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default withGuard(Login);
+export default withGuard(Login)
