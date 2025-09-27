@@ -15,6 +15,7 @@ import UseFormValidation from "../../hooks/use-form-validation"
 import UseDirection from "../../hooks/use-direction"
 import { useNavigate } from "react-router-dom"
 import withGuard from "../../utils/withGuard"
+import useDirection from "../../hooks/use-direction"
 
 const UserIcon = ({ className = "" }) => (
   <svg
@@ -309,6 +310,8 @@ const Login = () => {
     }
   }
 
+  const leftStyle = `${direction.left}-[100%]`
+
   return (
     <div
       className={`min-h-screen flex items-center justify-center p-4 transition-colors duration-200 ${themeClasses.container}`}
@@ -436,7 +439,7 @@ const Login = () => {
                         placeholder={t("login.passwordPlaceholder")}
                         onFocus={() => setFocusedField("password")}
                         onBlur={() => setFocusedField(null)}
-                        className={`signin-input w-[95%] pl-4 pr-12 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-300 group-focus-within:shadow-sm ${
+                        className={`signin-input w-full pl-4 pr-12 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-300 group-focus-within:shadow-sm ${
                           errors.password && touched.password
                             ? themeClasses.inputError
                             : `${themeClasses.input}`
@@ -447,7 +450,8 @@ const Login = () => {
                       <button
                         type="button"
                         onClick={togglePasswordVisibility}
-                        className={`absolute inset-y-0 left-[100%] flex items-center transition-all duration-200 z-10 ${
+                        style={{ [direction.left]: "100%" }}
+                        className={`absolute inset-y-0  flex items-center transition-all duration-200 z-10 ${
                           focusedField === "password"
                             ? themeClasses.iconFocused
                             : themeClasses.iconDefault

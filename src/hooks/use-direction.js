@@ -1,12 +1,12 @@
-import i18next from "i18next";
+import i18next from "i18next"
 
 function useDirection() {
-  const lang = i18next.language;
-  const dir = lang === "ar" ? "rtl" : "ltr";
-  const isLtr = dir == "ltr";
+  const lang = i18next.language
+  const dir = lang === "ar" ? "rtl" : "ltr"
+  const isLtr = dir == "ltr"
 
-  const left = isLtr ? "left" : "right";
-  const right = isLtr ? "right" : "left";
+  const left = isLtr ? "left" : "right"
+  const right = isLtr ? "right" : "left"
   const direction = {
     direction: dir,
     left,
@@ -17,8 +17,8 @@ function useDirection() {
     paddingRight: `padding-${right}`,
     borderTopRightRadius: `border-top-${right}-radius`,
     borderRight: `border-${right}`,
-  };
-  return { direction };
+  }
+  return { direction }
 }
 
-export default useDirection;
+export default useDirection

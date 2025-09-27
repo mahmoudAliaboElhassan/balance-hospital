@@ -13,6 +13,7 @@ import i18next from "i18next"
 import { useNavigate } from "react-router-dom"
 import UseInitialValues from "../../hooks/use-initial-values"
 import UseFormValidation from "../../hooks/use-form-validation"
+import useDirection from "../../hooks/use-direction"
 
 // Icon Components
 const LockIcon = ({ className = "" }) => (
@@ -95,6 +96,8 @@ export default function ResetPassword() {
   const currentLang = i18next.language
   const { loadingAuth } = useSelector((state) => state.auth)
   const { mymode } = useSelector((state) => state.mode)
+
+  const { direction } = useDirection()
 
   const [token, setToken] = useState(new Array(6).fill(""))
   const [focusedIndex, setFocusedIndex] = useState(0)
@@ -543,7 +546,7 @@ export default function ResetPassword() {
                     formik.handleBlur
                   }}
                   placeholder={t("new_password_placeholder")}
-                  className={`w-[95%] pl-4 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all duration-300 group-focus-within:shadow-sm ${
+                  className={`w-full pl-4 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all duration-300 group-focus-within:shadow-sm ${
                     formik.touched.newPassword && formik.errors.newPassword
                       ? `${themeClasses.input} ${themeClasses.inputError}`
                       : themeClasses.input
@@ -553,8 +556,9 @@ export default function ResetPassword() {
                 {/* Eye toggle button - stays inside input */}
                 <button
                   type="button"
+                  style={{ [direction.left]: "100%" }}
                   onClick={() => setShowNewPassword(!showNewPassword)}
-                  className={`absolute inset-y-0 left-[100%] pr-3 flex items-center transition-all duration-200 z-10 ${
+                  className={`absolute inset-y-0  pr-3 flex items-center transition-all duration-200 z-10 ${
                     focusedField === "newPassword"
                       ? themeClasses.iconFocused
                       : themeClasses.iconDefault
@@ -628,7 +632,7 @@ export default function ResetPassword() {
                     formik.handleBlur
                   }}
                   placeholder={t("confirm_password_placeholder")}
-                  className={`w-[95%] pl-4 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all duration-300 group-focus-within:shadow-sm ${
+                  className={`w-full pl-4 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all duration-300 group-focus-within:shadow-sm ${
                     formik.touched.confirmNewPassword &&
                     formik.errors.confirmNewPassword
                       ? `${themeClasses.input} ${themeClasses.inputError}`
@@ -639,8 +643,9 @@ export default function ResetPassword() {
                 {/* Eye toggle button - stays inside input */}
                 <button
                   type="button"
+                  style={{ [direction.left]: "100%" }}
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className={`absolute inset-y-0 left-[100%] pr-3 flex items-center transition-all duration-200 z-10 ${
+                  className={`absolute inset-y-0 pr-3 flex items-center transition-all duration-200 z-10 ${
                     focusedField === "confirmNewPassword"
                       ? themeClasses.iconFocused
                       : themeClasses.iconDefault
