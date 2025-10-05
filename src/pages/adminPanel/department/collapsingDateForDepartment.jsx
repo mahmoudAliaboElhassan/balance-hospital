@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
-import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import React, { useState } from "react"
+import { useTranslation } from "react-i18next"
+import { useSelector } from "react-redux"
+import { ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 
 const CollapsibleDateCardForDepartment = ({
   dayData,
@@ -10,28 +10,28 @@ const CollapsibleDateCardForDepartment = ({
   getFillColor,
   getFillBgColor,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const { t, i18n } = useTranslation();
-  const { mymode } = useSelector((state) => state.mode);
+  const [isExpanded, setIsExpanded] = useState(false)
+  const { t, i18n } = useTranslation()
+  const { mymode } = useSelector((state) => state.mode)
 
-  const isDark = mymode === "dark";
-  const isRTL = i18n.language === "ar";
+  const isDark = mymode === "dark"
+  const isRTL = i18n.language === "ar"
 
   // Calculate completion percentage based on assigned vs required doctors
   const completionPercentage =
     dayData.totalRequired > 0
       ? Math.round((dayData.totalAssigned / dayData.totalRequired) * 100)
-      : 0;
+      : 0
 
   // Extract shifts data (equivalent to working hours)
-  const shifts = dayData.shifts || [];
-  const totalRequired = dayData.totalRequired || 0;
-  const totalAssigned = dayData.totalAssigned || 0;
-  const totalShortfall = dayData.totalShortfall || 0;
+  const shifts = dayData.shifts || []
+  const totalRequired = dayData.totalRequired || 0
+  const totalAssigned = dayData.totalAssigned || 0
+  const totalShortfall = dayData.totalShortfall || 0
 
   const toggleExpansion = () => {
-    setIsExpanded(!isExpanded);
-  };
+    setIsExpanded(!isExpanded)
+  }
 
   return (
     <div
@@ -167,7 +167,7 @@ const CollapsibleDateCardForDepartment = ({
         >
           {/* Shifts Details */}
           {shifts && shifts.length > 0 ? (
-            <div className="space-y-3">
+            <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
               <h4
                 className={`
                   text-sm font-medium
@@ -431,7 +431,7 @@ const CollapsibleDateCardForDepartment = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CollapsibleDateCardForDepartment;
+export default CollapsibleDateCardForDepartment

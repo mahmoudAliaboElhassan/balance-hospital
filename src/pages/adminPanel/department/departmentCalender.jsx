@@ -1,31 +1,31 @@
-import React, { useEffect, useMemo } from "react";
-import { useParams } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { useTranslation } from "react-i18next";
-import { getDepartmentRosterCalender } from "../../../state/act/actDepartment"; // Adjust path
-import { formatDate } from "../../../utils/formtDate";
-import CollapsibleDateCardForDepartment from "./collapsingDateForDepartment";
-import LoadingGetData from "../../../components/LoadingGetData";
+import React, { useEffect, useMemo } from "react"
+import { useParams } from "react-router-dom"
+import { useSelector, useDispatch } from "react-redux"
+import { useTranslation } from "react-i18next"
+import { getDepartmentRosterCalender } from "../../../state/act/actDepartment" // Adjust path
+import { formatDate } from "../../../utils/formtDate"
+import CollapsibleDateCardForDepartment from "./collapsingDateForDepartment"
+import LoadingGetData from "../../../components/LoadingGetData"
 
 function DepartmentCalender() {
-  const { rosterId, depId: id } = useParams();
-  const dispatch = useDispatch();
-  const { t, i18n } = useTranslation();
+  const { rosterId, depId: id } = useParams()
+  const dispatch = useDispatch()
+  const { t, i18n } = useTranslation()
 
   const {
     departmentRosterData,
     rosterLookup,
     loadinGetDepartmentCalender,
     error,
-  } = useSelector((state) => state.department); // Adjust state path as needed
+  } = useSelector((state) => state.department) // Adjust state path as needed
 
-  const { mymode } = useSelector((state) => state.mode);
+  const { mymode } = useSelector((state) => state.mode)
 
-  const isDark = mymode === "dark";
-  const isRTL = i18n.language === "ar";
+  const isDark = mymode === "dark"
+  const isRTL = i18n.language === "ar"
   const departmentName = isRTL
     ? localStorage.getItem("departmentArabicName")
-    : localStorage.getItem("departmentEnglishName");
+    : localStorage.getItem("departmentEnglishName")
 
   useEffect(() => {
     dispatch(
@@ -33,16 +33,17 @@ function DepartmentCalender() {
         departmentId: id,
         ids: [rosterId],
       })
-    );
-  }, [rosterId]);
+    )
+  }, [rosterId])
 
   if (loadinGetDepartmentCalender) {
-    return <LoadingGetData text={t("gettingData.departmentCalendar")} />;
+    return <LoadingGetData text={t("gettingData.departmentCalendar")} />
   }
-  console.log("departmentRosterData", departmentRosterData?.[0]?.stats);
+  console.log("departmentRosterData", departmentRosterData?.[0]?.stats)
+  console.log("departmentRosterData for showing", departmentRosterData)
 
   const formatTime = (timeString) => {
-    if (!timeString) return "";
+    if (!timeString) return ""
     return new Date(`2000-01-01T${timeString}`).toLocaleTimeString(
       i18n.language === "ar" ? "ar-EG" : "en-US",
       {
@@ -50,24 +51,24 @@ function DepartmentCalender() {
         minute: "2-digit",
         hour12: true,
       }
-    );
-  };
+    )
+  }
 
   const getFillColor = (percentage) => {
-    if (percentage >= 90) return "text-green-600 dark:text-green-400";
-    if (percentage >= 70) return "text-yellow-600 dark:text-yellow-400";
-    return "text-red-600 dark:text-red-400";
-  };
+    if (percentage >= 90) return "text-green-600 dark:text-green-400"
+    if (percentage >= 70) return "text-yellow-600 dark:text-yellow-400"
+    return "text-red-600 dark:text-red-400"
+  }
 
   const getFillBgColor = (percentage) => {
-    if (percentage >= 90) return "bg-green-600 dark:bg-green-500";
-    if (percentage >= 70) return "bg-yellow-600 dark:bg-yellow-500";
-    return "bg-red-600 dark:bg-red-500";
-  };
+    if (percentage >= 90) return "bg-green-600 dark:bg-green-500"
+    if (percentage >= 70) return "bg-yellow-600 dark:bg-yellow-500"
+    return "bg-red-600 dark:bg-red-500"
+  }
 
   // Stats component
   const StatsSection = ({ stats }) => {
-    const completionPercentage = stats?.completionPercentage || 0;
+    const completionPercentage = stats?.completionPercentage || 0
 
     const statsCards = [
       {
@@ -106,7 +107,7 @@ function DepartmentCalender() {
         textColor: "text-red-800 dark:text-red-200",
         borderColor: "border-red-200 dark:border-red-800",
       },
-    ];
+    ]
 
     return (
       <div className="mb-6">
@@ -172,8 +173,8 @@ function DepartmentCalender() {
           ))}
         </div>
       </div>
-    );
-  };
+    )
+  }
 
   if (error) {
     return (
@@ -188,7 +189,7 @@ function DepartmentCalender() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   if (!departmentRosterData || departmentRosterData.length === 0) {
@@ -215,18 +216,20 @@ function DepartmentCalender() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   // Extract days from the filtered roster data
   const daysList = departmentRosterData.reduce((acc, roster) => {
     if (roster.days && Array.isArray(roster.days)) {
-      return [...acc, ...roster.days];
+      return [...acc, ...roster.days]
     }
-    return acc;
-  }, []);
+    return acc
+  }, [])
 
-  const stats = departmentRosterData?.[0]?.stats;
+  console.log("day list", daysList)
+
+  const stats = departmentRosterData?.[0]?.stats
 
   return (
     <div
@@ -280,7 +283,7 @@ function DepartmentCalender() {
         )}
       </div>
     </div>
-  );
+  )
 }
 
-export default DepartmentCalender;
+export default DepartmentCalender

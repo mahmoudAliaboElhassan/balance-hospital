@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams, Link } from "react-router-dom";
+import React, { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useParams, Link } from "react-router-dom"
 import {
   getDoctorsRequests,
   rejectRequest,
   DoctorWorkingHoursRequestState,
   getStatusName,
-} from "../../../state/act/actRosterManagement";
+} from "../../../state/act/actRosterManagement"
 import {
   selectDoctorRequests,
   selectDoctorRequestsLoading,
   selectApproveRequestLoading,
   selectRejectRequestLoading,
-} from "../../../state/slices/roster";
-import LoadingGetData from "../../../components/LoadingGetData";
-import { useTranslation } from "react-i18next";
+} from "../../../state/slices/roster"
+import LoadingGetData from "../../../components/LoadingGetData"
+import { useTranslation } from "react-i18next"
 import {
   ArrowLeft,
   ArrowRight,
@@ -34,122 +34,122 @@ import {
   Badge,
   Activity,
   Ban,
-} from "lucide-react";
-import ApproveRequestModal from "../../../components/ApprovalRequest";
-import RejectRequestModal from "../../../components/RejectRequest";
+} from "lucide-react"
+import ApproveRequestModal from "../../../components/ApprovalRequest"
+import RejectRequestModal from "../../../components/RejectRequest"
 
 function ManageDoctors() {
-  const { id } = useParams();
-  const dispatch = useDispatch();
+  const { id } = useParams()
+  const dispatch = useDispatch()
   const [currentStatus, setCurrentStatus] = useState(
     DoctorWorkingHoursRequestState.Pending
-  );
-  const [loadingStates, setLoadingStates] = useState({});
-  const [collapsedDates, setCollapsedDates] = useState({});
+  )
+  const [loadingStates, setLoadingStates] = useState({})
+  const [collapsedDates, setCollapsedDates] = useState({})
 
-  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [selectedRequest, setSelectedRequest] = useState(null)
 
-  const [isOpenApprove, setIsOpnApprove] = useState(false);
-  const [isOpenReject, setRejectModalOpen] = useState(false);
+  const [isOpenApprove, setIsOpnApprove] = useState(false)
+  const [isOpenReject, setRejectModalOpen] = useState(false)
 
   const handleApproveClick = (request) => {
-    setSelectedRequest(request);
-    setIsOpnApprove(true);
-  };
+    setSelectedRequest(request)
+    setIsOpnApprove(true)
+  }
 
   const handleRejectClick = (request) => {
-    setSelectedRequest(request);
-    setRejectModalOpen(true);
-  };
+    setSelectedRequest(request)
+    setRejectModalOpen(true)
+  }
 
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation()
 
-  const doctorRequests = useSelector(selectDoctorRequests);
-  const isLoading = useSelector(selectDoctorRequestsLoading);
-  const isApproving = useSelector(selectApproveRequestLoading);
-  const isRejecting = useSelector(selectRejectRequestLoading);
+  const doctorRequests = useSelector(selectDoctorRequests)
+  const isLoading = useSelector(selectDoctorRequestsLoading)
+  const isApproving = useSelector(selectApproveRequestLoading)
+  const isRejecting = useSelector(selectRejectRequestLoading)
 
-  const { mymode } = useSelector((state) => state.mode);
+  const { mymode } = useSelector((state) => state.mode)
 
   // Get current language direction
-  const isRTL = i18n.language === "ar";
-  const currentLang = i18n.language || "ar";
-  const isDark = mymode === "dark";
+  const isRTL = i18n.language === "ar"
+  const currentLang = i18n.language || "ar"
+  const isDark = mymode === "dark"
 
   useEffect(() => {
     if (id) {
-      dispatch(getDoctorsRequests({ status: currentStatus, rosterId: id }));
+      dispatch(getDoctorsRequests({ status: currentStatus, rosterId: id }))
     }
-  }, [dispatch, id, currentStatus]);
+  }, [dispatch, id, currentStatus])
 
   const handleStatusChange = (newStatus) => {
-    setCurrentStatus(newStatus);
-  };
+    setCurrentStatus(newStatus)
+  }
 
   const handleReject = async (requestId) => {
-    setLoadingStates((prev) => ({ ...prev, [`reject_${requestId}`]: true }));
+    setLoadingStates((prev) => ({ ...prev, [`reject_${requestId}`]: true }))
     try {
-      await dispatch(rejectRequest({ requestId })).unwrap();
-      dispatch(getDoctorsRequests({ status: currentStatus, rosterId: id }));
+      await dispatch(rejectRequest({ requestId })).unwrap()
+      dispatch(getDoctorsRequests({ status: currentStatus, rosterId: id }))
     } catch (error) {
-      console.error("Error rejecting request:", error);
+      console.error("Error rejecting request:", error)
     } finally {
-      setLoadingStates((prev) => ({ ...prev, [`reject_${requestId}`]: false }));
+      setLoadingStates((prev) => ({ ...prev, [`reject_${requestId}`]: false }))
     }
-  };
+  }
 
   const getStatusBadgeColor = (status) => {
     switch (status) {
       case "Pending":
         return isDark
           ? "bg-yellow-900/30 text-yellow-400 border-yellow-500/30"
-          : "bg-yellow-100 text-yellow-800 border-yellow-300";
+          : "bg-yellow-100 text-yellow-800 border-yellow-300"
       case "Approved":
         return isDark
           ? "bg-green-900/30 text-green-400 border-green-500/30"
-          : "bg-green-100 text-green-800 border-green-300";
+          : "bg-green-100 text-green-800 border-green-300"
       case "Rejected":
         return isDark
           ? "bg-red-900/30 text-red-400 border-red-500/30"
-          : "bg-red-100 text-red-800 border-red-300";
+          : "bg-red-100 text-red-800 border-red-300"
       default:
         return isDark
           ? "bg-gray-700 text-gray-300 border-gray-600"
-          : "bg-gray-100 text-gray-800 border-gray-300";
+          : "bg-gray-100 text-gray-800 border-gray-300"
     }
-  };
+  }
 
   const getStatusIcon = (status) => {
     switch (status) {
       case "Pending":
-        return <Clock size={12} />;
+        return <Clock size={12} />
       case "Approved":
-        return <CheckCircle size={12} />;
+        return <CheckCircle size={12} />
       case "Rejected":
-        return <Ban size={12} />;
+        return <Ban size={12} />
       default:
-        return <Activity size={12} />;
+        return <Activity size={12} />
     }
-  };
+  }
 
   const toggleDateCollapse = (date) => {
     setCollapsedDates((prev) => ({
       ...prev,
       [date]: !prev[date],
-    }));
-  };
+    }))
+  }
 
   const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable");
+    if (!dateString) return t("common.notAvailable")
     return new Intl.DateTimeFormat(i18n.language, {
       year: "numeric",
       month: "long",
       day: "numeric",
-    }).format(new Date(dateString));
-  };
+    }).format(new Date(dateString))
+  }
 
   const formatTime = (timeString) => {
-    if (!timeString) return "-";
+    if (!timeString) return "-"
     return new Date(`2000-01-01T${timeString}`).toLocaleTimeString(
       i18n.language,
       {
@@ -157,11 +157,11 @@ function ManageDoctors() {
         minute: "2-digit",
         hour12: false,
       }
-    );
-  };
+    )
+  }
 
   if (isLoading) {
-    return <LoadingGetData text={t("gettingData.doctorRequests")} />;
+    return <LoadingGetData text={t("gettingData.doctorRequests")} />
   }
 
   return (
@@ -534,7 +534,9 @@ function ManageDoctors() {
                                       isDark ? "text-gray-300" : "text-gray-900"
                                     }`}
                                   >
-                                    {request.departmentName}
+                                    {i18n.language == "en"
+                                      ? request.departmentName
+                                      : request.departmentNameArabic}
                                   </p>
                                 </div>
                               </div>
@@ -862,7 +864,7 @@ function ManageDoctors() {
         status={currentStatus}
       />
     </div>
-  );
+  )
 }
 
-export default ManageDoctors;
+export default ManageDoctors
