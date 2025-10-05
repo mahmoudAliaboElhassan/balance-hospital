@@ -1,32 +1,32 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit"
 
-import UseInitialStates from "../../hooks/use-initial-state";
+import UseInitialStates from "../../hooks/use-initial-state"
 import {
   forgetPassword,
   logIn,
   resendForgetPasswordCode,
   resetPassword,
-} from "../act/actAuth";
-import { m } from "framer-motion";
-const { initialStateAuth } = UseInitialStates();
+} from "../act/actAuth"
+import { m } from "framer-motion"
+const { initialStateAuth } = UseInitialStates()
 
 export const authSlice = createSlice({
   name: "authSlice",
   initialState: initialStateAuth,
   reducers: {
     logOut: (state) => {
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
-      localStorage.removeItem("expiresAt");
-      localStorage.removeItem("departmentManagerId");
-      localStorage.removeItem("categoryManagerId");
-      localStorage.removeItem("hyprid");
-      state.token = "";
-      state.role = "";
-      state.departmentManagerId = "";
-      state.categoryManagerId = "";
-      state.expiresAt = "";
-      state.hyprid = "";
+      localStorage.removeItem("token")
+      localStorage.removeItem("role")
+      localStorage.removeItem("expiresAt")
+      localStorage.removeItem("departmentManagerId")
+      localStorage.removeItem("categoryManagerId")
+      localStorage.removeItem("hyprid")
+      state.token = ""
+      state.role = ""
+      state.departmentManagerId = ""
+      state.categoryManagerId = ""
+      state.expiresAt = ""
+      state.hyprid = ""
     },
 
     setCategoryManagerRole: (state) => {
@@ -36,7 +36,7 @@ export const authSlice = createSlice({
         roleNameEn: "Category Manager",
         userCanManageCategory: true,
         userCanManageRole: false,
-        userCanManageRostors: false,
+        userCanManageRostors: true,
         userCanManageUsers: false,
         userCanContractingType: false,
         userCanShiftHoursType: false,
@@ -46,12 +46,12 @@ export const authSlice = createSlice({
         userCanViewReports: false,
         userCanManageSchedules: false,
         userCanManageRequests: false,
-      };
+      }
 
-      localStorage.setItem("loginRoleResponseDto", JSON.stringify(updatedRole));
-      state.loginRoleResponseDto = updatedRole;
-      localStorage.setItem("hyprid", "category");
-      state.hyprid = "category";
+      localStorage.setItem("loginRoleResponseDto", JSON.stringify(updatedRole))
+      state.loginRoleResponseDto = updatedRole
+      localStorage.setItem("hyprid", "category")
+      state.hyprid = "category"
     },
 
     // New action for department manager role specification
@@ -72,93 +72,93 @@ export const authSlice = createSlice({
         userCanViewReports: false,
         userCanManageSchedules: false,
         userCanManageRequests: false,
-      };
+      }
 
-      localStorage.setItem("loginRoleResponseDto", JSON.stringify(updatedRole));
-      state.loginRoleResponseDto = updatedRole;
+      localStorage.setItem("loginRoleResponseDto", JSON.stringify(updatedRole))
+      state.loginRoleResponseDto = updatedRole
 
-      localStorage.setItem("hyprid", "department");
-      state.hyprid = "department";
+      localStorage.setItem("hyprid", "department")
+      state.hyprid = "department"
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(logIn.pending, (state, action) => {
-        state.loadingAuth = true;
+        state.loadingAuth = true
       })
       .addCase(logIn.fulfilled, (state, action) => {
-        state.loadingAuth = false;
-        localStorage.setItem("token", action.payload.data.accessToken);
-        state.token = action.payload.data.accessToken;
+        state.loadingAuth = false
+        localStorage.setItem("token", action.payload.data.accessToken)
+        state.token = action.payload.data.accessToken
 
-        localStorage.setItem("expiresAt", action.payload.data.expiresAt);
-        state.expiresAt = action.payload.data.expiresAt;
+        localStorage.setItem("expiresAt", action.payload.data.expiresAt)
+        state.expiresAt = action.payload.data.expiresAt
 
         localStorage.setItem(
           "loginRoleResponseDto",
           JSON.stringify(action.payload.data.user.loginRoleResponseDto)
-        );
+        )
         state.loginRoleResponseDto =
-          action.payload.data.user.loginRoleResponseDto;
+          action.payload.data.user.loginRoleResponseDto
 
         console.log(
           "data from slice",
           action.payload.data.user.departmentManager?.departmentId
-        );
+        )
 
         localStorage.setItem(
           "departmentManagerId",
           action.payload.data.user.departmentManager?.departmentId
-        );
+        )
         state.departmentManagerId =
           action.payload.data.user.departmentManager?.departmentId ||
-          "undefined";
+          "undefined"
 
         localStorage.setItem(
           "categoryManagerId",
           action.payload.data.user.categoryManager?.categoryId
-        );
+        )
         state.categoryManagerId =
-          action.payload.data.user.categoryManager?.categoryId || "undefined";
+          action.payload.data.user.categoryManager?.categoryId || "undefined"
       })
 
       .addCase(logIn.rejected, (state, action) => {
-        state.loadingAuth = false;
+        state.loadingAuth = false
       })
       .addCase(forgetPassword.pending, (state, action) => {
-        state.loadingAuth = true;
+        state.loadingAuth = true
       })
       .addCase(forgetPassword.fulfilled, (state, action) => {
-        state.loadingAuth = false;
-        console.log("action.payload", action.payload);
+        state.loadingAuth = false
+        console.log("action.payload", action.payload)
       })
       .addCase(forgetPassword.rejected, (state, action) => {
-        state.loadingAuth = false;
+        state.loadingAuth = false
       })
       .addCase(resetPassword.pending, (state, action) => {
-        state.loadingAuth = true;
+        state.loadingAuth = true
       })
       .addCase(resetPassword.fulfilled, (state, action) => {
-        state.loadingAuth = false;
-        console.log("action.payload", action.payload);
+        state.loadingAuth = false
+        console.log("action.payload", action.payload)
       })
       .addCase(resetPassword.rejected, (state, action) => {
-        state.loadingAuth = false;
+        state.loadingAuth = false
       })
       .addCase(resendForgetPasswordCode.pending, (state, action) => {
-        state.loadingAuth = true;
+        state.loadingAuth = true
       })
       .addCase(resendForgetPasswordCode.fulfilled, (state, action) => {
-        state.loadingAuth = false;
-        console.log("action.payload", action.payload);
+        state.loadingAuth = false
+        console.log("action.payload", action.payload)
       })
       .addCase(resendForgetPasswordCode.rejected, (state, action) => {
-        state.loadingAuth = false;
-      });
+        state.loadingAuth = false
+      })
   },
-});
+})
 
-export default authSlice.reducer;
+export default authSlice.reducer
 export const { logOut, setDepartmentManagerRole, setCategoryManagerRole } =
-  authSlice.actions;
-export { logIn };
+  authSlice.actions
+export { logIn }

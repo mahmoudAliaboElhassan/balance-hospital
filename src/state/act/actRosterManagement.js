@@ -1,5 +1,5 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import axiosInstance from "../../utils/axiosInstance";
+import { createAsyncThunk } from "@reduxjs/toolkit"
+import axiosInstance from "../../utils/axiosInstance"
 
 // ===================================================================
 // UTILITY FUNCTIONS
@@ -10,27 +10,27 @@ import axiosInstance from "../../utils/axiosInstance";
  */
 const getAuthHeaders = () => ({
   Authorization: `Bearer ${localStorage.getItem("token")}`,
-});
+})
 
 /**
  * Helper function to build query parameters
  */
 const buildQueryParams = (params) => {
-  const queryParams = new URLSearchParams();
+  const queryParams = new URLSearchParams()
   Object.entries(params).forEach(([key, value]) => {
     if (value !== null && value !== undefined && value !== "") {
-      queryParams.append(key, value);
+      queryParams.append(key, value)
     }
-  });
-  return queryParams.toString();
-};
+  })
+  return queryParams.toString()
+}
 
 /**
  * Generic error handler for thunks
  */
 const handleError = (error, rejectWithValue) => {
-  return rejectWithValue(error.response?.data || error.message);
-};
+  return rejectWithValue(error.response?.data || error.message)
+}
 
 // ===================================================================
 // PHASE 1: BASIC ROSTER STRUCTURE (المرحلة 1: إنشاء الهيكل الأساسي)
@@ -48,13 +48,13 @@ export const createBasicRoster = createAsyncThunk(
         "/api/v1/RosterManagement/basic",
         rosterData,
         { headers: getAuthHeaders() }
-      );
-      return res.data;
+      )
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 // ===================================================================
 // PHASE 2: DEPARTMENT SHIFTS MANAGEMENT (المرحلة 2: إدارة شفتات الأقسام)
@@ -72,13 +72,13 @@ export const addDepartmentShifts = createAsyncThunk(
         `/api/v1/RosterManagement/roster-departments/${rosterDepartmentId}/shifts`,
         shiftsData,
         { headers: getAuthHeaders() }
-      );
-      return res.data;
+      )
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 /**
  * Get department shifts for roster
@@ -91,13 +91,13 @@ export const getDepartmentShifts = createAsyncThunk(
       const res = await axiosInstance.get(
         `/api/v1/RosterManagement/roster-departments/${rosterDepartmentId}/shifts`,
         { headers: getAuthHeaders() }
-      );
-      return res.data;
+      )
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 /**
  * Delete specific department shift
@@ -110,13 +110,13 @@ export const deleteDepartmentShift = createAsyncThunk(
       const res = await axiosInstance.delete(
         `/api/v1/RosterManagement/department-shifts/${departmentShiftId}`,
         { headers: getAuthHeaders() }
-      );
-      return res.data;
+      )
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 // ===================================================================
 // PHASE 3: CONTRACTING REQUIREMENTS (المرحلة 3: متطلبات التعاقد)
@@ -130,7 +130,7 @@ export const deleteDepartmentShift = createAsyncThunk(
 export const getShiftContractingTypes = createAsyncThunk(
   "rosterManagement/getShiftContractingTypes",
   async ({ departmentShiftId }, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
       const res = await axiosInstance.get(
@@ -140,22 +140,22 @@ export const getShiftContractingTypes = createAsyncThunk(
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
-      );
-      console.log("Shift contracting types fetched successfully:", res);
-      return res.data;
+      )
+      console.log("Shift contracting types fetched successfully:", res)
+      return res.data
     } catch (error) {
-      console.log("Error fetching shift contracting types:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error fetching shift contracting types:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 
 // Add contracting types to a department shift
 export const addShiftContractingTypes = createAsyncThunk(
   "rosterManagement/addShiftContractingTypes",
   async ({ departmentShiftId, contractingTypesData }, thunkAPI) => {
-    console.log("contractingTypesData", contractingTypesData);
-    const { rejectWithValue } = thunkAPI;
+    console.log("contractingTypesData", contractingTypesData)
+    const { rejectWithValue } = thunkAPI
 
     try {
       const res = await axiosInstance.post(
@@ -167,21 +167,21 @@ export const addShiftContractingTypes = createAsyncThunk(
             "Content-Type": "application/json",
           },
         }
-      );
-      console.log("Shift contracting types added successfully:", res);
-      return res.data;
+      )
+      console.log("Shift contracting types added successfully:", res)
+      return res.data
     } catch (error) {
-      console.log("Error adding shift contracting types:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error adding shift contracting types:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 
 // Update shift contracting type
 export const updateShiftContractingType = createAsyncThunk(
   "rosterManagement/updateShiftContractingType",
   async ({ shiftContractingTypeId, updateData }, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
       const res = await axiosInstance.put(
@@ -193,21 +193,21 @@ export const updateShiftContractingType = createAsyncThunk(
             "Content-Type": "application/json",
           },
         }
-      );
-      console.log("Shift contracting type updated successfully:", res);
-      return res.data;
+      )
+      console.log("Shift contracting type updated successfully:", res)
+      return res.data
     } catch (error) {
-      console.log("Error updating shift contracting type:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error updating shift contracting type:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 
 // Delete shift contracting type
 export const deleteShiftContractingType = createAsyncThunk(
   "rosterManagement/deleteShiftContractingType",
   async ({ contractingId }, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
       const res = await axiosInstance.delete(
@@ -217,15 +217,15 @@ export const deleteShiftContractingType = createAsyncThunk(
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
-      );
-      console.log("Shift contracting type deleted successfully:", res);
-      return { ...res.data, deletedId: contractingId };
+      )
+      console.log("Shift contracting type deleted successfully:", res)
+      return { ...res.data, deletedId: contractingId }
     } catch (error) {
-      console.log("Error deleting shift contracting type:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error deleting shift contracting type:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 
 // ===================================================================
 // PHASE 4: WORKING HOURS MANAGEMENT (المرحلة 4: إدارة ساعات العمل)
@@ -243,13 +243,13 @@ export const addWorkingHours = createAsyncThunk(
         `/api/v1/rostermanagement/working-hours/generate`,
         workingHours,
         { headers: getAuthHeaders() }
-      );
-      return res.data;
+      )
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 /**
  * Get working hours for department shift
@@ -259,20 +259,20 @@ export const getWorkingHours = createAsyncThunk(
   "rosterManagement/getWorkingHours",
   async ({ rosterId, params = {} }, { rejectWithValue }) => {
     try {
-      const queryString = buildQueryParams(params);
+      const queryString = buildQueryParams(params)
 
       const res = await axiosInstance.get(
         `/api/v1/RosterManagement/${rosterId}/working-hours-structured${
           queryString ? `?${queryString}` : ""
         }`,
         { headers: getAuthHeaders() }
-      );
-      return res.data;
+      )
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 export const getWorkingHour = createAsyncThunk(
   "rosterManagement/getWorkingHour",
   async ({ workingHourId }, { rejectWithValue }) => {
@@ -280,13 +280,13 @@ export const getWorkingHour = createAsyncThunk(
       const res = await axiosInstance.get(
         `/api/v1/RosterManagement/working-hours/${workingHourId}`,
         { headers: getAuthHeaders() }
-      );
-      return res.data;
+      )
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 export const updateWorkingHour = createAsyncThunk(
   "rosterManagement/updateWorkingHour",
   async ({ workingHourId, data }, { rejectWithValue }) => {
@@ -295,13 +295,13 @@ export const updateWorkingHour = createAsyncThunk(
         `/api/v1/RosterManagement/working-hours/${workingHourId}`,
         data,
         { headers: getAuthHeaders() }
-      );
-      return res.data;
+      )
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 // ===================================================================
 // PHASE 7: DOCTOR MANAGEMENT & SCHEDULING (المرحلة 7: إدارة الأطباء والجدولة)
@@ -315,18 +315,18 @@ export const getRosterList = createAsyncThunk(
   "rosterManagement/getRosterList",
   async (filters = {}, { rejectWithValue }) => {
     try {
-      const queryString = buildQueryParams(filters);
+      const queryString = buildQueryParams(filters)
       const url = `/api/v1/RosterManagement/list${
         queryString ? `?${queryString}` : ""
-      }`;
+      }`
 
-      const res = await axiosInstance.get(url, { headers: getAuthHeaders() });
-      return res.data;
+      const res = await axiosInstance.get(url, { headers: getAuthHeaders() })
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 /**
  * Get paginated roster list
@@ -336,30 +336,30 @@ export const getRostersPaged = createAsyncThunk(
   "rosterManagement/getRostersPaged",
   async (params = {}, { rejectWithValue }) => {
     try {
-      const queryString = buildQueryParams(params);
+      const queryString = buildQueryParams(params)
       const url = `/api/v1/RosterManagement/paged${
         queryString ? `?${queryString}` : ""
-      }`;
+      }`
 
-      const res = await axiosInstance.get(url, { headers: getAuthHeaders() });
-      return res.data;
+      const res = await axiosInstance.get(url, { headers: getAuthHeaders() })
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 export const getRosterByCategory = createAsyncThunk(
   "rosterManagement/getRosterByCategory",
   async ({ categoryId }, { rejectWithValue }) => {
     try {
-      const url = `/api/v1/RosterManagement/categories/${categoryId}/rosters`;
-      const res = await axiosInstance.get(url, { headers: getAuthHeaders() });
-      return res.data;
+      const url = `/api/v1/RosterManagement/categories/${categoryId}/rosters`
+      const res = await axiosInstance.get(url, { headers: getAuthHeaders() })
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 /**
  * Get roster by ID
@@ -372,13 +372,13 @@ export const getRosterById = createAsyncThunk(
       const res = await axiosInstance.get(
         `/api/v1/RosterManagement/${rosterId}`,
         { headers: getAuthHeaders() }
-      );
-      return res.data;
+      )
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 // ===================================================================
 // UPDATE & MANAGEMENT OPERATIONS (عمليات التحديث والإدارة)
@@ -396,13 +396,13 @@ export const updateRosterBasicInfo = createAsyncThunk(
         `/api/v1/RosterManagement/${rosterId}`,
         updateData,
         { headers: getAuthHeaders() }
-      );
-      return res.data;
+      )
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 export const deleteRoster = createAsyncThunk(
   "rosterManagement/deleteRoster",
   async ({ rosterId, reason }, { rejectWithValue }) => {
@@ -413,13 +413,13 @@ export const deleteRoster = createAsyncThunk(
           headers: getAuthHeaders(),
           data: { reason },
         }
-      );
-      return { rosterId, ...res.data };
+      )
+      return { rosterId, ...res.data }
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 export const updateRosterStatus = createAsyncThunk(
   "rosterManagement/updateRosterStatus",
   async ({ rosterId, updateData }, { rejectWithValue }) => {
@@ -428,13 +428,13 @@ export const updateRosterStatus = createAsyncThunk(
         `/api/v1/RosterManagement/${rosterId}/status`,
         updateData,
         { headers: getAuthHeaders() }
-      );
-      return res.data;
+      )
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 export const getRosterDepartments = createAsyncThunk(
   "rosterManagement/getRosterDepartments",
@@ -443,13 +443,13 @@ export const getRosterDepartments = createAsyncThunk(
       const res = await axiosInstance.get(
         `/api/v1/RosterManagement/${rosterId}/departments`,
         { headers: getAuthHeaders() }
-      );
-      return res.data;
+      )
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 export const addRosterDepartment = createAsyncThunk(
   "rosterManagement/addRosterDepartment",
   async ({ rosterId, department }, { rejectWithValue }) => {
@@ -458,13 +458,13 @@ export const addRosterDepartment = createAsyncThunk(
         `/api/v1/RosterManagement/${rosterId}/departments`,
         department,
         { headers: getAuthHeaders() }
-      );
-      return res.data;
+      )
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 // ===================================================================
 // ROSTER ASSIGNMENT ACTIONS (أكشنز تعيين الروستر)
@@ -490,13 +490,13 @@ export const assignDoctorToShift = createAsyncThunk(
           overrideConflicts,
         },
         { headers: getAuthHeaders() }
-      );
-      return res.data;
+      )
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 /**
  * Unassign doctor from shift
@@ -512,13 +512,13 @@ export const unassignDoctorFromShift = createAsyncThunk(
           headers: getAuthHeaders(),
           data: { reason },
         }
-      );
-      return { ...res.data, scheduleId };
+      )
+      return { ...res.data, scheduleId }
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 /**
  * Get available doctors for working hours
@@ -531,13 +531,13 @@ export const getAvailableDoctorsForShift = createAsyncThunk(
       const res = await axiosInstance.get(
         `/api/v1/rosterassignment/working-hours/${workingHourId}/available-doctors`,
         { headers: getAuthHeaders() }
-      );
-      return res.data;
+      )
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 /**
  * Get available doctors for specific date
@@ -550,18 +550,18 @@ export const getAvailableDoctorsForDate = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const queryParams = buildQueryParams({ departmentId, shiftTypeId });
+      const queryParams = buildQueryParams({ departmentId, shiftTypeId })
       const url = `/api/v1/rosterassignment/roster/${rosterId}/available-doctors/${date}${
         queryParams ? `?${queryParams}` : ""
-      }`;
+      }`
 
-      const res = await axiosInstance.get(url, { headers: getAuthHeaders() });
-      return { ...res.data, date };
+      const res = await axiosInstance.get(url, { headers: getAuthHeaders() })
+      return { ...res.data, date }
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 /**
  * Get doctor schedule in roster
@@ -574,13 +574,13 @@ export const getDoctorSchedule = createAsyncThunk(
       const res = await axiosInstance.get(
         `/api/v1/rosterassignment/roster/${rosterId}/doctor/${doctorId}/schedule`,
         { headers: getAuthHeaders() }
-      );
-      return res.data;
+      )
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 /**
  * Get assigned doctors summary
@@ -590,18 +590,18 @@ export const getAssignedDoctorsSummary = createAsyncThunk(
   "rosterManagement/getAssignedDoctorsSummary",
   async ({ rosterId, params = {} }, { rejectWithValue }) => {
     try {
-      const queryString = buildQueryParams(params);
+      const queryString = buildQueryParams(params)
       const url = `/api/v1/rosterassignment/roster/${rosterId}/assigned-doctors${
         queryString ? `?${queryString}` : ""
-      }`;
+      }`
 
-      const res = await axiosInstance.get(url, { headers: getAuthHeaders() });
-      return res.data;
+      const res = await axiosInstance.get(url, { headers: getAuthHeaders() })
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 /**
  * Get doctors for specific date
@@ -614,13 +614,13 @@ export const getDoctorsForDate = createAsyncThunk(
       const res = await axiosInstance.get(
         `/api/v1/rosterassignment/roster/${rosterId}/doctors/${date}`,
         { headers: getAuthHeaders() }
-      );
-      return res.data;
+      )
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 /**
  * Get day summary
@@ -633,13 +633,13 @@ export const getDaySummary = createAsyncThunk(
       const res = await axiosInstance.get(
         `/api/v1/rosterassignment/roster/${rosterId}/day-summary/${date}`,
         { headers: getAuthHeaders() }
-      );
-      return res.data;
+      )
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 // ===================================================================
 // DOCTOR REQUESTS WORKFLOW (سير عمل طلبات الدكاترة)
@@ -657,13 +657,13 @@ export const submitDoctorRequest = createAsyncThunk(
         "/api/v1/rosterassignment/doctor-requests",
         requestData,
         { headers: getAuthHeaders() }
-      );
-      return res.data;
+      )
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 /**
  * Get doctor requests for roster
@@ -682,13 +682,13 @@ export const approveDoctorRequest = createAsyncThunk(
         `/api/v1/rosterassignment/doctor-requests/${requestId}/approve`,
         processingData,
         { headers: getAuthHeaders() }
-      );
-      return { ...res.data, requestId };
+      )
+      return { ...res.data, requestId }
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 /**
  * Reject doctor request
@@ -702,13 +702,13 @@ export const rejectDoctorRequest = createAsyncThunk(
         `/api/v1/rosterassignment/doctor-requests/${requestId}/reject`,
         processingData,
         { headers: getAuthHeaders() }
-      );
-      return { ...res.data, requestId };
+      )
+      return { ...res.data, requestId }
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 /**
  * Get doctor's requests
@@ -733,17 +733,17 @@ export const getAvailbleScientficDegrees = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get(
-        `/api/v1/ScientificDegree?IsActive=true`,
+        `/api/v1/RosterManagement/available-contracting-types`,
         {
           headers: getAuthHeaders(),
         }
-      );
-      return res.data;
+      )
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 export const getDoctorsPerRoster = createAsyncThunk(
   "rosterManagement/getDoctorsPerRoster",
   async ({ rosterId }, { rejectWithValue }) => {
@@ -753,13 +753,13 @@ export const getDoctorsPerRoster = createAsyncThunk(
         {
           headers: getAuthHeaders(),
         }
-      );
-      return res.data;
+      )
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 // Redux Actions for Doctor Requests Management
 
 // Update the existing getDoctorsRequests action to store data in state
@@ -772,13 +772,13 @@ export const getDoctorsRequests = createAsyncThunk(
         {
           headers: getAuthHeaders(),
         }
-      );
-      return res.data;
+      )
+      return res.data
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 // Action to approve a doctor request
 export const approveRequest = createAsyncThunk(
@@ -791,13 +791,13 @@ export const approveRequest = createAsyncThunk(
         {
           headers: getAuthHeaders(),
         }
-      );
-      return { requestId, data: res.data };
+      )
+      return { requestId, data: res.data }
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 // Action to reject a doctor request
 export const rejectRequest = createAsyncThunk(
@@ -810,13 +810,13 @@ export const rejectRequest = createAsyncThunk(
         {
           headers: getAuthHeaders(),
         }
-      );
-      return { requestId, data: res.data };
+      )
+      return { requestId, data: res.data }
     } catch (error) {
-      return handleError(error, rejectWithValue);
+      return handleError(error, rejectWithValue)
     }
   }
-);
+)
 
 // Enum for request states (for reference)
 export const DoctorWorkingHoursRequestState = {
@@ -824,19 +824,19 @@ export const DoctorWorkingHoursRequestState = {
   Pending: 1,
   Rejected: 2,
   Approved: 3,
-};
+}
 
 export const getStatusName = (status) => {
   switch (status) {
     case 0:
-      return "None";
+      return "None"
     case 1:
-      return "Pending";
+      return "Pending"
     case 2:
-      return "Rejected";
+      return "Rejected"
     case 3:
-      return "Approved";
+      return "Approved"
     default:
-      return "Unknown";
+      return "Unknown"
   }
-};
+}
