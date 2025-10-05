@@ -1,41 +1,44 @@
-import i18next from "i18next";
-import { useEffect } from "react";
-import UseFormValidation from "../hooks/use-form-validation";
-import UseInitialValues from "../hooks/use-initial-values";
-import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
-import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import { Plus, Trash2, Save, X } from "lucide-react";
+import i18next from "i18next"
+import { useEffect } from "react"
+import UseFormValidation from "../hooks/use-form-validation"
+import UseInitialValues from "../hooks/use-initial-values"
+import { useTranslation } from "react-i18next"
+import { useDispatch, useSelector } from "react-redux"
+import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik"
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
+import { Plus, Trash2, Save, X } from "lucide-react"
 import {
   addDepartmentShifts,
   getDepartmentShifts,
-} from "../state/act/actRosterManagement";
-import { getShiftHoursTypes } from "../state/act/actShiftHours";
-import LoadingGetData from "./LoadingGetData";
+} from "../state/act/actRosterManagement"
+import {
+  getShiftHoursTypes,
+  getShiftHoursTypesForRoster,
+} from "../state/act/actShiftHours"
+import LoadingGetData from "./LoadingGetData"
 
 function ModalShiftsDepartment({ selectedDepartment, onClose }) {
-  const dispatch = useDispatch();
-  console.log("Selected Department in Modal:", selectedDepartment);
-  const { loading } = useSelector((state) => state.rosterManagement);
+  const dispatch = useDispatch()
+  console.log("Selected Department in Modal:", selectedDepartment)
+  const { loading } = useSelector((state) => state.rosterManagement)
   const { allShiftHoursTypes, loadingGetShiftHoursTypes } = useSelector(
     (state) => state.shiftHour || {}
-  );
-  const { mymode } = useSelector((state) => state.mode);
-  const isDark = mymode === "dark";
+  )
+  const { mymode } = useSelector((state) => state.mode)
+  const isDark = mymode === "dark"
 
-  const { t } = useTranslation();
-  const currentLang = i18next.language;
-  const isRTL = currentLang === "ar";
+  const { t } = useTranslation()
+  const currentLang = i18next.language
+  const isRTL = currentLang === "ar"
   // Validation schema
-  const { VALIDATION_SCHEMA_ADD_SHIFTS_DEPARTMENT } = UseFormValidation();
+  const { VALIDATION_SCHEMA_ADD_SHIFTS_DEPARTMENT } = UseFormValidation()
 
   // Initial form values
-  const { INITIAL_VALUES_ADD_SHIFTS_DEPARTMENT } = UseInitialValues();
+  const { INITIAL_VALUES_ADD_SHIFTS_DEPARTMENT } = UseInitialValues()
   useEffect(() => {
-    dispatch(getShiftHoursTypes({ isActive: true }));
-  }, [dispatch]);
+    dispatch(getShiftHoursTypesForRoster({ isActive: true }))
+  }, [dispatch])
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
@@ -46,21 +49,21 @@ function ModalShiftsDepartment({ selectedDepartment, onClose }) {
           notes: shift.notes || "",
         })),
         overwriteExisting: values.overwriteExisting,
-      };
-      console.log("Submitting shifts data:", shiftsData);
+      }
+      console.log("Submitting shifts data:", shiftsData)
 
       await dispatch(
         addDepartmentShifts({
           rosterDepartmentId: selectedDepartment.id,
           shiftsData,
         })
-      ).unwrap();
+      ).unwrap()
 
       await dispatch(
         getDepartmentShifts({ rosterDepartmentId: selectedDepartment.id })
-      ).unwrap();
+      ).unwrap()
 
-      resetForm();
+      resetForm()
       toast.success(t("roster.phaseOne.success.shiftsAdded"), {
         position: "top-right",
         autoClose: 3000,
@@ -68,11 +71,11 @@ function ModalShiftsDepartment({ selectedDepartment, onClose }) {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-      });
+      })
 
-      onClose();
+      onClose()
     } catch (error) {
-      console.error("Department shifts creation error:", error);
+      console.error("Department shifts creation error:", error)
 
       Swal.fire({
         title: t("roster.phaseOne.error.title"),
@@ -89,11 +92,11 @@ function ModalShiftsDepartment({ selectedDepartment, onClose }) {
         confirmButtonColor: "#ef4444",
         background: "#ffffff",
         color: "#111827",
-      });
+      })
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
-  };
+  }
 
   return (
     <div>
@@ -408,7 +411,7 @@ function ModalShiftsDepartment({ selectedDepartment, onClose }) {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default ModalShiftsDepartment;
+export default ModalShiftsDepartment
