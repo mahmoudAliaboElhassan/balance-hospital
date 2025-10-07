@@ -1019,8 +1019,13 @@ const SpecificCategory = () => {
             } rounded-2xl shadow-xl p-8 mb-8`}
           >
             <div className="flex items-center justify-between flex-wrap gap-4">
-              <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+              <div className="mb-4">
+                <p className="text-sm font-medium text-gray-500 mb-1">
+                  {(loginRoleResponseDto?.roleNameEn === "Category Head" ||
+                    loginRoleResponseDto?.roleNameEn === "Category Manager") &&
+                    t("common.now_manage")}
+                </p>
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   {getCategoryName()}
                 </h1>
               </div>

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import React, { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next"
+import { useSelector } from "react-redux"
 import {
   Calendar,
   Users,
@@ -18,7 +18,7 @@ import {
   UserPlus,
   ChevronDown,
   ChevronRight,
-} from "lucide-react";
+} from "lucide-react"
 
 const CollapsibleDateCard = ({
   dayData,
@@ -27,18 +27,20 @@ const CollapsibleDateCard = ({
   getFillColor,
   getFillBgColor,
 }) => {
-  const [isCollapsed, setIsCollapsed] = useState(true);
-  const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
-  const { mymode } = useSelector((state) => state.mode);
+  const [isCollapsed, setIsCollapsed] = useState(true)
+  const navigate = useNavigate()
+  const { t, i18n } = useTranslation()
+  const { mymode } = useSelector((state) => state.mode)
 
-  const isRTL = i18n.language === "ar";
-  const currentLang = i18n.language || "ar";
-  const isDark = mymode === "dark";
+  console.log("day data", dayData)
+
+  const isRTL = i18n.language === "ar"
+  const currentLang = i18n.language || "ar"
+  const isDark = mymode === "dark"
 
   const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
-  };
+    setIsCollapsed(!isCollapsed)
+  }
 
   return (
     <div
@@ -162,7 +164,7 @@ const CollapsibleDateCard = ({
                     {/* Contracting Types for this shift */}
                     <div className="space-y-3 ml-6">
                       {shift.contractingTypes.map((contractingType) => {
-                        const detail = contractingType.workingHourDetail;
+                        const detail = contractingType.workingHourDetail
                         return (
                           <div
                             key={`${contractingType.contractingTypeId}-${detail.id}`}
@@ -318,11 +320,11 @@ const CollapsibleDateCard = ({
                                 {/* Action Buttons */}
                                 <div className="flex gap-2">
                                   <button
-                                    onClick={() =>
+                                    onClick={() => {
                                       navigate(
                                         `/admin-panel/rosters/working-hours/${detail.id}`
                                       )
-                                    }
+                                    }}
                                     className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors"
                                   >
                                     <Eye size={14} />
@@ -341,11 +343,16 @@ const CollapsibleDateCard = ({
                                   </button>
 
                                   <button
-                                    onClick={() =>
+                                    onClick={() => {
+                                      localStorage.setItem(
+                                        "scientficDoctorRequired",
+                                        contractingType.contractingTypeNameEn
+                                      )
+
                                       navigate(
                                         `/admin-panel/rosters/working-hours/${detail.id}/assign-doctors`
                                       )
-                                    }
+                                    }}
                                     className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors"
                                     aria-label={t(
                                       "roster.actions.assignDoctor"
@@ -447,7 +454,7 @@ const CollapsibleDateCard = ({
                               </div>
                             )}
                           </div>
-                        );
+                        )
                       })}
                     </div>
                   </div>
@@ -458,7 +465,7 @@ const CollapsibleDateCard = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default CollapsibleDateCard;
+export default CollapsibleDateCard

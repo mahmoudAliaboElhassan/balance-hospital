@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { useTranslation } from "react-i18next";
-import { getDoctorData } from "../../../state/act/actUsers";
+import React, { useEffect } from "react"
+import { useParams } from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux"
+import { useTranslation } from "react-i18next"
+import { getDoctorData } from "../../../state/act/actUsers"
 import {
   User,
   Mail,
@@ -21,46 +21,47 @@ import {
   Building,
   FileText,
   Hash,
-} from "lucide-react";
-import LoadingGetData from "../../../components/LoadingGetData";
+  Edit,
+} from "lucide-react"
+import LoadingGetData from "../../../components/LoadingGetData"
 
 function DoctorData() {
-  const { id } = useParams();
-  const dispatch = useDispatch();
-  const { t, i18n } = useTranslation();
-  const { mymode } = useSelector((state) => state.mode);
+  const { id } = useParams()
+  const dispatch = useDispatch()
+  const { t, i18n } = useTranslation()
+  const { mymode } = useSelector((state) => state.mode)
 
   // Get data from Redux store - adjust these selectors based on your actual store structure
-  const userData = useSelector((state) => state.users.userData);
-  const isLoading = useSelector((state) => state.users.loading.list);
-  const error = useSelector((state) => state.users.error);
+  const userData = useSelector((state) => state.users.userData)
+  const isLoading = useSelector((state) => state.users.loading.list)
+  const error = useSelector((state) => state.users.error)
 
-  const isRTL = i18n.language === "ar";
-  const currentLang = i18n.language || "ar";
-  const isDark = mymode === "dark";
+  const isRTL = i18n.language === "ar"
+  const currentLang = i18n.language || "ar"
+  const isDark = mymode === "dark"
 
   useEffect(() => {
     if (id) {
-      dispatch(getDoctorData({ userId: id }));
+      dispatch(getDoctorData({ userId: id }))
     }
-  }, [dispatch, id]);
+  }, [dispatch, id])
 
   // Helper function to format date
   const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable");
+    if (!dateString) return t("common.notAvailable")
     return new Intl.DateTimeFormat(currentLang, {
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    }).format(new Date(dateString));
-  };
+    }).format(new Date(dateString))
+  }
 
   // Helper function to get status badge
   const getStatusBadge = (isActive, label) => {
     const baseClasses =
-      "inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full";
+      "inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full"
     if (isActive) {
       return (
         <span
@@ -69,7 +70,7 @@ function DoctorData() {
           <CheckCircle size={12} className={`${isRTL ? "ml-1" : "mr-1"}`} />
           {label}
         </span>
-      );
+      )
     }
     return (
       <span
@@ -78,11 +79,11 @@ function DoctorData() {
         <XCircle size={12} className={`${isRTL ? "ml-1" : "mr-1"}`} />
         {t("common.notVerified")}
       </span>
-    );
-  };
+    )
+  }
 
   if (isLoading) {
-    return <LoadingGetData text={t("gettingData.doctorData")} />;
+    return <LoadingGetData text={t("gettingData.doctorData")} />
   }
 
   if (error) {
@@ -99,7 +100,7 @@ function DoctorData() {
           </p>
         </div>
       </div>
-    );
+    )
   }
 
   if (!userData) {
@@ -118,7 +119,7 @@ function DoctorData() {
           </p>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -141,6 +142,19 @@ function DoctorData() {
             {t("users.doctorProfileDescription")}
           </p>
         </div>
+
+        {/* Edit Button */}
+        <button
+          // onClick={handleEditClick}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+            isDark
+              ? "bg-blue-600 hover:bg-blue-700 text-white"
+              : "bg-blue-600 hover:bg-blue-700 text-white"
+          } shadow-lg hover:shadow-xl`}
+        >
+          <Edit className="w-4 h-4" />
+          {t("common.edit")}
+        </button>
       </div>
 
       {/* Doctor Profile Card */}
@@ -711,7 +725,7 @@ function DoctorData() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default DoctorData;
+export default DoctorData

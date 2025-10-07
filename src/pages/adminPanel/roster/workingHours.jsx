@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { getWorkingHours } from "../../../state/act/actRosterManagement";
-import { useTranslation } from "react-i18next";
-import LoadingGetData from "../../../components/LoadingGetData";
+import React, { useEffect, useState } from "react"
+import { useParams, useNavigate, Link } from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux"
+import { getWorkingHours } from "../../../state/act/actRosterManagement"
+import { useTranslation } from "react-i18next"
+import LoadingGetData from "../../../components/LoadingGetData"
 import {
   ArrowLeft,
   ArrowRight,
@@ -26,58 +26,58 @@ import {
   UserCheck,
   Edit,
   UserPlus,
-} from "lucide-react";
-import { getDepartments } from "../../../state/act/actDepartment";
-import CollapsibleDateCard from "./collapsWorkingHour";
-import i18next from "i18next";
+} from "lucide-react"
+import { getDepartments } from "../../../state/act/actDepartment"
+import CollapsibleDateCard from "./collapsWorkingHour"
+import i18next from "i18next"
 
 function WorkingHours() {
-  const { rosterId } = useParams();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
+  const { rosterId } = useParams()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { t, i18n } = useTranslation()
 
   // State for filters
   const [filters, setFilters] = useState({
     startDate: "",
     endDate: "",
     departmentId: "",
-  });
+  })
 
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(false)
 
   const { workingHours, loading, errors, rosterDepartments } = useSelector(
     (state) => state.rosterManagement
-  );
+  )
 
-  const { departments } = useSelector((state) => state.department);
-  const { mymode } = useSelector((state) => state.mode);
+  const { departments } = useSelector((state) => state.department)
+  const { mymode } = useSelector((state) => state.mode)
 
   // Get current language direction
-  const isRTL = i18n.language === "ar";
-  const currentLang = i18n.language || "ar";
-  const isDark = mymode === "dark";
+  const isRTL = i18n.language === "ar"
+  const currentLang = i18n.language || "ar"
+  const isDark = mymode === "dark"
 
   useEffect(() => {
     if (rosterId) {
-      dispatch(getWorkingHours({ rosterId, params: filters }));
+      dispatch(getWorkingHours({ rosterId, params: filters }))
       // Load departments for filter dropdown
-      dispatch(getDepartments());
+      dispatch(getDepartments())
     }
-  }, [dispatch, rosterId]);
+  }, [dispatch, rosterId])
 
   // Handle filter changes
   const handleFilterChange = (key, value) => {
     setFilters((prev) => ({
       ...prev,
       [key]: value,
-    }));
-  };
+    }))
+  }
 
   // Apply filters
   const applyFilters = () => {
-    dispatch(getWorkingHours({ rosterId, params: filters }));
-  };
+    dispatch(getWorkingHours({ rosterId, params: filters }))
+  }
 
   // Clear filters
   const clearFilters = () => {
@@ -85,61 +85,61 @@ function WorkingHours() {
       startDate: "",
       endDate: "",
       departmentId: "",
-    };
-    setFilters(clearedFilters);
-    dispatch(getWorkingHours({ rosterId, params: clearedFilters }));
-  };
+    }
+    setFilters(clearedFilters)
+    dispatch(getWorkingHours({ rosterId, params: clearedFilters }))
+  }
 
   // Format date
   const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable");
+    if (!dateString) return t("common.notAvailable")
     return new Intl.DateTimeFormat(i18next.language, {
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    }).format(new Date(dateString));
-  };
+    }).format(new Date(dateString))
+  }
 
   // Format time
   const formatTime = (timeString) => {
-    if (!timeString) return "-";
-    const time = new Date(timeString);
+    if (!timeString) return "-"
+    const time = new Date(timeString)
     return time.toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
-    });
-  };
+    })
+  }
 
   // Get fill percentage color
   const getFillColor = (percentage) => {
-    if (percentage >= 80) return isDark ? "text-green-400" : "text-green-600";
-    if (percentage >= 50) return isDark ? "text-yellow-400" : "text-yellow-600";
-    if (percentage >= 25) return isDark ? "text-orange-400" : "text-orange-600";
-    return isDark ? "text-red-400" : "text-red-600";
-  };
+    if (percentage >= 80) return isDark ? "text-green-400" : "text-green-600"
+    if (percentage >= 50) return isDark ? "text-yellow-400" : "text-yellow-600"
+    if (percentage >= 25) return isDark ? "text-orange-400" : "text-orange-600"
+    return isDark ? "text-red-400" : "text-red-600"
+  }
 
   // Get fill background color
   const getFillBgColor = (percentage) => {
-    if (percentage >= 80) return "bg-green-500";
-    if (percentage >= 50) return "bg-yellow-500";
-    if (percentage >= 25) return "bg-orange-500";
-    return "bg-red-500";
-  };
+    if (percentage >= 80) return "bg-green-500"
+    if (percentage >= 50) return "bg-yellow-500"
+    if (percentage >= 25) return "bg-orange-500"
+    return "bg-red-500"
+  }
 
   // Group working hours by date
   const getWorkingHoursByDate = () => {
-    if (!workingHours?.data?.departments) return {};
+    if (!workingHours?.data?.departments) return {}
 
-    const groupedByDate = {};
+    const groupedByDate = {}
 
     workingHours.data.departments.forEach((department) => {
       department.shifts.forEach((shift) => {
         shift.contractingTypes.forEach((contractingType) => {
           contractingType.workingHoursDetails.forEach((detail) => {
-            const dateKey = detail.shiftDate;
+            const dateKey = detail.shiftDate
             if (!groupedByDate[dateKey]) {
               groupedByDate[dateKey] = {
                 date: dateKey,
@@ -149,13 +149,13 @@ function WorkingHours() {
                     ? detail.dayOfWeekNameEn
                     : detail.dayOfWeekNameAr,
                 departments: [],
-              };
+              }
             }
 
             // Find or create department in this date
             let deptGroup = groupedByDate[dateKey].departments.find(
               (d) => d.departmentId === department.departmentId
-            );
+            )
             if (!deptGroup) {
               deptGroup = {
                 departmentId: department.departmentId,
@@ -164,14 +164,14 @@ function WorkingHours() {
                     ? department.departmentNameEn
                     : department.departmentNameAr,
                 shifts: [],
-              };
-              groupedByDate[dateKey].departments.push(deptGroup);
+              }
+              groupedByDate[dateKey].departments.push(deptGroup)
             }
 
             // Find or create shift in this department
             let shiftGroup = deptGroup.shifts.find(
               (s) => s.shiftId === shift.shiftId
-            );
+            )
             if (!shiftGroup) {
               shiftGroup = {
                 shiftId: shift.shiftId,
@@ -182,8 +182,8 @@ function WorkingHours() {
                 endTime: shift.endTime,
                 hours: shift.hours,
                 contractingTypes: [],
-              };
-              deptGroup.shifts.push(shiftGroup);
+              }
+              deptGroup.shifts.push(shiftGroup)
             }
 
             // Add contracting type with working hour detail
@@ -193,23 +193,24 @@ function WorkingHours() {
                 currentLang === "en"
                   ? contractingType.contractingTypeNameEn
                   : contractingType.contractingTypeNameAr,
+              contractingTypeNameEn: contractingType.contractingTypeNameEn,
               workingHourDetail: detail,
-            });
-          });
-        });
-      });
-    });
+            })
+          })
+        })
+      })
+    })
 
     // Sort dates
     return Object.keys(groupedByDate)
       .sort()
       .reduce((sorted, key) => {
-        sorted[key] = groupedByDate[key];
-        return sorted;
-      }, {});
-  };
+        sorted[key] = groupedByDate[key]
+        return sorted
+      }, {})
+  }
 
-  const groupedWorkingHours = getWorkingHoursByDate();
+  const groupedWorkingHours = getWorkingHoursByDate()
   const totalWorkingHoursCount = Object.values(groupedWorkingHours).reduce(
     (count, day) =>
       count +
@@ -223,10 +224,10 @@ function WorkingHours() {
         0
       ),
     0
-  );
+  )
 
   if (loading.fetch) {
-    return <LoadingGetData text={t("gettingData.workingHours")} />;
+    return <LoadingGetData text={t("gettingData.workingHours")} />
   }
 
   if (errors.general) {
@@ -259,7 +260,7 @@ function WorkingHours() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -622,7 +623,7 @@ function WorkingHours() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default WorkingHours;
+export default WorkingHours

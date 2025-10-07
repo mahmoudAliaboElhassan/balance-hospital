@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react"
+import { useEffect, useState, useMemo, useCallback } from "react"
 import { useParams, useNavigate, Link } from "react-router-dom"
 import i18next from "i18next"
 import { useTranslation } from "react-i18next"

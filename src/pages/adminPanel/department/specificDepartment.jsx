@@ -1,55 +1,55 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { getDepartmentById } from "../../../state/act/actDepartment";
+import React, { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useParams, useNavigate, Link } from "react-router-dom"
+import { getDepartmentById } from "../../../state/act/actDepartment"
 import {
   clearSingleDepartment,
   clearSingleDepartmentError,
-} from "../../../state/slices/department";
-import LoadingGetData from "../../../components/LoadingGetData";
-import { useTranslation } from "react-i18next";
-import { Edit, Eye, UserPlus, UserCog, UserX, Shield } from "lucide-react";
-import RemoveManagerModal from "../../../components/RemoveMangerModal";
-import Forbidden from "../../../components/forbidden";
-import RosterDepartmentMonths from "../../../components/RosterDepartmentMonths";
-import { formatDate } from "../../../utils/formtDate";
+} from "../../../state/slices/department"
+import LoadingGetData from "../../../components/LoadingGetData"
+import { useTranslation } from "react-i18next"
+import { Edit, Eye, UserPlus, UserCog, UserX, Shield } from "lucide-react"
+import RemoveManagerModal from "../../../components/RemoveMangerModal"
+import Forbidden from "../../../components/forbidden"
+import RosterDepartmentMonths from "../../../components/RosterDepartmentMonths"
+import { formatDate } from "../../../utils/formtDate"
 
 function SpecificDepartment() {
-  const { depId: id } = useParams();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [showRemoveManagerModal, setShowRemoveManagerModal] = useState(false);
-  const { loginRoleResponseDto } = useSelector((state) => state.auth);
+  const { depId: id } = useParams()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [showRemoveManagerModal, setShowRemoveManagerModal] = useState(false)
+  const { loginRoleResponseDto } = useSelector((state) => state.auth)
   const {
     selectedDepartment,
     loadingGetSingleDepartment,
     singleDepartmentError,
     departmentLinkedIds,
-  } = useSelector((state) => state.department);
+  } = useSelector((state) => state.department)
 
-  const { departmentManagerId } = useSelector((state) => state.auth);
+  const { departmentManagerId } = useSelector((state) => state.auth)
 
   if (
     departmentManagerId != id &&
     loginRoleResponseDto?.roleNameEn == "Department Manager"
   ) {
-    console.log("not allowed");
-    return <Forbidden />;
+    console.log("not allowed")
+    return <Forbidden />
   }
 
-  console.log(departmentLinkedIds, typeof departmentLinkedIds);
+  console.log(departmentLinkedIds, typeof departmentLinkedIds)
 
   // Normalize to array for consistent handling
   const depIdsArray = Array.isArray(departmentLinkedIds)
     ? departmentLinkedIds
-    : [departmentLinkedIds];
-  const canManage = depIdsArray.some((depId) => depId == id);
+    : [departmentLinkedIds]
+  const canManage = depIdsArray.some((depId) => depId == id)
 
-  console.log("canManage", canManage);
-  console.log("depIdsArray", depIdsArray);
+  console.log("canManage", canManage)
+  console.log("depIdsArray", depIdsArray)
 
   if (!canManage && loginRoleResponseDto?.roleNameEn == "Category Head") {
-    return <Forbidden />;
+    return <Forbidden />
   }
   // Get sub-departments
   // const { subDepartments, loadingGetSubDepartments } = useSelector(
@@ -57,30 +57,30 @@ function SpecificDepartment() {
   // );
 
   // Get categories for displaying category name
-  const { categories } = useSelector((state) => state.category);
+  const { categories } = useSelector((state) => state.category)
 
   // Get mode and translation function
-  const { mymode } = useSelector((state) => state.mode);
-  const { t, i18n } = useTranslation();
+  const { mymode } = useSelector((state) => state.mode)
+  const { t, i18n } = useTranslation()
 
   // Get current language direction and theme
-  const isRTL = i18n.language === "ar";
-  const currentLang = i18n.language || "ar";
-  const isDark = mymode === "dark";
+  const isRTL = i18n.language === "ar"
+  const currentLang = i18n.language || "ar"
+  const isDark = mymode === "dark"
 
   useEffect(() => {
     if (id) {
       // Clear previous data before fetching
-      dispatch(clearSingleDepartment());
-      dispatch(getDepartmentById(id));
+      dispatch(clearSingleDepartment())
+      dispatch(getDepartmentById(id))
     }
 
     // Cleanup on unmount
     return () => {
-      dispatch(clearSingleDepartment());
-      dispatch(clearSingleDepartmentError());
-    };
-  }, [dispatch, id]);
+      dispatch(clearSingleDepartment())
+      dispatch(clearSingleDepartmentError())
+    }
+  }, [dispatch, id])
 
   // Fetch sub-departments for this specific department
   // useEffect(() => {
@@ -97,20 +97,20 @@ function SpecificDepartment() {
   useEffect(() => {
     if (singleDepartmentError) {
       if (singleDepartmentError.status === 404) {
-        console.error("Department not found");
+        console.error("Department not found")
       } else if (singleDepartmentError.status === 403) {
-        console.error("Access denied");
+        console.error("Access denied")
       }
     }
-  }, [singleDepartmentError, navigate]);
+  }, [singleDepartmentError, navigate])
 
   // Get department name based on current language
   const getDepartmentName = () => {
-    if (!selectedDepartment) return "";
+    if (!selectedDepartment) return ""
     return currentLang === "en"
       ? selectedDepartment.nameEnglish
-      : selectedDepartment.nameArabic;
-  };
+      : selectedDepartment.nameArabic
+  }
 
   // Get department secondary name (opposite language)
   // const getDepartmentSecondaryName = () => {
@@ -140,29 +140,29 @@ function SpecificDepartment() {
 
   // Manager action handlers
   const handleAssignManager = () => {
-    navigate(`/admin-panel/department/assign-manager/${id}?type=department`);
-  };
+    navigate(`/admin-panel/department/assign-manager/${id}?type=department`)
+  }
 
   // const handleEditManagerPermissions = () => {
   //   navigate(`/admin-panel/department/edit-manager-permissions/${id}`);
   // };
 
   const handleRemoveManager = () => {
-    setShowRemoveManagerModal(true);
-  };
+    setShowRemoveManagerModal(true)
+  }
 
   // Get manager name based on current language
   const getManagerName = () => {
-    if (!selectedDepartment?.manager) return "";
+    if (!selectedDepartment?.manager) return ""
     // Assuming manager object has name properties
     return currentLang === "ar"
       ? selectedDepartment.manager.userNameArabic
-      : selectedDepartment.manager.userNameEnglish;
-  };
+      : selectedDepartment.manager.userNameEnglish
+  }
 
   // Get category name based on current language
   const getCategoryNames = () => {
-    if (!selectedDepartment?.linkedCategories && !categories) return [];
+    if (!selectedDepartment?.linkedCategories && !categories) return []
 
     // If department has linked categories, return all of them
     if (selectedDepartment?.linkedCategories?.length > 0) {
@@ -172,13 +172,13 @@ function SpecificDepartment() {
           currentLang === "en"
             ? category.categoryNameEnglish
             : category.categoryNameArabic,
-      }));
+      }))
     }
-  };
+  }
 
   // Loading Component
   if (loadingGetSingleDepartment) {
-    return <LoadingGetData text={t("gettingData.departmentData")} />;
+    return <LoadingGetData text={t("gettingData.departmentData")} />
   }
 
   // Error Component
@@ -241,7 +241,7 @@ function SpecificDepartment() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   // Not Found Component
@@ -304,7 +304,7 @@ function SpecificDepartment() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   // Main Component
@@ -356,9 +356,18 @@ function SpecificDepartment() {
           >
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-                  {getDepartmentName()}
-                </h1>
+                <div className="mb-4">
+                  <p className="text-sm font-medium text-gray-500 mb-1">
+                    {(loginRoleResponseDto?.roleNameEn === "Department Head" ||
+                      loginRoleResponseDto?.roleNameEn ===
+                        "Department Manager") &&
+                      t("common.now_manage_dep")}
+                  </p>
+                  <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    {getDepartmentName()}
+                    {currentLang === "ar" && ` ${t("common.public")}`}
+                  </h1>
+                </div>
                 <div
                   className={`mt-2 ${
                     isDark ? "text-gray-400" : "text-gray-500"
@@ -1599,7 +1608,7 @@ function SpecificDepartment() {
         managerName={getManagerName()}
       />
     </div>
-  );
+  )
 }
 
-export default SpecificDepartment;
+export default SpecificDepartment
