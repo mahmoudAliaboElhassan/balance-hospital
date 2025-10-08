@@ -334,14 +334,14 @@ function WorkingHours() {
         colIndex++
       }
 
-      // Date and Day columns
+      // Date and Day columns (merge rows 2-4)
       const startCol = colIndex
       shiftRow.push("")
       shiftRow.push("")
-      merges.push({ s: { r: 2, c: startCol }, e: { r: 3, c: startCol } }) // Date
+      merges.push({ s: { r: 2, c: startCol }, e: { r: 4, c: startCol } }) // Date
       merges.push({
         s: { r: 2, c: startCol + 1 },
-        e: { r: 3, c: startCol + 1 },
+        e: { r: 4, c: startCol + 1 },
       }) // Day
       colIndex += 2
 
@@ -360,7 +360,7 @@ function WorkingHours() {
     })
     wsData.push(shiftRow)
 
-    // Row 3: Contracting type headers (Date, Day, then types)
+    // Row 3: Contracting type headers
     const contractingTypeRow = []
     colIndex = 0
     deptColumns.forEach((deptCol, idx) => {
@@ -369,9 +369,9 @@ function WorkingHours() {
         colIndex++
       }
 
-      // Date and Day headers
-      contractingTypeRow.push(currentLang === "ar" ? "التاريخ" : "Date")
-      contractingTypeRow.push(currentLang === "ar" ? "اليوم" : "Day")
+      // Date and Day headers (already merged)
+      contractingTypeRow.push("")
+      contractingTypeRow.push("")
       colIndex += 2
 
       deptCol.shifts.forEach((shift) => {
@@ -384,14 +384,43 @@ function WorkingHours() {
     })
     wsData.push(contractingTypeRow)
 
-    // Data rows: Each date
+    // Row 4: Sub-headers (Count / Doctors)
+    const subHeaderRow = []
+    colIndex = 0
+    deptColumns.forEach((deptCol, idx) => {
+      if (idx > 0) {
+        subHeaderRow.push("") // gap column
+        colIndex++
+      }
+
+      // Date and Day headers (already merged)
+      subHeaderRow.push(currentLang === "ar" ? "التاريخ" : "Date")
+      subHeaderRow.push(currentLang === "ar" ? "اليوم" : "Day")
+      colIndex += 2
+
+      deptCol.shifts.forEach((shift) => {
+        const types = Array.from(shift.contractingTypes)
+        types.forEach(() => {
+          subHeaderRow.push(currentLang === "ar" ? "العدد" : "Count")
+          colIndex++
+        })
+      })
+    })
+    wsData.push(subHeaderRow)
+
+    // Data rows: Each date (now with 2 rows per date)
     sortedDates.forEach((date) => {
       const dayData = groupedData[date]
-      const row = []
+
+      // Row 1: Count row (assigned/required)
+      const countRow = []
+      // Row 2: Doctors row (names)
+      const doctorsRow = []
 
       deptColumns.forEach((deptCol, deptIdx) => {
         if (deptIdx > 0) {
-          row.push("") // gap column
+          countRow.push("") // gap column
+          doctorsRow.push("") // gap column
         }
 
         const deptDayData = deptCol.dept.dateData.get(date)
@@ -403,8 +432,28 @@ function WorkingHours() {
             { month: "short", day: "numeric" }
           )
 
-          row.push(formattedDate) // Date
-          row.push(deptDayData.dayOfWeekName) // Day name
+          // Date column (merge both rows)
+          countRow.push(formattedDate)
+          doctorsRow.push("")
+
+          // Day name column (merge both rows)
+          countRow.push(deptDayData.dayOfWeekName)
+          doctorsRow.push("")
+
+          // Merge date and day cells for this date
+          const currentRowIndex = wsData.length
+          const dateColIndex = deptColumns
+            .slice(0, deptIdx)
+            .reduce((sum, dc) => sum + dc.totalCols + 1, 0) // +1 for gap columns
+
+          merges.push({
+            s: { r: currentRowIndex, c: dateColIndex },
+            e: { r: currentRowIndex + 1, c: dateColIndex },
+          })
+          merges.push({
+            s: { r: currentRowIndex, c: dateColIndex + 1 },
+            e: { r: currentRowIndex + 1, c: dateColIndex + 1 },
+          })
 
           // For each shift in this department
           deptCol.shifts.forEach((shiftInfo) => {
@@ -419,28 +468,44 @@ function WorkingHours() {
                   (ct) => ct.contractingTypeName === typeName
                 )
                 if (ctData) {
-                  console.log("ctData", ctData)
                   const assigned =
                     ctData.workingHourDetail.currentAssignedDoctors
                   const required = ctData.workingHourDetail.requiredDoctors
-                  row.push(`${assigned}/${required}`)
+                  const doctors = ctData.workingHourDetail.assignedDoctors || []
+
+                  // Count row
+                  countRow.push(`${assigned}/${required}`)
+
+                  // Doctors row
+                  const doctorNames = doctors
+                    .map((doctor) =>
+                      currentLang === "ar"
+                        ? doctor.doctorNameAr
+                        : doctor.doctorNameEn
+                    )
+                    .join(currentLang === "ar" ? " - " : " - ")
+                  doctorsRow.push(doctorNames || "")
                 } else {
-                  row.push("")
+                  countRow.push("")
+                  doctorsRow.push("")
                 }
               } else {
-                row.push("")
+                countRow.push("")
+                doctorsRow.push("")
               }
             })
           })
         } else {
           // Empty cells for this department on this date
           for (let i = 0; i < deptCol.totalCols; i++) {
-            row.push("")
+            countRow.push("")
+            doctorsRow.push("")
           }
         }
       })
 
-      wsData.push(row)
+      wsData.push(countRow)
+      wsData.push(doctorsRow)
     })
 
     // Create worksheet
@@ -456,7 +521,7 @@ function WorkingHours() {
       colWidths.push({ wch: 12 }) // Day
       deptCol.shifts.forEach((shift) => {
         shift.contractingTypes.forEach(() => {
-          colWidths.push({ wch: 12 }) // Contracting type column
+          colWidths.push({ wch: 20 }) // Wider for doctor names
         })
       })
     })
@@ -474,10 +539,18 @@ function WorkingHours() {
 
         if (!ws[cellAddress].s) ws[cellAddress].s = {}
 
-        // Style headers (first 4 rows)
-        if (R <= 3) {
+        // Style headers (first 5 rows)
+        if (R <= 4) {
           ws[cellAddress].s.fill = { fgColor: { rgb: "D3D3D3" } }
           ws[cellAddress].s.font = { bold: true }
+          ws[cellAddress].s.alignment = {
+            horizontal: "center",
+            vertical: "center",
+          }
+        }
+
+        // Center align count rows (odd rows after header)
+        if (R > 4 && (R - 5) % 2 === 0) {
           ws[cellAddress].s.alignment = {
             horizontal: "center",
             vertical: "center",
