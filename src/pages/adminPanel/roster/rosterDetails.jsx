@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import React, { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useParams, useNavigate, Link } from "react-router-dom"
 import {
   addWorkingHours,
   getRosterById,
-} from "../../../state/act/actRosterManagement";
-import { useTranslation } from "react-i18next";
-import LoadingGetData from "../../../components/LoadingGetData";
-import ModalUpdateRosterStatus from "../../../components/ModalUpdateRosterStatus";
+} from "../../../state/act/actRosterManagement"
+import { useTranslation } from "react-i18next"
+import LoadingGetData from "../../../components/LoadingGetData"
+import ModalUpdateRosterStatus from "../../../components/ModalUpdateRosterStatus"
 import {
   ArrowLeft,
   ArrowRight,
@@ -33,39 +33,39 @@ import {
   Archive,
   PenTool,
   Send,
-} from "lucide-react";
-import i18next from "i18next";
+} from "lucide-react"
+import i18next from "i18next"
 
 function RosterDetails() {
-  const { rosterId } = useParams();
-  const dispatch = useDispatch();
-  const { t, i18n } = useTranslation();
+  const { rosterId } = useParams()
+  const dispatch = useDispatch()
+  const { t, i18n } = useTranslation()
 
   // Modal states
-  const [statusModalOpen, setStatusModalOpen] = useState(false);
+  const [statusModalOpen, setStatusModalOpen] = useState(false)
   const [statusToUpdate, setStatusToUpdate] = useState({
     id: null,
     title: "",
     currentStatus: "",
-  });
+  })
 
   const { selectedRoster, loading, errors } = useSelector(
     (state) => state.rosterManagement
-  );
-  const { mymode } = useSelector((state) => state.mode);
+  )
+  const { mymode } = useSelector((state) => state.mode)
 
-  const { loginRoleResponseDto } = useSelector((state) => state.auth);
+  const { loginRoleResponseDto } = useSelector((state) => state.auth)
 
   // Get current language direction
-  const isRTL = i18n.language === "ar";
-  const currentLang = i18n.language || "ar";
-  const isDark = mymode === "dark";
+  const isRTL = i18n.language === "ar"
+  const currentLang = i18n.language || "ar"
+  const isDark = mymode === "dark"
 
   useEffect(() => {
     if (rosterId) {
-      dispatch(getRosterById({ rosterId }));
+      dispatch(getRosterById({ rosterId }))
     }
-  }, [dispatch, rosterId, statusModalOpen]);
+  }, [dispatch, rosterId, statusModalOpen])
 
   // Get status info
   const getStatusInfo = (status) => {
@@ -119,45 +119,45 @@ function RosterDetails() {
           : "bg-red-100 text-red-800",
         icon: Archive,
       },
-    };
-    return statusMap[status] || statusMap.DRAFT_BASIC;
-  };
+    }
+    return statusMap[status] || statusMap.DRAFT_BASIC
+  }
 
   // Format date
   const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable");
+    if (!dateString) return t("common.notAvailable")
     return new Intl.DateTimeFormat(i18next.language, {
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    }).format(new Date(dateString));
-  };
+    }).format(new Date(dateString))
+  }
 
   // Format date with time
   const formatDateTime = (dateString) => {
-    if (!dateString) return "-";
-    const date = new Date(dateString);
+    if (!dateString) return "-"
+    const date = new Date(dateString)
     return date.toLocaleDateString(currentLang === "ar" ? "ar-SA" : "en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    });
-  };
+    })
+  }
 
   // Get progress color
   const getProgressColor = (percentage) => {
-    if (percentage >= 80) return "bg-green-500";
-    if (percentage >= 50) return "bg-yellow-500";
-    if (percentage >= 25) return "bg-orange-500";
-    return "bg-red-500";
-  };
+    if (percentage >= 80) return "bg-green-500"
+    if (percentage >= 50) return "bg-yellow-500"
+    if (percentage >= 25) return "bg-orange-500"
+    return "bg-red-500"
+  }
 
   if (loading.fetch) {
-    return <LoadingGetData text={t("gettingData.roster")} />;
+    return <LoadingGetData text={t("gettingData.roster")} />
   }
 
   if (errors.general) {
@@ -191,7 +191,7 @@ function RosterDetails() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   if (!selectedRoster) {
@@ -231,12 +231,12 @@ function RosterDetails() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
-  const statusInfo = getStatusInfo(selectedRoster.status);
-  console.log("statusInfo", statusInfo);
-  const StatusIcon = statusInfo.icon;
+  const statusInfo = getStatusInfo(selectedRoster.status)
+  console.log("statusInfo", statusInfo)
+  const StatusIcon = statusInfo.icon
 
   return (
     <div
@@ -262,25 +262,33 @@ function RosterDetails() {
                 </span>
               </Link>
             )}
-            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-              <Link to={`/admin-panel/rosters/${selectedRoster.id}/edit`}>
-                <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors w-full sm:w-auto justify-center">
+            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 w-full">
+              <Link
+                to={`/admin-panel/rosters/${selectedRoster.id}/edit`}
+                className="w-full sm:w-auto sm:flex-1 sm:min-w-[140px] lg:flex-initial"
+              >
+                <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors w-full h-full justify-center min-h-[42px]">
                   <Edit size={16} />
                   {t("roster.actions.edit")}
                 </button>
               </Link>
 
-              <Link to={`/admin-panel/rosters/${selectedRoster.id}/doctors`}>
-                <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors w-full sm:w-auto justify-center">
+              <Link
+                to={`/admin-panel/rosters/${selectedRoster.id}/doctors`}
+                className="w-full sm:w-auto sm:flex-1 sm:min-w-[140px] lg:flex-initial"
+              >
+                <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors w-full h-full justify-center min-h-[42px]">
                   <User size={16} />
                   {t("roster.actions.doctors")}
                 </button>
               </Link>
+
               <Link
                 to={`/admin-panel/rosters/${selectedRoster.id}/manage-doctors`}
+                className="w-full sm:w-auto sm:flex-1 sm:min-w-[140px] lg:flex-initial"
               >
-                <button className="relative rounded-lg p-[2px] bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-400 transition-transform duration-200 w-full sm:w-auto">
-                  <span className="flex items-center gap-2 justify-center bg-gray-900 text-white px-4 py-2 rounded-md w-full sm:w-auto">
+                <button className="relative rounded-lg p-[2px] bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-400 transition-transform duration-200 w-full h-full min-h-[42px]">
+                  <span className="flex items-center gap-2 justify-center bg-gray-900 text-white px-4 py-2 rounded-md w-full h-full">
                     <User size={16} />
                     {t("roster.actions.manageDoctors")}
                   </span>
@@ -289,15 +297,19 @@ function RosterDetails() {
 
               <Link
                 to={`/admin-panel/rosters/${selectedRoster.id}/working-hours`}
+                className="w-full sm:w-auto sm:flex-1 sm:min-w-[140px] lg:flex-initial"
               >
-                <button className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all shadow-md hover:shadow-lg w-full sm:w-auto justify-center">
+                <button className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 text-white px-4 py-2.5 rounded-lg flex items-center gap-2 transition-all shadow-md hover:shadow-lg w-full h-full justify-center min-h-[42px]">
                   <Clock size={16} />
                   {t("roster.workingHours.title")}
                 </button>
               </Link>
 
-              <Link to={`/admin-panel/rosters/departments`}>
-                <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors w-full sm:w-auto justify-center">
+              <Link
+                to={`/admin-panel/rosters/departments`}
+                className="w-full sm:w-auto sm:flex-1 sm:min-w-[140px] lg:flex-initial"
+              >
+                <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors w-full h-full justify-center min-h-[42px]">
                   <Building size={16} />
                   {t("roster.actions.manageRoster")}
                 </button>
@@ -309,10 +321,10 @@ function RosterDetails() {
                     id: selectedRoster.id,
                     title: selectedRoster.title,
                     currentStatus: selectedRoster.status,
-                  });
-                  setStatusModalOpen(true);
+                  })
+                  setStatusModalOpen(true)
                 }}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-80 cursor-pointer ${statusInfo.color} flex items-center gap-2 w-full sm:w-auto justify-center`}
+                className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors hover:opacity-80 cursor-pointer ${statusInfo.color} flex items-center gap-2 w-full sm:w-auto sm:flex-1 sm:min-w-[140px] lg:flex-initial justify-center min-h-[42px]`}
                 title={t("roster.actions.updateStatus")}
               >
                 <StatusIcon size={16} />
@@ -828,8 +840,8 @@ function RosterDetails() {
                       id: selectedRoster.id,
                       title: selectedRoster.title,
                       currentStatus: selectedRoster.status,
-                    });
-                    setStatusModalOpen(true);
+                    })
+                    setStatusModalOpen(true)
                   }}
                   className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white p-3 rounded-lg flex items-center justify-center gap-2 transition-all duration-200 transform hover:scale-105"
                 >
@@ -1151,7 +1163,7 @@ function RosterDetails() {
         />
       )}
     </div>
-  );
+  )
 }
 
-export default RosterDetails;
+export default RosterDetails
