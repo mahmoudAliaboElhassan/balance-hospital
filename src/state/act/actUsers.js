@@ -83,15 +83,19 @@ export const getDoctorData = createAsyncThunk(
 )
 export const updateDoctorData = createAsyncThunk(
   "usersSlice/updateDoctorData",
-  async ({ userId }, thunkAPI) => {
+  async ({ userId, userData }, thunkAPI) => {
     const { rejectWithValue } = thunkAPI
 
     try {
-      const res = await axiosInstance.put(`/api/v1/Users/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
+      const res = await axiosInstance.put(
+        `/api/v1/Users/${userId}`,
+        userData, // empty body
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      )
 
       console.log("User Data  updated successfully:", res)
       return res.data

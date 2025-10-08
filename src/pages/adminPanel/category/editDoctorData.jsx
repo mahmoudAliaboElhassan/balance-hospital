@@ -7,8 +7,14 @@ import Swal from "sweetalert2"
 import { useTranslation } from "react-i18next"
 import { getDoctorData, updateDoctorData } from "../../../state/act/actUsers"
 import { useNavigate, useParams } from "react-router-dom"
-import { getScientificDegrees } from "../../../state/act/actScientificDegree"
-import { getContractingTypes } from "../../../state/act/actContractingType"
+import {
+  getScientificDegrees,
+  getScientificDegreesForSignup,
+} from "../../../state/act/actScientificDegree"
+import {
+  getContractingTypes,
+  getContractingTypesForSignup,
+} from "../../../state/act/actContractingType"
 import LoadingGetData from "../../../components/LoadingGetData"
 import { ArrowLeft } from "lucide-react"
 import { getAvailbleScientficDegrees } from "../../../state/act/actRosterManagement"
@@ -26,20 +32,18 @@ function EditDoctorData() {
 
   // Redux selectors
   const { userData, loading } = useSelector((state) => state.users)
-  const { scientificDegrees, loadingGetScientificDegrees } = useSelector(
-    (state) => state.scientificDegree
-  )
-  const { contractingTypes, loadingGetContractingTypes } = useSelector(
-    (state) => state.contractingType
-  )
+  const { scientificDegreesForSignup, loadingGetScientificDegreesForSignup } =
+    useSelector((state) => state.scientificDegree)
+  const { contractingTypesForSignup, loadingGetContractingTypesForSignup } =
+    useSelector((state) => state.contractingType)
 
   // Load initial data
   useEffect(() => {
     if (id) {
       dispatch(getDoctorData({ userId: id }))
     }
-    dispatch(getScientificDegrees({ isActive: true }))
-    dispatch(getContractingTypes({ IsActive: true }))
+    dispatch(getScientificDegreesForSignup())
+    dispatch(getContractingTypesForSignup())
   }, [dispatch, id])
 
   // Validation Schema
@@ -62,28 +66,28 @@ function EditDoctorData() {
         t("doctorForm.validation.contractingTypeRequired") ||
           "Contracting type is required"
       ),
-    updateReason: Yup.string()
-      .required(
-        t("doctorForm.validation.updateReasonRequired") ||
-          "Update reason is required"
-      )
-      .min(
-        10,
-        t("doctorForm.validation.updateReasonMin") ||
-          "Update reason must be at least 10 characters"
-      )
-      .max(
-        500,
-        t("doctorForm.validation.updateReasonMax") ||
-          "Update reason must not exceed 500 characters"
-      ),
+    // updateReason: Yup.string()
+    //   .required(
+    //     t("doctorForm.validation.updateReasonRequired") ||
+    //       "Update reason is required"
+    //   )
+    //   .min(
+    //     10,
+    //     t("doctorForm.validation.updateReasonMin") ||
+    //       "Update reason must be at least 10 characters"
+    //   )
+    //   .max(
+    //     500,
+    //     t("doctorForm.validation.updateReasonMax") ||
+    //       "Update reason must not exceed 500 characters"
+    //   ),
   })
 
   // Loading state
   if (
     loading.list ||
-    loadingGetScientificDegrees ||
-    loadingGetContractingTypes
+    loadingGetScientificDegreesForSignup ||
+    loadingGetContractingTypesForSignup
   ) {
     return (
       <LoadingGetData
@@ -148,7 +152,7 @@ function EditDoctorData() {
       contractingTypeId: values.contractingTypeId,
       updateReason: values.updateReason,
     }
-
+    console.log("updateData", updateData)
     dispatch(updateDoctorData({ userId: id, userData: updateData }))
       .unwrap()
       .then(() => {
@@ -415,7 +419,7 @@ function EditDoctorData() {
                               {t("doctorForm.placeholders.scientificDegree") ||
                                 "Select scientific degree"}
                             </option>
-                            {scientificDegrees?.map((degree) => (
+                            {scientificDegreesForSignup?.map((degree) => (
                               <option key={degree.id} value={degree.id}>
                                 {currentLang === "ar"
                                   ? degree.nameArabic
@@ -460,7 +464,7 @@ function EditDoctorData() {
                               {t("doctorForm.placeholders.contractingType") ||
                                 "Select contracting type"}
                             </option>
-                            {contractingTypes?.map((type) => (
+                            {contractingTypesForSignup?.map((type) => (
                               <option key={type.id} value={type.id}>
                                 {currentLang === "ar"
                                   ? type.nameArabic
