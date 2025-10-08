@@ -1,9 +1,10 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit"
 import {
   doctorForAssignment,
   getDoctorData,
   getUserSummaries,
-} from "../act/actUsers";
+  updateDoctorData,
+} from "../act/actUsers"
 
 const initialState = {
   users: [],
@@ -18,12 +19,13 @@ const initialState = {
   },
   loading: {
     list: false,
+    update: false,
   },
   error: "",
   filters: {
     searchTerm: "",
   },
-};
+}
 
 const usersSlice = createSlice({
   name: "usersSlice",
@@ -31,27 +33,27 @@ const usersSlice = createSlice({
   reducers: {
     // Clear error
     clearError: (state) => {
-      state.error = "";
+      state.error = ""
     },
 
     // Update filters
     updateFilters: (state, action) => {
-      state.filters = { ...state.filters, ...action.payload };
+      state.filters = { ...state.filters, ...action.payload }
     },
 
     // Reset filters
     resetFilters: (state) => {
-      state.filters = initialState.filters;
+      state.filters = initialState.filters
     },
 
     // Update pagination
     updatePagination: (state, action) => {
-      state.pagination = { ...state.pagination, ...action.payload };
+      state.pagination = { ...state.pagination, ...action.payload }
     },
 
     // Reset state
     resetState: (state) => {
-      return initialState;
+      return initialState
     },
   },
   extraReducers: (builder) => {
@@ -83,41 +85,55 @@ const usersSlice = createSlice({
       //     "Failed to fetch user summaries";
       // })
       .addCase(doctorForAssignment.pending, (state) => {
-        state.loading.list = true;
-        state.error = "";
+        state.loading.list = true
+        state.error = ""
       })
       .addCase(doctorForAssignment.fulfilled, (state, action) => {
-        state.loading.list = false;
+        state.loading.list = false
         if (action.payload.success) {
-          state.users = action.payload.data || [];
+          state.users = action.payload.data || []
         }
       })
       .addCase(doctorForAssignment.rejected, (state, action) => {
-        state.loading.list = false;
+        state.loading.list = false
         state.error =
           action.payload?.messageEn ||
           action.payload ||
-          "Failed to fetch user summaries";
+          "Failed to fetch user summaries"
       })
       .addCase(getDoctorData.pending, (state) => {
-        state.loading.list = true;
-        state.error = "";
+        state.loading.list = true
+        state.error = ""
       })
       .addCase(getDoctorData.fulfilled, (state, action) => {
-        state.loading.list = false;
+        state.loading.list = false
         if (action.payload.success) {
-          state.userData = action.payload.data || [];
+          state.userData = action.payload.data || []
         }
       })
       .addCase(getDoctorData.rejected, (state, action) => {
-        state.loading.list = false;
+        state.loading.list = false
         state.error =
           action.payload?.messageEn ||
           action.payload ||
-          "Failed to fetch user Data";
-      });
+          "Failed to fetch user Data"
+      })
+      .addCase(updateDoctorData.pending, (state) => {
+        state.loading.update = true
+        state.error = ""
+      })
+      .addCase(updateDoctorData.fulfilled, (state, action) => {
+        state.loading.update = false
+      })
+      .addCase(updateDoctorData.rejected, (state, action) => {
+        state.loading.update = false
+        state.error =
+          action.payload?.messageEn ||
+          action.payload ||
+          "Failed to fetch user Data"
+      })
   },
-});
+})
 
 // Export actions
 export const {
@@ -126,15 +142,15 @@ export const {
   resetFilters,
   updatePagination,
   resetState,
-} = usersSlice.actions;
+} = usersSlice.actions
 
-export { getUserSummaries };
+export { getUserSummaries }
 
 // Selectors
-export const selectUsers = (state) => state.users.users;
-export const selectUsersLoading = (state) => state.users.loading;
-export const selectUsersError = (state) => state.users.error;
-export const selectUsersFilters = (state) => state.users.filters;
-export const selectUsersPagination = (state) => state.users.pagination;
+export const selectUsers = (state) => state.users.users
+export const selectUsersLoading = (state) => state.users.loading
+export const selectUsersError = (state) => state.users.error
+export const selectUsersFilters = (state) => state.users.filters
+export const selectUsersPagination = (state) => state.users.pagination
 
-export default usersSlice.reducer;
+export default usersSlice.reducer

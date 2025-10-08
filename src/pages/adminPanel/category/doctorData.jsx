@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { useTranslation } from "react-i18next"
 import { getDoctorData } from "../../../state/act/actUsers"
@@ -30,6 +30,8 @@ function DoctorData() {
   const dispatch = useDispatch()
   const { t, i18n } = useTranslation()
   const { mymode } = useSelector((state) => state.mode)
+
+  const navigate = useNavigate()
 
   // Get data from Redux store - adjust these selectors based on your actual store structure
   const userData = useSelector((state) => state.users.userData)
@@ -145,7 +147,7 @@ function DoctorData() {
 
         {/* Edit Button */}
         <button
-          // onClick={handleEditClick}
+          onClick={() => navigate("edit")}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
             isDark
               ? "bg-blue-600 hover:bg-blue-700 text-white"

@@ -2669,5 +2669,37 @@
     "completeDays": "Complete Days",
     "partialDays": "Partial Days",
     "emptyDays": "Empty Days"
+  },
+
+  "doctorForm": {
+    "editTitle": "Edit Doctor Information",
+    "sections": {
+      "basicInfo": "Basic Information"
+    },
+    "hints": {
+      "updateReason": "Please explain why you are updating this doctor's information."
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "update": "Update",
+      "updating": "Updating..."
+    },
+    "placeholders": {
+      "scientificDegree": "Select scientific degree",
+      "contractingType": "Select contracting type"
+    },
+    "validation": {
+      "scientificDegreeRequired": "Scientific degree is required",
+      "contractingTypeRequired": "Contracting type is required",
+      "updateReasonRequired": "Update reason is required",
+      "updateReasonMin": "Update reason must be at least 10 characters",
+      "updateReasonMax": "Update reason must not exceed 500 characters"
+    },
+    "error": {
+      "title": "Something went wrong"
+    },
+    "success": {
+      "updated": "Doctor data updated successfully"
+    }
   }
 }

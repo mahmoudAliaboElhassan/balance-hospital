@@ -2665,5 +2665,37 @@
     "completeDays": "الأيام المكتملة",
     "partialDays": "الأيام الجزئية",
     "emptyDays": "الأيام الفارغة"
+  },
+
+  "doctorForm": {
+    "editTitle": "تعديل بيانات الطبيب",
+    "sections": {
+      "basicInfo": "المعلومات الأساسية"
+    },
+    "hints": {
+      "updateReason": "يرجى توضيح سبب تحديث بيانات هذا الطبيب."
+    },
+    "buttons": {
+      "cancel": "إلغاء",
+      "update": "تحديث",
+      "updating": "جاري التحديث..."
+    },
+    "placeholders": {
+      "scientificDegree": "اختر الدرجة العلمية",
+      "contractingType": "اختر نوع التعاقد"
+    },
+    "validation": {
+      "scientificDegreeRequired": "الدرجة العلمية مطلوبة",
+      "contractingTypeRequired": "نوع التعاقد مطلوب",
+      "updateReasonRequired": "سبب التحديث مطلوب",
+      "updateReasonMin": "يجب أن لا يقل سبب التحديث عن 10 أحرف",
+      "updateReasonMax": "يجب أن لا يزيد سبب التحديث عن 500 حرف"
+    },
+    "error": {
+      "title": "حدث خطأ ما"
+    },
+    "success": {
+      "updated": "تم تحديث بيانات الطبيب بنجاح"
+    }
   }
 }

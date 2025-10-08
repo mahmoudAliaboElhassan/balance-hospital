@@ -26,10 +26,12 @@ import {
   UserCheck,
   Edit,
   UserPlus,
+  Download,
 } from "lucide-react"
 import { getDepartments } from "../../../state/act/actDepartment"
 import CollapsibleDateCard from "./collapsWorkingHour"
 import i18next from "i18next"
+import * as XLSX from "xlsx"
 
 function WorkingHours() {
   const { rosterId } = useParams()
@@ -210,6 +212,304 @@ function WorkingHours() {
       }, {})
   }
 
+  // Export to Excel function - All departments side by side
+  // Export to Excel function - Departments side by side with Shifts and Contracting Types
+  const exportToExcel = () => {
+    const wb = XLSX.utils.book_new()
+    const groupedData = getWorkingHoursByDate()
+
+    // Get all unique departments, shifts, and contracting types
+    const departmentsMap = new Map()
+    const allDates = new Set()
+
+    Object.values(groupedData).forEach((dayData) => {
+      allDates.add(dayData.date)
+      dayData.departments.forEach((dept) => {
+        if (!departmentsMap.has(dept.departmentId)) {
+          const shiftsMap = new Map()
+          departmentsMap.set(dept.departmentId, {
+            id: dept.departmentId,
+            name: dept.departmentName,
+            shifts: shiftsMap,
+            dateData: new Map(),
+          })
+        }
+
+        const deptData = departmentsMap.get(dept.departmentId)
+        deptData.dateData.set(dayData.date, {
+          dayOfWeekName: dayData.dayOfWeekName,
+          department: dept,
+        })
+
+        // Collect all shifts and contracting types for this department
+        dept.shifts.forEach((shift) => {
+          if (!deptData.shifts.has(shift.shiftId)) {
+            deptData.shifts.set(shift.shiftId, {
+              id: shift.shiftId,
+              name: shift.shiftName,
+              contractingTypes: new Set(),
+            })
+          }
+          shift.contractingTypes.forEach((ct) => {
+            deptData.shifts
+              .get(shift.shiftId)
+              .contractingTypes.add(ct.contractingTypeName)
+          })
+        })
+      })
+    })
+
+    // Sort dates
+    const sortedDates = Array.from(allDates).sort()
+    const departments = Array.from(departmentsMap.values())
+
+    // Calculate columns per department based on shifts and contracting types
+    const deptColumns = []
+    departments.forEach((dept) => {
+      const shifts = Array.from(dept.shifts.values())
+      let totalCols = 2 // Date and Day columns
+      shifts.forEach((shift) => {
+        totalCols += shift.contractingTypes.size // One column per contracting type
+      })
+      deptColumns.push({
+        dept,
+        shifts,
+        totalCols,
+      })
+    })
+
+    // Create worksheet data
+    const wsData = []
+    const merges = []
+
+    // Row 0: Year header
+    const currentYear = new Date().getFullYear()
+    const yearRow = []
+    let colIndex = 0
+    deptColumns.forEach((deptCol, idx) => {
+      if (idx > 0) {
+        yearRow.push("") // gap column
+        colIndex++
+      }
+      const startCol = colIndex
+      yearRow.push(currentYear.toString())
+      for (let i = 1; i < deptCol.totalCols; i++) {
+        yearRow.push("")
+      }
+      merges.push({
+        s: { r: 0, c: startCol },
+        e: { r: 0, c: startCol + deptCol.totalCols - 1 },
+      })
+      colIndex += deptCol.totalCols
+    })
+    wsData.push(yearRow)
+
+    // Row 1: Department names
+    const deptRow = []
+    colIndex = 0
+    deptColumns.forEach((deptCol, idx) => {
+      if (idx > 0) {
+        deptRow.push("") // gap column
+        colIndex++
+      }
+      const startCol = colIndex
+      deptRow.push(deptCol.dept.name)
+      for (let i = 1; i < deptCol.totalCols; i++) {
+        deptRow.push("")
+      }
+      merges.push({
+        s: { r: 1, c: startCol },
+        e: { r: 1, c: startCol + deptCol.totalCols - 1 },
+      })
+      colIndex += deptCol.totalCols
+    })
+    wsData.push(deptRow)
+
+    // Row 2: Shift names
+    const shiftRow = []
+    colIndex = 0
+    deptColumns.forEach((deptCol, idx) => {
+      if (idx > 0) {
+        shiftRow.push("") // gap column
+        colIndex++
+      }
+
+      // Date and Day columns
+      const startCol = colIndex
+      shiftRow.push("")
+      shiftRow.push("")
+      merges.push({ s: { r: 2, c: startCol }, e: { r: 3, c: startCol } }) // Date
+      merges.push({
+        s: { r: 2, c: startCol + 1 },
+        e: { r: 3, c: startCol + 1 },
+      }) // Day
+      colIndex += 2
+
+      deptCol.shifts.forEach((shift) => {
+        const shiftStartCol = colIndex
+        shiftRow.push(shift.name)
+        for (let i = 1; i < shift.contractingTypes.size; i++) {
+          shiftRow.push("")
+        }
+        merges.push({
+          s: { r: 2, c: shiftStartCol },
+          e: { r: 2, c: shiftStartCol + shift.contractingTypes.size - 1 },
+        })
+        colIndex += shift.contractingTypes.size
+      })
+    })
+    wsData.push(shiftRow)
+
+    // Row 3: Contracting type headers (Date, Day, then types)
+    const contractingTypeRow = []
+    colIndex = 0
+    deptColumns.forEach((deptCol, idx) => {
+      if (idx > 0) {
+        contractingTypeRow.push("") // gap column
+        colIndex++
+      }
+
+      // Date and Day headers
+      contractingTypeRow.push(currentLang === "ar" ? "التاريخ" : "Date")
+      contractingTypeRow.push(currentLang === "ar" ? "اليوم" : "Day")
+      colIndex += 2
+
+      deptCol.shifts.forEach((shift) => {
+        const types = Array.from(shift.contractingTypes)
+        types.forEach((typeName) => {
+          contractingTypeRow.push(typeName)
+          colIndex++
+        })
+      })
+    })
+    wsData.push(contractingTypeRow)
+
+    // Data rows: Each date
+    sortedDates.forEach((date) => {
+      const dayData = groupedData[date]
+      const row = []
+
+      deptColumns.forEach((deptCol, deptIdx) => {
+        if (deptIdx > 0) {
+          row.push("") // gap column
+        }
+
+        const deptDayData = deptCol.dept.dateData.get(date)
+
+        if (deptDayData) {
+          // Format date
+          const formattedDate = new Date(date).toLocaleDateString(
+            currentLang === "ar" ? "ar-EG" : "en-US",
+            { month: "short", day: "numeric" }
+          )
+
+          row.push(formattedDate) // Date
+          row.push(deptDayData.dayOfWeekName) // Day name
+
+          // For each shift in this department
+          deptCol.shifts.forEach((shiftInfo) => {
+            const shiftData = deptDayData.department.shifts.find(
+              (s) => s.shiftId === shiftInfo.id
+            )
+
+            const types = Array.from(shiftInfo.contractingTypes)
+            types.forEach((typeName) => {
+              if (shiftData) {
+                const ctData = shiftData.contractingTypes.find(
+                  (ct) => ct.contractingTypeName === typeName
+                )
+                if (ctData) {
+                  console.log("ctData", ctData)
+                  const assigned =
+                    ctData.workingHourDetail.currentAssignedDoctors
+                  const required = ctData.workingHourDetail.requiredDoctors
+                  row.push(`${assigned}/${required}`)
+                } else {
+                  row.push("")
+                }
+              } else {
+                row.push("")
+              }
+            })
+          })
+        } else {
+          // Empty cells for this department on this date
+          for (let i = 0; i < deptCol.totalCols; i++) {
+            row.push("")
+          }
+        }
+      })
+
+      wsData.push(row)
+    })
+
+    // Create worksheet
+    const ws = XLSX.utils.aoa_to_sheet(wsData)
+
+    // Set column widths
+    const colWidths = []
+    deptColumns.forEach((deptCol, idx) => {
+      if (idx > 0) {
+        colWidths.push({ wch: 2 }) // gap column
+      }
+      colWidths.push({ wch: 12 }) // Date
+      colWidths.push({ wch: 12 }) // Day
+      deptCol.shifts.forEach((shift) => {
+        shift.contractingTypes.forEach(() => {
+          colWidths.push({ wch: 12 }) // Contracting type column
+        })
+      })
+    })
+    ws["!cols"] = colWidths
+
+    // Apply merges
+    ws["!merges"] = merges
+
+    // Add borders and styling
+    const range = XLSX.utils.decode_range(ws["!ref"])
+    for (let R = range.s.r; R <= range.e.r; ++R) {
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const cellAddress = XLSX.utils.encode_cell({ r: R, c: C })
+        if (!ws[cellAddress]) continue
+
+        if (!ws[cellAddress].s) ws[cellAddress].s = {}
+
+        // Style headers (first 4 rows)
+        if (R <= 3) {
+          ws[cellAddress].s.fill = { fgColor: { rgb: "D3D3D3" } }
+          ws[cellAddress].s.font = { bold: true }
+          ws[cellAddress].s.alignment = {
+            horizontal: "center",
+            vertical: "center",
+          }
+        }
+
+        // Add borders
+        ws[cellAddress].s.border = {
+          top: { style: "thin", color: { rgb: "000000" } },
+          bottom: { style: "thin", color: { rgb: "000000" } },
+          left: { style: "thin", color: { rgb: "000000" } },
+          right: { style: "thin", color: { rgb: "000000" } },
+        }
+      }
+    }
+
+    // Add worksheet to workbook
+    XLSX.utils.book_append_sheet(
+      wb,
+      ws,
+      currentLang === "ar" ? "جدول العمل" : "Working Hours"
+    )
+
+    // Generate filename
+    const fileName = `WorkingHours_${
+      new Date().toISOString().split("T")[0]
+    }.xlsx`
+
+    // Save file
+    XLSX.writeFile(wb, fileName)
+  }
+
   const groupedWorkingHours = getWorkingHoursByDate()
   const totalWorkingHoursCount = Object.values(groupedWorkingHours).reduce(
     (count, day) =>
@@ -302,8 +602,21 @@ function WorkingHours() {
               </button>
 
               <button
+                onClick={exportToExcel}
+                disabled={Object.keys(groupedWorkingHours).length === 0}
+                className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-colors ${
+                  Object.keys(groupedWorkingHours).length === 0
+                    ? "bg-gray-400 cursor-not-allowed text-white"
+                    : "bg-green-600 hover:bg-green-700 text-white"
+                }`}
+              >
+                <Download size={16} />
+                {currentLang === "ar" ? "تحميل Excel" : "Download Excel"}
+              </button>
+
+              <button
                 onClick={applyFilters}
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
               >
                 <RefreshCw size={16} />
                 {t("common.refresh")}

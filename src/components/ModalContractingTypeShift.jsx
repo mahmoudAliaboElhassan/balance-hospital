@@ -1,45 +1,44 @@
-import i18next from "i18next";
-import { useEffect } from "react";
-import UseFormValidation from "../hooks/use-form-validation";
-import UseInitialValues from "../hooks/use-initial-values";
-import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
-import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import { Plus, Trash2, Save, X, Users } from "lucide-react";
+import i18next from "i18next"
+import { useEffect } from "react"
+import UseFormValidation from "../hooks/use-form-validation"
+import UseInitialValues from "../hooks/use-initial-values"
+import { useTranslation } from "react-i18next"
+import { useDispatch, useSelector } from "react-redux"
+import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik"
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
+import { Plus, Trash2, Save, X, Users } from "lucide-react"
 import {
   addShiftContractingTypes,
   getAvailbleScientficDegrees,
   getShiftContractingTypes,
-} from "../state/act/actRosterManagement";
-import { getContractingTypes } from "../state/act/actContractingType";
-import LoadingGetData from "./LoadingGetData";
+} from "../state/act/actRosterManagement"
+import { getContractingTypes } from "../state/act/actContractingType"
+import LoadingGetData from "./LoadingGetData"
 
 function ModalContractingTypesDepartment({ selectedShift, onClose }) {
-  const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state.rosterManagement);
+  const dispatch = useDispatch()
+  const { loading } = useSelector((state) => state.rosterManagement)
   const { contractingTypes, loadingGetContractingTypes } = useSelector(
     (state) => state.contractingType
-  );
-  const { mymode } = useSelector((state) => state.mode);
-  const isDark = mymode === "dark";
+  )
+  const { mymode } = useSelector((state) => state.mode)
+  const isDark = mymode === "dark"
 
-  const { t } = useTranslation();
-  const currentLang = i18next.language;
-  const isRTL = currentLang === "ar";
+  const { t } = useTranslation()
+  const currentLang = i18next.language
+  const isRTL = currentLang === "ar"
 
-  console.log("selectedShift", selectedShift);
+  console.log("selectedShift", selectedShift)
 
   // Validation schema for contracting types
-  const { VALIDATION_SCHEMA_ADD_ROSTER_CONTRACTING_TYPES } =
-    UseFormValidation();
-  const { INITIAL_VALUES_ADD_CONTRACTING_TYPES } = UseInitialValues();
+  const { VALIDATION_SCHEMA_ADD_ROSTER_CONTRACTING_TYPES } = UseFormValidation()
+  const { INITIAL_VALUES_ADD_CONTRACTING_TYPES } = UseInitialValues()
 
   useEffect(() => {
     // Fetch available contracting types when modal opens
-    dispatch(getAvailbleScientficDegrees());
-  }, [dispatch]);
+    dispatch(getAvailbleScientficDegrees())
+  }, [dispatch])
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
@@ -54,22 +53,22 @@ function ModalContractingTypesDepartment({ selectedShift, onClose }) {
           notes: contractingType.notes || "",
         })),
         overwriteExisting: values.overwriteExisting,
-      };
+      }
 
-      console.log("Submitting contracting types data:", contractingData);
+      console.log("Submitting contracting types data:", contractingData)
 
       await dispatch(
         addShiftContractingTypes({
           departmentShiftId: selectedShift.id,
           contractingTypesData: contractingData,
         })
-      ).unwrap();
+      ).unwrap()
       await dispatch(
         getShiftContractingTypes({
           departmentShiftId: selectedShift.id,
         })
-      ).unwrap();
-      resetForm();
+      ).unwrap()
+      resetForm()
       toast.success(t("roster.contractingTypes.success.added"), {
         position: "top-right",
         autoClose: 3000,
@@ -77,11 +76,11 @@ function ModalContractingTypesDepartment({ selectedShift, onClose }) {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-      });
+      })
 
-      onClose();
+      onClose()
     } catch (error) {
-      console.error("Contracting types creation error:", error);
+      console.error("Contracting types creation error:", error)
 
       Swal.fire({
         title: t("roster.contractingTypes.error.title"),
@@ -98,11 +97,11 @@ function ModalContractingTypesDepartment({ selectedShift, onClose }) {
         confirmButtonColor: "#ef4444",
         background: isDark ? "#1f2937" : "#ffffff",
         color: isDark ? "#f9fafb" : "#111827",
-      });
+      })
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
-  };
+  }
 
   return (
     <>
@@ -549,7 +548,7 @@ function ModalContractingTypesDepartment({ selectedShift, onClose }) {
         </div>
       </div>
     </>
-  );
+  )
 }
 
-export default ModalContractingTypesDepartment;
+export default ModalContractingTypesDepartment

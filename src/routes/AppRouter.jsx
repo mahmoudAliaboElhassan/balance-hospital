@@ -12,6 +12,10 @@ import AssignDepartmentManager from "../pages/adminPanel/department/assignDepart
 import AdminPanelIndex from "../pages/adminPanel/homePanel.jsx"
 import SpecifyRole from "../pages/adminPanel/specifyRole.jsx"
 
+const EditDoctorData = lazy(() =>
+  import("../pages/adminPanel/category/editDoctorData.jsx")
+)
+
 // Roster Management Components
 const EditManagerPermission = lazy(() =>
   import("../pages/adminPanel/department/editManagerPermission")
@@ -200,6 +204,10 @@ const ProtectedAdminPanel = withGuard(AdminPanel)
 // Category Management (Requires userCanManageCategory permission)
 const ProtectedCategory = withGuard(Category, "userCanManageCategory")
 const ProtectedDocotrDetails = withGuard(DoctorDetails, "userCanManageCategory")
+const ProtectedEditDoctorData = withGuard(
+  EditDoctorData,
+  "userCanManageCategory"
+)
 const ProtectedCreateCategory = withGuard(
   CreateCategory,
   "userCanManageCategory"
@@ -424,6 +432,10 @@ const router = createBrowserRouter([
           {
             path: "doctors/:id",
             element: withSuspense(ProtectedDocotrDetails),
+          },
+          {
+            path: "doctors/:id/edit",
+            element: withSuspense(ProtectedEditDoctorData),
           },
           {
             path: "category/create",
