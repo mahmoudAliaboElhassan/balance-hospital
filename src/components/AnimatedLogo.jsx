@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from "react"
 const MountainIcon = ({ className }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -14,7 +14,7 @@ const MountainIcon = ({ className }) => (
   >
     <path d="m8 3 4 8 5-5 5 15H2L8 3z" />
   </svg>
-);
+)
 
 export const AnimatedLogo = ({
   showText = true,
@@ -25,35 +25,35 @@ export const AnimatedLogo = ({
   alt = "Logo",
   useImage = true,
 }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [imageError, setImageError] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
+  const [isHovered, setIsHovered] = useState(false)
+  const [imageError, setImageError] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
 
   const sizeClasses = {
     small: "h-6 w-6",
     medium: "h-8 w-8",
     large: "h-10 w-10",
-  };
+  }
 
   const iconSizeClasses = {
     small: "h-4 w-4",
     medium: "h-5 w-5",
     large: "h-6 w-6",
-  };
+  }
 
   const textSizeClasses = {
     small: "text-sm",
     medium: "text-base",
     large: "text-lg",
-  };
+  }
 
   const handleImageError = () => {
-    setImageError(true);
-  };
+    setImageError(true)
+  }
 
   const handleImageLoad = () => {
-    setImageLoaded(true);
-  };
+    setImageLoaded(true)
+  }
 
   return (
     <div
@@ -158,5 +158,5 @@ export const AnimatedLogo = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}

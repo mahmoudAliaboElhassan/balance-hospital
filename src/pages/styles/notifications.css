@@ -1,7 +1,4 @@
-@import "tailwindcss";
-button {
-  cursor: pointer;
-}
+/* Add these animations to your global CSS file (index.css or App.css) */
 
 @keyframes bell-ring {
   0%,

@@ -12,6 +12,11 @@ import AssignDepartmentManager from "../pages/adminPanel/department/assignDepart
 import AdminPanelIndex from "../pages/adminPanel/homePanel.jsx"
 import SpecifyRole from "../pages/adminPanel/specifyRole.jsx"
 
+const Notification = lazy(() => import("../pages/adminPanel/notification"))
+const Prefrences = lazy(() =>
+  import("../pages/adminPanel/notification/preferences")
+)
+
 const EditDoctorData = lazy(() =>
   import("../pages/adminPanel/category/editDoctorData.jsx")
 )
@@ -425,6 +430,11 @@ const router = createBrowserRouter([
         children: [
           // Default route - Shows categories by default
           { index: true, element: withSuspense(AdminPanelIndex) },
+          { path: "notifications", element: withSuspense(Notification) },
+          {
+            path: "notifications/preferences",
+            element: withSuspense(Prefrences),
+          },
 
           // ========== CATEGORY MANAGEMENT ==========
           // Permission Required: userCanManageCategory
