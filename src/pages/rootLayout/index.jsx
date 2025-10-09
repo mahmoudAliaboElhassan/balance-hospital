@@ -1,17 +1,19 @@
-import { Outlet } from "react-router-dom";
-import Header from "../../components/Header";
-import { useDispatch, useSelector } from "react-redux";
-import { toast, ToastContainer } from "react-toastify";
-import { useEffect } from "react";
-import { logOut } from "../../state/slices/auth";
-import { useTranslation } from "react-i18next";
+import { Outlet } from "react-router-dom"
+import Header from "../../components/Header"
+import { useDispatch, useSelector } from "react-redux"
+import { toast, ToastContainer } from "react-toastify"
+import { useEffect } from "react"
+import { logOut } from "../../state/slices/auth"
+import { useTranslation } from "react-i18next"
+import ConnectionStatusBadge from "../../components/ConnectionStatus"
+import { useSignalR } from "../../hooks/use-singalr"
 
 function RootLayout() {
-  const { mymode } = useSelector((state) => state.mode);
-  const { expiresAt } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
-  console.log("Current mode:", mymode);
-  const { t } = useTranslation();
+  const { mymode } = useSelector((state) => state.mode)
+  const { expiresAt } = useSelector((state) => state.auth)
+  const dispatch = useDispatch()
+  console.log("Current mode:", mymode)
+  const { t } = useTranslation()
 
   // Define color schemes for light and dark modes
   const colorSchemes = {
@@ -41,9 +43,9 @@ function RootLayout() {
       headerBg: "#0f172a",
       footerBg: "#020617",
     },
-  };
+  }
 
-  const currentTheme = colorSchemes[mymode] || colorSchemes.light;
+  const currentTheme = colorSchemes[mymode] || colorSchemes.light
 
   // CSS variables for dynamic theming
   const themeStyles = {
@@ -58,34 +60,34 @@ function RootLayout() {
     "--color-card-bg": currentTheme.cardBg,
     "--color-header-bg": currentTheme.headerBg,
     "--color-footer-bg": currentTheme.footerBg,
-  };
+  }
 
   useEffect(() => {
     if (!expiresAt) {
-      console.log("No expiration time found");
-      return;
+      console.log("No expiration time found")
+      return
     }
 
     const checkTokenExpiration = () => {
-      const currentTime = new Date();
-      const expirationTime = new Date(expiresAt);
+      const currentTime = new Date()
+      const expirationTime = new Date(expiresAt)
 
       // Format times for logging
-      const currentTimeFormatted = currentTime.toISOString();
-      const expirationTimeFormatted = expirationTime.toISOString();
+      const currentTimeFormatted = currentTime.toISOString()
+      const expirationTimeFormatted = expirationTime.toISOString()
 
-      console.log("🕒 Token Expiration Check:");
-      console.log("  Current Time:    ", currentTimeFormatted);
-      console.log("  Expiration Time: ", expirationTimeFormatted);
+      console.log("🕒 Token Expiration Check:")
+      console.log("  Current Time:    ", currentTimeFormatted)
+      console.log("  Expiration Time: ", expirationTimeFormatted)
       console.log(
         "  Time Difference: ",
         Math.round((expirationTime - currentTime) / 1000),
         "seconds"
-      );
+      )
 
       // Check if token has expired
       if (currentTime >= expirationTime) {
-        console.log("❌ Token has expired, logging out user");
+        console.log("❌ Token has expired, logging out user")
 
         // Show notification to user
         toast.error(t("session-expired"), {
@@ -95,31 +97,32 @@ function RootLayout() {
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
-        });
+        })
 
         // Dispatch logout action
-        dispatch(logOut());
+        dispatch(logOut())
       } else {
         const timeUntilExpiry = Math.round(
           (expirationTime - currentTime) / 1000
-        );
+        )
 
-        console.log("✅ Token is still valid for", timeUntilExpiry, "seconds");
+        console.log("✅ Token is still valid for", timeUntilExpiry, "seconds")
       }
-    };
+    }
 
     // Check immediately
-    checkTokenExpiration();
+    checkTokenExpiration()
 
     // Set up interval to check every minute
-    const intervalId = setInterval(checkTokenExpiration, 6000); // Check every 60 seconds
+    const intervalId = setInterval(checkTokenExpiration, 6000) // Check every 60 seconds
 
     // Cleanup interval on component unmount or expiresAt change
     return () => {
-      console.log("🧹 Cleaning up token expiration check interval");
-      clearInterval(intervalId);
-    };
-  }, [expiresAt, dispatch]);
+      console.log("🧹 Cleaning up token expiration check interval")
+      clearInterval(intervalId)
+    }
+  }, [expiresAt, dispatch])
+  const { isConnected, connectionState, reconnect } = useSignalR()
 
   return (
     <div
@@ -438,6 +441,13 @@ function RootLayout() {
         >
           <Header />
         </header>
+
+        <ConnectionStatusBadge
+          isConnected={isConnected}
+          connectionState={connectionState}
+          onReconnect={reconnect}
+        />
+
         <ToastContainer />
 
         {/* Main content area */}
@@ -481,7 +491,7 @@ function RootLayout() {
         {mymode === "dark" ? "🌙" : "☀️"} {mymode} mode
       </div> */}
     </div>
-  );
+  )
 }
 
-export default RootLayout;
+export default RootLayout
