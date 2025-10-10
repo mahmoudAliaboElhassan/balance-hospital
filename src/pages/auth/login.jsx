@@ -16,6 +16,7 @@ import UseDirection from "../../hooks/use-direction"
 import { useNavigate } from "react-router-dom"
 import withGuard from "../../utils/withGuard"
 import useDirection from "../../hooks/use-direction"
+import { signalRService } from "../../services/signalRService"
 
 const UserIcon = ({ className = "" }) => (
   <svg
@@ -155,6 +156,19 @@ const Login = () => {
           draggable: true,
         })
         console.log("data", data.data.user)
+
+        signalRService
+          .start()
+          .then((connected) => {
+            if (connected) {
+              console.log("✅ SignalR connected successfully!")
+            } else {
+              console.warn("⚠️ SignalR connection failed")
+            }
+          })
+          .catch((error) => {
+            console.error("❌ SignalR connection error:", error)
+          })
 
         localStorage.setItem(
           "categoryArabicName",
