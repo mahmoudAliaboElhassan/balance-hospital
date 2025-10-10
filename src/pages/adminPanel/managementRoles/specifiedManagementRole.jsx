@@ -1,10 +1,10 @@
 // pages/ManagementRoles/SpecifiedManagementRole.jsx
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useTranslation } from "react-i18next";
-import { useParams, useNavigate, Link, Navigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import "../../../styles/general.css";
+import React, { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useTranslation } from "react-i18next"
+import { useParams, useNavigate, Link, Navigate } from "react-router-dom"
+import { toast } from "react-toastify"
+import "../../../styles/general.css"
 
 import {
   ArrowLeft,
@@ -19,69 +19,69 @@ import {
   UserCheck,
   ChevronLeft,
   ChevronRight,
-} from "lucide-react";
+} from "lucide-react"
 
 // Import only the allowed actions
 import {
   getRolePermissions,
   getManagementRoleHistory,
   getManagementRoleUsers,
-} from "../../../state/act/actManagementRole";
+} from "../../../state/act/actManagementRole"
 
 // Import slice selectors
 import {
   selectLoading,
   selectError,
   selectSuccess,
-} from "../../../state/slices/managementRole.js";
+} from "../../../state/slices/managementRole.js"
 
-import LoadingGetData from "../../../components/LoadingGetData.jsx";
-import i18next from "i18next";
+import LoadingGetData from "../../../components/LoadingGetData.jsx"
+import i18next from "i18next"
 
 function SpecifiedManagementRole() {
-  const { t, i18n } = useTranslation();
-  const dispatch = useDispatch();
-  const { id } = useParams();
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+  const { id } = useParams()
   // Selectors
-  const loading = useSelector(selectLoading);
-  const error = useSelector(selectError);
-  const success = useSelector(selectSuccess);
+  const loading = useSelector(selectLoading)
+  const error = useSelector(selectError)
+  const success = useSelector(selectSuccess)
   const {
     permissions,
     assignmentHistory,
     roleUsers,
     roleUsersPagination,
     assignmentHistoryPagination,
-  } = useSelector((state) => state.managementRoles);
+  } = useSelector((state) => state.managementRoles)
 
-  const { mymode } = useSelector((state) => state.mode);
-  const navigate = useNavigate();
+  const { mymode } = useSelector((state) => state.mode)
+  const navigate = useNavigate()
   // Local state
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("overview")
 
   // Users tab state - matching API parameters
-  const [usersSearchTerm, setUsersSearchTerm] = useState("");
+  const [usersSearchTerm, setUsersSearchTerm] = useState("")
   const [usersFilters, setUsersFilters] = useState({
     page: 1,
     pageSize: 10,
     sortBy: "NameEnglish", // API default
     sortDirection: "Asc", // API default
     isActive: undefined, // Optional boolean
-  });
+  })
 
   // History tab state - matching API parameters
   const [historyFilters, setHistoryFilters] = useState({
     page: 1,
     pageSize: 10,
-  });
+  })
 
   // Theme and language
-  const isDark = mymode === "dark";
-  const language = i18n.language;
-  const isRTL = language === "ar";
+  const isDark = mymode === "dark"
+  const language = i18n.language
+  const isRTL = language === "ar"
 
   useEffect(() => {
-    dispatch(getRolePermissions(id));
+    dispatch(getRolePermissions(id))
     dispatch(
       getManagementRoleUsers({
         id: id, // Using id as type parameter
@@ -94,7 +94,7 @@ function SpecifiedManagementRole() {
           isActive: usersFilters.isActive,
         },
       })
-    );
+    )
     dispatch(
       getManagementRoleHistory({
         id: id,
@@ -103,20 +103,20 @@ function SpecifiedManagementRole() {
           pageSize: historyFilters.pageSize,
         },
       })
-    );
-  }, [id]);
+    )
+  }, [id])
 
   useEffect(() => {
     if (id && activeTab) {
       switch (activeTab) {
         case "overview":
           // Overview data would need to be loaded separately if available
-          break;
+          break
         case "permissions":
           if (!permissions?.length) {
-            dispatch(getRolePermissions(id));
+            dispatch(getRolePermissions(id))
           }
-          break;
+          break
         case "users":
           if (!roleUsers?.length) {
             dispatch(
@@ -131,10 +131,10 @@ function SpecifiedManagementRole() {
                   isActive: usersFilters.isActive,
                 },
               })
-            );
+            )
           }
 
-          break;
+          break
         case "history":
           if (!assignmentHistory?.length) {
             dispatch(
@@ -145,14 +145,14 @@ function SpecifiedManagementRole() {
                   pageSize: historyFilters.pageSize,
                 },
               })
-            );
+            )
           }
-          break;
+          break
         default:
-          break;
+          break
       }
     }
-  }, [activeTab]);
+  }, [activeTab])
 
   useEffect(() => {
     dispatch(
@@ -167,8 +167,8 @@ function SpecifiedManagementRole() {
           isActive: usersFilters.isActive,
         },
       })
-    );
-  }, [usersFilters]);
+    )
+  }, [usersFilters])
 
   useEffect(() => {
     dispatch(
@@ -179,76 +179,76 @@ function SpecifiedManagementRole() {
           pageSize: historyFilters.pageSize,
         },
       })
-    );
-  }, [historyFilters]);
+    )
+  }, [historyFilters])
 
   // Handle success/error messages
 
   useEffect(() => {
     if (success) {
-      toast.success(success);
+      toast.success(success)
     }
-  }, [success]);
+  }, [success])
 
   useEffect(() => {
     if (error) {
-      toast.error(error);
+      toast.error(error)
     }
-  }, [error]);
+  }, [error])
 
   // Format date
   const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable");
+    if (!dateString) return t("common.notAvailable")
     return new Intl.DateTimeFormat(i18next.language, {
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    }).format(new Date(dateString));
-  };
+    }).format(new Date(dateString))
+  }
 
   // Users search and pagination handlers
   const handleUsersSearch = (e) => {
-    setUsersSearchTerm(e.target.value);
-  };
+    setUsersSearchTerm(e.target.value)
+  }
 
   const searchButton = () => {
-    setUsersFilters((prev) => ({ ...prev, page: 1 }));
-  };
+    setUsersFilters((prev) => ({ ...prev, page: 1 }))
+  }
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      e.preventDefault(); // Prevent form submission if inside a form
-      searchButton();
+      e.preventDefault() // Prevent form submission if inside a form
+      searchButton()
     }
-  };
+  }
   const handleUsersPageChange = (newPage) => {
-    setUsersFilters((prev) => ({ ...prev, page: newPage }));
-  };
+    setUsersFilters((prev) => ({ ...prev, page: newPage }))
+  }
 
   const handleUsersSortChange = (sortBy, sortDirection) => {
     setUsersFilters((prev) => ({
       ...prev,
       sortBy,
       sortDirection,
-    }));
-  };
+    }))
+  }
 
   const handleUsersActiveFilter = (isActive) => {
     setUsersFilters((prev) => ({
       ...prev,
       isActive,
-    }));
-  };
+    }))
+  }
 
   // History pagination handlers
   const handleHistoryPageChange = (newPage) => {
-    setHistoryFilters((prev) => ({ ...prev, page: newPage }));
-  };
+    setHistoryFilters((prev) => ({ ...prev, page: newPage }))
+  }
 
   // Loading states
   if (loading.roleUsers || loading.permissions || loading.history) {
-    return <LoadingGetData text={t("gettingData.roleData")} />;
+    return <LoadingGetData text={t("gettingData.roleData")} />
   }
 
   // if (!currentRole) {
@@ -729,10 +729,10 @@ function SpecifiedManagementRole() {
                             <select
                               value={usersFilters.isActive ?? ""}
                               onChange={(e) => {
-                                const value = e.target.value;
+                                const value = e.target.value
                                 handleUsersActiveFilter(
                                   value === "" ? undefined : value === "true"
-                                );
+                                )
                               }}
                               className={`px-3 py-2 rounded-lg border transition-colors ${
                                 isDark
@@ -759,14 +759,14 @@ function SpecifiedManagementRole() {
                         <div className="flex justify-end">
                           <button
                             onClick={() => {
-                              setUsersSearchTerm("");
+                              setUsersSearchTerm("")
                               setUsersFilters({
                                 isActive: "",
                                 sortBy: "NameEnglish",
                                 sortDirection: "Asc",
                                 page: 1,
                                 pageSize: 10,
-                              });
+                              })
                             }}
                             className={`px-3 py-1 text-sm rounded-lg border transition-colors ${
                               isDark
@@ -884,7 +884,9 @@ function SpecifiedManagementRole() {
                                       >
                                         <User className="h-5 w-5 text-gray-500" />
                                       </div>
-                                      <div className="ml-4">
+                                      <div
+                                        className={`${isRTL ? "mr-4" : "ml-4"}`}
+                                      >
                                         <div
                                           className={`text-sm font-medium ${
                                             isDark
@@ -895,15 +897,6 @@ function SpecifiedManagementRole() {
                                           {language === "ar"
                                             ? user.nameArabic
                                             : user.nameEnglish}
-                                        </div>
-                                        <div
-                                          className={`text-sm ${
-                                            isDark
-                                              ? "text-gray-400"
-                                              : "text-gray-500"
-                                          }`}
-                                        >
-                                          ID: {user.id}
                                         </div>
                                       </div>
                                     </div>
@@ -991,10 +984,10 @@ function SpecifiedManagementRole() {
                                               doctorNameAr: user.nameArabic,
                                               doctorNameEn: user.nameEnglish,
                                             })
-                                          );
+                                          )
                                           navigate(
                                             `/admin-panel/management-roles/role/user-history/${user.id}`
-                                          );
+                                          )
                                         }}
                                         className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors cursor-pointer"
                                         title={
@@ -1107,11 +1100,11 @@ function SpecifiedManagementRole() {
                                     },
                                     (_, i) => {
                                       const pageNum =
-                                        Math.max(1, usersFilters.page - 2) + i;
+                                        Math.max(1, usersFilters.page - 2) + i
                                       if (
                                         pageNum > roleUsersPagination.totalPages
                                       )
-                                        return null;
+                                        return null
 
                                       return (
                                         <button
@@ -1127,7 +1120,7 @@ function SpecifiedManagementRole() {
                                         >
                                           {pageNum}
                                         </button>
-                                      );
+                                      )
                                     }
                                   )}
 
@@ -1422,11 +1415,11 @@ function SpecifiedManagementRole() {
                             },
                             (_, i) => {
                               const pageNum =
-                                Math.max(1, historyFilters.page - 2) + i;
+                                Math.max(1, historyFilters.page - 2) + i
                               if (
                                 pageNum > assignmentHistoryPagination.totalPages
                               )
-                                return null;
+                                return null
 
                               return (
                                 <button
@@ -1442,7 +1435,7 @@ function SpecifiedManagementRole() {
                                 >
                                   {pageNum}
                                 </button>
-                              );
+                              )
                             }
                           )}
 
@@ -1474,7 +1467,7 @@ function SpecifiedManagementRole() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default SpecifiedManagementRole;
+export default SpecifiedManagementRole

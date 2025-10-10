@@ -1590,7 +1590,7 @@
     "users": {
       "noUsers": "No Users Assigned",
       "users": "Users",
-
+      "viewHistory": "View Hisory",
       "delete": {
         "title": "Remove User from Role",
         "confirmMessage": "Are you sure you want to remove this user from the role? This action cannot be undone.",
