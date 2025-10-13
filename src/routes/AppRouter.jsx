@@ -208,7 +208,7 @@ const ProtectedAdminPanel = withGuard(AdminPanel)
 
 // Category Management (Requires userCanManageCategory permission)
 const ProtectedCategory = withGuard(Category, "userCanManageCategory")
-const ProtectedDocotrDetails = withGuard(DoctorDetails, "userCanManageCategory")
+const ProtectedDocotrDetails = withGuard(DoctorDetails)
 const ProtectedEditDoctorData = withGuard(
   EditDoctorData,
   "userCanManageCategory"

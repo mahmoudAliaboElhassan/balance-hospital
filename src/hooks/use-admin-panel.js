@@ -1,11 +1,15 @@
-import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next"
+import { useSelector } from "react-redux"
 
 function UseAdminPanel() {
-  const { t } = useTranslation();
-  const { loginRoleResponseDto, categoryManagerId, departmentManagerId } =
-    useSelector((state) => state.auth);
-  console.log(loginRoleResponseDto["userCanManageCategory"]);
+  const { t } = useTranslation()
+  const {
+    loginRoleResponseDto,
+    categoryManagerId,
+    departmentManagerId,
+    userId,
+  } = useSelector((state) => state.auth)
+  console.log(loginRoleResponseDto["userCanManageCategory"])
 
   const allRoutes = [
     // {
@@ -76,7 +80,7 @@ function UseAdminPanel() {
       path: "/admin-panel/shift-hours-types",
       permission: "userCanShiftHoursType",
     },
-  ];
+  ]
 
   const specifyRole = {
     id: 10,
@@ -84,7 +88,7 @@ function UseAdminPanel() {
     icon: "🎭",
     path: "/specify-role",
     permission: null, // No specific permission check needed for role specification
-  };
+  }
 
   const roster = {
     id: 9,
@@ -92,26 +96,40 @@ function UseAdminPanel() {
     icon: "🗓️",
     path: "/admin-panel/rosters",
     permission: "userCanManageRostors",
-  };
+  }
+  const doctor = [
+    {
+      id: 9,
+      name: t("adminPanel.doctor"),
+      icon: "🩺",
+      path: `/admin-panel/doctors/${userId}`,
+      permission: "",
+    },
+  ]
 
   // Filter routes based on user permissions
-  const adminPanelRoutes = allRoutes.filter((route) => {
+  let adminPanelRoutes = allRoutes.filter((route) => {
     // If no permission required or no loginRoleResponseDto available, show the route
     if (!route.permission || !loginRoleResponseDto) {
-      return true;
+      return true
     }
 
     // Check if user has the required permission
-    return loginRoleResponseDto[route.permission] === true;
-  });
+    return loginRoleResponseDto[route.permission] === true
+  })
 
   if (loginRoleResponseDto.roleNameEn == "System Administrator") {
-    adminPanelRoutes.push(roster);
+    adminPanelRoutes.push(roster)
   }
   if (departmentManagerId != "undefined" && categoryManagerId != "undefined") {
-    adminPanelRoutes.push(specifyRole);
+    adminPanelRoutes.push(specifyRole)
   }
-  return { adminPanelRoutes };
+
+  if (loginRoleResponseDto.roleNameEn == "Doctor") {
+    adminPanelRoutes = doctor
+  }
+
+  return { adminPanelRoutes }
 }
 
-export default UseAdminPanel;
+export default UseAdminPanel

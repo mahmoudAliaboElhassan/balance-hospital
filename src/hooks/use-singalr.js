@@ -81,45 +81,45 @@ export const useSignalR = () => {
 
       switch (error.code) {
         case "NO_TOKEN":
-          toast.error(
-            t("signalr.errors.noToken") || "يرجى تسجيل الدخول أولاً",
-            {
-              position: "top-center",
-              autoClose: 5000,
-            }
-          )
+          // toast.error(
+          //   t("signalr.errors.noToken") || "يرجى تسجيل الدخول أولاً",
+          //   {
+          //     position: "top-center",
+          //     autoClose: 5000,
+          //   }
+          // )
           break
         case "UNAUTHORIZED":
-          toast.error(
-            t("signalr.errors.unauthorized") ||
-              "انتهت صلاحية الجلسة، يرجى تسجيل الدخول مرة أخرى",
-            {
-              position: "top-center",
-              autoClose: false,
-            }
-          )
+          // toast.error(
+          //   t("signalr.errors.unauthorized") ||
+          //     "انتهت صلاحية الجلسة، يرجى تسجيل الدخول مرة أخرى",
+          //   {
+          //     position: "top-center",
+          //     autoClose: false,
+          //   }
+          // )
           // يمكنك هنا إضافة logout logic
           break
         case "NETWORK_ERROR":
-          toast.error(t("signalr.errors.network") || "خطأ في الاتصال بالشبكة", {
-            position: "top-right",
-            autoClose: 5000,
-          })
+          // toast.error(t("signalr.errors.network") || "خطأ في الاتصال بالشبكة", {
+          //   position: "top-right",
+          //   autoClose: 5000,
+          // })
           break
         case "MAX_RETRIES":
-          toast.error(
-            t("signalr.errors.maxRetries") || "فشل الاتصال بعد عدة محاولات",
-            {
-              position: "top-right",
-              autoClose: 5000,
-            }
-          )
+          // toast.error(
+          //   t("signalr.errors.maxRetries") || "فشل الاتصال بعد عدة محاولات",
+          //   {
+          //     position: "top-right",
+          //     autoClose: 5000,
+          //   }
+          // )
           break
         default:
-          toast.error(error.message || "حدث خطأ في الاتصال", {
-            position: "top-right",
-            autoClose: 5000,
-          })
+        // toast.error(error.message || "حدث خطأ في الاتصال", {
+        //   position: "top-right",
+        //   autoClose: 5000,
+        // })
       }
     },
     [t]

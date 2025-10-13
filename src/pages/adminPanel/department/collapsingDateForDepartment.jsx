@@ -1,7 +1,14 @@
 import React, { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useSelector } from "react-redux"
-import { ChevronDownIcon, ChevronUpIcon } from "lucide-react"
+import {
+  ChevronDown,
+  ChevronUp,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  AlertCircle,
+} from "lucide-react"
 
 const CollapsibleDateCardForDepartment = ({
   dayData,
@@ -23,7 +30,7 @@ const CollapsibleDateCardForDepartment = ({
       ? Math.round((dayData.totalAssigned / dayData.totalRequired) * 100)
       : 0
 
-  // Extract shifts data (equivalent to working hours)
+  // Extract shifts data
   const shifts = dayData.shifts || []
   const totalRequired = dayData.totalRequired || 0
   const totalAssigned = dayData.totalAssigned || 0
@@ -31,6 +38,55 @@ const CollapsibleDateCardForDepartment = ({
 
   const toggleExpansion = () => {
     setIsExpanded(!isExpanded)
+  }
+
+  // Get attendance status icon and color
+  const getAttendanceStatusIcon = (status) => {
+    switch (status) {
+      case "Present":
+        return <CheckCircle2 className="w-3 h-3" />
+      case "Absent":
+        return <XCircle className="w-3 h-3" />
+      case "Late":
+        return <Clock className="w-3 h-3" />
+      case "NotRecorded":
+      default:
+        return <AlertCircle className="w-3 h-3" />
+    }
+  }
+
+  const getAttendanceStatusColor = (status) => {
+    switch (status) {
+      case "Present":
+        return isDark ? "text-green-400" : "text-green-600"
+      case "Absent":
+        return isDark ? "text-red-400" : "text-red-600"
+      case "Late":
+        return isDark ? "text-yellow-400" : "text-yellow-600"
+      case "NotRecorded":
+      default:
+        return isDark ? "text-gray-400" : "text-gray-500"
+    }
+  }
+
+  const getAttendanceBadgeColor = (status) => {
+    switch (status) {
+      case "Present":
+        return isDark
+          ? "bg-green-900 text-green-200"
+          : "bg-green-100 text-green-800"
+      case "Absent":
+        return isDark ? "bg-red-900 text-red-200" : "bg-red-100 text-red-800"
+      case "Late":
+        return isDark
+          ? "bg-yellow-900 text-yellow-200"
+          : "bg-yellow-100 text-yellow-800"
+      case "NotRecorded":
+      default:
+        return isDark
+          ? "bg-gray-700 text-gray-300"
+          : "bg-gray-100 text-gray-700"
+    }
   }
 
   return (
@@ -135,14 +191,14 @@ const CollapsibleDateCardForDepartment = ({
         {/* Expand/Collapse Icon */}
         <div className="flex items-center">
           {isExpanded ? (
-            <ChevronUpIcon
+            <ChevronUp
               className={`
                 w-5 h-5 transition-transform duration-200
                 ${isDark ? "text-gray-400" : "text-gray-600"}
               `}
             />
           ) : (
-            <ChevronDownIcon
+            <ChevronDown
               className={`
                 w-5 h-5 transition-transform duration-200
                 ${isDark ? "text-gray-400" : "text-gray-600"}
@@ -156,7 +212,7 @@ const CollapsibleDateCardForDepartment = ({
       <div
         className={`
           overflow-hidden transition-all duration-300 ease-in-out
-          ${isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}
+          ${isExpanded ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}
         `}
       >
         <div
@@ -249,7 +305,7 @@ const CollapsibleDateCardForDepartment = ({
                     </div>
                   </div>
 
-                  {/* Assigned Doctors */}
+                  {/* Assigned Doctors with Attendance */}
                   {shift.doctors && shift.doctors.length > 0 && (
                     <div className="mt-3 pt-2 border-t border-gray-300 dark:border-gray-600">
                       <p
@@ -260,27 +316,125 @@ const CollapsibleDateCardForDepartment = ({
                       >
                         {t("roster.assignedDoctors")}:
                       </p>
-                      <div className="flex flex-wrap gap-1">
+                      <div className="space-y-2">
                         {shift.doctors.map((doctor, docIndex) => (
-                          <span
+                          <div
                             key={`${doctor.doctorId}-${docIndex}`}
                             className={`
-                              inline-flex items-center px-2 py-1 rounded-full text-xs
+                              flex items-center justify-between p-2 rounded-md
                               ${
-                                doctor.assignmentStatus === "Approved"
-                                  ? isDark
-                                    ? "bg-green-900 text-green-200"
-                                    : "bg-green-100 text-green-800"
-                                  : isDark
-                                  ? "bg-yellow-900 text-yellow-200"
-                                  : "bg-yellow-100 text-yellow-800"
+                                isDark
+                                  ? "bg-gray-800 border border-gray-700"
+                                  : "bg-white border border-gray-200"
                               }
                             `}
                           >
-                            {i18n.language === "ar"
-                              ? doctor.doctorNameAr
-                              : doctor.doctorNameEn}
-                          </span>
+                            {/* Doctor Info */}
+                            <div className="flex items-center gap-2 flex-1">
+                              <span
+                                className={`
+                                  text-xs font-medium
+                                  ${isDark ? "text-gray-200" : "text-gray-800"}
+                                `}
+                              >
+                                {i18n.language === "ar"
+                                  ? doctor.doctorNameAr
+                                  : doctor.doctorNameEn}
+                              </span>
+
+                              {/* Assignment Status Badge */}
+                              <span
+                                className={`
+                                  inline-flex items-center px-2 py-0.5 rounded-full text-xs
+                                  ${
+                                    doctor.assignmentStatus === "Approved"
+                                      ? isDark
+                                        ? "bg-green-900 text-green-200"
+                                        : "bg-green-100 text-green-800"
+                                      : isDark
+                                      ? "bg-yellow-900 text-yellow-200"
+                                      : "bg-yellow-100 text-yellow-800"
+                                  }
+                                `}
+                              >
+                                {doctor.assignmentStatus}
+                              </span>
+                            </div>
+
+                            {/* Attendance Info */}
+                            {doctor.attendance && (
+                              <div className="flex items-center gap-2">
+                                {/* Attendance Status */}
+                                <div className="flex items-center gap-1">
+                                  <span
+                                    className={getAttendanceStatusColor(
+                                      doctor.attendance.status
+                                    )}
+                                  >
+                                    {getAttendanceStatusIcon(
+                                      doctor.attendance.status
+                                    )}
+                                  </span>
+                                  <span
+                                    className={`
+                                      text-xs
+                                      ${getAttendanceStatusColor(
+                                        doctor.attendance.status
+                                      )}
+                                    `}
+                                  >
+                                    {i18n.language === "ar"
+                                      ? doctor.attendance.statusAr
+                                      : doctor.attendance.status}
+                                  </span>
+                                </div>
+
+                                {/* Check-in/Check-out Times */}
+                                {doctor.attendance.checkInTime && (
+                                  <span
+                                    className={`
+                                      text-xs
+                                      ${
+                                        isDark
+                                          ? "text-gray-400"
+                                          : "text-gray-600"
+                                      }
+                                    `}
+                                  >
+                                    {formatTime(doctor.attendance.checkInTime)}
+                                    {doctor.attendance.checkOutTime &&
+                                      ` - ${formatTime(
+                                        doctor.attendance.checkOutTime
+                                      )}`}
+                                  </span>
+                                )}
+
+                                {/* Late Indicator */}
+                                {doctor.attendance.isLate &&
+                                  doctor.attendance.lateMinutes && (
+                                    <span className="text-xs text-red-500">
+                                      +{doctor.attendance.lateMinutes}m
+                                    </span>
+                                  )}
+
+                                {/* Verification Required */}
+                                {doctor.attendance.requiresVerification && (
+                                  <span
+                                    className={`
+                                      inline-flex items-center px-1.5 py-0.5 rounded text-xs
+                                      ${
+                                        isDark
+                                          ? "bg-orange-900 text-orange-200"
+                                          : "bg-orange-100 text-orange-800"
+                                      }
+                                    `}
+                                  >
+                                    !
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </div>
                         ))}
                       </div>
                     </div>
@@ -353,7 +507,7 @@ const CollapsibleDateCardForDepartment = ({
                     ${isDark ? "text-gray-400" : "text-gray-500"}
                   `}
                 >
-                  {t("roster.assigned")}
+                  {t("department.assigned")}
                 </p>
               </div>
               <div>
@@ -397,7 +551,7 @@ const CollapsibleDateCardForDepartment = ({
                     ${isDark ? "text-gray-400" : "text-gray-500"}
                   `}
                 >
-                  {t("roster.shortfall")}
+                  {t("department.shortfall")}
                 </p>
               </div>
             </div>

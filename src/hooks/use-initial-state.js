@@ -5,11 +5,13 @@ function UseInitialStates() {
       typeof window !== "undefined"
         ? localStorage.getItem("mymode") || "light"
         : "light",
-  };
+  }
 
   const initialStateAuth = {
     token:
       typeof window !== "undefined" ? localStorage.getItem("token") || "" : "",
+    userId:
+      typeof window !== "undefined" ? localStorage.getItem("userId") || "" : "",
     hyprid:
       typeof window !== "undefined" ? localStorage.getItem("hyprid") || "" : "",
     role:
@@ -35,7 +37,7 @@ function UseInitialStates() {
       typeof window !== "undefined"
         ? JSON.parse(localStorage.getItem("loginRoleResponseDto") || "{}")
         : null,
-  };
+  }
 
   const initialStateCategories = {
     // Categories data
@@ -132,7 +134,7 @@ function UseInitialStates() {
     approvalError: null,
     approvalSuccess: false,
     approvalMessage: "",
-  };
+  }
 
   const initialStateDepartments = {
     // Department filters
@@ -211,7 +213,7 @@ function UseInitialStates() {
     deleteSuccess: false,
     deleteError: null,
     deleteMessage: "",
-  };
+  }
 
   const initialStateSubDepartments = {
     subDepartments: [],
@@ -257,7 +259,7 @@ function UseInitialStates() {
     deleteError: null,
     deleteSuccess: false,
     deleteMessage: "",
-  };
+  }
 
   const initialStateContractingTypes = {
     allContractingTypes: [],
@@ -316,7 +318,7 @@ function UseInitialStates() {
     updateMessage: "",
     deleteMessage: "",
     timestamp: null,
-  };
+  }
 
   const initialStateScientificDegrees = {
     scientificDegrees: [],
@@ -367,7 +369,7 @@ function UseInitialStates() {
     // General
     message: "",
     timestamp: null,
-  };
+  }
 
   const initialStateShiftHoursTypes = {
     // Data arrays
@@ -435,7 +437,7 @@ function UseInitialStates() {
       hasNextPage: false,
       hasPrevPage: false,
     },
-  };
+  }
 
   return {
     initialStateMode,
@@ -446,7 +448,7 @@ function UseInitialStates() {
     initialStateContractingTypes,
     initialStateScientificDegrees,
     initialStateShiftHoursTypes,
-  };
+  }
 }
 
-export default UseInitialStates;
+export default UseInitialStates

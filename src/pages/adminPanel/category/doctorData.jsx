@@ -34,6 +34,9 @@ function DoctorData() {
   const navigate = useNavigate()
 
   // Get data from Redux store - adjust these selectors based on your actual store structure
+
+  const { loginRoleResponseDto } = useSelector((state) => state.auth)
+
   const userData = useSelector((state) => state.users.userData)
   const isLoading = useSelector((state) => state.users.loading.list)
   const error = useSelector((state) => state.users.error)
@@ -146,17 +149,21 @@ function DoctorData() {
         </div>
 
         {/* Edit Button */}
-        <button
-          onClick={() => navigate("edit")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-            isDark
-              ? "bg-blue-600 hover:bg-blue-700 text-white"
-              : "bg-blue-600 hover:bg-blue-700 text-white"
-          } shadow-lg hover:shadow-xl`}
-        >
-          <Edit className="w-4 h-4" />
-          {t("common.edit")}
-        </button>
+
+        {(loginRoleResponseDto.roleNameEn == "System Administrator" ||
+          loginRoleResponseDto.roleNameEn == "Category Head") && (
+          <button
+            onClick={() => navigate("edit")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+              isDark
+                ? "bg-blue-600 hover:bg-blue-700 text-white"
+                : "bg-blue-600 hover:bg-blue-700 text-white"
+            } shadow-lg hover:shadow-xl`}
+          >
+            <Edit className="w-4 h-4" />
+            {t("common.edit")}
+          </button>
+        )}
       </div>
 
       {/* Doctor Profile Card */}

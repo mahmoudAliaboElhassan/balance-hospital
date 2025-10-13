@@ -192,7 +192,7 @@ const Login = () => {
         ) {
           navigate("/specify-role")
         } else if (
-          data.data.user.loginRoleResponseDto.roleNameAr === "رئيس قسم" &&
+          data.data.user.loginRoleResponseDto.roleNameAr === "مدير قسم" &&
           data.data.user.departmentManager?.departmentId
         ) {
           console.log("hello dep head", data.data.user.departmentManager)
@@ -207,8 +207,13 @@ const Login = () => {
           navigate(
             `/admin-panel/category/${data.data.user.categoryManager?.categoryId}`
           )
+        } else if (
+          data.data.user.loginRoleResponseDto.roleNameAr === "مدير النظام"
+        ) {
+          console.log("hello cat head")
+          navigate(`/admin-panel/categories`)
         } else {
-          navigate("/admin-panel")
+          navigate(`/admin-panel/doctors/${data.data.user.userId}`)
         }
       })
       .catch((error) => {
