@@ -31,7 +31,7 @@ import {
 import { getDepartments } from "../../../state/act/actDepartment"
 import CollapsibleDateCard from "./collapsWorkingHour"
 import i18next from "i18next"
-import * as XLSX from "xlsx"
+import * as ExcelJS from "exceljs"
 
 function WorkingHours() {
   const { rosterId } = useParams()
@@ -212,10 +212,14 @@ function WorkingHours() {
       }, {})
   }
 
-  // Export to Excel function - All departments side by side
-  // Export to Excel function - Departments side by side with Shifts and Contracting Types
-  const exportToExcel = () => {
-    const wb = XLSX.utils.book_new()
+  const exportToExcel = async () => {
+    // Import ExcelJS
+
+    const workbook = new ExcelJS.Workbook()
+    const worksheet = workbook.addWorksheet(
+      currentLang === "ar" ? "جدول العمل" : "Working Hours"
+    )
+
     const groupedData = getWorkingHoursByDate()
 
     // Get all unique departments, shifts, and contracting types
@@ -241,7 +245,6 @@ function WorkingHours() {
           department: dept,
         })
 
-        // Collect all shifts and contracting types for this department
         dept.shifts.forEach((shift) => {
           if (!deptData.shifts.has(shift.shiftId)) {
             deptData.shifts.set(shift.shiftId, {
@@ -259,17 +262,15 @@ function WorkingHours() {
       })
     })
 
-    // Sort dates
     const sortedDates = Array.from(allDates).sort()
     const departments = Array.from(departmentsMap.values())
 
-    // Calculate columns per department based on shifts and contracting types
     const deptColumns = []
     departments.forEach((dept) => {
       const shifts = Array.from(dept.shifts.values())
-      let totalCols = 2 // Date and Day columns
+      let totalCols = 2
       shifts.forEach((shift) => {
-        totalCols += shift.contractingTypes.size // One column per contracting type
+        totalCols += shift.contractingTypes.size
       })
       deptColumns.push({
         dept,
@@ -278,184 +279,376 @@ function WorkingHours() {
       })
     })
 
-    // Create worksheet data
-    const wsData = []
-    const merges = []
-
-    // Row 0: Year header
+    let currentCol = 1
     const currentYear = new Date().getFullYear()
-    const yearRow = []
-    let colIndex = 0
+
+    // Row 1: Year header
+    let yearRow = worksheet.getRow(1)
+    yearRow.height = 30
     deptColumns.forEach((deptCol, idx) => {
-      if (idx > 0) {
-        yearRow.push("") // gap column
-        colIndex++
+      if (idx > 0) currentCol++ // gap column
+
+      const startCol = currentCol
+      const endCol = startCol + deptCol.totalCols - 1
+
+      worksheet.mergeCells(1, startCol, 1, endCol)
+      const cell = worksheet.getCell(1, startCol)
+      cell.value = currentYear.toString()
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF1E40AF" },
       }
-      const startCol = colIndex
-      yearRow.push(currentYear.toString())
-      for (let i = 1; i < deptCol.totalCols; i++) {
-        yearRow.push("")
+      cell.font = {
+        bold: true,
+        size: 16,
+        color: { argb: "FFFFFFFF" },
+        name: "Arial",
       }
-      merges.push({
-        s: { r: 0, c: startCol },
-        e: { r: 0, c: startCol + deptCol.totalCols - 1 },
-      })
-      colIndex += deptCol.totalCols
+      cell.alignment = { horizontal: "center", vertical: "middle" }
+      cell.border = {
+        top: { style: "thick", color: { argb: "FF1E3A8A" } },
+        bottom: { style: "thick", color: { argb: "FF1E3A8A" } },
+        left: { style: "thick", color: { argb: "FF1E3A8A" } },
+        right: { style: "thick", color: { argb: "FF1E3A8A" } },
+      }
+      cell.protection = { locked: true }
+
+      currentCol += deptCol.totalCols
     })
-    wsData.push(yearRow)
 
-    // Row 1: Department names
-    const deptRow = []
-    colIndex = 0
+    // Row 2: Department names
+    currentCol = 1
+    let deptRow = worksheet.getRow(2)
+    deptRow.height = 30
     deptColumns.forEach((deptCol, idx) => {
-      if (idx > 0) {
-        deptRow.push("") // gap column
-        colIndex++
+      if (idx > 0) currentCol++ // gap column
+
+      const startCol = currentCol
+      const endCol = startCol + deptCol.totalCols - 1
+
+      worksheet.mergeCells(2, startCol, 2, endCol)
+      const cell = worksheet.getCell(2, startCol)
+      cell.value = deptCol.dept.name
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF2563EB" },
       }
-      const startCol = colIndex
-      deptRow.push(deptCol.dept.name)
-      for (let i = 1; i < deptCol.totalCols; i++) {
-        deptRow.push("")
+      cell.font = {
+        bold: true,
+        size: 13,
+        color: { argb: "FFFFFFFF" },
+        name: "Arial",
       }
-      merges.push({
-        s: { r: 1, c: startCol },
-        e: { r: 1, c: startCol + deptCol.totalCols - 1 },
-      })
-      colIndex += deptCol.totalCols
+      cell.alignment = { horizontal: "center", vertical: "middle" }
+      cell.border = {
+        top: { style: "medium", color: { argb: "FF1E40AF" } },
+        bottom: { style: "medium", color: { argb: "FF1E40AF" } },
+        left: { style: "medium", color: { argb: "FF1E40AF" } },
+        right: { style: "medium", color: { argb: "FF1E40AF" } },
+      }
+      cell.protection = { locked: true }
+
+      currentCol += deptCol.totalCols
     })
-    wsData.push(deptRow)
 
-    // Row 2: Shift names
-    const shiftRow = []
-    colIndex = 0
+    // Row 3: Shift names
+    currentCol = 1
+    let shiftRow = worksheet.getRow(3)
+    shiftRow.height = 30
     deptColumns.forEach((deptCol, idx) => {
-      if (idx > 0) {
-        shiftRow.push("") // gap column
-        colIndex++
-      }
+      if (idx > 0) currentCol++ // gap column
 
-      // Date and Day columns (merge rows 2-4)
-      const startCol = colIndex
-      shiftRow.push("")
-      shiftRow.push("")
-      merges.push({ s: { r: 2, c: startCol }, e: { r: 4, c: startCol } }) // Date
-      merges.push({
-        s: { r: 2, c: startCol + 1 },
-        e: { r: 4, c: startCol + 1 },
-      }) // Day
-      colIndex += 2
+      const startCol = currentCol
+
+      // Merge Date column (rows 3-5)
+      worksheet.mergeCells(3, startCol, 5, startCol)
+      const dateCell = worksheet.getCell(3, startCol)
+      dateCell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF60A5FA" },
+      }
+      dateCell.font = {
+        bold: true,
+        size: 11,
+        color: { argb: "FFFFFFFF" },
+        name: "Arial",
+      }
+      dateCell.alignment = { horizontal: "center", vertical: "middle" }
+      dateCell.border = {
+        top: { style: "medium", color: { argb: "FF2563EB" } },
+        bottom: { style: "medium", color: { argb: "FF2563EB" } },
+        left: { style: "medium", color: { argb: "FF2563EB" } },
+        right: { style: "medium", color: { argb: "FF2563EB" } },
+      }
+      dateCell.protection = { locked: true }
+
+      // Merge Day column (rows 3-5)
+      worksheet.mergeCells(3, startCol + 1, 5, startCol + 1)
+      const dayCell = worksheet.getCell(3, startCol + 1)
+      dayCell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF60A5FA" },
+      }
+      dayCell.font = {
+        bold: true,
+        size: 11,
+        color: { argb: "FFFFFFFF" },
+        name: "Arial",
+      }
+      dayCell.alignment = { horizontal: "center", vertical: "middle" }
+      dayCell.border = {
+        top: { style: "medium", color: { argb: "FF2563EB" } },
+        bottom: { style: "medium", color: { argb: "FF2563EB" } },
+        left: { style: "medium", color: { argb: "FF2563EB" } },
+        right: { style: "medium", color: { argb: "FF2563EB" } },
+      }
+      dayCell.protection = { locked: true }
+
+      currentCol += 2
 
       deptCol.shifts.forEach((shift) => {
-        const shiftStartCol = colIndex
-        shiftRow.push(shift.name)
-        for (let i = 1; i < shift.contractingTypes.size; i++) {
-          shiftRow.push("")
+        const shiftStartCol = currentCol
+        const shiftEndCol = currentCol + shift.contractingTypes.size - 1
+
+        worksheet.mergeCells(3, shiftStartCol, 3, shiftEndCol)
+        const shiftCell = worksheet.getCell(3, shiftStartCol)
+        shiftCell.value = shift.name
+        shiftCell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FF60A5FA" },
         }
-        merges.push({
-          s: { r: 2, c: shiftStartCol },
-          e: { r: 2, c: shiftStartCol + shift.contractingTypes.size - 1 },
-        })
-        colIndex += shift.contractingTypes.size
+        shiftCell.font = {
+          bold: true,
+          size: 11,
+          color: { argb: "FFFFFFFF" },
+          name: "Arial",
+        }
+        shiftCell.alignment = { horizontal: "center", vertical: "middle" }
+        shiftCell.border = {
+          top: { style: "medium", color: { argb: "FF2563EB" } },
+          bottom: { style: "medium", color: { argb: "FF2563EB" } },
+          left: { style: "medium", color: { argb: "FF2563EB" } },
+          right: { style: "medium", color: { argb: "FF2563EB" } },
+        }
+        shiftCell.protection = { locked: true }
+
+        currentCol += shift.contractingTypes.size
       })
     })
-    wsData.push(shiftRow)
 
-    // Row 3: Contracting type headers
-    const contractingTypeRow = []
-    colIndex = 0
+    // Row 4: Contracting type headers
+    currentCol = 1
+    let ctRow = worksheet.getRow(4)
+    ctRow.height = 30
     deptColumns.forEach((deptCol, idx) => {
-      if (idx > 0) {
-        contractingTypeRow.push("") // gap column
-        colIndex++
-      }
+      if (idx > 0) currentCol++ // gap column
 
-      // Date and Day headers (already merged)
-      contractingTypeRow.push("")
-      contractingTypeRow.push("")
-      colIndex += 2
+      currentCol += 2 // Skip date and day
 
       deptCol.shifts.forEach((shift) => {
         const types = Array.from(shift.contractingTypes)
         types.forEach((typeName) => {
-          contractingTypeRow.push(typeName)
-          colIndex++
+          const cell = worksheet.getCell(4, currentCol)
+          cell.value = typeName
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FF93C5FD" },
+          }
+          cell.font = {
+            bold: true,
+            size: 10,
+            color: { argb: "FF1E3A8A" },
+            name: "Arial",
+          }
+          cell.alignment = { horizontal: "center", vertical: "middle" }
+          cell.border = {
+            top: { style: "thin", color: { argb: "FF60A5FA" } },
+            bottom: { style: "thin", color: { argb: "FF60A5FA" } },
+            left: { style: "thin", color: { argb: "FF60A5FA" } },
+            right: { style: "thin", color: { argb: "FF60A5FA" } },
+          }
+          cell.protection = { locked: true }
+          currentCol++
         })
       })
     })
-    wsData.push(contractingTypeRow)
 
-    // Row 4: Sub-headers (Count / Doctors)
-    const subHeaderRow = []
-    colIndex = 0
+    // Row 5: Sub-headers (Date/Day/Count)
+    currentCol = 1
+    let subHeaderRow = worksheet.getRow(5)
+    subHeaderRow.height = 25
     deptColumns.forEach((deptCol, idx) => {
-      if (idx > 0) {
-        subHeaderRow.push("") // gap column
-        colIndex++
-      }
+      if (idx > 0) currentCol++ // gap column
 
-      // Date and Day headers (already merged)
-      subHeaderRow.push(currentLang === "ar" ? "التاريخ" : "Date")
-      subHeaderRow.push(currentLang === "ar" ? "اليوم" : "Day")
-      colIndex += 2
+      // Date header
+      const dateCell = worksheet.getCell(5, currentCol)
+      dateCell.value = currentLang === "ar" ? "التاريخ" : "Date"
+      dateCell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FFD1D5DB" },
+      }
+      dateCell.font = {
+        bold: true,
+        size: 10,
+        color: { argb: "FF1F2937" },
+        name: "Arial",
+      }
+      dateCell.alignment = { horizontal: "center", vertical: "middle" }
+      dateCell.border = {
+        top: { style: "thin", color: { argb: "FF9CA3AF" } },
+        bottom: { style: "medium", color: { argb: "FF6B7280" } },
+        left: { style: "thin", color: { argb: "FF9CA3AF" } },
+        right: { style: "thin", color: { argb: "FF9CA3AF" } },
+      }
+      dateCell.protection = { locked: true }
+      currentCol++
+
+      // Day header
+      const dayCell = worksheet.getCell(5, currentCol)
+      dayCell.value = currentLang === "ar" ? "اليوم" : "Day"
+      dayCell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FFD1D5DB" },
+      }
+      dayCell.font = {
+        bold: true,
+        size: 10,
+        color: { argb: "FF1F2937" },
+        name: "Arial",
+      }
+      dayCell.alignment = { horizontal: "center", vertical: "middle" }
+      dayCell.border = {
+        top: { style: "thin", color: { argb: "FF9CA3AF" } },
+        bottom: { style: "medium", color: { argb: "FF6B7280" } },
+        left: { style: "thin", color: { argb: "FF9CA3AF" } },
+        right: { style: "thin", color: { argb: "FF9CA3AF" } },
+      }
+      dayCell.protection = { locked: true }
+      currentCol++
 
       deptCol.shifts.forEach((shift) => {
         const types = Array.from(shift.contractingTypes)
         types.forEach(() => {
-          subHeaderRow.push(currentLang === "ar" ? "العدد" : "Count")
-          colIndex++
+          const cell = worksheet.getCell(5, currentCol)
+          cell.value = currentLang === "ar" ? "العدد" : "Count"
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FFD1D5DB" },
+          }
+          cell.font = {
+            bold: true,
+            size: 10,
+            color: { argb: "FF1F2937" },
+            name: "Arial",
+          }
+          cell.alignment = { horizontal: "center", vertical: "middle" }
+          cell.border = {
+            top: { style: "thin", color: { argb: "FF9CA3AF" } },
+            bottom: { style: "medium", color: { argb: "FF6B7280" } },
+            left: { style: "thin", color: { argb: "FF9CA3AF" } },
+            right: { style: "thin", color: { argb: "FF9CA3AF" } },
+          }
+          cell.protection = { locked: true }
+          currentCol++
         })
       })
     })
-    wsData.push(subHeaderRow)
 
-    // Data rows: Each date (now with 2 rows per date)
+    // Data rows
+    let currentRow = 6
     sortedDates.forEach((date) => {
       const dayData = groupedData[date]
 
-      // Row 1: Count row (assigned/required)
-      const countRow = []
-      // Row 2: Doctors row (names)
-      const doctorsRow = []
+      const countRow = worksheet.getRow(currentRow)
+      const doctorsRow = worksheet.getRow(currentRow + 1)
+      countRow.height = 22
+      doctorsRow.height = 40
+
+      currentCol = 1
 
       deptColumns.forEach((deptCol, deptIdx) => {
-        if (deptIdx > 0) {
-          countRow.push("") // gap column
-          doctorsRow.push("") // gap column
-        }
+        if (deptIdx > 0) currentCol++ // gap column
 
         const deptDayData = deptCol.dept.dateData.get(date)
 
         if (deptDayData) {
-          // Format date
           const formattedDate = new Date(date).toLocaleDateString(
             currentLang === "ar" ? "ar-EG" : "en-US",
             { month: "short", day: "numeric" }
           )
 
-          // Date column (merge both rows)
-          countRow.push(formattedDate)
-          doctorsRow.push("")
+          const dateColIndex = currentCol
 
-          // Day name column (merge both rows)
-          countRow.push(deptDayData.dayOfWeekName)
-          doctorsRow.push("")
+          // Merge date cell
+          worksheet.mergeCells(
+            currentRow,
+            dateColIndex,
+            currentRow + 1,
+            dateColIndex
+          )
+          const dateCell = worksheet.getCell(currentRow, dateColIndex)
+          dateCell.value = formattedDate
+          dateCell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FFE5E7EB" },
+          }
+          dateCell.font = {
+            bold: true,
+            size: 10,
+            color: { argb: "FF111827" },
+            name: "Arial",
+          }
+          dateCell.alignment = { horizontal: "center", vertical: "middle" }
+          dateCell.border = {
+            top: { style: "thin", color: { argb: "FF9CA3AF" } },
+            bottom: { style: "thin", color: { argb: "FF9CA3AF" } },
+            left: { style: "medium", color: { argb: "FF9CA3AF" } },
+            right: { style: "medium", color: { argb: "FF9CA3AF" } },
+          }
+          dateCell.protection = { locked: true }
+          currentCol++
 
-          // Merge date and day cells for this date
-          const currentRowIndex = wsData.length
-          const dateColIndex = deptColumns
-            .slice(0, deptIdx)
-            .reduce((sum, dc) => sum + dc.totalCols + 1, 0) // +1 for gap columns
+          // Merge day cell
+          worksheet.mergeCells(
+            currentRow,
+            currentCol,
+            currentRow + 1,
+            currentCol
+          )
+          const dayCell = worksheet.getCell(currentRow, currentCol)
+          dayCell.value = deptDayData.dayOfWeekName
+          dayCell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FFE5E7EB" },
+          }
+          dayCell.font = {
+            bold: true,
+            size: 10,
+            color: { argb: "FF111827" },
+            name: "Arial",
+          }
+          dayCell.alignment = { horizontal: "center", vertical: "middle" }
+          dayCell.border = {
+            top: { style: "thin", color: { argb: "FF9CA3AF" } },
+            bottom: { style: "thin", color: { argb: "FF9CA3AF" } },
+            left: { style: "medium", color: { argb: "FF9CA3AF" } },
+            right: { style: "medium", color: { argb: "FF9CA3AF" } },
+          }
+          dayCell.protection = { locked: true }
+          currentCol++
 
-          merges.push({
-            s: { r: currentRowIndex, c: dateColIndex },
-            e: { r: currentRowIndex + 1, c: dateColIndex },
-          })
-          merges.push({
-            s: { r: currentRowIndex, c: dateColIndex + 1 },
-            e: { r: currentRowIndex + 1, c: dateColIndex + 1 },
-          })
-
-          // For each shift in this department
+          // For each shift
           deptCol.shifts.forEach((shiftInfo) => {
             const shiftData = deptDayData.department.shifts.find(
               (s) => s.shiftId === shiftInfo.id
@@ -467,16 +660,39 @@ function WorkingHours() {
                 const ctData = shiftData.contractingTypes.find(
                   (ct) => ct.contractingTypeName === typeName
                 )
+
                 if (ctData) {
                   const assigned =
                     ctData.workingHourDetail.currentAssignedDoctors
                   const required = ctData.workingHourDetail.requiredDoctors
                   const doctors = ctData.workingHourDetail.assignedDoctors || []
 
-                  // Count row
-                  countRow.push(`${assigned}/${required}`)
+                  // Count cell - EDITABLE
+                  const countCell = worksheet.getCell(currentRow, currentCol)
+                  countCell.value = `${assigned}/${required}`
+                  countCell.fill = {
+                    type: "pattern",
+                    pattern: "solid",
+                    fgColor: { argb: "FFF3F4F6" },
+                  }
+                  countCell.font = {
+                    size: 10,
+                    color: { argb: "FF111827" },
+                    name: "Arial",
+                  }
+                  countCell.alignment = {
+                    horizontal: "center",
+                    vertical: "middle",
+                  }
+                  countCell.border = {
+                    top: { style: "thin", color: { argb: "FFD1D5DB" } },
+                    bottom: { style: "thin", color: { argb: "FFD1D5DB" } },
+                    left: { style: "thin", color: { argb: "FFD1D5DB" } },
+                    right: { style: "thin", color: { argb: "FFD1D5DB" } },
+                  }
+                  countCell.protection = { locked: false }
 
-                  // Doctors row
+                  // Doctors cell - EDITABLE
                   const doctorNames = doctors
                     .map((doctor) =>
                       currentLang === "ar"
@@ -484,103 +700,125 @@ function WorkingHours() {
                         : doctor.doctorNameEn
                     )
                     .join(currentLang === "ar" ? " - " : " - ")
-                  doctorsRow.push(doctorNames || "")
+
+                  const doctorsCell = worksheet.getCell(
+                    currentRow + 1,
+                    currentCol
+                  )
+                  doctorsCell.value = doctorNames || ""
+                  doctorsCell.fill = {
+                    type: "pattern",
+                    pattern: "solid",
+                    fgColor: { argb: "FFFFFFFF" },
+                  }
+                  doctorsCell.font = {
+                    size: 9,
+                    color: { argb: "FF374151" },
+                    name: "Arial",
+                  }
+                  doctorsCell.alignment = {
+                    horizontal: "left",
+                    vertical: "middle",
+                    wrapText: true,
+                    indent: 1,
+                  }
+                  doctorsCell.border = {
+                    top: { style: "thin", color: { argb: "FFE5E7EB" } },
+                    bottom: { style: "thin", color: { argb: "FFD1D5DB" } },
+                    left: { style: "thin", color: { argb: "FFE5E7EB" } },
+                    right: { style: "thin", color: { argb: "FFE5E7EB" } },
+                  }
+                  doctorsCell.protection = { locked: false }
                 } else {
-                  countRow.push("")
-                  doctorsRow.push("")
+                  const countCell = worksheet.getCell(currentRow, currentCol)
+                  countCell.value = ""
+                  countCell.protection = { locked: false }
+                  const doctorsCell = worksheet.getCell(
+                    currentRow + 1,
+                    currentCol
+                  )
+                  doctorsCell.value = ""
+                  doctorsCell.protection = { locked: false }
                 }
               } else {
-                countRow.push("")
-                doctorsRow.push("")
+                const countCell = worksheet.getCell(currentRow, currentCol)
+                countCell.value = ""
+                countCell.protection = { locked: false }
+                const doctorsCell = worksheet.getCell(
+                  currentRow + 1,
+                  currentCol
+                )
+                doctorsCell.value = ""
+                doctorsCell.protection = { locked: false }
               }
+              currentCol++
             })
           })
         } else {
-          // Empty cells for this department on this date
           for (let i = 0; i < deptCol.totalCols; i++) {
-            countRow.push("")
-            doctorsRow.push("")
+            const countCell = worksheet.getCell(currentRow, currentCol)
+            countCell.value = ""
+            countCell.protection = { locked: true }
+            const doctorsCell = worksheet.getCell(currentRow + 1, currentCol)
+            doctorsCell.value = ""
+            doctorsCell.protection = { locked: true }
+            currentCol++
           }
         }
       })
 
-      wsData.push(countRow)
-      wsData.push(doctorsRow)
+      currentRow += 2
     })
 
-    // Create worksheet
-    const ws = XLSX.utils.aoa_to_sheet(wsData)
-
     // Set column widths
-    const colWidths = []
+    currentCol = 1
     deptColumns.forEach((deptCol, idx) => {
       if (idx > 0) {
-        colWidths.push({ wch: 2 }) // gap column
+        worksheet.getColumn(currentCol).width = 2
+        currentCol++
       }
-      colWidths.push({ wch: 12 }) // Date
-      colWidths.push({ wch: 12 }) // Day
+      worksheet.getColumn(currentCol).width = 12
+      currentCol++
+      worksheet.getColumn(currentCol).width = 12
+      currentCol++
+
       deptCol.shifts.forEach((shift) => {
         shift.contractingTypes.forEach(() => {
-          colWidths.push({ wch: 20 }) // Wider for doctor names
+          worksheet.getColumn(currentCol).width = 25
+          currentCol++
         })
       })
     })
-    ws["!cols"] = colWidths
 
-    // Apply merges
-    ws["!merges"] = merges
+    // Protect worksheet while allowing unlocked cells to be edited
+    await worksheet.protect("", {
+      selectLockedCells: true,
+      selectUnlockedCells: true,
+      formatCells: false,
+      formatColumns: false,
+      formatRows: false,
+      insertRows: false,
+      insertColumns: false,
+      deleteRows: false,
+      deleteColumns: false,
+      sort: false,
+      autoFilter: false,
+      pivotTables: false,
+    })
 
-    // Add borders and styling
-    const range = XLSX.utils.decode_range(ws["!ref"])
-    for (let R = range.s.r; R <= range.e.r; ++R) {
-      for (let C = range.s.c; C <= range.e.c; ++C) {
-        const cellAddress = XLSX.utils.encode_cell({ r: R, c: C })
-        if (!ws[cellAddress]) continue
-
-        if (!ws[cellAddress].s) ws[cellAddress].s = {}
-
-        // Style headers (first 5 rows)
-        if (R <= 4) {
-          ws[cellAddress].s.fill = { fgColor: { rgb: "D3D3D3" } }
-          ws[cellAddress].s.font = { bold: true }
-          ws[cellAddress].s.alignment = {
-            horizontal: "center",
-            vertical: "center",
-          }
-        }
-
-        // Center align count rows (odd rows after header)
-        if (R > 4 && (R - 5) % 2 === 0) {
-          ws[cellAddress].s.alignment = {
-            horizontal: "center",
-            vertical: "center",
-          }
-        }
-
-        // Add borders
-        ws[cellAddress].s.border = {
-          top: { style: "thin", color: { rgb: "000000" } },
-          bottom: { style: "thin", color: { rgb: "000000" } },
-          left: { style: "thin", color: { rgb: "000000" } },
-          right: { style: "thin", color: { rgb: "000000" } },
-        }
-      }
-    }
-
-    // Add worksheet to workbook
-    XLSX.utils.book_append_sheet(
-      wb,
-      ws,
-      currentLang === "ar" ? "جدول العمل" : "Working Hours"
-    )
-
-    // Generate filename
-    const fileName = `WorkingHours_${
+    // Generate file
+    const buffer = await workbook.xlsx.writeBuffer()
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    })
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = `WorkingHours_${
       new Date().toISOString().split("T")[0]
     }.xlsx`
-
-    // Save file
-    XLSX.writeFile(wb, fileName)
+    link.click()
+    window.URL.revokeObjectURL(url)
   }
 
   const groupedWorkingHours = getWorkingHoursByDate()
