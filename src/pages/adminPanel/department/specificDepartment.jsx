@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useParams, useNavigate, Link } from "react-router-dom"
-import { getDepartmentById } from "../../../state/act/actDepartment"
+import {
+  getDepartmentById,
+  getDepartmentGoefences,
+} from "../../../state/act/actDepartment"
 import {
   clearSingleDepartment,
   clearSingleDepartmentError,
@@ -13,6 +16,7 @@ import RemoveManagerModal from "../../../components/RemoveMangerModal"
 import Forbidden from "../../../components/forbidden"
 import RosterDepartmentMonths from "../../../components/RosterDepartmentMonths"
 import { formatDate } from "../../../utils/formtDate"
+import DepartmentGeoFences from "./geofence"
 
 function SpecificDepartment() {
   const { depId: id } = useParams()
@@ -24,6 +28,10 @@ function SpecificDepartment() {
     selectedDepartment,
     loadingGetSingleDepartment,
     singleDepartmentError,
+    loadingGetDepartmentGeofences,
+    geofences,
+    loadingDeleteGeoFence, // ADD THIS
+
     departmentLinkedIds,
   } = useSelector((state) => state.department)
 
@@ -73,6 +81,7 @@ function SpecificDepartment() {
       // Clear previous data before fetching
       dispatch(clearSingleDepartment())
       dispatch(getDepartmentById(id))
+      dispatch(getDepartmentGoefences({ departmentId: id }))
     }
 
     // Cleanup on unmount
@@ -1321,7 +1330,18 @@ function SpecificDepartment() {
                 </div>
               )}
             </div> */}
-
+            <DepartmentGeoFences
+              geofences={geofences}
+              loadingGetDepartmentGeofences={loadingGetDepartmentGeofences}
+              loadingDeleteGeoFence={loadingDeleteGeoFence}
+              departmentId={selectedDepartment?.id}
+              isDark={isDark}
+              isRTL={isRTL}
+              currentLang={currentLang}
+              loginRoleResponseDto={loginRoleResponseDto}
+              onNavigate={navigate}
+              formatDate={formatDate}
+            />
             {/* Description Card */}
             {selectedDepartment.description && (
               <div

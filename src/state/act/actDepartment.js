@@ -1,86 +1,86 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import axiosInstance from "../../utils/axiosInstance";
+import { createAsyncThunk } from "@reduxjs/toolkit"
+import axiosInstance from "../../utils/axiosInstance"
 
 export const getDepartments = createAsyncThunk(
   "departmentSlice/getDepartments",
   async (params = {}, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
-      const queryParams = new URLSearchParams();
+      const queryParams = new URLSearchParams()
 
       // Add parameters if they exist
-      if (params.search) queryParams.append("search", params.search);
+      if (params.search) queryParams.append("search", params.search)
       if (params.includeManager)
-        queryParams.append("includeManager", params.includeManager);
+        queryParams.append("includeManager", params.includeManager)
       if (params.includeCategories)
-        queryParams.append("includeCategories", params.includeCategories);
+        queryParams.append("includeCategories", params.includeCategories)
       if (params.categoryId !== undefined)
-        queryParams.append("categoryId", params.categoryId);
+        queryParams.append("categoryId", params.categoryId)
       if (params.isActive !== undefined)
-        queryParams.append("isActive", params.isActive);
+        queryParams.append("isActive", params.isActive)
       if (params.createdFrom)
-        queryParams.append("createdFrom", params.createdFrom);
-      if (params.createdTo) queryParams.append("createdTo", params.createdTo);
+        queryParams.append("createdFrom", params.createdFrom)
+      if (params.createdTo) queryParams.append("createdTo", params.createdTo)
       if (params.includeSubDepartments !== undefined)
         queryParams.append(
           "includeSubDepartments",
           params.includeSubDepartments
-        );
+        )
       if (params.includeStatistics !== undefined)
-        queryParams.append("includeStatistics", params.includeStatistics);
+        queryParams.append("includeStatistics", params.includeStatistics)
       if (params.includeCategory !== undefined)
-        queryParams.append("includeCategory", params.includeCategory);
-      if (params.page) queryParams.append("page", params.page);
-      if (params.pageSize) queryParams.append("pageSize", params.pageSize);
-      if (params.orderBy) queryParams.append("orderBy", params.orderBy);
+        queryParams.append("includeCategory", params.includeCategory)
+      if (params.page) queryParams.append("page", params.page)
+      if (params.pageSize) queryParams.append("pageSize", params.pageSize)
+      if (params.orderBy) queryParams.append("orderBy", params.orderBy)
       if (params.orderDesc !== undefined)
-        queryParams.append("orderDesc", params.orderDesc);
+        queryParams.append("orderDesc", params.orderDesc)
 
       // Construct the URL with query parameters
       const url = `/api/v1/Department${
         queryParams.toString() ? `?${queryParams.toString()}` : ""
-      }`;
+      }`
 
       const res = await axiosInstance.get(url, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      });
-      console.log("Departments fetched successfully:", res);
-      return res.data;
+      })
+      console.log("Departments fetched successfully:", res)
+      return res.data
     } catch (error) {
-      console.log("Error fetching departments:", error);
+      console.log("Error fetching departments:", error)
 
-      return rejectWithValue(error.response?.data || error.message);
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 
 export const getDepartmentById = createAsyncThunk(
   "departmentSlice/getDepartmentById",
   async (id, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
       const res = await axiosInstance.get(`/api/v1/Department/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      });
-      console.log("Department fetched successfully:", res);
-      return res.data;
+      })
+      console.log("Department fetched successfully:", res)
+      return res.data
     } catch (error) {
-      console.log("Error fetching department:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error fetching department:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 
 export const createDepartment = createAsyncThunk(
   "departmentSlice/createDepartment",
   async (departmentData, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
       const res = await axiosInstance.post(
@@ -92,20 +92,20 @@ export const createDepartment = createAsyncThunk(
             "Content-Type": "application/json",
           },
         }
-      );
-      console.log("Department created successfully:", res);
-      return res.data;
+      )
+      console.log("Department created successfully:", res)
+      return res.data
     } catch (error) {
-      console.log("Error creating department:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error creating department:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 
 export const updateDepartment = createAsyncThunk(
   "departmentSlice/updateDepartment",
   async ({ id, departmentData }, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
       const res = await axiosInstance.put(
@@ -117,20 +117,20 @@ export const updateDepartment = createAsyncThunk(
             "Content-Type": "application/json",
           },
         }
-      );
-      console.log("Department updated successfully:", res);
-      return res.data;
+      )
+      console.log("Department updated successfully:", res)
+      return res.data
     } catch (error) {
-      console.log("Error updating department:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error updating department:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 
 export const deleteDepartment = createAsyncThunk(
   "departmentSlice/deleteDepartment",
   async ({ id, reason }, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
       const res = await axiosInstance.delete(
@@ -141,19 +141,19 @@ export const deleteDepartment = createAsyncThunk(
             "Content-Type": "application/json",
           },
         }
-      );
-      console.log("Department deleted successfully:", res);
-      return res.data;
+      )
+      console.log("Department deleted successfully:", res)
+      return res.data
     } catch (error) {
-      console.log("Error deleting department:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error deleting department:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 export const updateManagerPermission = createAsyncThunk(
   "departmentSlice/updateManagerPermission",
   async ({ id, data }, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
       const res = await axiosInstance.put(
@@ -165,19 +165,19 @@ export const updateManagerPermission = createAsyncThunk(
             "Content-Type": "application/json",
           },
         }
-      );
-      console.log("Department Manger updated successfully:", res);
-      return res.data;
+      )
+      console.log("Department Manger updated successfully:", res)
+      return res.data
     } catch (error) {
-      console.log("Error deleting department:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error deleting department:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 export const removeDepManager = createAsyncThunk(
   "departmentSlice/removeDepManager",
   async ({ data }, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
       const res = await axiosInstance.post(
@@ -189,19 +189,19 @@ export const removeDepManager = createAsyncThunk(
             "Content-Type": "application/json",
           },
         }
-      );
-      console.log("Department Manger updated successfully:", res);
-      return res.data;
+      )
+      console.log("Department Manger updated successfully:", res)
+      return res.data
     } catch (error) {
-      console.log("Error deleting department:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error deleting department:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 export const assignDepManager = createAsyncThunk(
   "departmentSlice/assignDepManager",
   async ({ data }, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
       const res = await axiosInstance.post(
@@ -213,19 +213,19 @@ export const assignDepManager = createAsyncThunk(
             "Content-Type": "application/json",
           },
         }
-      );
-      console.log("Department Manger updated successfully:", res);
-      return res.data;
+      )
+      console.log("Department Manger updated successfully:", res)
+      return res.data
     } catch (error) {
-      console.log("Error deleting department:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error deleting department:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 export const availabelDepartmentsForCategory = createAsyncThunk(
   "departmentSlice/availabelDepartmentsForCategory",
   async ({ categoryId }, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
       const res = await axiosInstance.get(
@@ -236,19 +236,19 @@ export const availabelDepartmentsForCategory = createAsyncThunk(
             "Content-Type": "application/json",
           },
         }
-      );
-      console.log("avaialbe departments:", res);
-      return res.data;
+      )
+      console.log("avaialbe departments:", res)
+      return res.data
     } catch (error) {
-      console.log("Error deleting department:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error deleting department:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 export const linkDepartmentToCategory = createAsyncThunk(
   "departmentSlice/linkDepartmentToCategory",
   async ({ id, categoryId }, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
       const res = await axiosInstance.post(
@@ -260,19 +260,19 @@ export const linkDepartmentToCategory = createAsyncThunk(
             "Content-Type": "application/json",
           },
         }
-      );
-      console.log("link departments:", res);
-      return { depId: id };
+      )
+      console.log("link departments:", res)
+      return { depId: id }
     } catch (error) {
-      console.log("Error deleting department:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error deleting department:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 export const unlinkDepartmentFromCategory = createAsyncThunk(
   "departmentSlice/unlinkDepartmentFromCategory",
   async ({ id, categoryId, revocationReason }, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
       const res = await axiosInstance.delete(
@@ -284,19 +284,19 @@ export const unlinkDepartmentFromCategory = createAsyncThunk(
             "Content-Type": "application/json",
           },
         }
-      );
-      console.log("un link:", res);
-      return { depId: id };
+      )
+      console.log("un link:", res)
+      return { depId: id }
     } catch (error) {
-      console.log("Error deleting department:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error deleting department:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 export const getDepartmentByCategory = createAsyncThunk(
   "departmentSlice/getDepartmentByCategory",
   async ({ categoryId }, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
       const res = await axiosInstance.get(
@@ -307,19 +307,19 @@ export const getDepartmentByCategory = createAsyncThunk(
             "Content-Type": "application/json",
           },
         }
-      );
-      console.log("departments by category:", res);
-      return res.data;
+      )
+      console.log("departments by category:", res)
+      return res.data
     } catch (error) {
-      console.log("Error deleting department:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error deleting department:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 export const getDepartmentMonthList = createAsyncThunk(
   "departmentSlice/getDepartmentMonthList",
   async ({ departmentId }, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
       const res = await axiosInstance.get(
@@ -330,19 +330,19 @@ export const getDepartmentMonthList = createAsyncThunk(
             "Content-Type": "application/json",
           },
         }
-      );
-      console.log("departments month list :", res);
-      return res.data;
+      )
+      console.log("departments month list :", res)
+      return res.data
     } catch (error) {
-      console.log("Error department month list:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error department month list:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 export const getDepartmentMonthView = createAsyncThunk(
   "departmentSlice/getDepartmentMonthView",
   async ({ departmentId, month, year }, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
       const res = await axiosInstance.get(
@@ -353,21 +353,21 @@ export const getDepartmentMonthView = createAsyncThunk(
             "Content-Type": "application/json",
           },
         }
-      );
-      console.log("departments month list :", res);
-      return res.data;
+      )
+      console.log("departments month list :", res)
+      return res.data
     } catch (error) {
-      console.log("Error department month list:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error department month list:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 export const getDepartmentRosterCalender = createAsyncThunk(
   "departmentSlice/getDepartmentRosterCalender",
   async ({ departmentId, ids }, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
-    const params = new URLSearchParams();
-    ids.forEach((id) => params.append("ids", id));
+    const { rejectWithValue } = thunkAPI
+    const params = new URLSearchParams()
+    ids.forEach((id) => params.append("ids", id))
 
     try {
       const res = await axiosInstance.get(
@@ -378,12 +378,119 @@ export const getDepartmentRosterCalender = createAsyncThunk(
             "Content-Type": "application/json",
           },
         }
-      );
-      console.log("calender calender calender calender :", res);
-      return res.data;
+      )
+      console.log("calender calender calender calender :", res)
+      return res.data
     } catch (error) {
-      console.log("Error department month list:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error department month list:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
+export const createGoFence = createAsyncThunk(
+  "departmentSlice/createGoFence",
+  async ({ departmentId, data }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI
+
+    try {
+      const res = await axiosInstance.post(
+        `/api/v1/GeoFence/department/${departmentId}`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      console.log("departments month list :", res)
+      return res.data
+    } catch (error) {
+      console.log("Error department month list:", error)
+      return rejectWithValue(error.response?.data || error.message)
+    }
+  }
+)
+export const getDepartmentGoefences = createAsyncThunk(
+  "departmentSlice/getDepartmentGoefences",
+  async ({ departmentId }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI
+
+    try {
+      const res = await axiosInstance.get(
+        `/api/v1/GeoFence/department/${departmentId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      console.log("departments month list :", res)
+      return res.data
+    } catch (error) {
+      console.log("Error department month list:", error)
+      return rejectWithValue(error.response?.data || error.message)
+    }
+  }
+)
+export const deleteFence = createAsyncThunk(
+  "departmentSlice/deleteFence",
+  async ({ fenceId }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI
+
+    try {
+      const res = await axiosInstance.get(`/api/v1/GeoFence/${fenceId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      })
+      console.log("departments month list :", res)
+      return res.data
+    } catch (error) {
+      console.log("Error department month list:", error)
+      return rejectWithValue(error.response?.data || error.message)
+    }
+  }
+)
+export const editGeofence = createAsyncThunk(
+  "departmentSlice/editGeofence",
+  async ({ fenceId, data }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI
+
+    try {
+      const res = await axiosInstance.put(`/api/v1/GeoFence/${fenceId}`, data, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      })
+      console.log("departments month list :", res)
+      return res.data
+    } catch (error) {
+      console.log("Error department month list:", error)
+      return rejectWithValue(error.response?.data || error.message)
+    }
+  }
+)
+export const getGeofFence = createAsyncThunk(
+  "departmentSlice/getGeofFence",
+  async ({ fenceId }, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI
+
+    try {
+      const res = await axiosInstance.get(`/api/v1/GeoFence/${fenceId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      })
+      console.log("departments month list :", res)
+      return res.data
+    } catch (error) {
+      console.log("Error department month list:", error)
+      return rejectWithValue(error.response?.data || error.message)
+    }
+  }
+)

@@ -154,6 +154,7 @@ function UseInitialStates() {
       page: 1,
       pageSize: 10,
     },
+    geofences: [],
     departmentLinkedIds:
       typeof window !== "undefined"
         ? JSON.parse(localStorage.getItem("departmentLinkedIds")) || "[]"
@@ -165,8 +166,13 @@ function UseInitialStates() {
     error: null,
     message: "",
     timestamp: null,
-
+    loadingCreateGofence: false,
     loadingGetDepartmentMonthView: false,
+    loadingDeleteGeoFence: false,
+    loadingEditGeoFence: false,
+    singleGeoFence: {},
+    loadingGetGeofence: false,
+    loadingGetDepartmentGeofences: false,
     departmentMonthView: null,
     currentDepartment: null,
     departmentCategories: [],

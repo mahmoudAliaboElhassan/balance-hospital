@@ -68,6 +68,7 @@ const AdminPanel = lazy(() => import("../pages/adminPanel"))
 
 // Category Management Components
 const Category = lazy(() => import("../pages/adminPanel/category"))
+const Reports = lazy(() => import("../pages/adminPanel/reports"))
 const DoctorDetails = lazy(() =>
   import("../pages/adminPanel/category/doctorData.jsx")
 )
@@ -88,6 +89,12 @@ const PendingDoctorRequests = lazy(() =>
 const Department = lazy(() => import("../pages/adminPanel/department"))
 const CreateDepartment = lazy(() =>
   import("../pages/adminPanel/department/createDepartment")
+)
+const CreateGoFence = lazy(() =>
+  import("../pages/adminPanel/department/geofence/create/index.jsx")
+)
+const EditGoFence = lazy(() =>
+  import("../pages/adminPanel/department/geofence/edit/index.jsx")
 )
 const EditDepartment = lazy(() =>
   import("../pages/adminPanel/department/editDepartment")
@@ -208,6 +215,7 @@ const ProtectedAdminPanel = withGuard(AdminPanel)
 
 // Category Management (Requires userCanManageCategory permission)
 const ProtectedCategory = withGuard(Category, "userCanManageCategory")
+const ProtedReports = withGuard(Reports, "userCanManageCategory")
 const ProtectedDocotrDetails = withGuard(DoctorDetails)
 const ProtectedEditDoctorData = withGuard(
   EditDoctorData,
@@ -238,6 +246,11 @@ const ProtectedCreateDepartment = withGuard(
   CreateDepartment,
   "userCanManageDepartments"
 )
+const ProtectedCreateGoFence = withGuard(
+  CreateGoFence,
+  "userCanManageDepartments"
+)
+const ProtectedEditGeoFence = withGuard(EditGoFence, "userCanManageDepartments")
 const ProtectedEditDepartment = withGuard(EditDepartment, [
   "userCanManageCategory",
   "userCanManageDepartments",
@@ -439,6 +452,7 @@ const router = createBrowserRouter([
           // ========== CATEGORY MANAGEMENT ==========
           // Permission Required: userCanManageCategory
           { path: "categories", element: withSuspense(ProtectedCategory) },
+          { path: "reports", element: withSuspense(ProtedReports) },
           {
             path: "doctors/:id",
             element: withSuspense(ProtectedDocotrDetails),
@@ -470,6 +484,14 @@ const router = createBrowserRouter([
           {
             path: "department/create",
             element: withSuspense(ProtectedCreateDepartment),
+          },
+          {
+            path: "department/geofence/:departmentId",
+            element: withSuspense(ProtectedCreateGoFence),
+          },
+          {
+            path: "department/geofence/edit/:departmentId",
+            element: withSuspense(ProtectedEditGeoFence),
           },
           {
             path: "department/edit/:depId",

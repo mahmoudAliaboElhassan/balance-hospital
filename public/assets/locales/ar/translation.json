@@ -113,6 +113,8 @@
     "categories": "التخصصات",
     "pendingDoctorRequests": "حالة الأطباء",
     "departments": "الاماكن",
+    "reports": "التقارير",
+
     "subDepartments": "الأماكن الفرعية",
     "managementRoles": "أدوار الإدارة",
     "yourCategory": "تخصصك",
@@ -1771,6 +1773,8 @@
     "users": "جاري تحميل المستخدمين…",
     "roles": "جاري تحميل الأدوار…",
     "roleData": "جاري تحميل بيانات الدور…",
+    "geofences": "جارٍ تحميل الأسوار الجغرافية...",
+    "geofence": "جارٍ تحميل السور الجغرافي...",
     "doctorData": "جاري تحميل بيانات الطبيب",
     "departmentCalendar": "جاري تحميل تقويم المكان ...",
     "doctorRequests": "جاري تحميل طلبات الأطباء...",
@@ -2830,6 +2834,131 @@
         "title": "خطأ",
         "text": "حدث خطأ أثناء حذف الإشعارات. يرجى المحاولة مرة أخرى."
       }
+    }
+  },
+
+  "geoFenceForm": {
+    "title": "إنشاء سياج جغرافي",
+    "editTitle": "تعديل السياج الجغرافي",
+
+    "sections": {
+      "basicInfo": "المعلومات الأساسية",
+      "wifi": "إعدادات الواي فاي",
+      "beacon": "إعدادات البيكون"
+    },
+
+    "fields": {
+      "name": "اسم السياج الجغرافي",
+      "latitude": "خط العرض",
+      "longitude": "خط الطول",
+      "radius": "نصف القطر (بالمتر)",
+      "priority": "الأولوية",
+      "wifi": "الواي فاي",
+      "activePeriod": "فترة التفعيل",
+      "from": "من",
+      "beacon": "البيكون",
+      "activeFrom": "نشط من",
+      "activeTo": "نشط إلى (اختياري)",
+      "wifiSsid": "اسم شبكة الواي فاي (SSID)",
+      "wifiPolicy": "سياسة الواي فاي",
+      "beaconUuid": "معرّف البيكون (UUID)",
+      "beaconPolicy": "سياسة البيكون"
+    },
+
+    "wifiPolicy": {
+      "disabled": "معطل (0)",
+      "required": "إلزامي (1)",
+      "optional": "اختياري (2)"
+    },
+
+    "beaconPolicy": {
+      "disabled": "معطل (0)",
+      "required": "إلزامي (1)",
+      "optional": "اختياري (2)"
+    },
+
+    "placeholders": {
+      "name": "مثلاً: قسم الطوارئ - المدخل الرئيسي"
+    },
+
+    "hints": {
+      "radius": "المدى: من 10 إلى 10,000 متر",
+      "priority": "كلما زادت القيمة، زادت الأولوية",
+      "beaconUuid": "الصيغة: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+    },
+
+    "errors": {
+      "nameRequired": "الاسم مطلوب",
+      "nameMin": "يجب أن لا يقل الاسم عن 3 أحرف",
+      "latitudeRequired": "خط العرض مطلوب",
+      "latitudeMin": "يجب أن يكون خط العرض بين -90 و 90",
+      "latitudeMax": "يجب أن يكون خط العرض بين -90 و 90",
+      "longitudeRequired": "خط الطول مطلوب",
+      "longitudeMin": "يجب أن يكون خط الطول بين -180 و 180",
+      "longitudeMax": "يجب أن يكون خط الطول بين -180 و 180",
+      "radiusRequired": "نصف القطر مطلوب",
+      "radiusMin": "يجب ألا يقل نصف القطر عن 10 أمتار",
+      "radiusMax": "يجب ألا يزيد نصف القطر عن 10,000 متر",
+      "priorityRequired": "الأولوية مطلوبة",
+      "priorityMin": "يجب ألا تقل الأولوية عن 0",
+      "priorityMax": "يجب ألا تتجاوز الأولوية 1000",
+      "activeFromRequired": "تاريخ البدء مطلوب",
+      "activeToMin": "يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء",
+      "wifiPolicyRequired": "سياسة الواي فاي مطلوبة",
+      "beaconPolicyRequired": "سياسة البيكون مطلوبة",
+      "beaconUuidFormat": "يجب أن يكون معرّف البيكون بصيغة صحيحة"
+    },
+
+    "buttons": {
+      "cancel": "إلغاء",
+      "create": "إنشاء سياج جغرافي",
+      "creating": "جارٍ الإنشاء...",
+      "update": "تحديث السياج الجغرافي",
+      "updating": "جارٍ التحديث..."
+    },
+
+    "success": {
+      "created": "تم إنشاء السياج الجغرافي بنجاح",
+      "updated": "تم تحديث السياج الجغرافي بنجاح"
+    },
+
+    "error": {
+      "title": "حدث خطأ"
+    }
+  },
+  "geoFence": {
+    "title": "الأسوار الجغرافية",
+
+    "actions": {
+      "create": "إنشاء سياج جغرافي",
+      "add": "إضافة",
+      "edit": "تعديل",
+      "delete": "حذف"
+    },
+
+    "delete": {
+      "confirmTitle": "هل تريد حذف السياج الجغرافي؟",
+      "confirmMessage": "هل أنت متأكد أنك تريد حذف هذا السياج الجغرافي؟",
+      "warning": "لا يمكن التراجع عن هذا الإجراء.",
+      "confirm": "نعم، احذفه"
+    },
+
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "currentlyActive": "يعمل الآن",
+      "scheduled": "مجدول"
+    },
+
+    "policy": {
+      "disabled": "معطل",
+      "required": "إلزامي",
+      "optional": "اختياري"
+    },
+
+    "empty": {
+      "title": "لا توجد أسوار جغرافية",
+      "description": "لا يحتوي هذا القسم على أي أسوار جغرافية حتى الآن."
     }
   }
 }

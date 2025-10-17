@@ -18,13 +18,13 @@ export const authSlice = createSlice({
       localStorage.removeItem("token")
       localStorage.removeItem("role")
       localStorage.removeItem("expiresAt")
-      localStorage.removeItem("departmentManagerId")
-      localStorage.removeItem("categoryManagerId")
+      localStorage.setItem("departmentManagerId", "0")
+      localStorage.setItem("categoryManagerId", "0")
       localStorage.removeItem("hyprid")
       state.token = ""
       state.role = ""
-      state.departmentManagerId = ""
-      state.categoryManagerId = ""
+      state.departmentManagerId = "0"
+      state.categoryManagerId = "0"
       state.expiresAt = ""
       state.hyprid = ""
     },
@@ -114,15 +114,14 @@ export const authSlice = createSlice({
           action.payload.data.user.departmentManager?.departmentId
         )
         state.departmentManagerId =
-          action.payload.data.user.departmentManager?.departmentId ||
-          "undefined"
+          action.payload.data.user.departmentManager?.departmentId || "0"
 
         localStorage.setItem(
           "categoryManagerId",
           action.payload.data.user.categoryManager?.categoryId
         )
         state.categoryManagerId =
-          action.payload.data.user.categoryManager?.categoryId || "undefined"
+          action.payload.data.user.categoryManager?.categoryId || "0"
       })
 
       .addCase(logIn.rejected, (state, action) => {

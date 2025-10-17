@@ -1,21 +1,21 @@
-import React from "react";
+import React from "react"
 
 function UseInitialValues() {
   const INITIAL_VALUES_LOGIN = {
     email: "",
     password: "",
     rememberMe: false,
-  };
+  }
 
   const INITIAL_VALUES_FORGET_PASSWORD = {
     inputValue: "",
-  };
+  }
 
   const INITIAL_VALUES_RESET_PASSWORD = {
     token: "",
     newPassword: "",
     confirmNewPassword: "",
-  };
+  }
 
   const INITIAL_VALUES_ADD_CATEGORY = {
     nameArabic: "",
@@ -23,7 +23,7 @@ function UseInitialValues() {
     code: "",
     description: "",
     isActive: true,
-  };
+  }
 
   // Department Form Initial Values
   const INITIAL_VALUES_ADD_DEPARTMENT = {
@@ -44,7 +44,7 @@ function UseInitialValues() {
       startDate: new Date().toISOString().split("T")[0], // Current date in YYYY-MM-DD format
       notes: "",
     },
-  };
+  }
 
   const INITIAL_VALUES_EDIT_DEPARTMENT = {
     nameArabic: "",
@@ -53,7 +53,7 @@ function UseInitialValues() {
     location: "",
     description: "",
     isActive: true,
-  };
+  }
 
   const INITIAL_VALUES_DEPARTMENT_FILTERS = {
     search: "",
@@ -68,7 +68,7 @@ function UseInitialValues() {
     orderDesc: true,
     page: 1,
     pageSize: 10,
-  };
+  }
 
   // SubDepartment Form Initial Values
   const INITIAL_VALUES_ADD_SUBDEPARTMENT = {
@@ -77,7 +77,7 @@ function UseInitialValues() {
     departmentId: "",
     location: "",
     isActive: true,
-  };
+  }
 
   const INITIAL_VALUES_EDIT_SUBDEPARTMENT = {
     id: "",
@@ -86,7 +86,7 @@ function UseInitialValues() {
     departmentId: "",
     location: "",
     isActive: true,
-  };
+  }
 
   // ContractingType Form Initial Values
   const INITIAL_VALUES_ADD_CONTRACTINGTYPE = {
@@ -95,7 +95,7 @@ function UseInitialValues() {
     allowOvertimeHours: false,
     maxHoursPerWeek: 168,
     isActive: true,
-  };
+  }
 
   const INITIAL_VALUES_EDIT_CONTRACTINGTYPE = {
     id: "",
@@ -104,7 +104,7 @@ function UseInitialValues() {
     allowOvertimeHours: false,
     maxHoursPerWeek: 168,
     isActive: true,
-  };
+  }
 
   const INITIAL_VALUES_CONTRACTINGTYPE_FILTERS = {
     search: "",
@@ -116,13 +116,13 @@ function UseInitialValues() {
     orderDesc: true,
     page: 1,
     pageSize: 10,
-  };
+  }
   const INITIAL_VALUES_ADD_SCIENTIFIC_DEGREE = {
     nameArabic: "",
     nameEnglish: "",
     code: "",
     isActive: true,
-  };
+  }
   const INITIAL_VALUES_ADD_SHIFT_HOUR_TYPE = {
     nameArabic: "",
     nameEnglish: "",
@@ -134,7 +134,7 @@ function UseInitialValues() {
     isActive: true,
     isOvertime: false,
     description: "",
-  };
+  }
 
   const INITIAL_VALUES_ADD_ROLE = {
     roleNameAr: "",
@@ -152,21 +152,21 @@ function UseInitialValues() {
     userCanViewReports: false,
     userCanManageSchedules: false,
     userCanManageRequests: false,
-  };
+  }
 
   const INITIAL_VALUES_ASSIGN_USER_TO_ROLE = {
     userId: "",
     roleId: "",
     changeReason: "",
     notes: "",
-  };
+  }
 
-  const currentDate = new Date();
+  const currentDate = new Date()
   const nextMonth = new Date(
     currentDate.getFullYear(),
     currentDate.getMonth() + 1,
     1
-  );
+  )
 
   const INITIAL_VALUES_CREATE_BASIC_ROASTER = {
     categoryId: localStorage.getItem("categoryId"),
@@ -188,7 +188,7 @@ function UseInitialValues() {
     allowLeaveRequests: true,
     // maxConsecutiveDays: 7,
     // minRestDaysBetween: 1,
-  };
+  }
   const INITIAL_VALUES_ADD_SHIFTS_DEPARTMENT = {
     shifts: [
       {
@@ -197,7 +197,7 @@ function UseInitialValues() {
       },
     ],
     overwriteExisting: false,
-  };
+  }
 
   const INITIAL_VALUES_ADD_CONTRACTING_TYPES = {
     contractingTypes: [
@@ -209,16 +209,29 @@ function UseInitialValues() {
       },
     ],
     overwriteExisting: false,
-  };
+  }
   const INITIAL_VALUES_ADD_DEPARTMENT_TO_ROSTER = {
     departmentId: "",
     notes: "",
     defaultShifts: [],
-  };
+  }
   const INITIAL_VALUES_ASSIGN_DEPARTMENT_HEAD = {
     UserId: "",
     notes: "",
-  };
+  }
+  const INITIAL_VALUES_ADD_GOEFENCE = {
+    name: "",
+    latitude: "",
+    longitude: "",
+    radiusMeters: 150,
+    priority: 100,
+    activeFrom: new Date().toISOString().slice(0, 16),
+    activeToUtc: "",
+    wifiSsid: "",
+    beaconUuid: "",
+    wifiPolicy: 1,
+    beaconPolicy: 0,
+  }
 
   return {
     INITIAL_VALUES_LOGIN,
@@ -242,7 +255,8 @@ function UseInitialValues() {
     INITIAL_VALUES_ADD_CONTRACTING_TYPES,
     INITIAL_VALUES_ADD_DEPARTMENT_TO_ROSTER,
     INITIAL_VALUES_ASSIGN_DEPARTMENT_HEAD,
-  };
+    INITIAL_VALUES_ADD_GOEFENCE,
+  }
 }
 
-export default UseInitialValues;
+export default UseInitialValues

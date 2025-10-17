@@ -33,6 +33,13 @@ function UseAdminPanel() {
       permission: "userCanManageCategory",
     },
     {
+      id: 2,
+      name: t("adminPanel.reports"),
+      icon: "📄",
+      path: `/admin-panel/reports`,
+      permission: "userCanManageCategory",
+    },
+    {
       id: 3,
       name:
         loginRoleResponseDto?.roleNameEn == "System Administrator"
@@ -121,7 +128,8 @@ function UseAdminPanel() {
   if (loginRoleResponseDto.roleNameEn == "System Administrator") {
     adminPanelRoutes.push(roster)
   }
-  if (departmentManagerId != "undefined" && categoryManagerId != "undefined") {
+
+  if (departmentManagerId != "0" && categoryManagerId != "0") {
     adminPanelRoutes.push(specifyRole)
   }
 

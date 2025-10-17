@@ -1,9 +1,9 @@
-import React from "react";
-import * as Yup from "yup";
-import { useTranslation } from "react-i18next";
+import React from "react"
+import * as Yup from "yup"
+import { useTranslation } from "react-i18next"
 
 function UseFormValidation() {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   // Login Validation Schema
   const VALIDATION_SCHEMA_LOGIN = Yup.object().shape({
@@ -14,7 +14,7 @@ function UseFormValidation() {
       .min(8, t("validationAuth.password.minLength"))
       .required(t("validationAuth.password.required")),
     rememberMe: Yup.boolean(),
-  });
+  })
 
   // Reset Password Validation Schema
   const VALIDATION_SCHEMA_RESET_PASSWORD = Yup.object().shape({
@@ -25,7 +25,7 @@ function UseFormValidation() {
     confirmNewPassword: Yup.string()
       .oneOf([Yup.ref("newPassword"), null], t("validationAuth.password.match"))
       .required(t("validationAuth.password.confirmRequired")),
-  });
+  })
 
   // Category Add Validation Schema
   const VALIDATION_SCHEMA_ADD_CATEGORY = Yup.object().shape({
@@ -57,7 +57,7 @@ function UseFormValidation() {
       t("validation.maxLength", { count: 500 })
     ),
     isActive: Yup.boolean(),
-  });
+  })
 
   // Category Edit Validation Schema
   const VALIDATION_SCHEMA_EDIT_CATEGORY = Yup.object().shape({
@@ -89,7 +89,7 @@ function UseFormValidation() {
       t("validation.maxLength", { count: 500 })
     ),
     isActive: Yup.boolean(),
-  });
+  })
 
   // Department Add Validation Schema
   const VALIDATION_SCHEMA_ADD_DEPARTMENT = Yup.object().shape({
@@ -144,7 +144,7 @@ function UseFormValidation() {
     //   startDate: Yup.date().required(),
     //   notes: Yup.string().max(500),
     // }),
-  });
+  })
 
   // Department Edit Validation Schema
   const VALIDATION_SCHEMA_EDIT_DEPARTMENT = Yup.object().shape({
@@ -179,7 +179,7 @@ function UseFormValidation() {
       t("validation.maxLength", { count: 500 })
     ),
     isActive: Yup.boolean(),
-  });
+  })
 
   // Department Filters Validation Schema
   const departmentFiltersValidationSchema = Yup.object().shape({
@@ -194,9 +194,9 @@ function UseFormValidation() {
       .nullable()
       .when("createdFrom", (createdFrom, schema) => {
         if (createdFrom) {
-          return schema.min(createdFrom, t("validation.endDateAfterStart"));
+          return schema.min(createdFrom, t("validation.endDateAfterStart"))
         }
-        return schema;
+        return schema
       }),
     includeSubDepartments: Yup.boolean(),
     includeStatistics: Yup.boolean(),
@@ -213,7 +213,7 @@ function UseFormValidation() {
       .min(1, t("validation.minPageSize"))
       .max(100, t("validation.maxPageSize"))
       .integer(t("validation.integerOnly")),
-  });
+  })
 
   // Delete Department Validation Schema
   const deleteDepartmentValidationSchema = Yup.object().shape({
@@ -221,7 +221,7 @@ function UseFormValidation() {
       .required(t("department.delete.reasonRequired"))
       .min(3, t("validation.minLength", { count: 3 }))
       .max(500, t("validation.maxLength", { count: 500 })),
-  });
+  })
 
   // SubDepartment Add Validation Schema
   const VALIDATION_SCHEMA_ADD_SUBDEPARTMENT = Yup.object().shape({
@@ -252,7 +252,7 @@ function UseFormValidation() {
       .min(2, t("validation.minLength", { count: 2 }))
       .max(200, t("validation.maxLength", { count: 200 })),
     isActive: Yup.boolean(),
-  });
+  })
 
   // SubDepartment Edit Validation Schema
   const VALIDATION_SCHEMA_EDIT_SUBDEPARTMENT = Yup.object().shape({
@@ -287,13 +287,13 @@ function UseFormValidation() {
       .min(2, t("validation.minLength", { count: 2 }))
       .max(200, t("validation.maxLength", { count: 200 })),
     isActive: Yup.boolean(),
-  });
+  })
 
   // ContractingType Add Validation Schema
 
   const arabicPattern =
-    /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\u060C\u061B\u061F\u066A-\u066D\u06D4\u2000-\u206F\u200B-\u200D\u2060-\u2064\s0-9_\-\(\)\.,؟!،؛]+$/;
-  const englishPattern = /^[A-Za-z\u00C0-\u017F0-9\s_\-\(\)\.\'",!?:;]+$/;
+    /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\u060C\u061B\u061F\u066A-\u066D\u06D4\u2000-\u206F\u200B-\u200D\u2060-\u2064\s0-9_\-\(\)\.,؟!،؛]+$/
+  const englishPattern = /^[A-Za-z\u00C0-\u017F0-9\s_\-\(\)\.\'",!?:;]+$/
 
   const VALIDATION_SCHEMA_ADD_CONTRACTINGTYPE = Yup.object().shape({
     nameArabic: Yup.string()
@@ -321,7 +321,7 @@ function UseFormValidation() {
       .integer(t("validation.integerOnly"))
       .required(t("contractingTypes.form.validation.maxHoursRequired")),
     isActive: Yup.boolean(),
-  });
+  })
 
   const VALIDATION_SCHEMA_EDIT_CONTRACTINGTYPE = Yup.object().shape({
     id: Yup.number()
@@ -361,7 +361,7 @@ function UseFormValidation() {
       .required(t("contractingTypes.form.validation.maxHoursRequired")),
 
     isActive: Yup.boolean().required(t("validation.required")),
-  });
+  })
 
   // Delete ContractingType Validation Schema
   const deleteContractingTypeValidationSchema = Yup.object().shape({
@@ -369,7 +369,7 @@ function UseFormValidation() {
       .required(t("contractingTypes.delete.reasonRequired"))
       .min(3, t("validation.minLength", { count: 3 }))
       .max(500, t("validation.maxLength", { count: 500 })),
-  });
+  })
 
   const VALIDATION_SCHEMA_ADD_SCIENTIFIC_DEGREE = Yup.object().shape({
     nameArabic: Yup.string()
@@ -399,7 +399,7 @@ function UseFormValidation() {
         t("scientificDegrees.form.validation.codeFormat")
       ),
     isActive: Yup.boolean(),
-  });
+  })
 
   const VALIDATION_SCHEMA_EDIT_SCIENTIFIC_DEGREE = Yup.object().shape({
     nameArabic: Yup.string()
@@ -429,7 +429,7 @@ function UseFormValidation() {
         t("scientificDegrees.form.validation.codeFormat")
       ),
     isActive: Yup.boolean(),
-  });
+  })
   const VALIDATION_SCHEMA_ADD_SHIFT_HOUR_TYPE = Yup.object().shape({
     nameArabic: Yup.string()
       .trim()
@@ -466,16 +466,16 @@ function UseFormValidation() {
         "hours-match-time-difference",
         t("shiftHourTypeForm.form.validation.hoursMustMatchTimeDifference"), // Add appropriate translation
         function (value) {
-          const { startTime, endTime } = this.parent;
+          const { startTime, endTime } = this.parent
 
           if (!startTime || !endTime || value === undefined) {
-            return true; // Skip validation if times are not set
+            return true // Skip validation if times are not set
           }
 
           // Calculate the difference in hours
-          const calculatedHours = calculateHoursDifference(startTime, endTime);
+          const calculatedHours = calculateHoursDifference(startTime, endTime)
 
-          return value === calculatedHours;
+          return value === calculatedHours
         }
       ),
 
@@ -489,39 +489,39 @@ function UseFormValidation() {
         "end-time-after-start",
         t("shiftHourTypeForm.form.validation.endTimeAfterStart"), // Add appropriate translation
         function (value) {
-          const { startTime } = this.parent;
+          const { startTime } = this.parent
 
           if (!startTime || !value) {
-            return true; // Skip validation if either time is not set
+            return true // Skip validation if either time is not set
           }
 
           // Validate that endTime is after startTime (considering overnight shifts)
-          return true; // Implement your logic here
+          return true // Implement your logic here
         }
       ),
 
     isActive: Yup.boolean().required(),
-  });
+  })
 
   function calculateHoursDifference(startTime, endTime) {
     // Assuming time format is "HH:mm" (24-hour format)
-    const [startHours, startMinutes] = startTime.split(":").map(Number);
-    const [endHours, endMinutes] = endTime.split(":").map(Number);
+    const [startHours, startMinutes] = startTime.split(":").map(Number)
+    const [endHours, endMinutes] = endTime.split(":").map(Number)
 
     // Convert to minutes since midnight
-    let startTotalMinutes = startHours * 60 + startMinutes;
-    let endTotalMinutes = endHours * 60 + endMinutes;
+    let startTotalMinutes = startHours * 60 + startMinutes
+    let endTotalMinutes = endHours * 60 + endMinutes
 
     // Handle overnight shifts (when end time is less than start time)
     if (endTotalMinutes < startTotalMinutes) {
-      endTotalMinutes += 24 * 60; // Add 24 hours worth of minutes
+      endTotalMinutes += 24 * 60 // Add 24 hours worth of minutes
     }
 
     // Calculate difference in minutes and convert to hours
-    const diffMinutes = endTotalMinutes - startTotalMinutes;
-    const diffHours = Math.round(diffMinutes / 60); // Round to nearest hour
+    const diffMinutes = endTotalMinutes - startTotalMinutes
+    const diffHours = Math.round(diffMinutes / 60) // Round to nearest hour
 
-    return diffHours;
+    return diffHours
   }
 
   const VALIDATION_SCHEMA_ADD_ROLE = Yup.object({
@@ -576,7 +576,7 @@ function UseFormValidation() {
       t("managementRoleForm.validation.atLeastOnePermission") ||
         "At least one permission must be selected",
       function (value) {
-        const { parent } = this;
+        const { parent } = this
         const permissionFields = [
           "userCanManageCategory",
           "userCanManageRole",
@@ -590,9 +590,9 @@ function UseFormValidation() {
           "userCanViewReports",
           "userCanManageSchedules",
           "userCanManageRequests",
-        ];
+        ]
 
-        return permissionFields.some((field) => parent[field] === true);
+        return permissionFields.some((field) => parent[field] === true)
       }
     ),
     // Define other boolean fields (optional, but good practice)
@@ -607,7 +607,7 @@ function UseFormValidation() {
     userCanViewReports: Yup.boolean(),
     userCanManageSchedules: Yup.boolean(),
     userCanManageRequests: Yup.boolean(),
-  });
+  })
 
   const VALIDATION_SCHEMA_ASSIGN_USER_TO_ROLE = Yup.object({
     userId: Yup.string().required(
@@ -636,8 +636,8 @@ function UseFormValidation() {
       t("assignUserRole.validation.notesMax") ||
         "Notes must not exceed 500 characters"
     ),
-  });
-  const currentYear = new Date().getFullYear();
+  })
+  const currentYear = new Date().getFullYear()
 
   const VALIDATION_SCHEMA_UPDATE_BASIC_ROASTER = Yup.object().shape({
     categoryId: Yup.number().required(t("roster.validation.categoryRequired")),
@@ -661,7 +661,7 @@ function UseFormValidation() {
         "endAfterStart",
         t("roster.validation.endDayAfterStartDay"),
         function (value) {
-          return value >= this.parent.startDay;
+          return value >= this.parent.startDay
         }
       ),
     month: Yup.number()
@@ -675,7 +675,7 @@ function UseFormValidation() {
     submissionDeadline: Yup.date()
       .required(t("roster.validation.deadlineRequired"))
       .min(new Date(), t("roster.validation.deadlineFuture")),
-  });
+  })
 
   const VALIDATION_SCHEMA_CREATE_BASIC_ROASTER = Yup.object().shape({
     // categoryId: Yup.number().required(t("roster.validation.categoryRequired")),
@@ -699,7 +699,7 @@ function UseFormValidation() {
         "endAfterStart",
         t("roster.validation.endDayAfterStartDay"),
         function (value) {
-          return value >= this.parent.startDay;
+          return value >= this.parent.startDay
         }
       ),
     month: Yup.number()
@@ -731,7 +731,7 @@ function UseFormValidation() {
     //   .min(0, t("roster.validation.minRestDaysMin"))
     //   .max(7, t("roster.validation.minRestDaysMax"))
     //   .required(),
-  });
+  })
 
   const VALIDATION_SCHEMA_ADD_SHIFTS_DEPARTMENT = Yup.object().shape({
     shifts: Yup.array()
@@ -748,7 +748,7 @@ function UseFormValidation() {
       )
       .min(1, t("roster.phaseOne.validation.atLeastOneShift")),
     overwriteExisting: Yup.boolean(),
-  });
+  })
 
   const VALIDATION_SCHEMA_ADD_ROSTER_CONTRACTING_TYPES = Yup.object().shape({
     contractingTypes: Yup.array()
@@ -771,12 +771,12 @@ function UseFormValidation() {
               "max-greater-than-required",
               t("roster.contractingTypes.validation.maxGreaterThanRequired"),
               function (value) {
-                const { defaultRequiredDoctors } = this.parent;
+                const { defaultRequiredDoctors } = this.parent
                 return (
                   !defaultRequiredDoctors ||
                   !value ||
                   value >= defaultRequiredDoctors
-                );
+                )
               }
             )
             .required(
@@ -788,7 +788,7 @@ function UseFormValidation() {
         })
       ),
     overwriteExisting: Yup.boolean(),
-  });
+  })
 
   const VALIDATION_SCHEMA_EDIT_ROSTER_CONTRAFCTING_TYPES = Yup.object({
     defaultRequiredDoctors: Yup.number()
@@ -801,13 +801,13 @@ function UseFormValidation() {
         return schema.min(
           defaultRequired,
           t("roster.contractingTypes.validation.maxGreaterThanRequired")
-        );
+        )
       }),
     notes: Yup.string().max(
       500,
       t("roster.contractingTypes.validation.notesMaxLength")
     ),
-  });
+  })
 
   const VALIDATION_SCHEMA_EDIT_WORKING_HOUR = Yup.object({
     requiredDoctors: Yup.number()
@@ -822,26 +822,114 @@ function UseFormValidation() {
         "max-greater-than-required",
         t("roster.workingHours.validation.maxDoctorsGreater"),
         function (value) {
-          const { requiredDoctors } = this.parent;
-          return !requiredDoctors || !value || value >= requiredDoctors;
+          const { requiredDoctors } = this.parent
+          return !requiredDoctors || !value || value >= requiredDoctors
         }
       ),
     notes: Yup.string().max(500, t("roster.workingHours.validation.notesMax")),
     modificationReason: Yup.string()
       .required(t("roster.workingHours.validation.modificationReasonRequired"))
       .max(500, t("roster.workingHours.validation.modificationReasonMax")),
-  });
+  })
 
   const VALIDATION_SCHEMA_ADD_DEPARTMENT_TO_ROSTER = Yup.object().shape({
     departmentId: Yup.string().required(t("validation.required")),
     notes: Yup.string().max(500, t("validation.maxLength", { max: 500 })),
-  });
+  })
 
   const VALIDATION_SCHEMA_ASSIGN_DEPARTMENT_HEAD = Yup.object({
     UserId: Yup.string().required(
       t("validation.required") || "User is required"
     ),
-  });
+  })
+
+  const VALIDATION_SCHEMA_CREATE_GOEFENCE = Yup.object({
+    name: Yup.string()
+      .required(t("geoFenceForm.errors.nameRequired") || "Name is required")
+      .min(
+        3,
+        t("geoFenceForm.errors.nameMin") || "Name must be at least 3 characters"
+      ),
+    latitude: Yup.number()
+      .required(
+        t("geoFenceForm.errors.latitudeRequired") || "Latitude is required"
+      )
+      .min(
+        -90,
+        t("geoFenceForm.errors.latitudeMin") ||
+          "Latitude must be between -90 and 90"
+      )
+      .max(
+        90,
+        t("geoFenceForm.errors.latitudeMax") ||
+          "Latitude must be between -90 and 90"
+      ),
+    longitude: Yup.number()
+      .required(
+        t("geoFenceForm.errors.longitudeRequired") || "Longitude is required"
+      )
+      .min(
+        -180,
+        t("geoFenceForm.errors.longitudeMin") ||
+          "Longitude must be between -180 and 180"
+      )
+      .max(
+        180,
+        t("geoFenceForm.errors.longitudeMax") ||
+          "Longitude must be between -180 and 180"
+      ),
+    radiusMeters: Yup.number()
+      .required(t("geoFenceForm.errors.radiusRequired") || "Radius is required")
+      .min(
+        10,
+        t("geoFenceForm.errors.radiusMin") ||
+          "Radius must be at least 10 meters"
+      )
+      .max(
+        10000,
+        t("geoFenceForm.errors.radiusMax") ||
+          "Radius must not exceed 10000 meters"
+      ),
+    priority: Yup.number()
+      .required(
+        t("geoFenceForm.errors.priorityRequired") || "Priority is required"
+      )
+      .min(
+        0,
+        t("geoFenceForm.errors.priorityMin") || "Priority must be at least 0"
+      )
+      .max(
+        1000,
+        t("geoFenceForm.errors.priorityMax") || "Priority must not exceed 1000"
+      ),
+    // activeFrom: Yup.date().required(
+    //   t("geoFenceForm.errors.activeFromRequired") ||
+    //     "Active from date is required"
+    // ),
+    // activeToUtc: Yup.date()
+    //   .nullable()
+    //   .min(
+    //     Yup.ref("activeFrom"),
+    //     t("geoFenceForm.errors.activeToMin") ||
+    //       "Active to must be after active from"
+    //   ),
+    // wifiPolicy: Yup.number().required(
+    //   t("geoFenceForm.errors.wifiPolicyRequired") || "WiFi policy is required"
+    // ),
+    // beaconPolicy: Yup.number().required(
+    //   t("geoFenceForm.errors.beaconPolicyRequired") ||
+    //     "Beacon policy is required"
+    // ),
+    // wifiSsid: Yup.string().nullable(),
+    // beaconUuid: Yup.string()
+    //   .nullable()
+    //   .matches(
+    //     /^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/i,
+    //     t("geoFenceForm.errors.beaconUuidFormat") ||
+    //       "Beacon UUID must be in valid format"
+    //   ),
+  })
+
   return {
     VALIDATION_SCHEMA_LOGIN,
     VALIDATION_SCHEMA_RESET_PASSWORD,
@@ -869,7 +957,8 @@ function UseFormValidation() {
     VALIDATION_SCHEMA_EDIT_WORKING_HOUR,
     VALIDATION_SCHEMA_ADD_DEPARTMENT_TO_ROSTER,
     VALIDATION_SCHEMA_ASSIGN_DEPARTMENT_HEAD,
-  };
+    VALIDATION_SCHEMA_CREATE_GOEFENCE,
+  }
 }
 
-export default UseFormValidation;
+export default UseFormValidation
