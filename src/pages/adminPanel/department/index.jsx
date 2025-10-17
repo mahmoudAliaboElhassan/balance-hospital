@@ -17,6 +17,7 @@ import {
   Building,
   Calendar,
   Link2,
+  PlusIcon,
 } from "lucide-react"
 import { getDepartments } from "../../../state/act/actDepartment"
 import { getCategories } from "../../../state/act/actCategory"
@@ -714,6 +715,16 @@ function Department() {
                                 title={t("department.actions.edit")}
                               >
                                 <Edit size={16} />
+                              </button>
+                            </Link>
+                            <Link
+                              to={`/admin-panel/department/geofence/${department.id}`}
+                            >
+                              <button
+                                className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors cursor-pointer"
+                                title={t("geoFence.actions.create")}
+                              >
+                                <PlusIcon size={16} />
                               </button>
                             </Link>
 
