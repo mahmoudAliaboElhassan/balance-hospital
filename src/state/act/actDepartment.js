@@ -440,7 +440,7 @@ export const deleteFence = createAsyncThunk(
     const { rejectWithValue } = thunkAPI
 
     try {
-      const res = await axiosInstance.get(`/api/v1/GeoFence/${fenceId}`, {
+      const res = await axiosInstance.delete(`/api/v1/GeoFence/${fenceId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",

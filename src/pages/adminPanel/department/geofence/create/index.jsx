@@ -317,9 +317,7 @@ function CreateGeoFence() {
                             : "border-gray-300 text-gray-700 bg-white hover:bg-gray-50"
                         }`}
                         onClick={() =>
-                          navigate(
-                            `/admin-panel/departments/${departmentId}/geofences`
-                          )
+                          navigate(`/admin-panel/department/${departmentId}/`)
                         }
                       >
                         {t("geoFenceForm.buttons.cancel") || "Cancel"}
