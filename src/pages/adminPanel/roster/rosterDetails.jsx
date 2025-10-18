@@ -236,6 +236,7 @@ function RosterDetails() {
 
   const statusInfo = getStatusInfo(selectedRoster.status)
   console.log("statusInfo", statusInfo)
+  localStorage.setItem("rosterTitle", selectedRoster.title)
   const StatusIcon = statusInfo.icon
 
   return (

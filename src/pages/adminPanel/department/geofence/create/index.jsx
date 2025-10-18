@@ -95,9 +95,7 @@ function CreateGeoFence() {
           <div className="mb-6">
             <div className="flex items-center gap-4 mb-4">
               <button
-                onClick={() =>
-                  navigate(`/admin-panel/departments/${departmentId}/geofences`)
-                }
+                onClick={() => navigate(-1)}
                 className={`p-2 rounded-lg border transition-colors ${
                   isDark
                     ? "border-gray-600 hover:bg-gray-700 text-gray-300"

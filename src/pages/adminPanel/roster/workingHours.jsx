@@ -39,6 +39,8 @@ function WorkingHours() {
   const navigate = useNavigate()
   const { t, i18n } = useTranslation()
 
+  const rosterTitle = localStorage.getItem("rosterTitle")
+
   // State for filters
   const [filters, setFilters] = useState({
     startDate: "",
@@ -213,8 +215,6 @@ function WorkingHours() {
   }
 
   const exportToExcel = async () => {
-    // Import ExcelJS
-
     const workbook = new ExcelJS.Workbook()
     const worksheet = workbook.addWorksheet(
       currentLang === "ar" ? "جدول العمل" : "Working Hours"
@@ -312,7 +312,7 @@ function WorkingHours() {
         left: { style: "thick", color: { argb: "FF1E3A8A" } },
         right: { style: "thick", color: { argb: "FF1E3A8A" } },
       }
-      cell.protection = { locked: true }
+      cell.protection = { locked: false }
 
       currentCol += deptCol.totalCols
     })
@@ -348,7 +348,7 @@ function WorkingHours() {
         left: { style: "medium", color: { argb: "FF1E40AF" } },
         right: { style: "medium", color: { argb: "FF1E40AF" } },
       }
-      cell.protection = { locked: true }
+      cell.protection = { locked: false }
 
       currentCol += deptCol.totalCols
     })
@@ -383,7 +383,7 @@ function WorkingHours() {
         left: { style: "medium", color: { argb: "FF2563EB" } },
         right: { style: "medium", color: { argb: "FF2563EB" } },
       }
-      dateCell.protection = { locked: true }
+      dateCell.protection = { locked: false }
 
       // Merge Day column (rows 3-5)
       worksheet.mergeCells(3, startCol + 1, 5, startCol + 1)
@@ -406,7 +406,7 @@ function WorkingHours() {
         left: { style: "medium", color: { argb: "FF2563EB" } },
         right: { style: "medium", color: { argb: "FF2563EB" } },
       }
-      dayCell.protection = { locked: true }
+      dayCell.protection = { locked: false }
 
       currentCol += 2
 
@@ -435,7 +435,7 @@ function WorkingHours() {
           left: { style: "medium", color: { argb: "FF2563EB" } },
           right: { style: "medium", color: { argb: "FF2563EB" } },
         }
-        shiftCell.protection = { locked: true }
+        shiftCell.protection = { locked: false }
 
         currentCol += shift.contractingTypes.size
       })
@@ -473,7 +473,7 @@ function WorkingHours() {
             left: { style: "thin", color: { argb: "FF60A5FA" } },
             right: { style: "thin", color: { argb: "FF60A5FA" } },
           }
-          cell.protection = { locked: true }
+          cell.protection = { locked: false }
           currentCol++
         })
       })
@@ -507,7 +507,7 @@ function WorkingHours() {
         left: { style: "thin", color: { argb: "FF9CA3AF" } },
         right: { style: "thin", color: { argb: "FF9CA3AF" } },
       }
-      dateCell.protection = { locked: true }
+      dateCell.protection = { locked: false }
       currentCol++
 
       // Day header
@@ -531,7 +531,7 @@ function WorkingHours() {
         left: { style: "thin", color: { argb: "FF9CA3AF" } },
         right: { style: "thin", color: { argb: "FF9CA3AF" } },
       }
-      dayCell.protection = { locked: true }
+      dayCell.protection = { locked: false }
       currentCol++
 
       deptCol.shifts.forEach((shift) => {
@@ -557,7 +557,7 @@ function WorkingHours() {
             left: { style: "thin", color: { argb: "FF9CA3AF" } },
             right: { style: "thin", color: { argb: "FF9CA3AF" } },
           }
-          cell.protection = { locked: true }
+          cell.protection = { locked: false }
           currentCol++
         })
       })
@@ -615,7 +615,7 @@ function WorkingHours() {
             left: { style: "medium", color: { argb: "FF9CA3AF" } },
             right: { style: "medium", color: { argb: "FF9CA3AF" } },
           }
-          dateCell.protection = { locked: true }
+          dateCell.protection = { locked: false }
           currentCol++
 
           // Merge day cell
@@ -645,7 +645,7 @@ function WorkingHours() {
             left: { style: "medium", color: { argb: "FF9CA3AF" } },
             right: { style: "medium", color: { argb: "FF9CA3AF" } },
           }
-          dayCell.protection = { locked: true }
+          dayCell.protection = { locked: false }
           currentCol++
 
           // For each shift
@@ -758,10 +758,10 @@ function WorkingHours() {
           for (let i = 0; i < deptCol.totalCols; i++) {
             const countCell = worksheet.getCell(currentRow, currentCol)
             countCell.value = ""
-            countCell.protection = { locked: true }
+            countCell.protection = { locked: false }
             const doctorsCell = worksheet.getCell(currentRow + 1, currentCol)
             doctorsCell.value = ""
-            doctorsCell.protection = { locked: true }
+            doctorsCell.protection = { locked: false }
             currentCol++
           }
         }
@@ -790,20 +790,21 @@ function WorkingHours() {
       })
     })
 
-    // Protect worksheet while allowing unlocked cells to be edited
+    // Protect worksheet with FULL FORMATTING permissions
     await worksheet.protect("", {
       selectLockedCells: true,
       selectUnlockedCells: true,
-      formatCells: false,
-      formatColumns: false,
-      formatRows: false,
-      insertRows: false,
-      insertColumns: false,
-      deleteRows: false,
-      deleteColumns: false,
-      sort: false,
-      autoFilter: false,
-      pivotTables: false,
+      formatCells: true, // Allow formatting cells
+      formatColumns: true, // Allow formatting columns
+      formatRows: true, // Allow formatting rows
+      insertRows: true, // Allow inserting rows
+      insertColumns: true, // Allow inserting columns
+      deleteRows: true, // Allow deleting rows
+      deleteColumns: true, // Allow deleting columns
+      sort: true, // Allow sorting
+      autoFilter: true, // Allow auto filter
+      pivotTables: true, // Allow pivot tables
+      insertHyperlinks: true, // Allow inserting hyperlinks
     })
 
     // Generate file
@@ -814,9 +815,7 @@ function WorkingHours() {
     const url = window.URL.createObjectURL(blob)
     const link = document.createElement("a")
     link.href = url
-    link.download = `WorkingHours_${
-      new Date().toISOString().split("T")[0]
-    }.xlsx`
+    link.download = `${rosterTitle}.xlsx`
     link.click()
     window.URL.revokeObjectURL(url)
   }
