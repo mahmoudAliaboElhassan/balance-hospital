@@ -16,7 +16,7 @@ import {
   getContractingTypesForSignup,
 } from "../../../state/act/actContractingType"
 import LoadingGetData from "../../../components/LoadingGetData"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, ArrowRight } from "lucide-react"
 import { getAvailbleScientficDegrees } from "../../../state/act/actRosterManagement"
 
 function EditDoctorData() {
@@ -207,7 +207,11 @@ function EditDoctorData() {
                     : "border-gray-300 hover:bg-gray-50 text-gray-700"
                 }`}
               >
-                <ArrowLeft size={20} />
+                {currentLang == "en" ? (
+                  <ArrowLeft size={20} />
+                ) : (
+                  <ArrowRight size={20} />
+                )}{" "}
               </button>
               <h1
                 className={`text-2xl sm:text-3xl font-bold ${

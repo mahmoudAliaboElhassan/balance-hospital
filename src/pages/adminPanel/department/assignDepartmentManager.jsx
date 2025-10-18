@@ -1,43 +1,43 @@
-import React, { useEffect, useState, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import { useTranslation } from "react-i18next";
-import { assignDepManager } from "../../../state/act/actDepartment";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { getUserSummaries } from "../../../state/slices/user";
-import { getDepartmentById } from "../../../state/act/actDepartment";
-import LoadingGetData from "../../../components/LoadingGetData";
-import { Search, User, ArrowLeft, Building } from "lucide-react";
-import UseFormValidation from "../../../hooks/use-form-validation";
-import UseInitialValues from "../../../hooks/use-initial-values";
+import React, { useEffect, useState, useRef } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { Formik, Form, Field, ErrorMessage } from "formik"
+import * as Yup from "yup"
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
+import { useTranslation } from "react-i18next"
+import { assignDepManager } from "../../../state/act/actDepartment"
+import { useNavigate, useParams, useSearchParams } from "react-router-dom"
+import { getUserSummaries } from "../../../state/slices/user"
+import { getDepartmentById } from "../../../state/act/actDepartment"
+import LoadingGetData from "../../../components/LoadingGetData"
+import { Search, User, ArrowLeft, Building, ArrowRight } from "lucide-react"
+import UseFormValidation from "../../../hooks/use-form-validation"
+import UseInitialValues from "../../../hooks/use-initial-values"
 import {
   assignCategoryHead,
   getCategoryById,
-} from "../../../state/act/actCategory";
-import { doctorForAssignment } from "../../../state/act/actUsers";
+} from "../../../state/act/actCategory"
+import { doctorForAssignment } from "../../../state/act/actUsers"
 
 function AssignDepartmentManager() {
-  const { t, i18n } = useTranslation();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { depId: id } = useParams();
-  const dropdownRef = useRef(null);
-  const currentLang = i18n.language;
-  const isRTL = currentLang === "ar";
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { depId: id } = useParams()
+  const dropdownRef = useRef(null)
+  const currentLang = i18n.language
+  const isRTL = currentLang === "ar"
 
-  const [searchParams] = useSearchParams();
-  const type = searchParams.get("type");
+  const [searchParams] = useSearchParams()
+  const type = searchParams.get("type")
 
   // State for user search and selection
-  const [userSearchTerm, setUserSearchTerm] = useState("");
-  const [showUserDropdown, setShowUserDropdown] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [userSearchTerm, setUserSearchTerm] = useState("")
+  const [showUserDropdown, setShowUserDropdown] = useState(false)
+  const [selectedUser, setSelectedUser] = useState(null)
 
-  const { mymode } = useSelector((state) => state.mode);
-  const isDark = mymode === "dark";
+  const { mymode } = useSelector((state) => state.mode)
+  const isDark = mymode === "dark"
 
   // Redux selectors
   const {
@@ -45,40 +45,40 @@ function AssignDepartmentManager() {
     loadingGetDepartmentById,
     selectedDepartment,
     error,
-  } = useSelector((state) => state.department);
+  } = useSelector((state) => state.department)
 
   const {
     loadingAssignCategoryHead,
     selectedCategory,
     loadingGetSingleCategory,
-  } = useSelector((state) => state.category);
+  } = useSelector((state) => state.category)
 
-  console.log("selectedCategory", selectedCategory);
+  console.log("selectedCategory", selectedCategory)
 
   const {
     users,
     loading: usersLoading,
     error: usersError,
-  } = useSelector((state) => state.users);
+  } = useSelector((state) => state.users)
 
   // Validation schema
-  const { VALIDATION_SCHEMA_ASSIGN_DEPARTMENT_HEAD } = UseFormValidation();
+  const { VALIDATION_SCHEMA_ASSIGN_DEPARTMENT_HEAD } = UseFormValidation()
   // Initial form values
-  const { INITIAL_VALUES_ASSIGN_DEPARTMENT_HEAD } = UseInitialValues();
+  const { INITIAL_VALUES_ASSIGN_DEPARTMENT_HEAD } = UseInitialValues()
 
   // Load initial data
   useEffect(() => {
     if (id) {
       if (type == "department") {
-        dispatch(getDepartmentById(id));
-        dispatch(doctorForAssignment({}));
+        dispatch(getDepartmentById(id))
+        dispatch(doctorForAssignment({}))
       } else {
-        dispatch(getCategoryById({ categoryId: id }));
+        dispatch(getCategoryById({ categoryId: id }))
         dispatch(
           doctorForAssignment({
             categoryId: id,
           })
-        );
+        )
       }
     }
     // dispatch(
@@ -90,78 +90,78 @@ function AssignDepartmentManager() {
     //     isEmailVerified: true,
     //   })
     // );
-  }, [dispatch, id]);
+  }, [dispatch, id])
 
   // Handle user search with debouncing
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (type === "department") {
-        dispatch(doctorForAssignment({ search: userSearchTerm }));
+        dispatch(doctorForAssignment({ search: userSearchTerm }))
       } else {
         dispatch(
           doctorForAssignment({ search: userSearchTerm, categoryId: id })
-        );
+        )
       }
-    }, 300);
+    }, 300)
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [userSearchTerm, dispatch]);
+    return () => clearTimeout(delayDebounceFn)
+  }, [userSearchTerm, dispatch])
 
   // Handle click outside dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowUserDropdown(false);
+        setShowUserDropdown(false)
       }
-    };
+    }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside)
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
 
   // Handle user search input
   const handleUserSearchChange = (e, setFieldValue) => {
-    const value = e.target.value;
-    setUserSearchTerm(value);
-    setShowUserDropdown(true);
+    const value = e.target.value
+    setUserSearchTerm(value)
+    setShowUserDropdown(true)
 
     if (!value) {
-      setSelectedUser(null);
-      setFieldValue("UserId", "");
+      setSelectedUser(null)
+      setFieldValue("UserId", "")
     }
-  };
+  }
 
   // Handle user selection
   const handleUserSelect = (user, setFieldValue) => {
-    setSelectedUser(user);
-    setUserSearchTerm(`${user.nameEnglish} (${user.mobile})`);
-    setFieldValue("UserId", user.userId);
-    setShowUserDropdown(false);
-  };
+    setSelectedUser(user)
+    setUserSearchTerm(`${user.nameEnglish} (${user.mobile})`)
+    setFieldValue("UserId", user.userId)
+    setShowUserDropdown(false)
+  }
 
   // Filter users based on search
   const filteredUsers =
     users?.filter((user) => {
-      if (!userSearchTerm) return true;
-      const searchLower = userSearchTerm?.toLowerCase();
+      if (!userSearchTerm) return true
+      const searchLower = userSearchTerm?.toLowerCase()
       return (
         user.nameEnglish?.toLowerCase().includes(searchLower) ||
         user.nameArabic?.includes(userSearchTerm) ||
         user.mobile.includes(userSearchTerm) ||
         user.role?.toLowerCase().includes(searchLower)
-      );
-    }) || [];
+      )
+    }) || []
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     if (type == "department") {
       dispatch(assignDepManager({ data: { ...values, DepartmentId: id } }))
         .unwrap()
         .then(() => {
-          resetForm();
-          setSelectedUser(null);
-          setUserSearchTerm("");
+          resetForm()
+          setSelectedUser(null)
+          setUserSearchTerm("")
           toast.success(
             t("departmentForm.success.managerAssigned") ||
               "Manager assigned successfully",
@@ -173,11 +173,11 @@ function AssignDepartmentManager() {
               pauseOnHover: true,
               draggable: true,
             }
-          );
-          navigate(`/admin-panel/department/${id}`);
+          )
+          navigate(`/admin-panel/department/${id}`)
         })
         .catch((error) => {
-          console.error("Manager assignment error:", error);
+          console.error("Manager assignment error:", error)
           Swal.fire({
             title: t("departmentForm.error.title") || "Error",
             text:
@@ -189,18 +189,18 @@ function AssignDepartmentManager() {
             confirmButtonColor: "#ef4444",
             background: isDark ? "#2d2d2d" : "#ffffff",
             color: isDark ? "#f0f0f0" : "#111827",
-          });
+          })
         })
         .finally(() => {
-          setSubmitting(false);
-        });
+          setSubmitting(false)
+        })
     } else {
       dispatch(assignCategoryHead({ data: { ...values, CategoryId: id } }))
         .unwrap()
         .then(() => {
-          resetForm();
-          setSelectedUser(null);
-          setUserSearchTerm("");
+          resetForm()
+          setSelectedUser(null)
+          setUserSearchTerm("")
           toast.success(
             t("categoryForm.success.managerAssigned") ||
               "Manager assigned successfully",
@@ -212,11 +212,11 @@ function AssignDepartmentManager() {
               pauseOnHover: true,
               draggable: true,
             }
-          );
-          navigate(`/admin-panel/category/${id}`);
+          )
+          navigate(`/admin-panel/category/${id}`)
         })
         .catch((error) => {
-          console.error("Manager assignment error:", error);
+          console.error("Manager assignment error:", error)
           Swal.fire({
             title: t("categoryForm.error.assignManager") || "Error",
             text:
@@ -228,18 +228,18 @@ function AssignDepartmentManager() {
             confirmButtonColor: "#ef4444",
             background: isDark ? "#2d2d2d" : "#ffffff",
             color: isDark ? "#f0f0f0" : "#111827",
-          });
+          })
         })
         .finally(() => {
-          setSubmitting(false);
-        });
+          setSubmitting(false)
+        })
     }
-  };
+  }
 
   if (loadingGetDepartmentById)
-    return <LoadingGetData text={t("gettingData.departmentData")} />;
+    return <LoadingGetData text={t("gettingData.departmentData")} />
   if (loadingGetSingleCategory)
-    return <LoadingGetData text={t("gettingData.categoryData")} />;
+    return <LoadingGetData text={t("gettingData.categoryData")} />
 
   return (
     <div
@@ -259,7 +259,11 @@ function AssignDepartmentManager() {
                     : "border-gray-300 hover:bg-gray-50 text-gray-700"
                 }`}
               >
-                <ArrowLeft size={20} />
+                {currentLang == "en" ? (
+                  <ArrowLeft size={20} />
+                ) : (
+                  <ArrowRight size={20} />
+                )}{" "}
               </button>
               <h1
                 className={`text-2xl sm:text-3xl font-bold ${
@@ -895,7 +899,7 @@ function AssignDepartmentManager() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default AssignDepartmentManager;
+export default AssignDepartmentManager

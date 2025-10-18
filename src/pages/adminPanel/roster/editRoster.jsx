@@ -1,15 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  useNavigate,
-  useSearchParams,
-  Link,
-  useParams,
-} from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { toast } from "react-toastify";
+import React, { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useNavigate, useSearchParams, Link, useParams } from "react-router-dom"
+import { useTranslation } from "react-i18next"
+import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik"
+import * as Yup from "yup"
+import { toast } from "react-toastify"
 import {
   ArrowLeft,
   Plus,
@@ -24,58 +19,59 @@ import {
   CheckCircle,
   Save,
   X,
-} from "lucide-react";
+  ArrowRight,
+} from "lucide-react"
 
-import { updateRosterBasicInfo } from "../../../state/act/actRosterManagement";
-import { getRosterById } from "../../../state/act/actRosterManagement";
-import { selectSelectedRoster } from "../../../state/slices/roster";
+import { updateRosterBasicInfo } from "../../../state/act/actRosterManagement"
+import { getRosterById } from "../../../state/act/actRosterManagement"
+import { selectSelectedRoster } from "../../../state/slices/roster"
 
-import LoadingGetData from "../../../components/LoadingGetData";
-import Swal from "sweetalert2";
-import UseFormValidation from "../../../hooks/use-form-validation";
+import LoadingGetData from "../../../components/LoadingGetData"
+import Swal from "sweetalert2"
+import UseFormValidation from "../../../hooks/use-form-validation"
 
 const UpdateRoster = () => {
-  const { t, i18n } = useTranslation();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { rosterId } = useParams();
-  const [searchParams] = useSearchParams();
-  const currentLang = i18n.language;
-  const isRTL = currentLang === "ar";
-  const rosterType = searchParams.get("type") || "basic";
-  const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = rosterType === "complete" ? 4 : 2;
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { rosterId } = useParams()
+  const [searchParams] = useSearchParams()
+  const currentLang = i18n.language
+  const isRTL = currentLang === "ar"
+  const rosterType = searchParams.get("type") || "basic"
+  const [currentStep, setCurrentStep] = useState(1)
+  const totalSteps = rosterType === "complete" ? 4 : 2
 
-  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [isDataLoaded, setIsDataLoaded] = useState(false)
 
   const { loading, success, error, updateError } = useSelector(
     (state) => state.rosterManagement
-  );
-  const selectedRoster = useSelector(selectSelectedRoster);
+  )
+  const selectedRoster = useSelector(selectSelectedRoster)
 
-  const { mymode } = useSelector((state) => state.mode);
-  const isDark = mymode === "dark";
+  const { mymode } = useSelector((state) => state.mode)
+  const isDark = mymode === "dark"
 
   const { categoryTypes, loadingGetCategoryTypes } = useSelector(
     (state) => state.category
-  );
-  const { VALIDATION_SCHEMA_UPDATE_BASIC_ROASTER } = UseFormValidation();
+  )
+  const { VALIDATION_SCHEMA_UPDATE_BASIC_ROASTER } = UseFormValidation()
 
   useEffect(() => {
     if (rosterId) {
-      dispatch(getRosterById({ rosterId }));
+      dispatch(getRosterById({ rosterId }))
     }
-  }, [dispatch, rosterId]);
+  }, [dispatch, rosterId])
 
   // Set up cascading dropdowns when roster data is loaded
   useEffect(() => {
     if (selectedRoster && categoryTypes.length > 0 && !isDataLoaded) {
-      setIsDataLoaded(true);
+      setIsDataLoaded(true)
     }
-  }, [selectedRoster, categoryTypes, dispatch, isDataLoaded]);
+  }, [selectedRoster, categoryTypes, dispatch, isDataLoaded])
 
   if (loadingGetCategoryTypes || loading.fetch) {
-    return <LoadingGetData text={t("gettingData.roster")} />;
+    return <LoadingGetData text={t("gettingData.roster")} />
   }
 
   // Show error if roster not found
@@ -98,26 +94,30 @@ const UpdateRoster = () => {
               to="/admin-panel/rosters"
               className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
-              <ArrowLeft size={16} className={isRTL ? "ml-2" : "mr-2"} />
+              {currentLang == "en" ? (
+                <ArrowLeft size={20} />
+              ) : (
+                <ArrowRight size={20} />
+              )}{" "}
               {t("common.goBack")}
             </Link>
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   // Get current year and next 5 years
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 7 }, (_, i) => currentYear + i);
+  const currentYear = new Date().getFullYear()
+  const years = Array.from({ length: 7 }, (_, i) => currentYear + i)
 
   const getInitialValues = () => {
-    if (!selectedRoster) return {};
+    if (!selectedRoster) return {}
 
     const submissionDeadline = selectedRoster.submissionDeadline
       ? new Date(selectedRoster.submissionDeadline)?.toISOString()?.slice(0, 16)
-      : "";
-    console.log("selectedRoster", selectedRoster?.endDate?.split("-")[2]);
+      : ""
+    console.log("selectedRoster", selectedRoster?.endDate?.split("-")[2])
 
     return {
       categoryId: selectedRoster.categoryId?.toString() || "",
@@ -130,22 +130,22 @@ const UpdateRoster = () => {
       endDay: selectedRoster.endDate.split("-")[2] || 1,
       allowSwapRequests: selectedRoster.allowSwapRequests ?? true,
       allowLeaveRequests: selectedRoster.allowLeaveRequests ?? true,
-    };
-  };
+    }
+  }
 
   const handleSubmit = async (values, { setSubmitting }) => {
-    console.log("values", values);
-    let formattedDeadline = values.submissionDeadline;
+    console.log("values", values)
+    let formattedDeadline = values.submissionDeadline
 
     const startDate = `${values.year}-${values.month
       .toString()
-      .padStart(2, "0")}-${values.startDay.toString().padStart(2, "0")}`;
+      .padStart(2, "0")}-${values.startDay.toString().padStart(2, "0")}`
     const endDate = `${values.year}-${values.month
       .toString()
-      .padStart(2, "0")}-${values.endDay.toString().padStart(2, "0")}`;
+      .padStart(2, "0")}-${values.endDay.toString().padStart(2, "0")}`
 
-    console.log("startDate", startDate);
-    console.log("endDate", endDate);
+    console.log("startDate", startDate)
+    console.log("endDate", endDate)
 
     const cleanedValues = {
       title: values.title,
@@ -157,10 +157,10 @@ const UpdateRoster = () => {
       submissionDeadline: formattedDeadline,
       allowSwapRequests: values.allowSwapRequests,
       allowLeaveRequests: values.allowLeaveRequests,
-    };
+    }
 
-    console.log("Cleaned values for update", cleanedValues);
-    setSubmitting(true);
+    console.log("Cleaned values for update", cleanedValues)
+    setSubmitting(true)
 
     dispatch(
       updateRosterBasicInfo({
@@ -170,7 +170,7 @@ const UpdateRoster = () => {
     )
       .unwrap()
       .then(() => {
-        setSubmitting(false);
+        setSubmitting(false)
         toast.success(t("roster.success.updated"), {
           position: "top-right",
           autoClose: 3000,
@@ -178,12 +178,12 @@ const UpdateRoster = () => {
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
-        });
-        navigate(`/admin-panel/rosters/${rosterId}`);
+        })
+        navigate(`/admin-panel/rosters/${rosterId}`)
       })
       .catch((error) => {
-        setSubmitting(false);
-        console.log("Update error:", error);
+        setSubmitting(false)
+        console.log("Update error:", error)
         Swal.fire({
           title: t("roster.error.updateFailed"),
           text: error.errors[0],
@@ -192,9 +192,9 @@ const UpdateRoster = () => {
           confirmButtonColor: "#ef4444",
           background: "#ffffff",
           color: "#111827",
-        });
-      });
-  };
+        })
+      })
+  }
 
   const monthNames = isRTL
     ? [
@@ -224,39 +224,39 @@ const UpdateRoster = () => {
         "October",
         "November",
         "December",
-      ];
+      ]
 
   const getStepTitle = (step) => {
     switch (step) {
       case 1:
-        return t("roster.form.basicInfo");
+        return t("roster.form.basicInfo")
       case 2:
-        return t("roster.form.settings");
+        return t("roster.form.settings")
       default:
-        return "";
+        return ""
     }
-  };
+  }
 
   const getStepIcon = (step) => {
     switch (step) {
       case 1:
-        return <Info size={20} />;
+        return <Info size={20} />
       case 2:
-        return <Settings size={20} />;
+        return <Settings size={20} />
       default:
-        return <Info size={20} />;
+        return <Info size={20} />
     }
-  };
+  }
 
   const nextStep = async (e, validateForm, setTouched) => {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault()
+    e.stopPropagation()
 
     // If we're on the first step, validate first step fields only
     if (currentStep === 1) {
       try {
         // Trigger validation for the entire form
-        const errors = await validateForm();
+        const errors = await validateForm()
 
         // Define first step fields that need validation
         const firstStepFields = [
@@ -268,33 +268,33 @@ const UpdateRoster = () => {
           "month",
           "year",
           "submissionDeadline",
-        ];
+        ]
 
         // Check if any first step fields have errors
         const hasFirstStepErrors = firstStepFields.some(
           (field) => errors[field]
-        );
+        )
 
         if (hasFirstStepErrors) {
           // Mark first step fields as touched to show errors
-          const touchedFields = {};
+          const touchedFields = {}
           firstStepFields.forEach((field) => {
-            touchedFields[field] = true;
-          });
-          setTouched(touchedFields);
-          return; // Don't proceed to next step
+            touchedFields[field] = true
+          })
+          setTouched(touchedFields)
+          return // Don't proceed to next step
         }
       } catch (error) {
-        console.error("Validation error:", error);
-        return;
+        console.error("Validation error:", error)
+        return
       }
     }
 
     // Proceed to next step if validation passes or not on first step
-    setCurrentStep((prev) => Math.min(prev + 1, totalSteps));
-  };
+    setCurrentStep((prev) => Math.min(prev + 1, totalSteps))
+  }
 
-  const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
+  const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1))
 
   return (
     <div
@@ -313,7 +313,11 @@ const UpdateRoster = () => {
                   : "border-gray-300 hover:bg-gray-50 text-gray-700"
               } ${isRTL ? "ml-4" : "mr-4"}`}
             >
-              <ArrowLeft size={20} />
+              {currentLang == "en" ? (
+                <ArrowLeft size={20} />
+              ) : (
+                <ArrowRight size={20} />
+              )}{" "}
             </Link>
             <div>
               <h1
@@ -835,10 +839,14 @@ const UpdateRoster = () => {
                           className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
                         >
                           {t("common.next")}
-                          <ArrowLeft
-                            size={16}
-                            className={`${isRTL ? "mr-2 rotate-180" : "ml-2"}`}
-                          />
+                          {currentLang == "ar" ? (
+                            <ArrowLeft
+                              size={16}
+                              className={"mr-2 rotate-180"}
+                            />
+                          ) : (
+                            <ArrowRight size={16} className={"ml-2"} />
+                          )}
                         </button>
                       ) : (
                         <button
@@ -871,7 +879,7 @@ const UpdateRoster = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default UpdateRoster;
+export default UpdateRoster

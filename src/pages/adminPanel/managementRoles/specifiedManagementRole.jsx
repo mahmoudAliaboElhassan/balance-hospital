@@ -19,6 +19,7 @@ import {
   UserCheck,
   ChevronLeft,
   ChevronRight,
+  ArrowRight,
 } from "lucide-react"
 
 // Import only the allowed actions
@@ -245,7 +246,7 @@ function SpecifiedManagementRole() {
   const handleHistoryPageChange = (newPage) => {
     setHistoryFilters((prev) => ({ ...prev, page: newPage }))
   }
-
+  const currentLang = i18next.language
   // Loading states
   if (loading.roleUsers || loading.permissions || loading.history) {
     return <LoadingGetData text={t("gettingData.roleData")} />
@@ -306,7 +307,11 @@ function SpecifiedManagementRole() {
                       : "border-gray-300 hover:bg-gray-50 text-gray-700"
                   }`}
                 >
-                  <ArrowLeft size={20} />
+                  {currentLang == "en" ? (
+                    <ArrowLeft size={20} />
+                  ) : (
+                    <ArrowRight size={20} />
+                  )}{" "}
                 </Link>
                 <div>
                   <h1

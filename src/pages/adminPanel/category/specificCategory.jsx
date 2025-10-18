@@ -54,6 +54,8 @@ import {
   LinkIcon,
   ArrowUpRight,
   ExternalLink,
+  ArrowLeft,
+  ArrowRight,
 } from "lucide-react"
 import { getRosterByCategory } from "../../../state/act/actRosterManagement"
 import ModalUpdateRosterStatus from "../../../components/ModalUpdateRosterStatus"
@@ -992,23 +994,7 @@ const SpecificCategory = () => {
                   : "text-blue-600 hover:text-blue-800"
               } transition-colors duration-200 mb-4 group`}
             >
-              <svg
-                className={`w-5 h-5 ${isRTL ? "mr-2" : "ml-2"} transform ${
-                  isRTL
-                    ? "group-hover:translate-x-1 rotate-180"
-                    : "group-hover:-translate-x-1"
-                } transition-transform duration-200`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                />
-              </svg>
+              {currentLang == "en" ? <ArrowLeft /> : <ArrowRight />}
               {t("specificCategory.navigation.backToCategories")}
             </button>
           )}

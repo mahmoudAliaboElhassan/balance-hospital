@@ -1,38 +1,38 @@
-import React, { useEffect, useState, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import { useTranslation } from "react-i18next";
+import React, { useEffect, useState, useRef } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { Formik, Form, Field, ErrorMessage } from "formik"
+import * as Yup from "yup"
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
+import { useTranslation } from "react-i18next"
 import {
   updateDepartment,
   getDepartmentById,
-} from "../../../state/act/actDepartment";
-import { useNavigate, useParams } from "react-router-dom";
-import UseFormValidation from "../../../hooks/use-form-validation";
-import { getCategoryTypes } from "../../../state/act/actCategory";
-import { getUserSummaries } from "../../../state/slices/user";
-import LoadingGetData from "../../../components/LoadingGetData";
-import { Search, User, ArrowLeft } from "lucide-react";
-import Forbidden from "../../../components/forbidden";
+} from "../../../state/act/actDepartment"
+import { useNavigate, useParams } from "react-router-dom"
+import UseFormValidation from "../../../hooks/use-form-validation"
+import { getCategoryTypes } from "../../../state/act/actCategory"
+import { getUserSummaries } from "../../../state/slices/user"
+import LoadingGetData from "../../../components/LoadingGetData"
+import { Search, User, ArrowLeft, ArrowRight } from "lucide-react"
+import Forbidden from "../../../components/forbidden"
 
 function EditDepartment() {
-  const { t, i18n } = useTranslation();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { depId: id } = useParams();
-  const dropdownRef = useRef(null);
-  const currentLang = i18n.language;
-  const isRTL = currentLang === "ar";
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { depId: id } = useParams()
+  const dropdownRef = useRef(null)
+  const currentLang = i18n.language
+  const isRTL = currentLang === "ar"
 
   // State for user search and selection
-  const [userSearchTerm, setUserSearchTerm] = useState("");
+  const [userSearchTerm, setUserSearchTerm] = useState("")
 
-  const { mymode } = useSelector((state) => state.mode);
-  const isDark = mymode === "dark";
+  const { mymode } = useSelector((state) => state.mode)
+  const isDark = mymode === "dark"
 
-  const { VALIDATION_SCHEMA_ADD_DEPARTMENT } = UseFormValidation();
+  const { VALIDATION_SCHEMA_ADD_DEPARTMENT } = UseFormValidation()
 
   // Redux selectors
   const {
@@ -41,41 +41,41 @@ function EditDepartment() {
     loadingGetSingleDepartment,
     singleDepartmentError,
     departmentLinkedIds,
-  } = useSelector((state) => state.department);
+  } = useSelector((state) => state.department)
 
   const { departmentManagerId, loginRoleResponseDto } = useSelector(
     (state) => state.auth
-  );
+  )
 
   if (
     departmentManagerId != id &&
     loginRoleResponseDto?.roleNameEn == "Department Manager"
   ) {
-    console.log("not allowed");
-    return <Forbidden />;
+    console.log("not allowed")
+    return <Forbidden />
   }
 
-  console.log(departmentLinkedIds, typeof departmentLinkedIds);
+  console.log(departmentLinkedIds, typeof departmentLinkedIds)
 
   // Normalize to array for consistent handling
   const depIdsArray = Array.isArray(departmentLinkedIds)
     ? departmentLinkedIds
-    : [departmentLinkedIds];
-  const canManage = depIdsArray.some((depId) => depId == id);
+    : [departmentLinkedIds]
+  const canManage = depIdsArray.some((depId) => depId == id)
 
-  console.log("canManage", canManage);
-  console.log("depIdsArray", depIdsArray);
+  console.log("canManage", canManage)
+  console.log("depIdsArray", depIdsArray)
 
   if (!canManage && loginRoleResponseDto?.roleNameEn == "Category Head") {
-    return <Forbidden />;
+    return <Forbidden />
   }
 
   // Load initial data
   useEffect(() => {
-    if (id) dispatch(getDepartmentById(id));
-    dispatch(getCategoryTypes());
-    dispatch(getUserSummaries({ page: 1, pageSize: 50 }));
-  }, [dispatch, id]);
+    if (id) dispatch(getDepartmentById(id))
+    dispatch(getCategoryTypes())
+    dispatch(getUserSummaries({ page: 1, pageSize: 50 }))
+  }, [dispatch, id])
 
   // Handle user search with debouncing
   useEffect(() => {
@@ -87,31 +87,31 @@ function EditDepartment() {
             pageSize: 50,
             searchTerm: userSearchTerm,
           })
-        );
+        )
       } else if (userSearchTerm.length === 0) {
-        dispatch(getUserSummaries({ page: 1, pageSize: 50 }));
+        dispatch(getUserSummaries({ page: 1, pageSize: 50 }))
       }
-    }, 300);
+    }, 300)
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [userSearchTerm, dispatch]);
+    return () => clearTimeout(delayDebounceFn)
+  }, [userSearchTerm, dispatch])
 
   // Handle click outside dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowUserDropdown(false);
+        setShowUserDropdown(false)
       }
-    };
+    }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside)
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
 
   if (loadingGetSingleDepartment)
-    return <LoadingGetData text={t("gettingData.departmentData")} />;
+    return <LoadingGetData text={t("gettingData.departmentData")} />
 
   if (singleDepartmentError)
     return (
@@ -142,7 +142,7 @@ function EditDepartment() {
           </div>
         </div>
       </div>
-    );
+    )
 
   if (!selectedDepartment)
     return (
@@ -165,13 +165,13 @@ function EditDepartment() {
           </div>
         </div>
       </div>
-    );
+    )
 
-  console.log("selectedDepartment", selectedDepartment);
+  console.log("selectedDepartment", selectedDepartment)
 
   // Initialize form values based on selected department
   const getInitialValues = () => {
-    const manager = selectedDepartment.manager || {};
+    const manager = selectedDepartment.manager || {}
 
     return {
       id: selectedDepartment.id,
@@ -209,13 +209,13 @@ function EditDepartment() {
           manager.canManageStaff !== undefined ? manager.canManageStaff : false,
         notes: manager.notes || "",
       },
-    };
-  };
+    }
+  }
 
   const handleSubmit = async (values, { setSubmitting, setFieldError }) => {
     // Transform the data to match the expected API format
 
-    console.log(values);
+    console.log(values)
 
     dispatch(updateDepartment({ id, departmentData: values }))
       .unwrap()
@@ -228,11 +228,11 @@ function EditDepartment() {
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
-        });
-        navigate(`/admin-panel/department/${id}`);
+        })
+        navigate(`/admin-panel/department/${id}`)
       })
       .catch((error) => {
-        console.error("Department update error:", error);
+        console.error("Department update error:", error)
 
         Swal.fire({
           title: t("departmentForm.error.title"),
@@ -247,10 +247,10 @@ function EditDepartment() {
           confirmButtonColor: "#ef4444",
           background: isDark ? "#2d2d2d" : "#ffffff",
           color: isDark ? "#f0f0f0" : "#111827",
-        });
+        })
       })
-      .finally(() => setSubmitting(false));
-  };
+      .finally(() => setSubmitting(false))
+  }
 
   return (
     <div
@@ -270,7 +270,11 @@ function EditDepartment() {
                     : "border-gray-300 hover:bg-gray-50 text-gray-700"
                 }`}
               >
-                <ArrowLeft size={20} />
+                {currentLang == "en" ? (
+                  <ArrowLeft size={20} />
+                ) : (
+                  <ArrowRight size={20} />
+                )}{" "}
               </button>
               <h1
                 className={`text-2xl sm:text-3xl font-bold ${
@@ -419,8 +423,8 @@ function EditDepartment() {
                               "Enter code"
                             }
                             onChange={(e) => {
-                              const upperValue = e.target.value.toUpperCase();
-                              setFieldValue("code", upperValue);
+                              const upperValue = e.target.value.toUpperCase()
+                              setFieldValue("code", upperValue)
                             }}
                           />
                           <ErrorMessage
@@ -605,7 +609,7 @@ function EditDepartment() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default EditDepartment;
+export default EditDepartment

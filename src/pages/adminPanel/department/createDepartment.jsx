@@ -1,59 +1,59 @@
-import React, { useEffect, useState, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import { useTranslation } from "react-i18next";
-import { createDepartment } from "../../../state/act/actDepartment";
-import { useNavigate } from "react-router-dom";
-import UseInitialValues from "../../../hooks/use-initial-values";
-import UseFormValidation from "../../../hooks/use-form-validation";
-import { getCategoryTypes } from "../../../state/act/actCategory";
-import { getUserSummaries } from "../../../state/slices/user";
-import LoadingGetData from "../../../components/LoadingGetData";
-import { Search, User, ArrowLeft } from "lucide-react";
+import React, { useEffect, useState, useRef } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { Formik, Form, Field, ErrorMessage } from "formik"
+import * as Yup from "yup"
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
+import { useTranslation } from "react-i18next"
+import { createDepartment } from "../../../state/act/actDepartment"
+import { useNavigate } from "react-router-dom"
+import UseInitialValues from "../../../hooks/use-initial-values"
+import UseFormValidation from "../../../hooks/use-form-validation"
+import { getCategoryTypes } from "../../../state/act/actCategory"
+import { getUserSummaries } from "../../../state/slices/user"
+import LoadingGetData from "../../../components/LoadingGetData"
+import { Search, User, ArrowLeft, ArrowRight } from "lucide-react"
 
 function CreateDepartment() {
-  const { t, i18n } = useTranslation();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const dropdownRef = useRef(null);
-  const currentLang = i18n.language;
-  const isRTL = currentLang === "ar";
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const dropdownRef = useRef(null)
+  const currentLang = i18n.language
+  const isRTL = currentLang === "ar"
 
   // State for user search and selection
-  const [userSearchTerm, setUserSearchTerm] = useState("");
-  const [showUserDropdown, setShowUserDropdown] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [userSearchTerm, setUserSearchTerm] = useState("")
+  const [showUserDropdown, setShowUserDropdown] = useState(false)
+  const [selectedUser, setSelectedUser] = useState(null)
 
-  const { mymode } = useSelector((state) => state.mode);
-  const isDark = mymode === "dark";
+  const { mymode } = useSelector((state) => state.mode)
+  const isDark = mymode === "dark"
 
-  const { VALIDATION_SCHEMA_ADD_DEPARTMENT } = UseFormValidation();
+  const { VALIDATION_SCHEMA_ADD_DEPARTMENT } = UseFormValidation()
 
   // Initial form values (updated to include userId)
-  const { INITIAL_VALUES_ADD_DEPARTMENT } = UseInitialValues();
+  const { INITIAL_VALUES_ADD_DEPARTMENT } = UseInitialValues()
 
   // Redux selectors
   const { loadingCreateDepartment, createError, createSuccess, createMessage } =
-    useSelector((state) => state.department);
+    useSelector((state) => state.department)
   const { loadingGetCategoryTypes, categoryTypes } = useSelector(
     (state) => state.category
-  );
+  )
   const {
     users,
     loading: usersLoading,
     error: usersError,
-  } = useSelector((state) => state.users);
+  } = useSelector((state) => state.users)
 
   // Load initial data
   useEffect(() => {
-    dispatch(getCategoryTypes());
-    dispatch(getUserSummaries({ page: 1, pageSize: 50 }));
-  }, [dispatch]);
+    dispatch(getCategoryTypes())
+    dispatch(getUserSummaries({ page: 1, pageSize: 50 }))
+  }, [dispatch])
 
-  const hasUsers = users && users.length > 0;
+  const hasUsers = users && users.length > 0
 
   // Handle user search with debouncing
   useEffect(() => {
@@ -65,28 +65,28 @@ function CreateDepartment() {
             pageSize: 50,
             searchTerm: userSearchTerm,
           })
-        );
+        )
       } else if (userSearchTerm.length === 0) {
-        dispatch(getUserSummaries({ page: 1, pageSize: 50 }));
+        dispatch(getUserSummaries({ page: 1, pageSize: 50 }))
       }
-    }, 300);
+    }, 300)
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [userSearchTerm, dispatch]);
+    return () => clearTimeout(delayDebounceFn)
+  }, [userSearchTerm, dispatch])
 
   // Handle click outside dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowUserDropdown(false);
+        setShowUserDropdown(false)
       }
-    };
+    }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside)
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
 
   // Updated validation schema
 
@@ -94,44 +94,44 @@ function CreateDepartment() {
 
   // Handle user search input
   const handleUserSearchChange = (e, setFieldValue) => {
-    const value = e.target.value;
-    setUserSearchTerm(value);
-    setShowUserDropdown(true);
+    const value = e.target.value
+    setUserSearchTerm(value)
+    setShowUserDropdown(true)
 
     if (!value) {
-      setSelectedUser(null);
-      setFieldValue("manager.userId", "");
+      setSelectedUser(null)
+      setFieldValue("manager.userId", "")
     }
-  };
+  }
 
   // Handle user selection
   const handleUserSelect = (user, setFieldValue) => {
-    setSelectedUser(user);
-    setUserSearchTerm(`${user.nameEnglish} (${user.mobile})`);
-    setFieldValue("manager.userId", user.id);
-    setShowUserDropdown(false);
-  };
+    setSelectedUser(user)
+    setUserSearchTerm(`${user.nameEnglish} (${user.mobile})`)
+    setFieldValue("manager.userId", user.id)
+    setShowUserDropdown(false)
+  }
 
   // Filter users based on search
   const filteredUsers =
     users?.filter((user) => {
-      if (!userSearchTerm) return true;
-      const searchLower = userSearchTerm.toLowerCase();
+      if (!userSearchTerm) return true
+      const searchLower = userSearchTerm.toLowerCase()
       return (
         user.nameEnglish.toLowerCase().includes(searchLower) ||
         user.nameArabic?.includes(userSearchTerm) ||
         user.mobile.includes(userSearchTerm) ||
         user.role.toLowerCase().includes(searchLower)
-      );
-    }) || [];
+      )
+    }) || []
 
   const handleSubmit = async (
     values,
     { setSubmitting, resetForm, setFieldError }
   ) => {
     // Transform the data to match the expected API format
-    const { manager, ...otherData } = values;
-    console.log(otherData);
+    const { manager, ...otherData } = values
+    console.log(otherData)
     const submissionData = {
       ...values,
       ...(values.manager.userId
@@ -142,20 +142,20 @@ function CreateDepartment() {
             },
           }
         : {}),
-    };
+    }
 
-    console.log(submissionData);
+    console.log(submissionData)
 
     const sndData = {
       ...otherData,
       ...(values.manager?.userId && { manager: values.manager }),
-    };
-    console.log("send data", sndData);
+    }
+    console.log("send data", sndData)
     dispatch(createDepartment(sndData))
       .unwrap()
       .then(() => {
         // Success handling
-        resetForm();
+        resetForm()
         toast.success(t("departmentForm.success.created"), {
           position: "top-right",
           autoClose: 3000,
@@ -163,11 +163,11 @@ function CreateDepartment() {
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
-        });
-        navigate("/admin-panel/departments");
+        })
+        navigate("/admin-panel/departments")
       })
       .catch((error) => {
-        console.error("Department creation error:", error);
+        console.error("Department creation error:", error)
 
         Swal.fire({
           title: t("departmentForm.error.title"),
@@ -182,11 +182,11 @@ function CreateDepartment() {
           confirmButtonColor: "#ef4444",
           background: isDark ? "#2d2d2d" : "#ffffff",
           color: isDark ? "#f0f0f0" : "#111827",
-        });
-      });
-  };
+        })
+      })
+  }
 
-  if (loadingGetCategoryTypes) return <LoadingGetData />;
+  if (loadingGetCategoryTypes) return <LoadingGetData />
 
   return (
     <div
@@ -206,7 +206,11 @@ function CreateDepartment() {
                     : "border-gray-300 hover:bg-gray-50 text-gray-700"
                 }`}
               >
-                <ArrowLeft size={20} />
+                {currentLang == "en" ? (
+                  <ArrowLeft size={20} />
+                ) : (
+                  <ArrowRight size={20} />
+                )}
               </button>
               <h1
                 className={`text-2xl sm:text-3xl font-bold ${
@@ -399,8 +403,8 @@ function CreateDepartment() {
                               "Enter code"
                             }
                             onChange={(e) => {
-                              const upperValue = e.target.value.toUpperCase();
-                              setFieldValue("code", upperValue);
+                              const upperValue = e.target.value.toUpperCase()
+                              setFieldValue("code", upperValue)
                             }}
                           />
                           <ErrorMessage
@@ -583,7 +587,7 @@ function CreateDepartment() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default CreateDepartment;
+export default CreateDepartment

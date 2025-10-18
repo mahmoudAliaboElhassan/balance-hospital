@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useSearchParams, Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
-import { toast } from "react-toastify";
+import React, { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useNavigate, useSearchParams, Link } from "react-router-dom"
+import { useTranslation } from "react-i18next"
+import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik"
+import { toast } from "react-toastify"
 import {
   ArrowLeft,
   Plus,
@@ -19,57 +19,57 @@ import {
   Save,
   X,
   ArrowRight,
-} from "lucide-react";
+} from "lucide-react"
 
-import { createBasicRoster } from "../../../state/act/actRosterManagement";
+import { createBasicRoster } from "../../../state/act/actRosterManagement"
 // import { clearError, clearSuccess } from "../../../state/slices/roster";
 
-import { getCategoryTypes } from "../../../state/act/actCategory";
-import { getDepartmentByCategory } from "../../../state/act/actDepartment";
-import { getSubDepartments } from "../../../state/act/actSubDepartment";
-import { getShiftHoursTypes } from "../../../state/act/actShiftHours";
-import { getContractingTypes } from "../../../state/act/actContractingType";
-import LoadingGetData from "../../../components/LoadingGetData";
-import Swal from "sweetalert2";
-import UseInitialValues from "../../../hooks/use-initial-values";
-import UseFormValidation from "../../../hooks/use-form-validation";
+import { getCategoryTypes } from "../../../state/act/actCategory"
+import { getDepartmentByCategory } from "../../../state/act/actDepartment"
+import { getSubDepartments } from "../../../state/act/actSubDepartment"
+import { getShiftHoursTypes } from "../../../state/act/actShiftHours"
+import { getContractingTypes } from "../../../state/act/actContractingType"
+import LoadingGetData from "../../../components/LoadingGetData"
+import Swal from "sweetalert2"
+import UseInitialValues from "../../../hooks/use-initial-values"
+import UseFormValidation from "../../../hooks/use-form-validation"
 
 const CreateRoster = () => {
-  const { t, i18n } = useTranslation();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const currentLang = i18n.language;
-  const isRTL = currentLang === "ar";
-  const rosterType = searchParams.get("type") || "basic"; // basic or complete
-  const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = rosterType === "complete" ? 4 : 2;
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const currentLang = i18n.language
+  const isRTL = currentLang === "ar"
+  const rosterType = searchParams.get("type") || "basic" // basic or complete
+  const [currentStep, setCurrentStep] = useState(1)
+  const totalSteps = rosterType === "complete" ? 4 : 2
   // State for cascading dropdowns
 
   const [subDepartmentsByDepartment, setSubDepartmentsByDepartment] = useState(
     {}
-  );
+  )
 
-  const { VALIDATION_SCHEMA_CREATE_BASIC_ROASTER } = UseFormValidation();
-  const { INITIAL_VALUES_CREATE_BASIC_ROASTER } = UseInitialValues();
+  const { VALIDATION_SCHEMA_CREATE_BASIC_ROASTER } = UseFormValidation()
+  const { INITIAL_VALUES_CREATE_BASIC_ROASTER } = UseInitialValues()
 
   const { loading, success, error, createError } = useSelector(
     (state) => state.rosterManagement
-  );
+  )
 
-  const { mymode } = useSelector((state) => state.mode);
-  const isDark = mymode === "dark";
+  const { mymode } = useSelector((state) => state.mode)
+  const isDark = mymode === "dark"
 
-  const [loadingSubDepartment, setLoadingSubDepartment] = useState(0);
+  const [loadingSubDepartment, setLoadingSubDepartment] = useState(0)
 
   // Configuration data
 
   const { departmentsByCategory, loadingGetDepartmentsByCategory } =
-    useSelector((state) => state.department);
+    useSelector((state) => state.department)
   const { subDepartments, loadingGetSubDepartments } = useSelector(
     (state) => state.subDepartment
-  );
-  console.log("departments", departmentsByCategory);
+  )
+  console.log("departments", departmentsByCategory)
 
   // Load initial data
   useEffect(() => {
@@ -77,30 +77,30 @@ const CreateRoster = () => {
       getDepartmentByCategory({
         categoryId: parseInt(localStorage.getItem("categoryId")),
       })
-    );
-  }, [dispatch]);
+    )
+  }, [dispatch])
 
   // Filter subdepartments when departments change
   useEffect(() => {
     if (subDepartments.length > 0) {
-      const subDeptsByDept = {};
+      const subDeptsByDept = {}
       subDepartments.forEach((subDept) => {
         if (!subDeptsByDept[subDept.departmentId]) {
-          subDeptsByDept[subDept.departmentId] = [];
+          subDeptsByDept[subDept.departmentId] = []
         }
-        subDeptsByDept[subDept.departmentId].push(subDept);
-      });
-      setSubDepartmentsByDepartment(subDeptsByDept);
+        subDeptsByDept[subDept.departmentId].push(subDept)
+      })
+      setSubDepartmentsByDepartment(subDeptsByDept)
     }
-  }, [subDepartments]);
+  }, [subDepartments])
 
   // Handle success/error notifications
   useEffect(() => {
     if (success.create) {
-      toast.success(t("roster.success.created"));
+      toast.success(t("roster.success.created"))
       //   dispatch(clearSuccess());
     }
-  }, [success.create, dispatch, navigate, t]);
+  }, [success.create, dispatch, navigate, t])
 
   useEffect(() => {
     if (createError) {
@@ -108,56 +108,56 @@ const CreateRoster = () => {
         createError.messageAr ||
           createError.message ||
           t("roster.error.createFailed")
-      );
+      )
       //   dispatch(clearError());
     }
-  }, [createError, dispatch, t]);
+  }, [createError, dispatch, t])
 
   // Show loading screen for initial categoryTypes loading
 
   // Get current year and next 5 years
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 7 }, (_, i) => currentYear + i);
+  const currentYear = new Date().getFullYear()
+  const years = Array.from({ length: 7 }, (_, i) => currentYear + i)
 
   // Validation schemas
 
   const cleanDepartmentData = (department, rosterType) => {
     const cleanedDepartment = {
       departmentId: parseInt(department.departmentId),
-    };
+    }
 
     // Only add subDepartmentId if it's not empty
     if (
       department.subDepartmentId &&
       department.subDepartmentId.toString().trim() !== ""
     ) {
-      cleanedDepartment.subDepartmentId = parseInt(department.subDepartmentId);
+      cleanedDepartment.subDepartmentId = parseInt(department.subDepartmentId)
     }
 
     // Only add notes if it's not empty
     if (department.notes && department.notes.trim() !== "") {
-      cleanedDepartment.notes = department.notes.trim();
+      cleanedDepartment.notes = department.notes.trim()
     }
 
-    return cleanedDepartment;
-  };
+    return cleanedDepartment
+  }
 
   const handleSubmit = async (values, { setSubmitting }) => {
-    console.log("values", values);
+    console.log("values", values)
 
     // Combine startDay and endDay with month/year to create full dates
-    const year = parseInt(values.year);
-    const month = parseInt(values.month);
-    const startDay = parseInt(values.startDay);
-    const endDay = parseInt(values.endDay);
+    const year = parseInt(values.year)
+    const month = parseInt(values.month)
+    const startDay = parseInt(values.startDay)
+    const endDay = parseInt(values.endDay)
 
     // Create full date strings (YYYY-MM-DD format)
     const startDate = `${year}-${month.toString().padStart(2, "0")}-${startDay
       .toString()
-      .padStart(2, "0")}`;
+      .padStart(2, "0")}`
     const endDate = `${year}-${month.toString().padStart(2, "0")}-${endDay
       .toString()
-      .padStart(2, "0")}`;
+      .padStart(2, "0")}`
 
     const cleanedValues = {
       categoryId: parseInt(localStorage.getItem("categoryId")),
@@ -173,15 +173,15 @@ const CreateRoster = () => {
       ),
       allowSwapRequests: values.allowSwapRequests || false,
       allowLeaveRequests: values.allowLeaveRequests || false,
-    };
+    }
 
-    console.log("Cleaned values", cleanedValues);
-    setSubmitting(true);
+    console.log("Cleaned values", cleanedValues)
+    setSubmitting(true)
 
     dispatch(createBasicRoster(cleanedValues))
       .unwrap()
       .then(() => {
-        setSubmitting(false);
+        setSubmitting(false)
         toast.success(t("roster.success.created"), {
           position: "top-right",
           autoClose: 3000,
@@ -189,12 +189,12 @@ const CreateRoster = () => {
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
-        });
-        navigate(`/admin-panel/rosters/departments`);
+        })
+        navigate(`/admin-panel/rosters/departments`)
       })
       .catch((error) => {
         // Error handling is done in useEffect
-        setSubmitting(false);
+        setSubmitting(false)
 
         Swal.fire({
           title: t("roster.error.createFailed"),
@@ -205,23 +205,23 @@ const CreateRoster = () => {
           confirmButtonColor: "#ef4444",
           background: "#ffffff",
           color: "#111827",
-        });
-      });
-  };
+        })
+      })
+  }
 
   // Handle category change
 
   // Handle department change
   const handleDepartmentChange = (departmentId, index, setFieldValue) => {
-    setFieldValue(`departments.${index}.departmentId`, departmentId);
+    setFieldValue(`departments.${index}.departmentId`, departmentId)
     // const departmentFiltered = departments.filter(
     //   (dep) => dep.id != departmentId
     // );
     // setdepartments(departmentFiltered);
-    setFieldValue(`departments.${index}.subDepartmentId`, "");
-    setLoadingSubDepartment(index);
-    dispatch(getSubDepartments({ departmentId }));
-  };
+    setFieldValue(`departments.${index}.subDepartmentId`, "")
+    setLoadingSubDepartment(index)
+    dispatch(getSubDepartments({ departmentId }))
+  }
 
   const monthNames = isRTL
     ? [
@@ -251,7 +251,7 @@ const CreateRoster = () => {
         "October",
         "November",
         "December",
-      ];
+      ]
 
   const dayNames = isRTL
     ? ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"]
@@ -263,47 +263,47 @@ const CreateRoster = () => {
         "Thursday",
         "Friday",
         "Saturday",
-      ];
+      ]
 
   const getStepTitle = (step) => {
     switch (step) {
       case 1:
-        return t("roster.form.basicInfo");
+        return t("roster.form.basicInfo")
       case 2:
-        return t("roster.form.departments");
+        return t("roster.form.departments")
       case 3:
-        return t("roster.form.workingHours");
+        return t("roster.form.workingHours")
       case 4:
-        return t("roster.form.settings");
+        return t("roster.form.settings")
       default:
-        return "";
+        return ""
     }
-  };
+  }
 
   const getStepIcon = (step) => {
     switch (step) {
       case 1:
-        return <Info size={20} />;
+        return <Info size={20} />
       case 2:
-        return <Building size={20} />;
+        return <Building size={20} />
       case 3:
-        return <Clock size={20} />;
+        return <Clock size={20} />
       case 4:
-        return <Settings size={20} />;
+        return <Settings size={20} />
       default:
-        return <Info size={20} />;
+        return <Info size={20} />
     }
-  };
+  }
 
   const nextStep = async (e, validateForm, setTouched) => {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault()
+    e.stopPropagation()
 
     // If we're on the first step, validate first step fields only
     if (currentStep === 1) {
       try {
         // Trigger validation for the entire form
-        const errors = await validateForm();
+        const errors = await validateForm()
 
         // Define first step fields that need validation
         const firstStepFields = [
@@ -315,33 +315,33 @@ const CreateRoster = () => {
           "month",
           "year",
           "submissionDeadline",
-        ];
+        ]
 
         // Check if any first step fields have errors
         const hasFirstStepErrors = firstStepFields.some(
           (field) => errors[field]
-        );
+        )
 
         if (hasFirstStepErrors) {
           // Mark first step fields as touched to show errors
-          const touchedFields = {};
+          const touchedFields = {}
           firstStepFields.forEach((field) => {
-            touchedFields[field] = true;
-          });
-          setTouched(touchedFields);
-          return; // Don't proceed to next step
+            touchedFields[field] = true
+          })
+          setTouched(touchedFields)
+          return // Don't proceed to next step
         }
       } catch (error) {
-        console.error("Validation error:", error);
-        return;
+        console.error("Validation error:", error)
+        return
       }
     }
 
     // Proceed to next step if validation passes or not on first step
-    setCurrentStep((prev) => Math.min(prev + 1, totalSteps));
-  };
+    setCurrentStep((prev) => Math.min(prev + 1, totalSteps))
+  }
 
-  const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
+  const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1))
 
   // Loading component for dropdown fields
   const DropdownLoader = ({ text }) => (
@@ -359,7 +359,7 @@ const CreateRoster = () => {
         {text}
       </span>
     </div>
-  );
+  )
 
   return (
     <div
@@ -378,7 +378,11 @@ const CreateRoster = () => {
                   : "border-gray-300 hover:bg-gray-50 text-gray-700"
               } ${isRTL ? "ml-4" : "mr-4"}`}
             >
-              <ArrowLeft size={20} />
+              {currentLang == "en" ? (
+                <ArrowLeft size={20} />
+              ) : (
+                <ArrowRight size={20} />
+              )}{" "}
             </Link>
             <div>
               <h1
@@ -1292,7 +1296,7 @@ const CreateRoster = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CreateRoster;
+export default CreateRoster
