@@ -783,7 +783,7 @@ function AssignDoctor() {
             <div className="text-center py-12">
               <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
               <div className="text-red-500 text-lg mb-4">
-                {errors.workingHours || errors.availableDoctors}
+                {/* {errors.workingHours || errors.availableDoctors} */}
               </div>
               <button
                 onClick={() => navigate(-1)}
