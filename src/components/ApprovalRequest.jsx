@@ -1,32 +1,32 @@
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
-import { X, CheckCircle, User, Building, Clock, Timer } from "lucide-react";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import i18next from "i18next";
+import React, { useState } from "react"
+import { useTranslation } from "react-i18next"
+import { useDispatch, useSelector } from "react-redux"
+import { X, CheckCircle, User, Building, Clock, Timer } from "lucide-react"
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
+import i18next from "i18next"
 import {
   approveRequest,
   getDoctorsRequests,
-} from "../state/act/actRosterManagement";
-import { useParams } from "react-router-dom";
+} from "../state/act/actRosterManagement"
+import { useParams } from "react-router-dom"
 
 const ApproveRequestModal = ({ isOpen, onClose, request, status }) => {
-  const { t, i18n } = useTranslation();
-  const { mymode } = useSelector((state) => state.mode);
-  const { id } = useParams();
-  const [processedNotes, setProcessedNotes] = useState("");
-  const [error, setError] = useState("");
+  const { t, i18n } = useTranslation()
+  const { mymode } = useSelector((state) => state.mode)
+  const { id } = useParams()
+  const [processedNotes, setProcessedNotes] = useState("")
+  const [error, setError] = useState("")
 
-  const isDark = mymode === "dark";
-  const isRTL = i18n.language === "ar";
-  const currentLang = i18n.language || "ar";
-  const dispatch = useDispatch();
+  const isDark = mymode === "dark"
+  const isRTL = i18n.language === "ar"
+  const currentLang = i18n.language || "ar"
+  const dispatch = useDispatch()
 
-  const { loading } = useSelector((state) => state.rosterManagement);
+  const { loading } = useSelector((state) => state.rosterManagement)
 
   const formatTime = (timeString) => {
-    if (!timeString) return "-";
+    if (!timeString) return "-"
     return new Date(`2000-01-01T${timeString}`).toLocaleTimeString(
       i18n.language,
       {
@@ -34,20 +34,20 @@ const ApproveRequestModal = ({ isOpen, onClose, request, status }) => {
         minute: "2-digit",
         hour12: false,
       }
-    );
-  };
+    )
+  }
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!processedNotes.trim()) {
-      setError(t("doctorRequests.notesRequired"));
-      return;
+      setError(t("doctorRequests.notesRequired"))
+      return
     }
 
     if (processedNotes.trim().length < 3) {
-      setError(t("doctorRequests.notesTooShort"));
-      return;
+      setError(t("doctorRequests.notesTooShort"))
+      return
     }
 
     dispatch(
@@ -69,14 +69,14 @@ const ApproveRequestModal = ({ isOpen, onClose, request, status }) => {
             position: "top-right",
             autoClose: 3000,
           }
-        );
-        dispatch(getDoctorsRequests({ status, rosterId: id }));
+        )
+        dispatch(getDoctorsRequests({ status, rosterId: id }))
 
-        handleClose();
+        handleClose()
       })
       .catch((error) => {
-        handleClose();
-        console.log("error from catch", error);
+        handleClose()
+        console.log("error from catch", error)
 
         const message =
           i18next.language === "en"
@@ -87,7 +87,7 @@ const ApproveRequestModal = ({ isOpen, onClose, request, status }) => {
             : (error?.messageAr ||
                 error?.message ||
                 "فشل في الموافقة على الطلب") +
-              (error?.errors?.[0] ? " " + error.errors[0] : "");
+              (error?.errors?.[0] ? " " + error.errors[0] : "")
 
         Swal.fire({
           title: message,
@@ -99,17 +99,17 @@ const ApproveRequestModal = ({ isOpen, onClose, request, status }) => {
           customClass: {
             popup: isDark ? "swal2-dark-popup" : "",
           },
-        });
-      });
-  };
+        })
+      })
+  }
 
   const handleClose = () => {
-    setProcessedNotes("");
-    setError("");
-    onClose();
-  };
+    setProcessedNotes("")
+    setError("")
+    onClose()
+  }
 
-  if (!isOpen || !request) return null;
+  if (!isOpen || !request) return null
 
   return (
     <div
@@ -300,8 +300,8 @@ const ApproveRequestModal = ({ isOpen, onClose, request, status }) => {
             <textarea
               value={processedNotes}
               onChange={(e) => {
-                setProcessedNotes(e.target.value);
-                if (error) setError("");
+                setProcessedNotes(e.target.value)
+                if (error) setError("")
               }}
               placeholder={t("doctorRequests.approve.notesPlaceholder")}
               rows={3}
@@ -346,7 +346,7 @@ const ApproveRequestModal = ({ isOpen, onClose, request, status }) => {
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ApproveRequestModal;
+export default ApproveRequestModal

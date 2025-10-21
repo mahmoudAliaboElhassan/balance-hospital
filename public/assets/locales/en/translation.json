@@ -114,6 +114,7 @@
     "reports": "Reports",
     "pendingDoctorRequests": "Pending Doctor Requests",
     "departments": "Departments",
+    "doctor": " Doctor",
     "subDepartments": "Sub Departments",
     "managementRoles": "Management Roles",
     "scientificDegrees": "Scientific Degrees",
@@ -1768,6 +1769,7 @@
     "users": "Loading users…",
     "roles": "Loading roles…",
     "roleData": "Loading role data…",
+    "wait-data": "Wait for All Filteration Data...",
     "geofences": "Loading geofences...",
     "geofence": "Loading geofence...",
     "doctorData": "Loading Doctor data…",
@@ -2967,6 +2969,46 @@
 
     "error": {
       "title": "Error"
+    }
+  },
+
+  "reports": {
+    "title": "Monthly Reports",
+    "subtitle": "View and manage monthly attendance reports",
+    "export": "Export",
+    "filters": "Filters",
+    "month": "Month",
+    "year": "Year",
+    "department": "Department",
+    "doctor": "Doctor",
+    "scientificDegree": "Scientific Degree",
+    "contractingType": "Contracting Type",
+    "allDepartments": "All Departments",
+    "allDoctors": "All Doctors",
+    "allDegrees": "All Degrees",
+    "allTypes": "All Types",
+    "loading": "Loading reports...",
+    "error": "Error Loading Reports",
+    "noData": "No Reports Found",
+    "noDataDescription": "No reports available for the selected filters.",
+    "totalDoctors": "Total Doctors",
+    "totalRecords": "Total Records",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "showing": "Showing",
+    "to": "to",
+    "of": "of",
+    "results": "results",
+    "page": "Page",
+    "table": {
+      "doctor": "Doctor",
+      "nationalId": "National ID",
+      "category": "Category",
+      "department": "Department",
+      "degree": "Degree",
+      "contractType": "Contract",
+      "shifts": "Shifts",
+      "printNumber": "Print"
     }
   }
 }

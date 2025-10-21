@@ -11,6 +11,7 @@ import managementRolesSlice from "./slices/managementRole"
 import usersSlice from "./slices/user"
 import rosterManagementSlice from "./slices/roster"
 import notificationsSlice from "./slices/notification"
+import reportSlice from "./slices/reports"
 
 export const store = configureStore({
   reducer: {
@@ -26,5 +27,6 @@ export const store = configureStore({
     users: usersSlice,
     rosterManagement: rosterManagementSlice,
     notifications: notificationsSlice,
+    reports: reportSlice,
   },
 })
