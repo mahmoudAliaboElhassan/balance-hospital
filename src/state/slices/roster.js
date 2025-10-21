@@ -58,6 +58,7 @@ import {
   rejectRequest,
   approveRequest,
   getDoctorsRequests,
+  autoAcceptRequests,
 } from "../act/actRosterManagement"
 import i18next from "i18next"
 
@@ -786,6 +787,16 @@ const rosterManagementSlice = createSlice({
         state.loading.update = false
       })
       .addCase(updateWorkingHour.rejected, (state, action) => {
+        state.loading.update = false
+      })
+    builder
+      .addCase(autoAcceptRequests.pending, (state) => {
+        state.loading.update = true
+      })
+      .addCase(autoAcceptRequests.fulfilled, (state, action) => {
+        state.loading.update = false
+      })
+      .addCase(autoAcceptRequests.rejected, (state, action) => {
         state.loading.update = false
       })
 

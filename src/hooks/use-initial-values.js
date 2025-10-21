@@ -186,6 +186,7 @@ function UseInitialValues() {
     ],
     allowSwapRequests: true,
     allowLeaveRequests: true,
+    autoAcceptRequests: false,
     // maxConsecutiveDays: 7,
     // minRestDaysBetween: 1,
   }

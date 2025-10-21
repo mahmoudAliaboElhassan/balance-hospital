@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { useParams, useNavigate, Link } from "react-router-dom"
 import {
   addWorkingHours,
+  autoAcceptRequests,
   getRosterById,
 } from "../../../state/act/actRosterManagement"
 import { useTranslation } from "react-i18next"
@@ -238,6 +239,19 @@ function RosterDetails() {
   console.log("statusInfo", statusInfo)
   localStorage.setItem("rosterTitle", selectedRoster.title)
   const StatusIcon = statusInfo.icon
+
+  const changeAutoAcceptedStatus = () => {
+    dispatch(
+      autoAcceptRequests({
+        rosterId: selectedRoster.id,
+        autoAcceptRequests: selectedRoster.autoAcceptRequests ? false : true,
+      })
+    )
+      .unwrap()
+      .then(() => {
+        dispatch(getRosterById({ rosterId }))
+      })
+  }
 
   return (
     <div
@@ -799,6 +813,88 @@ function RosterDetails() {
                       ? t("roster.allowed")
                       : t("roster.notAllowed")}
                   </span>
+                </div>
+                <div>
+                  <label
+                    className={`block text-sm font-medium ${
+                      isDark ? "text-gray-300" : "text-gray-500"
+                    } mb-2`}
+                  >
+                    {t("roster.form.autoAcceptRequests")}
+                  </label>
+
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={`inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full ${
+                        selectedRoster.autoAcceptRequests
+                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+                          : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
+                      }`}
+                    >
+                      {selectedRoster.autoAcceptRequests ? (
+                        <CheckCircle
+                          size={14}
+                          className={`${isRTL ? "ml-1" : "mr-1"}`}
+                        />
+                      ) : (
+                        <XCircle
+                          size={14}
+                          className={`${isRTL ? "ml-1" : "mr-1"}`}
+                        />
+                      )}
+                      {selectedRoster.autoAcceptRequests
+                        ? t("roster.allowed")
+                        : t("roster.notAllowed")}
+                    </span>
+
+                    <button
+                      onClick={changeAutoAcceptedStatus}
+                      disabled={loading.update}
+                      className={`inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200 ${
+                        loading.update
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : isDark
+                          ? "bg-blue-600 hover:bg-blue-700 text-white"
+                          : "bg-blue-600 hover:bg-blue-700 text-white"
+                      }`}
+                    >
+                      {loading.update ? (
+                        <>
+                          <svg
+                            className={`animate-spin h-4 w-4 ${
+                              isRTL ? "ml-2" : "mr-2"
+                            }`}
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            />
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            />
+                          </svg>
+                          {t("roster.actions.updating")}
+                        </>
+                      ) : (
+                        <>
+                          <Edit
+                            size={14}
+                            className={`${isRTL ? "ml-1.5" : "mr-1.5"}`}
+                          />
+                          {t("roster.actions.change")}
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

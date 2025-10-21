@@ -32,15 +32,9 @@ function UseAdminPanel() {
           : `/admin-panel/category/${categoryManagerId}`,
       permission: "userCanManageCategory",
     },
+
     {
       id: 2,
-      name: t("adminPanel.reports"),
-      icon: "📄",
-      path: `/admin-panel/reports`,
-      permission: "userCanManageCategory",
-    },
-    {
-      id: 3,
       name:
         loginRoleResponseDto?.roleNameEn == "System Administrator"
           ? t("adminPanel.departments")
@@ -51,6 +45,13 @@ function UseAdminPanel() {
           ? "/admin-panel/departments"
           : `/admin-panel/department/${departmentManagerId}`,
       permission: "userCanManageDepartments",
+    },
+    {
+      id: 3,
+      name: t("adminPanel.reports"),
+      icon: "📄",
+      path: `/admin-panel/reports`,
+      permission: "userCanManageCategory",
     },
     // {
     //   id: 4,

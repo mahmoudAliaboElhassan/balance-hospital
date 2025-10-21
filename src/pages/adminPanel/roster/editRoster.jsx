@@ -126,8 +126,8 @@ const UpdateRoster = () => {
       month: selectedRoster.month || new Date().getMonth() + 1,
       year: selectedRoster.year || new Date().getFullYear(),
       submissionDeadline: submissionDeadline,
-      startDay: selectedRoster.startDate.split("-")[2] || 1,
-      endDay: selectedRoster.endDate.split("-")[2] || 1,
+      startDay: selectedRoster.startDate?.split("-")[2] || 1,
+      endDay: selectedRoster.endDate?.split("-")[2] || 1,
       allowSwapRequests: selectedRoster.allowSwapRequests ?? true,
       allowLeaveRequests: selectedRoster.allowLeaveRequests ?? true,
     }

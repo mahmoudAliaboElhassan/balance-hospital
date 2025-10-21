@@ -817,6 +817,23 @@ export const rejectRequest = createAsyncThunk(
     }
   }
 )
+export const autoAcceptRequests = createAsyncThunk(
+  "rosterManagement/autoAcceptRequests",
+  async ({ rosterId, autoAcceptRequests }, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.put(
+        `/api/v1/RosterManagement/${rosterId}/auto-accept`,
+        { autoAcceptRequests },
+        {
+          headers: getAuthHeaders(),
+        }
+      )
+      return res.data
+    } catch (error) {
+      return handleError(error, rejectWithValue)
+    }
+  }
+)
 
 // Enum for request states (for reference)
 export const DoctorWorkingHoursRequestState = {

@@ -166,6 +166,7 @@ const CreateRoster = () => {
       startDate: startDate,
       endDate: endDate,
       title: values.title,
+      autoAcceptRequests: values.autoAcceptRequests || false,
       description: values.description || "",
       submissionDeadline: values.submissionDeadline,
       departments: values.departments.map((department) =>
@@ -1136,9 +1137,42 @@ const CreateRoster = () => {
                             />
                           </div>
                         </div>
+                      </div>
 
-                        {/* Max Consecutive Days */}
-                        {/* <div>
+                      <div
+                        className={`p-4 border rounded-lg w-full ${
+                          isDark
+                            ? "border-gray-600 bg-gray-700"
+                            : "border-gray-200 bg-gray-50"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <label
+                              className={`text-sm font-medium ${
+                                isDark ? "text-white" : "text-gray-900"
+                              }`}
+                            >
+                              {t("roster.form.autoAcceptRequests")}
+                            </label>
+                            <p
+                              className={`text-xs ${
+                                isDark ? "text-gray-400" : "text-gray-500"
+                              } mt-1`}
+                            >
+                              {t("roster.form.autoAcceptRequestsHelp")}
+                            </p>
+                          </div>
+                          <Field
+                            type="checkbox"
+                            name="autoAcceptRequests"
+                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Max Consecutive Days */}
+                      {/* <div>
                           <label
                             className={`block text-sm font-medium ${
                               isDark ? "text-gray-300" : "text-gray-700"
@@ -1176,8 +1210,8 @@ const CreateRoster = () => {
                           />
                         </div> */}
 
-                        {/* Min Rest Days Between */}
-                        {/* <div>
+                      {/* Min Rest Days Between */}
+                      {/* <div>
                           <label
                             className={`block text-sm font-medium ${
                               isDark ? "text-gray-300" : "text-gray-700"
@@ -1214,7 +1248,6 @@ const CreateRoster = () => {
                             className="text-red-500 text-xs mt-1"
                           />
                         </div> */}
-                      </div>
                     </div>
                   )}
 
