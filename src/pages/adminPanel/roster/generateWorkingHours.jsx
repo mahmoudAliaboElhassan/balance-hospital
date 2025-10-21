@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import i18next from "i18next";
-import * as Yup from "yup";
+import React, { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next"
+import { Formik, Form, Field, ErrorMessage } from "formik"
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
+import i18next from "i18next"
+import * as Yup from "yup"
 import {
   Clock,
   ArrowLeft,
@@ -17,54 +17,55 @@ import {
   AlertCircle,
   CheckCircle,
   Info,
-} from "lucide-react";
+  ArrowRight,
+} from "lucide-react"
 import {
   addWorkingHours,
   getRosterById,
   getWorkingHours,
-} from "../../../state/act/actRosterManagement";
-import LoadingGetData from "../../../components/LoadingGetData";
+} from "../../../state/act/actRosterManagement"
+import LoadingGetData from "../../../components/LoadingGetData"
 
 function GenerateWorkingHours() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { t } = useTranslation();
-  const currentLang = i18next.language;
-  const isRTL = currentLang === "ar";
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { t } = useTranslation()
+  const currentLang = i18next.language
+  const isRTL = currentLang === "ar"
 
-  const [rosterId, setRosterId] = useState(null);
+  const [rosterId, setRosterId] = useState(null)
 
   const { selectedRoster, workingHours, loading } = useSelector(
     (state) => state.rosterManagement
-  );
+  )
 
-  const { mymode } = useSelector((state) => state.mode);
-  const isDark = mymode === "dark";
+  const { mymode } = useSelector((state) => state.mode)
+  const isDark = mymode === "dark"
 
   // Get roster ID from localStorage and fetch data
   useEffect(() => {
-    const storedRosterId = localStorage.getItem("rosterId");
+    const storedRosterId = localStorage.getItem("rosterId")
     if (storedRosterId) {
-      setRosterId(storedRosterId);
-      dispatch(getRosterById({ rosterId: storedRosterId }));
-      dispatch(getWorkingHours({ rosterId: storedRosterId }));
+      setRosterId(storedRosterId)
+      dispatch(getRosterById({ rosterId: storedRosterId }))
+      dispatch(getWorkingHours({ rosterId: storedRosterId }))
     }
-  }, [dispatch]);
+  }, [dispatch])
 
   // Validation schema
   const validationSchema = Yup.object({
     overwriteExisting: Yup.boolean(),
-  });
+  })
 
   // Initial values
   const initialValues = {
     overwriteExisting: false,
-  };
+  }
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       if (!rosterId) {
-        throw new Error(t("roster.workingHourss.error.noRosterId"));
+        throw new Error(t("roster.workingHourss.error.noRosterId"))
       }
 
       const generateData = {
@@ -73,11 +74,11 @@ function GenerateWorkingHours() {
         shiftIds: null,
         contractingTypeIds: null,
         overwriteExisting: values.overwriteExisting,
-      };
+      }
 
-      console.log("Generating working hours with data:", generateData);
+      console.log("Generating working hours with data:", generateData)
 
-      await dispatch(addWorkingHours(generateData)).unwrap();
+      await dispatch(addWorkingHours(generateData)).unwrap()
 
       // Refresh data after successful generation
 
@@ -88,12 +89,12 @@ function GenerateWorkingHours() {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-      });
+      })
 
       // Navigate to working hours management after successful generation
-      navigate(`/admin-panel/rosters/${rosterId}`);
+      navigate(`/admin-panel/rosters/${rosterId}`)
     } catch (error) {
-      console.error("Working hours generation error:", error);
+      console.error("Working hours generation error:", error)
 
       Swal.fire({
         title: t("roster.workingHourss.error.title"),
@@ -110,21 +111,21 @@ function GenerateWorkingHours() {
         confirmButtonColor: "#ef4444",
         background: isDark ? "#1f2937" : "#ffffff",
         color: isDark ? "#f9fafb" : "#111827",
-      });
+      })
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
-  };
+  }
 
   const navigateBack = () => {
     if (rosterId) {
-      navigate(`/admin-panel/rosters/departments`);
+      navigate(`/admin-panel/rosters/departments`)
     } else {
-      navigate(`/admin-panel/rosters`);
+      navigate(`/admin-panel/rosters`)
     }
-  };
+  }
   if (loading.fetch) {
-    return <LoadingGetData text={t("gettingData.roster")} />;
+    return <LoadingGetData text={t("gettingData.roster")} />
   }
   return (
     <div
@@ -143,7 +144,11 @@ function GenerateWorkingHours() {
                   : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
               } transition-colors`}
             >
-              <ArrowLeft size={20} />
+              {currentLang == "en" ? (
+                <ArrowLeft size={20} />
+              ) : (
+                <ArrowRight size={20} />
+              )}
             </button>
             <div>
               <h1
@@ -369,7 +374,12 @@ function GenerateWorkingHours() {
                         : "border-gray-300 text-gray-700 hover:bg-gray-50"
                     }`}
                   >
-                    <ArrowLeft size={16} className={isRTL ? "ml-2" : "mr-2"} />
+                    {currentLang == "en" ? (
+                      <ArrowLeft size={16} className={"mr-2"} />
+                    ) : (
+                      <ArrowRight size={16} className={"ml-2"} />
+                    )}
+
                     {t("roster.workingHourss.buttons.back") || "Back"}
                   </button>
 
@@ -402,7 +412,7 @@ function GenerateWorkingHours() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default GenerateWorkingHours;
+export default GenerateWorkingHours

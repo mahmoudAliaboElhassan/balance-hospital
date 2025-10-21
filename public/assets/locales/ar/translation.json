@@ -3004,5 +3004,67 @@
       "shifts": "المناوبات",
       "printNumber": "رقم الطباعة"
     }
+  },
+
+  "dashboard": {
+    "title": "لوحة التحكم",
+    "loading": "جاري تحميل بيانات لوحة التحكم...",
+    "refresh": "تحديث",
+    "lastUpdated": "آخر تحديث",
+    "error": {
+      "title": "خطأ في تحميل لوحة التحكم",
+      "retry": "حاول مرة أخرى"
+    },
+    "sections": {
+      "users": {
+        "title": "المستخدمين",
+        "totalUsers": "إجمالي المستخدمين",
+        "activeUsers": "المستخدمين النشطين",
+        "doctorsCount": "الأطباء",
+        "residentsCount": "المقيمين",
+        "onlineUsers": "المستخدمين المتصلين",
+        "newUsersThisMonth": "جدد هذا الشهر",
+        "pendingUsers": "مستخدمين معلقين"
+      },
+      "pendingRequests": {
+        "title": "الطلبات المعلقة",
+        "totalPendingRequests": "إجمالي المعلقة",
+        "pendingLeaveRequests": "طلبات الإجازة",
+        "pendingSwapRequests": "طلبات التبديل",
+        "pendingDoctorJoinRequests": "طلبات الانضمام",
+        "urgentRequests": "عاجلة",
+        "overdueRequests": "متأخرة",
+        "recentRequests": "الطلبات الأخيرة"
+      },
+      "quickStats": {
+        "title": "إحصائيات سريعة",
+        "dailyAttendanceRate": "معدل الحضور",
+        "userSatisfactionRate": "معدل الرضا",
+        "taskCompletionRate": "معدل إنجاز المهام",
+        "averageResponseTime": "متوسط وقت الاستجابة",
+        "emailsSentToday": "الرسائل المرسلة اليوم"
+      },
+      "categories": {
+        "title": "الفئات",
+        "totalCategories": "إجمالي الفئات",
+        "activeCategories": "النشطة",
+        "categoriesWithManagers": "بمديرين",
+        "totalDoctorsInCategories": "إجمالي الأطباء"
+      },
+      "departments": {
+        "title": "الأقسام",
+        "totalDepartments": "إجمالي الأقسام",
+        "activeDepartments": "النشطة",
+        "departmentsWithManagers": "بمديرين",
+        "totalActiveSchedules": "الجداول النشطة"
+      },
+      "rosters": {
+        "title": "الجداول",
+        "totalRosters": "إجمالي الجداول",
+        "upcomingRostersCount": "القادمة",
+        "overallCompletionRate": "معدل الإنجاز",
+        "expiredRosters": "منتهية الصلاحية"
+      }
+    }
   }
 }

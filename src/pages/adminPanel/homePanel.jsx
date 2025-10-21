@@ -31,7 +31,7 @@ const AdminPanelIndex = () => {
     )
   } else if (loginRoleResponseDto.roleNameEn == "System Administrator") {
     // If user is a department manager, redirect to specific department
-    return <Navigate to={`/admin-panel/categories`} replace />
+    return <Navigate to={`/admin-panel/dashboard`} replace />
   } else return <Navigate to={`/admin-panel/doctors/${userId}`} replace />
 }
 

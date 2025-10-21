@@ -803,7 +803,11 @@ function Reports() {
                             } cursor-not-allowed`
                       } transition-colors`}
                     >
-                      <ChevronLeft size={20} />
+                      {currentLang == "en" ? (
+                        <ChevronLeft size={20} />
+                      ) : (
+                        <ChevronRight size={20} />
+                      )}
                     </button>
                     <span
                       className={`px-4 py-2 ${
@@ -832,7 +836,11 @@ function Reports() {
                             } cursor-not-allowed`
                       } transition-colors`}
                     >
-                      <ChevronRight size={20} />
+                      {currentLang == "ar" ? (
+                        <ChevronLeft size={20} />
+                      ) : (
+                        <ChevronRight size={20} />
+                      )}{" "}
                     </button>
                   </div>
                 </div>

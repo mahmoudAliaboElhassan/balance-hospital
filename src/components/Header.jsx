@@ -19,7 +19,7 @@ const Header = () => {
 
   const handleLogOut = () => {
     dispatch(logOut())
-    navigate("/role-select")
+    navigate("/login")
   }
 
   const language = i18next.language
@@ -76,7 +76,7 @@ const Header = () => {
                 </button>
               </>
             ) : (
-              <Link to="/role-select">
+              <Link to="/login">
                 <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors flex-1 sm:flex-none justify-center cursor-pointer">
                   {t("get-started")}
                 </button>

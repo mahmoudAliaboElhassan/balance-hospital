@@ -3010,5 +3010,67 @@
       "shifts": "Shifts",
       "printNumber": "Print"
     }
+  },
+
+  "dashboard": {
+    "title": "Dashboard",
+    "loading": "Loading dashboard data...",
+    "refresh": "Refresh",
+    "lastUpdated": "Last updated",
+    "error": {
+      "title": "Error Loading Dashboard",
+      "retry": "Try Again"
+    },
+    "sections": {
+      "users": {
+        "title": "Users",
+        "totalUsers": "Total Users",
+        "activeUsers": "Active Users",
+        "doctorsCount": "Doctors",
+        "residentsCount": "Residents",
+        "onlineUsers": "Online Users",
+        "newUsersThisMonth": "New This Month",
+        "pendingUsers": "Pending Users"
+      },
+      "pendingRequests": {
+        "title": "Pending Requests",
+        "totalPendingRequests": "Total Pending",
+        "pendingLeaveRequests": "Leave Requests",
+        "pendingSwapRequests": "Swap Requests",
+        "pendingDoctorJoinRequests": "Join Requests",
+        "urgentRequests": "Urgent",
+        "overdueRequests": "Overdue",
+        "recentRequests": "Recent Requests"
+      },
+      "quickStats": {
+        "title": "Quick Statistics",
+        "dailyAttendanceRate": "Attendance Rate",
+        "userSatisfactionRate": "Satisfaction Rate",
+        "taskCompletionRate": "Task Completion",
+        "averageResponseTime": "Avg Response Time",
+        "emailsSentToday": "Emails Sent Today"
+      },
+      "categories": {
+        "title": "Categories",
+        "totalCategories": "Total Categories",
+        "activeCategories": "Active",
+        "categoriesWithManagers": "With Managers",
+        "totalDoctorsInCategories": "Total Doctors"
+      },
+      "departments": {
+        "title": "Departments",
+        "totalDepartments": "Total Departments",
+        "activeDepartments": "Active",
+        "departmentsWithManagers": "With Managers",
+        "totalActiveSchedules": "Active Schedules"
+      },
+      "rosters": {
+        "title": "Rosters",
+        "totalRosters": "Total Rosters",
+        "upcomingRostersCount": "Upcoming",
+        "overallCompletionRate": "Completion Rate",
+        "expiredRosters": "Expired"
+      }
+    }
   }
 }

@@ -211,7 +211,7 @@ const Login = () => {
           data.data.user.loginRoleResponseDto.roleNameAr === "مدير النظام"
         ) {
           console.log("hello cat head")
-          navigate(`/admin-panel/categories`)
+          navigate(`/admin-panel/dashboard`)
         } else {
           navigate(`/admin-panel/doctors/${data.data.user.userId}`)
         }

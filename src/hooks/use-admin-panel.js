@@ -53,13 +53,7 @@ function UseAdminPanel() {
       path: `/admin-panel/reports`,
       permission: "userCanManageCategory",
     },
-    // {
-    //   id: 4,
-    //   name: t("adminPanel.subDepartments"),
-    //   icon: "🏗️",
-    //   path: "/admin-panel/sub-departments",
-    //   permission: "userCanManageSubDepartments",
-    // },
+
     {
       id: 5,
       name: t("adminPanel.managementRoles"),
@@ -126,8 +120,17 @@ function UseAdminPanel() {
     return loginRoleResponseDto[route.permission] === true
   })
 
+  const dashboard = {
+    id: 4,
+    name: t("adminPanel.dashboard"),
+    icon: "📊",
+    path: "/admin-panel/dashboard",
+    permission: "userCanManageCategory",
+  }
+
   if (loginRoleResponseDto.roleNameEn == "System Administrator") {
     adminPanelRoutes.push(roster)
+    adminPanelRoutes.unshift(dashboard) // Add dashboard at the beginning
   }
 
   if (departmentManagerId != "0" && categoryManagerId != "0") {

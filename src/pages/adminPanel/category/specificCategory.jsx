@@ -958,7 +958,6 @@ const SpecificCategory = () => {
             </div>
           </div>
         )}
-
         {/* Success Alert */}
         {approvalSuccess && (
           <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
@@ -982,7 +981,6 @@ const SpecificCategory = () => {
             </div>
           </div>
         )}
-
         {/* Header */}
         <div className="mb-8">
           {loginRoleResponseDto?.roleNameEn == "System Administrator" && (
@@ -1112,8 +1110,564 @@ const SpecificCategory = () => {
             </div>
           </div>
         </div>
+        <div className="lg:col-span-2 space-y-6">
+          {/* Description Card */}
+          <div
+            className={`${
+              isDark ? "bg-gray-800" : "bg-white"
+            } rounded-2xl shadow-xl p-6`}
+          >
+            <h2
+              className={`text-2xl font-bold ${
+                isDark ? "text-white" : "text-gray-900"
+              } mb-4 flex items-center`}
+            >
+              <div
+                className={`w-8 h-8 ${
+                  isDark ? "bg-blue-900/30" : "bg-blue-100"
+                }                     rounded-lg flex items-center justify-center ${
+                  isRTL ? "mr-3" : "ml-3"
+                }`}
+              >
+                <FileText
+                  className={`w-4 h-4 ${
+                    isDark ? "text-purple-400" : "text-purple-600"
+                  }`}
+                />
+              </div>
+              {t("roster.title")}
+            </h2>
+            <span
+              className={`px-3 py-1 rounded-full text-sm font-medium ${
+                isDark
+                  ? "bg-blue-900/30 text-blue-400"
+                  : "bg-blue-100 text-blue-800"
+              }`}
+            >
+              {rosterList?.length || 0} {t("roster.count")}
+            </span>
+          </div>
 
-        {/* Pending Doctors Section */}
+          {/* Mobile Cards View for Rosters */}
+          <div className="md:hidden">
+            {loading.fetch ? (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p className={`${isDark ? "text-gray-400" : "text-gray-600"}`}>
+                  {t("gettingData.rosters")}
+                </p>
+              </div>
+            ) : rosterList && rosterList.length > 0 ? (
+              rosterList.map((roster) => (
+                <RosterCard key={roster.id} roster={roster} />
+              ))
+            ) : (
+              <div className="text-center py-8">
+                <div
+                  className={`w-16 h-16 ${
+                    isDark ? "bg-gray-700" : "bg-gray-100"
+                  } rounded-full flex items-center justify-center mx-auto mb-4`}
+                >
+                  <FileText
+                    className={`w-8 h-8 ${
+                      isDark ? "text-gray-500" : "text-gray-400"
+                    }`}
+                  />
+                </div>
+                <p
+                  className={`text-lg font-medium ${
+                    isDark ? "text-gray-300" : "text-gray-600"
+                  } mb-2`}
+                >
+                  {t("roster.noRosters")}
+                </p>
+                <p
+                  className={`text-sm ${
+                    isDark ? "text-gray-400" : "text-gray-500"
+                  }`}
+                >
+                  {t("roster.createFirstRoster")}
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Table View for Rosters */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr
+                  className={`border-b ${
+                    isDark
+                      ? "border-gray-700 bg-gray-750"
+                      : "border-gray-200 bg-gray-50"
+                  }`}
+                >
+                  <th
+                    className={`${
+                      isRTL ? "text-right" : "text-left"
+                    } p-4 font-semibold ${
+                      isDark ? "text-white" : "text-gray-900"
+                    }`}
+                  >
+                    {t("roster.table.title")}
+                  </th>
+                  <th
+                    className={`${
+                      isRTL ? "text-right" : "text-left"
+                    } p-4 font-semibold ${
+                      isDark ? "text-white" : "text-gray-900"
+                    }`}
+                  >
+                    {t("roster.table.period")}
+                  </th>
+                  <th
+                    className={`${
+                      isRTL ? "text-right" : "text-left"
+                    } p-4 font-semibold ${
+                      isDark ? "text-white" : "text-gray-900"
+                    }`}
+                  >
+                    {t("roster.table.status")}
+                  </th>
+
+                  <th
+                    className={`${
+                      isRTL ? "text-right" : "text-left"
+                    } p-4 font-semibold ${
+                      isDark ? "text-white" : "text-gray-900"
+                    }`}
+                  >
+                    {t("roster.table.actions")}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading.fetch ? (
+                  <tr>
+                    <td colSpan="5" className="text-center p-8">
+                      <div className="flex items-center justify-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                        <span
+                          className={`${isRTL ? "mr-3" : "ml-3"} ${
+                            isDark ? "text-gray-400" : "text-gray-600"
+                          }`}
+                        >
+                          {t("gettingData.rosters")}
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                ) : rosterList && rosterList.length > 0 ? (
+                  rosterList.map((roster) => {
+                    const statusInfo = getStatusInfo(roster.status)
+                    return (
+                      <tr
+                        key={roster.id}
+                        className={`border-b transition-colors ${
+                          isDark
+                            ? "border-gray-700 hover:bg-gray-750"
+                            : "border-gray-200 hover:bg-gray-50"
+                        }`}
+                      >
+                        <td className="p-4">
+                          <div
+                            className={`font-semibold ${
+                              isDark ? "text-white" : "text-gray-900"
+                            }`}
+                          >
+                            {roster.title}
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <div
+                            className={`${
+                              isDark ? "text-gray-300" : "text-gray-700"
+                            }`}
+                          >
+                            {formatMonthYear(roster.month, roster.year)}
+                          </div>
+                          <div
+                            className={`text-sm ${
+                              isDark ? "text-gray-400" : "text-gray-500"
+                            }`}
+                          >
+                            {roster.totalDays} {t("roster.dayss")}
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <button
+                            onClick={() => {
+                              setStatusToUpdate({
+                                id: roster.id,
+                                title: roster.title,
+                                currentStatus: roster.status,
+                              })
+                              setStatusModalOpen(true)
+                            }}
+                            className={`px-3 py-1 rounded-full text-xs font-medium transition-colors hover:opacity-80 cursor-pointer ${statusInfo.color}`}
+                            title={t("roster.actions.updateStatus")}
+                          >
+                            {statusInfo.name}
+                          </button>
+                        </td>
+
+                        <td className="p-4">
+                          <div className="flex gap-1">
+                            <Link to={`/admin-panel/rosters/${roster.id}`}>
+                              <button className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors">
+                                <Eye size={16} />
+                              </button>
+                            </Link>
+                            <button
+                              className="p-2 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900 rounded-lg transition-colors"
+                              title={t("roster.actions.updateStatus")}
+                              onClick={() => {
+                                setStatusToUpdate({
+                                  id: roster.id,
+                                  title: roster.title,
+                                  currentStatus: roster.status,
+                                })
+                                setStatusModalOpen(true)
+                              }}
+                            >
+                              <BarChart3 size={16} />
+                            </button>
+                            <Link to={`/admin-panel/rosters/${roster.id}/edit`}>
+                              <button className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors">
+                                <Edit size={16} />
+                              </button>
+                            </Link>
+                          </div>
+                        </td>
+                      </tr>
+                    )
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="text-center p-12">
+                      <div
+                        className={`w-16 h-16 ${
+                          isDark ? "bg-gray-700" : "bg-gray-100"
+                        } rounded-full flex items-center justify-center mx-auto mb-4`}
+                      >
+                        <FileText
+                          size={32}
+                          className={`${
+                            isDark ? "text-gray-600" : "text-gray-400"
+                          }`}
+                        />
+                      </div>
+                      <h3
+                        className={`text-lg font-medium ${
+                          isDark ? "text-white" : "text-gray-900"
+                        } mb-2`}
+                      >
+                        {t("roster.noRosters")}
+                      </h3>
+                      <p
+                        className={`${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        } mb-6`}
+                      >
+                        {t("roster.createFirstRoster")}
+                      </p>
+                      <Link to="/admin-panel/rosters/create">
+                        <button className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                          <Plus size={16} className={isRTL ? "ml-2" : "mr-2"} />
+                          {t("roster.actions.createBasic")}
+                        </button>
+                      </Link>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div
+          className={`${
+            isDark ? "bg-gray-800" : "bg-white"
+          } rounded-2xl shadow-xl p-6 mb-8 mt-8`}
+        >
+          <div className="flex items-center justify-between mb-6">
+            <h2
+              className={`text-2xl font-bold ${
+                isDark ? "text-white" : "text-gray-900"
+              } flex items-center`}
+            >
+              <div
+                className={`w-8 h-8 ${
+                  isDark ? "bg-blue-900/30" : "bg-blue-100"
+                } rounded-lg flex items-center justify-center ${
+                  isRTL ? "mr-3" : "ml-3"
+                }`}
+              >
+                <LinkIcon
+                  className={`w-4 h-4 ${
+                    isDark ? "text-blue-400" : "text-blue-600"
+                  }`}
+                />
+              </div>
+              {t("specificCategory.sections.linkedDepartments.title")}
+            </h2>
+            <span
+              className={`px-3 py-1 rounded-full text-sm font-medium ${
+                isDark
+                  ? "bg-green-900/30 text-green-400"
+                  : "bg-green-100 text-green-800"
+              }`}
+            >
+              {departmentsByCategory?.length || 0}{" "}
+              {t("specificCategory.sections.linkedDepartments.count")}
+            </span>
+          </div>
+
+          {/* Loading State */}
+          {loadingGetDepartmentsByCategory ? (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className={`${isDark ? "text-gray-400" : "text-gray-600"}`}>
+                {t("department.loading")}
+              </p>
+            </div>
+          ) : departmentsByCategory && departmentsByCategory.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {departmentsByCategory.map((department) => (
+                <div
+                  key={department.id}
+                  className={`p-6 rounded-xl border transition-all duration-200 hover:shadow-lg ${
+                    isDark
+                      ? "bg-gray-700 border-gray-600 hover:border-gray-500"
+                      : "bg-white border-gray-200 hover:border-gray-300"
+                  }`}
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="flex-1">
+                      <h3
+                        className={`font-bold text-lg mb-1 ${
+                          isDark ? "text-white" : "text-gray-900"
+                        }`}
+                      >
+                        {currentLang === "en"
+                          ? department.nameEnglish
+                          : department.nameArabic}
+                      </h3>
+                      <p
+                        className={`text-sm ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}
+                      >
+                        {department.code}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {/* Active Status */}
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          department.isActive
+                            ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
+                            : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+                        }`}
+                      >
+                        {department.isActive
+                          ? t("department.status.active")
+                          : t("department.status.inactive")}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 mb-4">
+                    <div className="flex items-center gap-2">
+                      <Building size={16} className="text-gray-500" />
+                      <span
+                        className={`text-sm ${
+                          isDark ? "text-gray-300" : "text-gray-600"
+                        }`}
+                      >
+                        {t("department.code")}: {department.code}
+                      </span>
+                    </div>
+
+                    {/* <div className="flex items-center gap-2">
+                      <Users size={16} className="text-gray-500" />
+                      <span
+                        className={`text-sm ${
+                          isDark ? "text-gray-300" : "text-gray-600"
+                        }`}
+                      >
+                        {t("department.linkedCategories")}:{" "}
+                        {department.linkedCategoriesCount || 0}
+                      </span>
+                    </div> */}
+
+                    <div className="flex items-center gap-2">
+                      <Award size={16} className="text-gray-500" />
+                      <span
+                        className={`text-sm ${
+                          isDark ? "text-gray-300" : "text-gray-600"
+                        }`}
+                      >
+                        {department.hasManager
+                          ? t("department.hasManager")
+                          : t("department.noManager")}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div
+                    className={`flex items-center justify-between pt-4 border-t ${
+                      isDark ? "border-gray-600" : "border-gray-200"
+                    }`}
+                  >
+                    <div className="flex gap-2">
+                      <Link to={`/admin-panel/department/${department.id}`}>
+                        <button
+                          className="inline-flex items-center gap-2 px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
+                          title={t("department.actions.view")}
+                        >
+                          <Eye size={14} />
+                          {t("department.actions.view")}
+                        </button>
+                      </Link>
+                    </div>
+
+                    {/* Unlink Button */}
+                    <button
+                      onClick={() => handleUnlinkDepartment(department.id)}
+                      disabled={
+                        loadingUnlinkDepartment && unlinkDepId === department.id
+                      }
+                      className="inline-flex items-center gap-2 px-3 py-1 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      title={t("department.actions.unlink")}
+                    >
+                      {loadingUnlinkDepartment &&
+                      unlinkDepId === department.id ? (
+                        <RefreshCw size={14} className="animate-spin" />
+                      ) : (
+                        <X size={14} />
+                      )}
+                      {t("department.actions.unlink")}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <div
+                className={`w-16 h-16 ${
+                  isDark ? "bg-gray-700" : "bg-gray-100"
+                } rounded-full flex items-center justify-center mx-auto mb-4`}
+              >
+                <LinkIcon
+                  className={`w-8 h-8 ${
+                    isDark ? "text-gray-500" : "text-gray-400"
+                  }`}
+                />
+              </div>
+              <p
+                className={`text-lg font-medium ${
+                  isDark ? "text-gray-300" : "text-gray-600"
+                } mb-2`}
+              >
+                {t(
+                  "specificCategory.sections.linkedDepartments.noLinkedDepartments"
+                )}
+              </p>
+              <p
+                className={`text-sm ${
+                  isDark ? "text-gray-400" : "text-gray-500"
+                }`}
+              >
+                {t(
+                  "specificCategory.sections.linkedDepartments.linkDepartmentsToGetStarted"
+                )}
+              </p>
+            </div>
+          )}
+        </div>
+        <div
+          className={`${
+            isDark ? "bg-gray-800" : "bg-white"
+          } rounded-2xl shadow-xl p-6`}
+        >
+          <div className="flex items-center justify-between mb-6">
+            <h2
+              className={`text-2xl font-bold ${
+                isDark ? "text-white" : "text-gray-900"
+              } flex items-center`}
+            >
+              <div
+                className={`w-8 h-8 ${
+                  isDark ? "bg-green-900/30" : "bg-green-100"
+                } rounded-lg flex items-center justify-center ${
+                  isRTL ? "mr-3" : "ml-3"
+                }`}
+              >
+                <Building
+                  className={`w-4 h-4 ${
+                    isDark ? "text-green-400" : "text-green-600"
+                  }`}
+                />
+              </div>
+              {t("specificCategory.sections.departments.title")}
+            </h2>
+            <span
+              className={`px-3 py-1 rounded-full text-sm font-medium ${
+                isDark
+                  ? "bg-blue-900/30 text-blue-400"
+                  : "bg-blue-100 text-blue-800"
+              }`}
+            >
+              {departments?.length || 0}{" "}
+              {t("specificCategory.sections.departments.count")}
+            </span>
+          </div>
+
+          {loadingGetDepartments ? (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className={`${isDark ? "text-gray-400" : "text-gray-600"}`}>
+                {t("department.loading")}
+              </p>
+            </div>
+          ) : departments && departments.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {departments.map((department) => (
+                <DepartmentCard key={department.id} department={department} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <div
+                className={`w-16 h-16 ${
+                  isDark ? "bg-gray-700" : "bg-gray-100"
+                } rounded-full flex items-center justify-center mx-auto mb-4`}
+              >
+                <Building
+                  className={`w-8 h-8 ${
+                    isDark ? "text-gray-500" : "text-gray-400"
+                  }`}
+                />
+              </div>
+              <p
+                className={`text-lg font-medium ${
+                  isDark ? "text-gray-300" : "text-gray-600"
+                } mb-2`}
+              >
+                {t("specificCategory.sections.departments.noDepartments")}
+              </p>
+              <p
+                className={`text-sm ${
+                  isDark ? "text-gray-400" : "text-gray-500"
+                }`}
+              >
+                {t("specificCategory.sections.departments.createFirst")}
+              </p>
+            </div>
+          )}
+        </div>
         <div
           className={`${
             isDark ? "bg-gray-800" : "bg-white"
@@ -1702,579 +2256,13 @@ const SpecificCategory = () => {
             </option>
           </select>
         </div>
-
-        <div className="lg:col-span-2 space-y-6">
-          {/* Description Card */}
-          <div
-            className={`${
-              isDark ? "bg-gray-800" : "bg-white"
-            } rounded-2xl shadow-xl p-6`}
-          >
-            <h2
-              className={`text-2xl font-bold ${
-                isDark ? "text-white" : "text-gray-900"
-              } mb-4 flex items-center`}
-            >
-              <div
-                className={`w-8 h-8 ${
-                  isDark ? "bg-blue-900/30" : "bg-blue-100"
-                }                     rounded-lg flex items-center justify-center ${
-                  isRTL ? "mr-3" : "ml-3"
-                }`}
-              >
-                <FileText
-                  className={`w-4 h-4 ${
-                    isDark ? "text-purple-400" : "text-purple-600"
-                  }`}
-                />
-              </div>
-              {t("roster.title")}
-            </h2>
-            <span
-              className={`px-3 py-1 rounded-full text-sm font-medium ${
-                isDark
-                  ? "bg-blue-900/30 text-blue-400"
-                  : "bg-blue-100 text-blue-800"
-              }`}
-            >
-              {rosterList?.length || 0} {t("roster.count")}
-            </span>
-          </div>
-
-          {/* Mobile Cards View for Rosters */}
-          <div className="md:hidden">
-            {loading.fetch ? (
-              <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                <p className={`${isDark ? "text-gray-400" : "text-gray-600"}`}>
-                  {t("gettingData.rosters")}
-                </p>
-              </div>
-            ) : rosterList && rosterList.length > 0 ? (
-              rosterList.map((roster) => (
-                <RosterCard key={roster.id} roster={roster} />
-              ))
-            ) : (
-              <div className="text-center py-8">
-                <div
-                  className={`w-16 h-16 ${
-                    isDark ? "bg-gray-700" : "bg-gray-100"
-                  } rounded-full flex items-center justify-center mx-auto mb-4`}
-                >
-                  <FileText
-                    className={`w-8 h-8 ${
-                      isDark ? "text-gray-500" : "text-gray-400"
-                    }`}
-                  />
-                </div>
-                <p
-                  className={`text-lg font-medium ${
-                    isDark ? "text-gray-300" : "text-gray-600"
-                  } mb-2`}
-                >
-                  {t("roster.noRosters")}
-                </p>
-                <p
-                  className={`text-sm ${
-                    isDark ? "text-gray-400" : "text-gray-500"
-                  }`}
-                >
-                  {t("roster.createFirstRoster")}
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* Desktop Table View for Rosters */}
-          <div className="hidden md:block overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr
-                  className={`border-b ${
-                    isDark
-                      ? "border-gray-700 bg-gray-750"
-                      : "border-gray-200 bg-gray-50"
-                  }`}
-                >
-                  <th
-                    className={`${
-                      isRTL ? "text-right" : "text-left"
-                    } p-4 font-semibold ${
-                      isDark ? "text-white" : "text-gray-900"
-                    }`}
-                  >
-                    {t("roster.table.title")}
-                  </th>
-                  <th
-                    className={`${
-                      isRTL ? "text-right" : "text-left"
-                    } p-4 font-semibold ${
-                      isDark ? "text-white" : "text-gray-900"
-                    }`}
-                  >
-                    {t("roster.table.period")}
-                  </th>
-                  <th
-                    className={`${
-                      isRTL ? "text-right" : "text-left"
-                    } p-4 font-semibold ${
-                      isDark ? "text-white" : "text-gray-900"
-                    }`}
-                  >
-                    {t("roster.table.status")}
-                  </th>
-
-                  <th
-                    className={`${
-                      isRTL ? "text-right" : "text-left"
-                    } p-4 font-semibold ${
-                      isDark ? "text-white" : "text-gray-900"
-                    }`}
-                  >
-                    {t("roster.table.actions")}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading.fetch ? (
-                  <tr>
-                    <td colSpan="5" className="text-center p-8">
-                      <div className="flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                        <span
-                          className={`${isRTL ? "mr-3" : "ml-3"} ${
-                            isDark ? "text-gray-400" : "text-gray-600"
-                          }`}
-                        >
-                          {t("gettingData.rosters")}
-                        </span>
-                      </div>
-                    </td>
-                  </tr>
-                ) : rosterList && rosterList.length > 0 ? (
-                  rosterList.map((roster) => {
-                    const statusInfo = getStatusInfo(roster.status)
-                    return (
-                      <tr
-                        key={roster.id}
-                        className={`border-b transition-colors ${
-                          isDark
-                            ? "border-gray-700 hover:bg-gray-750"
-                            : "border-gray-200 hover:bg-gray-50"
-                        }`}
-                      >
-                        <td className="p-4">
-                          <div
-                            className={`font-semibold ${
-                              isDark ? "text-white" : "text-gray-900"
-                            }`}
-                          >
-                            {roster.title}
-                          </div>
-                        </td>
-                        <td className="p-4">
-                          <div
-                            className={`${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            }`}
-                          >
-                            {formatMonthYear(roster.month, roster.year)}
-                          </div>
-                          <div
-                            className={`text-sm ${
-                              isDark ? "text-gray-400" : "text-gray-500"
-                            }`}
-                          >
-                            {roster.totalDays} {t("roster.dayss")}
-                          </div>
-                        </td>
-                        <td className="p-4">
-                          <button
-                            onClick={() => {
-                              setStatusToUpdate({
-                                id: roster.id,
-                                title: roster.title,
-                                currentStatus: roster.status,
-                              })
-                              setStatusModalOpen(true)
-                            }}
-                            className={`px-3 py-1 rounded-full text-xs font-medium transition-colors hover:opacity-80 cursor-pointer ${statusInfo.color}`}
-                            title={t("roster.actions.updateStatus")}
-                          >
-                            {statusInfo.name}
-                          </button>
-                        </td>
-
-                        <td className="p-4">
-                          <div className="flex gap-1">
-                            <Link to={`/admin-panel/rosters/${roster.id}`}>
-                              <button className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors">
-                                <Eye size={16} />
-                              </button>
-                            </Link>
-                            <button
-                              className="p-2 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900 rounded-lg transition-colors"
-                              title={t("roster.actions.updateStatus")}
-                              onClick={() => {
-                                setStatusToUpdate({
-                                  id: roster.id,
-                                  title: roster.title,
-                                  currentStatus: roster.status,
-                                })
-                                setStatusModalOpen(true)
-                              }}
-                            >
-                              <BarChart3 size={16} />
-                            </button>
-                            <Link to={`/admin-panel/rosters/${roster.id}/edit`}>
-                              <button className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900 rounded-lg transition-colors">
-                                <Edit size={16} />
-                              </button>
-                            </Link>
-                          </div>
-                        </td>
-                      </tr>
-                    )
-                  })
-                ) : (
-                  <tr>
-                    <td colSpan="5" className="text-center p-12">
-                      <div
-                        className={`w-16 h-16 ${
-                          isDark ? "bg-gray-700" : "bg-gray-100"
-                        } rounded-full flex items-center justify-center mx-auto mb-4`}
-                      >
-                        <FileText
-                          size={32}
-                          className={`${
-                            isDark ? "text-gray-600" : "text-gray-400"
-                          }`}
-                        />
-                      </div>
-                      <h3
-                        className={`text-lg font-medium ${
-                          isDark ? "text-white" : "text-gray-900"
-                        } mb-2`}
-                      >
-                        {t("roster.noRosters")}
-                      </h3>
-                      <p
-                        className={`${
-                          isDark ? "text-gray-400" : "text-gray-500"
-                        } mb-6`}
-                      >
-                        {t("roster.createFirstRoster")}
-                      </p>
-                      <Link to="/admin-panel/rosters/create">
-                        <button className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                          <Plus size={16} className={isRTL ? "ml-2" : "mr-2"} />
-                          {t("roster.actions.createBasic")}
-                        </button>
-                      </Link>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Departments Linked to This Category Section */}
-        <div
-          className={`${
-            isDark ? "bg-gray-800" : "bg-white"
-          } rounded-2xl shadow-xl p-6 mb-8 mt-8`}
-        >
-          <div className="flex items-center justify-between mb-6">
-            <h2
-              className={`text-2xl font-bold ${
-                isDark ? "text-white" : "text-gray-900"
-              } flex items-center`}
-            >
-              <div
-                className={`w-8 h-8 ${
-                  isDark ? "bg-blue-900/30" : "bg-blue-100"
-                } rounded-lg flex items-center justify-center ${
-                  isRTL ? "mr-3" : "ml-3"
-                }`}
-              >
-                <LinkIcon
-                  className={`w-4 h-4 ${
-                    isDark ? "text-blue-400" : "text-blue-600"
-                  }`}
-                />
-              </div>
-              {t("specificCategory.sections.linkedDepartments.title")}
-            </h2>
-            <span
-              className={`px-3 py-1 rounded-full text-sm font-medium ${
-                isDark
-                  ? "bg-green-900/30 text-green-400"
-                  : "bg-green-100 text-green-800"
-              }`}
-            >
-              {departmentsByCategory?.length || 0}{" "}
-              {t("specificCategory.sections.linkedDepartments.count")}
-            </span>
-          </div>
-
-          {/* Loading State */}
-          {loadingGetDepartmentsByCategory ? (
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-              <p className={`${isDark ? "text-gray-400" : "text-gray-600"}`}>
-                {t("department.loading")}
-              </p>
-            </div>
-          ) : departmentsByCategory && departmentsByCategory.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {departmentsByCategory.map((department) => (
-                <div
-                  key={department.id}
-                  className={`p-6 rounded-xl border transition-all duration-200 hover:shadow-lg ${
-                    isDark
-                      ? "bg-gray-700 border-gray-600 hover:border-gray-500"
-                      : "bg-white border-gray-200 hover:border-gray-300"
-                  }`}
-                >
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="flex-1">
-                      <h3
-                        className={`font-bold text-lg mb-1 ${
-                          isDark ? "text-white" : "text-gray-900"
-                        }`}
-                      >
-                        {currentLang === "en"
-                          ? department.nameEnglish
-                          : department.nameArabic}
-                      </h3>
-                      <p
-                        className={`text-sm ${
-                          isDark ? "text-gray-400" : "text-gray-500"
-                        }`}
-                      >
-                        {department.code}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {/* Active Status */}
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          department.isActive
-                            ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
-                            : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
-                        }`}
-                      >
-                        {department.isActive
-                          ? t("department.status.active")
-                          : t("department.status.inactive")}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3 mb-4">
-                    <div className="flex items-center gap-2">
-                      <Building size={16} className="text-gray-500" />
-                      <span
-                        className={`text-sm ${
-                          isDark ? "text-gray-300" : "text-gray-600"
-                        }`}
-                      >
-                        {t("department.code")}: {department.code}
-                      </span>
-                    </div>
-
-                    {/* <div className="flex items-center gap-2">
-                      <Users size={16} className="text-gray-500" />
-                      <span
-                        className={`text-sm ${
-                          isDark ? "text-gray-300" : "text-gray-600"
-                        }`}
-                      >
-                        {t("department.linkedCategories")}:{" "}
-                        {department.linkedCategoriesCount || 0}
-                      </span>
-                    </div> */}
-
-                    <div className="flex items-center gap-2">
-                      <Award size={16} className="text-gray-500" />
-                      <span
-                        className={`text-sm ${
-                          isDark ? "text-gray-300" : "text-gray-600"
-                        }`}
-                      >
-                        {department.hasManager
-                          ? t("department.hasManager")
-                          : t("department.noManager")}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div
-                    className={`flex items-center justify-between pt-4 border-t ${
-                      isDark ? "border-gray-600" : "border-gray-200"
-                    }`}
-                  >
-                    <div className="flex gap-2">
-                      <Link to={`/admin-panel/department/${department.id}`}>
-                        <button
-                          className="inline-flex items-center gap-2 px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
-                          title={t("department.actions.view")}
-                        >
-                          <Eye size={14} />
-                          {t("department.actions.view")}
-                        </button>
-                      </Link>
-                    </div>
-
-                    {/* Unlink Button */}
-                    <button
-                      onClick={() => handleUnlinkDepartment(department.id)}
-                      disabled={
-                        loadingUnlinkDepartment && unlinkDepId === department.id
-                      }
-                      className="inline-flex items-center gap-2 px-3 py-1 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                      title={t("department.actions.unlink")}
-                    >
-                      {loadingUnlinkDepartment &&
-                      unlinkDepId === department.id ? (
-                        <RefreshCw size={14} className="animate-spin" />
-                      ) : (
-                        <X size={14} />
-                      )}
-                      {t("department.actions.unlink")}
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <div
-                className={`w-16 h-16 ${
-                  isDark ? "bg-gray-700" : "bg-gray-100"
-                } rounded-full flex items-center justify-center mx-auto mb-4`}
-              >
-                <LinkIcon
-                  className={`w-8 h-8 ${
-                    isDark ? "text-gray-500" : "text-gray-400"
-                  }`}
-                />
-              </div>
-              <p
-                className={`text-lg font-medium ${
-                  isDark ? "text-gray-300" : "text-gray-600"
-                } mb-2`}
-              >
-                {t(
-                  "specificCategory.sections.linkedDepartments.noLinkedDepartments"
-                )}
-              </p>
-              <p
-                className={`text-sm ${
-                  isDark ? "text-gray-400" : "text-gray-500"
-                }`}
-              >
-                {t(
-                  "specificCategory.sections.linkedDepartments.linkDepartmentsToGetStarted"
-                )}
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* available departments */}
-        <div
-          className={`${
-            isDark ? "bg-gray-800" : "bg-white"
-          } rounded-2xl shadow-xl p-6`}
-        >
-          <div className="flex items-center justify-between mb-6">
-            <h2
-              className={`text-2xl font-bold ${
-                isDark ? "text-white" : "text-gray-900"
-              } flex items-center`}
-            >
-              <div
-                className={`w-8 h-8 ${
-                  isDark ? "bg-green-900/30" : "bg-green-100"
-                } rounded-lg flex items-center justify-center ${
-                  isRTL ? "mr-3" : "ml-3"
-                }`}
-              >
-                <Building
-                  className={`w-4 h-4 ${
-                    isDark ? "text-green-400" : "text-green-600"
-                  }`}
-                />
-              </div>
-              {t("specificCategory.sections.departments.title")}
-            </h2>
-            <span
-              className={`px-3 py-1 rounded-full text-sm font-medium ${
-                isDark
-                  ? "bg-blue-900/30 text-blue-400"
-                  : "bg-blue-100 text-blue-800"
-              }`}
-            >
-              {departments?.length || 0}{" "}
-              {t("specificCategory.sections.departments.count")}
-            </span>
-          </div>
-
-          {loadingGetDepartments ? (
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-              <p className={`${isDark ? "text-gray-400" : "text-gray-600"}`}>
-                {t("department.loading")}
-              </p>
-            </div>
-          ) : departments && departments.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {departments.map((department) => (
-                <DepartmentCard key={department.id} department={department} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <div
-                className={`w-16 h-16 ${
-                  isDark ? "bg-gray-700" : "bg-gray-100"
-                } rounded-full flex items-center justify-center mx-auto mb-4`}
-              >
-                <Building
-                  className={`w-8 h-8 ${
-                    isDark ? "text-gray-500" : "text-gray-400"
-                  }`}
-                />
-              </div>
-              <p
-                className={`text-lg font-medium ${
-                  isDark ? "text-gray-300" : "text-gray-600"
-                } mb-2`}
-              >
-                {t("specificCategory.sections.departments.noDepartments")}
-              </p>
-              <p
-                className={`text-sm ${
-                  isDark ? "text-gray-400" : "text-gray-500"
-                }`}
-              >
-                {t("specificCategory.sections.departments.createFirst")}
-              </p>
-            </div>
-          )}
-        </div>
-
+        طلبات الأجازه
         <CategoryHeadsManagement
           selectedCategory={selectedCategory}
           isDark={isDark}
           isRTL={isRTL}
         />
-
-        {/* Statistics Sidebar */}
         <div className="space-y-6">
-          {/* Statistics Cards */}
           <div
             className={`${
               isDark ? "bg-gray-800" : "bg-white"

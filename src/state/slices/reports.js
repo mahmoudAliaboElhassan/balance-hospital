@@ -1,13 +1,15 @@
-// reportSlice.js - Add these to your existing category slice
-
 import { createSlice } from "@reduxjs/toolkit"
-import { getReports } from "../act/actReports"
+import { getDashboardData, getReports } from "../act/actReports"
 
 // Initial state additions
 const initialState = {
   reports: null,
   loadingGetReports: false,
   getReportsError: null,
+  dashboardData: null,
+  loadingGetDashboardData: false,
+  dashboardError: null,
+  lastUpdated: null,
 }
 
 // Reducer cases for getReports
@@ -15,7 +17,6 @@ export const reportSlice = createSlice({
   name: "reports",
   initialState,
   reducers: {
-    // ... existing reducers
     clearReports: (state) => {
       state.reports = null
       state.getReportsError = null
@@ -23,11 +24,16 @@ export const reportSlice = createSlice({
     clearReportsError: (state) => {
       state.getReportsError = null
     },
+    clearDashboardData: (state) => {
+      state.dashboardData = null
+      state.dashboardError = null
+      state.lastUpdated = null
+    },
+    clearDashboardError: (state) => {
+      state.dashboardError = null
+    },
   },
   extraReducers: (builder) => {
-    // ... existing extra reducers
-
-    // Get Reports
     builder
       .addCase(getReports.pending, (state) => {
         state.loadingGetReports = true
@@ -49,9 +55,30 @@ export const reportSlice = createSlice({
         state.loadingGetReports = false
         state.getReportsError = action.payload
       })
+
+      .addCase(getDashboardData.pending, (state) => {
+        state.loadingGetDashboardData = true
+        state.dashboardError = null
+      })
+      .addCase(getDashboardData.fulfilled, (state, action) => {
+        state.loadingGetDashboardData = false
+        state.dashboardData = action.payload.data
+        state.lastUpdated = new Date().toISOString()
+        state.dashboardError = null
+      })
+      .addCase(getDashboardData.rejected, (state, action) => {
+        state.loadingGetDashboardData = false
+        state.dashboardError = action.payload
+        state.dashboardData = null
+      })
   },
 })
 
-export const { clearReports, clearReportsError } = reportSlice.actions
+export const {
+  clearReports,
+  clearReportsError,
+  clearDashboardData,
+  clearDashboardError,
+} = reportSlice.actions
 
 export default reportSlice.reducer
