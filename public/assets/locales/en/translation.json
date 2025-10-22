@@ -2089,8 +2089,8 @@
         "overwriteExistingHelp": "Existing Scientific Degrees will be replaced with the new ones"
       },
       "placeholders": {
-        "selectContractingType": "Select contracting type",
-        "notes": "Additional notes about this contracting type..."
+        "selectContractingType": "Select Scientific Degree",
+        "notes": "Additional notes about this Scintific Degree..."
       },
       "buttons": {
         "addContractingType": "Add Scientific Degrees",
@@ -2100,8 +2100,8 @@
         "adding": "Adding..."
       },
       "success": {
-        "added": "Contracting types added successfully",
-        "updated": "Contracting type updated successfully"
+        "added": "Scientific Degrees added successfully",
+        "updated": "Scientific Degree updated successfully"
       },
       "error": {
         "title": "Error Adding Contracting Types",
@@ -2113,7 +2113,7 @@
       },
       "validation": {
         "atLeastOneRequired": "At least one Scientific Degree is required",
-        "contractingTypeRequired": "Contracting type is required",
+        "contractingTypeRequired": "Scientific Degree is required",
         "minRequired": "Minimum is 1 doctor",
         "maxRequired": "Maximum is 50 doctors",
         "defaultRequiredRequired": "Default required doctors is required",

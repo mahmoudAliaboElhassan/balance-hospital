@@ -1,5 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
-import UseInitialStates from "../../hooks/use-initial-state";
+import { createSlice } from "@reduxjs/toolkit"
+import UseInitialStates from "../../hooks/use-initial-state"
 import {
   createCategory,
   getCategories,
@@ -13,11 +13,11 @@ import {
   getCategoryHeads,
   assignCategoryHead,
   removeCategoryHead, // Add the new action import
-} from "../act/actCategory";
-import i18next from "i18next";
-import "../../translation/i18n";
+} from "../act/actCategory"
+import i18next from "i18next"
+import "../../translation/i18n"
 
-const { initialStateCategories } = UseInitialStates();
+const { initialStateCategories } = UseInitialStates()
 
 export const categorySlice = createSlice({
   name: "categorySlice",
@@ -25,7 +25,7 @@ export const categorySlice = createSlice({
   reducers: {
     // Category filters
     setFilters: (state, action) => {
-      state.filters = { ...state.filters, ...action.payload };
+      state.filters = { ...state.filters, ...action.payload }
     },
     clearFilters: (state) => {
       state.filters = {
@@ -35,76 +35,76 @@ export const categorySlice = createSlice({
         orderDesc: true,
         page: 1,
         pageSize: 10,
-      };
+      }
     },
     setCurrentPage: (state, action) => {
-      state.filters.page = action.payload;
+      state.filters.page = action.payload
     },
     setPageSize: (state, action) => {
-      state.filters.pageSize = action.payload;
-      state.filters.page = 1;
+      state.filters.pageSize = action.payload
+      state.filters.page = 1
     },
 
     // Category data actions
     clearCategories: (state) => {
-      state.categories = [];
-      state.pagination = null;
-      state.error = null;
+      state.categories = []
+      state.pagination = null
+      state.error = null
     },
     clearError: (state) => {
-      state.error = null;
+      state.error = null
     },
 
     // Category Types actions
     clearCategoryTypes: (state) => {
-      state.categoryTypes = [];
-      state.categoryTypesError = null;
+      state.categoryTypes = []
+      state.categoryTypesError = null
     },
     clearCategoryTypesError: (state) => {
-      state.categoryTypesError = null;
+      state.categoryTypesError = null
     },
 
     // Category success/error clearing actions
     clearCreateSuccess: (state) => {
-      state.createSuccess = false;
-      state.createMessage = "";
+      state.createSuccess = false
+      state.createMessage = ""
     },
     clearUpdateSuccess: (state) => {
-      state.updateSuccess = false;
-      state.updateMessage = "";
+      state.updateSuccess = false
+      state.updateMessage = ""
     },
     clearDeleteSuccess: (state) => {
-      state.deleteSuccess = false;
-      state.deleteMessage = "";
+      state.deleteSuccess = false
+      state.deleteMessage = ""
     },
 
     // Category form reset actions
     resetCreateForm: (state) => {
-      state.loadingCreateCategory = false;
-      state.createError = null;
-      state.createSuccess = false;
-      state.createMessage = "";
+      state.loadingCreateCategory = false
+      state.createError = null
+      state.createSuccess = false
+      state.createMessage = ""
     },
     resetUpdateForm: (state) => {
-      state.loadingUpdateCategory = false;
-      state.updateError = null;
-      state.updateSuccess = false;
-      state.updateMessage = "";
+      state.loadingUpdateCategory = false
+      state.updateError = null
+      state.updateSuccess = false
+      state.updateMessage = ""
     },
     resetDeleteForm: (state) => {
-      state.loadingDeleteCategory = false;
-      state.deleteError = null;
-      state.deleteSuccess = false;
-      state.deleteMessage = "";
+      state.loadingDeleteCategory = false
+      state.deleteError = null
+      state.deleteSuccess = false
+      state.deleteMessage = ""
     },
 
     // Single category actions
     clearSingleCategory: (state) => {
-      state.selectedCategory = null;
-      state.singleCategoryError = null;
+      state.selectedCategory = null
+      state.singleCategoryError = null
     },
     clearSingleCategoryError: (state) => {
-      state.singleCategoryError = null;
+      state.singleCategoryError = null
     },
 
     // Global Pending Doctor Requests filters
@@ -112,38 +112,38 @@ export const categorySlice = createSlice({
       state.pendingRequestsFilters = {
         ...state.pendingRequestsFilters,
         ...action.payload,
-      };
+      }
     },
     clearPendingRequestsFilters: (state) => {
       state.pendingRequestsFilters = {
         status: "",
         page: 1,
         pageSize: 10,
-      };
+      }
     },
     setPendingRequestsCurrentPage: (state, action) => {
-      state.pendingRequestsFilters.page = action.payload;
+      state.pendingRequestsFilters.page = action.payload
     },
     setPendingRequestsPageSize: (state, action) => {
-      state.pendingRequestsFilters.pageSize = action.payload;
-      state.pendingRequestsFilters.page = 1;
+      state.pendingRequestsFilters.pageSize = action.payload
+      state.pendingRequestsFilters.page = 1
     },
     setPendingRequestsStatusFilter: (state, action) => {
-      state.pendingRequestsFilters.status = action.payload;
-      state.pendingRequestsFilters.page = 1;
+      state.pendingRequestsFilters.status = action.payload
+      state.pendingRequestsFilters.page = 1
     },
 
     // Global Pending Doctor Requests data actions
     clearPendingDoctorRequests: (state) => {
-      state.pendingDoctorRequests = [];
-      state.pendingDoctorRequestsPagination = null;
-      state.pendingDoctorRequestsError = null;
+      state.pendingDoctorRequests = []
+      state.pendingDoctorRequestsPagination = null
+      state.pendingDoctorRequestsError = null
     },
     clearPendingDoctorRequestsError: (state) => {
-      state.pendingDoctorRequestsError = null;
+      state.pendingDoctorRequestsError = null
     },
     clearSelectedRequest: (state) => {
-      state.selectedRequest = null;
+      state.selectedRequest = null
     },
 
     // Category-specific Pending Requests filters
@@ -151,70 +151,70 @@ export const categorySlice = createSlice({
       state.categoryPendingRequestsFilters = {
         ...state.categoryPendingRequestsFilters,
         ...action.payload,
-      };
+      }
     },
     clearCategoryPendingRequestsFilters: (state) => {
       state.categoryPendingRequestsFilters = {
         status: "",
         page: 1,
         pageSize: 10,
-      };
+      }
     },
     setCategoryPendingRequestsCurrentPage: (state, action) => {
-      state.categoryPendingRequestsFilters.page = action.payload;
+      state.categoryPendingRequestsFilters.page = action.payload
     },
     setCategoryPendingRequestsPageSize: (state, action) => {
-      state.categoryPendingRequestsFilters.pageSize = action.payload;
-      state.categoryPendingRequestsFilters.page = 1;
+      state.categoryPendingRequestsFilters.pageSize = action.payload
+      state.categoryPendingRequestsFilters.page = 1
     },
     setCategoryPendingRequestsStatusFilter: (state, action) => {
-      state.categoryPendingRequestsFilters.status = action.payload;
-      state.categoryPendingRequestsFilters.page = 1;
+      state.categoryPendingRequestsFilters.status = action.payload
+      state.categoryPendingRequestsFilters.page = 1
     },
 
     // Category-specific Pending Requests data actions
     clearCategoryPendingRequests: (state) => {
-      state.categoryPendingRequests = [];
-      state.categoryPendingRequestsPagination = null;
-      state.categoryPendingRequestsError = null;
-      state.selectedCategoryId = null;
+      state.categoryPendingRequests = []
+      state.categoryPendingRequestsPagination = null
+      state.categoryPendingRequestsError = null
+      state.selectedCategoryId = null
     },
     clearCategoryPendingRequestsError: (state) => {
-      state.categoryPendingRequestsError = null;
+      state.categoryPendingRequestsError = null
     },
     setSelectedCategoryId: (state, action) => {
-      state.selectedCategoryId = action.payload;
+      state.selectedCategoryId = action.payload
     },
 
     // Doctor Request Approval actions
     clearApprovalSuccess: (state) => {
-      state.approvalSuccess = false;
-      state.approvalMessage = "";
+      state.approvalSuccess = false
+      state.approvalMessage = ""
     },
     clearApprovalError: (state) => {
-      state.approvalError = null;
+      state.approvalError = null
     },
     resetApprovalForm: (state) => {
-      state.loadingApproveRequest = false;
-      state.approvalError = null;
-      state.approvalSuccess = false;
-      state.approvalMessage = "";
+      state.loadingApproveRequest = false
+      state.approvalError = null
+      state.approvalSuccess = false
+      state.approvalMessage = ""
     },
   },
   extraReducers: (builder) => {
     builder
       // Get Categories
       .addCase(getCategories.pending, (state) => {
-        state.loadingGetCategories = true;
-        state.error = null;
+        state.loadingGetCategories = true
+        state.error = null
       })
       .addCase(getCategories.fulfilled, (state, action) => {
-        state.loadingGetCategories = false;
-        state.error = null;
+        state.loadingGetCategories = false
+        state.error = null
 
-        const response = action.payload;
+        const response = action.payload
         if (response.success) {
-          state.categories = response.data.items;
+          state.categories = response.data.items
           state.pagination = {
             totalCount: response.data.totalCount,
             page: response.data.page,
@@ -222,116 +222,116 @@ export const categorySlice = createSlice({
             totalPages: response.data.totalPages,
             hasNextPage: response.data.hasNextPage,
             hasPreviousPage: response.data.hasPreviousPage,
-          };
-          state.message = response.message;
-          state.timestamp = response.timestamp;
+          }
+          state.message = response.message
+          state.timestamp = response.timestamp
         }
       })
       .addCase(getCategories.rejected, (state, action) => {
-        state.loadingGetCategories = false;
-        state.categories = [];
-        state.pagination = null;
+        state.loadingGetCategories = false
+        state.categories = []
+        state.pagination = null
         state.error = {
           message:
             action.payload?.message || i18next.t("categories.fetchError"),
           errors: action.payload?.errors || [],
           timestamp: new Date().toISOString(),
-        };
+        }
       })
 
       // Get Category Types (Public)
       .addCase(getCategoryTypes.pending, (state) => {
-        state.loadingGetCategoryTypes = true;
-        state.categoryTypesError = null;
+        state.loadingGetCategoryTypes = true
+        state.categoryTypesError = null
       })
       .addCase(getCategoryTypes.fulfilled, (state, action) => {
-        state.loadingGetCategoryTypes = false;
-        state.categoryTypesError = null;
+        state.loadingGetCategoryTypes = false
+        state.categoryTypesError = null
 
-        const response = action.payload;
+        const response = action.payload
         if (response.success) {
-          state.categoryTypes = response.data;
-          state.message = response.messageAr || response.messageEn;
-          state.timestamp = response.timestamp;
+          state.categoryTypes = response.data
+          state.message = response.messageAr || response.messageEn
+          state.timestamp = response.timestamp
         }
-        console.log(state.categoryTypes);
+        console.log(state.categoryTypes)
       })
       .addCase(getCategoryTypes.rejected, (state, action) => {
-        state.loadingGetCategoryTypes = false;
-        state.categoryTypes = [];
+        state.loadingGetCategoryTypes = false
+        state.categoryTypes = []
         state.categoryTypesError = {
           message: action.payload?.message || "حدث خطأ في جلب أنواع الفئات",
           errors: action.payload?.errors || [],
           status: action.payload?.status,
           timestamp: new Date().toISOString(),
-        };
+        }
       })
 
       // Create Category
       .addCase(createCategory.pending, (state) => {
-        state.loadingCreateCategory = true;
-        state.createError = null;
-        state.createSuccess = false;
+        state.loadingCreateCategory = true
+        state.createError = null
+        state.createSuccess = false
       })
       .addCase(createCategory.fulfilled, (state, action) => {
-        state.loadingCreateCategory = false;
-        state.createError = null;
+        state.loadingCreateCategory = false
+        state.createError = null
 
-        const response = action.payload;
+        const response = action.payload
         if (response.success) {
-          state.createSuccess = true;
-          state.createMessage = response.message;
+          state.createSuccess = true
+          state.createMessage = response.message
 
           if (state.filters.page === 1) {
-            state.categories.unshift(response.data);
+            state.categories.unshift(response.data)
             if (state.pagination) {
-              state.pagination.totalCount += 1;
+              state.pagination.totalCount += 1
               state.pagination.totalPages = Math.ceil(
                 state.pagination.totalCount / state.pagination.pageSize
-              );
+              )
             }
           }
         }
       })
       .addCase(createCategory.rejected, (state, action) => {
-        state.loadingCreateCategory = false;
-        state.createSuccess = false;
+        state.loadingCreateCategory = false
+        state.createSuccess = false
         state.createError = {
           message: action.payload?.message || "حدث خطأ في إنشاء الفئة",
           errors: action.payload?.errors || [],
           timestamp: new Date().toISOString(),
-        };
+        }
       })
 
       // Get Single Category
       .addCase(getCategoryById.pending, (state) => {
-        state.loadingGetSingleCategory = true;
-        state.singleCategoryError = null;
+        state.loadingGetSingleCategory = true
+        state.singleCategoryError = null
       })
       .addCase(getCategoryById.fulfilled, (state, action) => {
-        state.loadingGetSingleCategory = false;
-        state.singleCategoryError = null;
+        state.loadingGetSingleCategory = false
+        state.singleCategoryError = null
 
-        const response = action.payload;
+        const response = action.payload
         if (response.success) {
-          state.selectedCategory = response.data;
-          state.message = response.messageAr || response.message;
-          state.timestamp = response.timestamp;
+          state.selectedCategory = response.data
+          state.message = response.messageAr || response.message
+          state.timestamp = response.timestamp
         }
       })
       .addCase(getCategoryById.rejected, (state, action) => {
-        state.loadingGetSingleCategory = false;
-        state.selectedCategory = null;
+        state.loadingGetSingleCategory = false
+        state.selectedCategory = null
 
-        const payload = action.payload;
-        let errorMessage = "حدث خطأ في جلب الفئة";
+        const payload = action.payload
+        let errorMessage = "حدث خطأ في جلب الفئة"
 
         if (payload?.status === 404) {
-          errorMessage = payload.message || "الفئة غير موجودة";
+          errorMessage = payload.message || "الفئة غير موجودة"
         } else if (payload?.status === 403) {
-          errorMessage = payload.message || "ليس لديك صلاحية للوصول لهذه الفئة";
+          errorMessage = payload.message || "ليس لديك صلاحية للوصول لهذه الفئة"
         } else if (payload?.message) {
-          errorMessage = payload.message;
+          errorMessage = payload.message
         }
 
         state.singleCategoryError = {
@@ -339,48 +339,48 @@ export const categorySlice = createSlice({
           errors: payload?.errors || [],
           status: payload?.status,
           timestamp: new Date().toISOString(),
-        };
+        }
       })
 
       // Update Category
       .addCase(updateCategory.pending, (state) => {
-        state.loadingUpdateCategory = true;
-        state.updateError = null;
-        state.updateSuccess = false;
+        state.loadingUpdateCategory = true
+        state.updateError = null
+        state.updateSuccess = false
       })
       .addCase(updateCategory.fulfilled, (state, action) => {
-        state.loadingUpdateCategory = false;
-        state.updateError = null;
+        state.loadingUpdateCategory = false
+        state.updateError = null
 
-        const response = action.payload;
+        const response = action.payload
         if (response.success) {
-          state.updateSuccess = true;
-          state.updateMessage = response.messageAr || response.message;
-          state.selectedCategory = response.data;
+          state.updateSuccess = true
+          state.updateMessage = response.messageAr || response.message
+          state.selectedCategory = response.data
 
           const categoryIndex = state.categories.findIndex(
             (cat) => cat.id === response.data.id
-          );
+          )
           if (categoryIndex !== -1) {
-            state.categories[categoryIndex] = response.data;
+            state.categories[categoryIndex] = response.data
           }
         }
       })
       .addCase(updateCategory.rejected, (state, action) => {
-        state.loadingUpdateCategory = false;
-        state.updateSuccess = false;
+        state.loadingUpdateCategory = false
+        state.updateSuccess = false
 
-        const payload = action.payload;
-        let errorMessage = "حدث خطأ في تحديث الفئة";
+        const payload = action.payload
+        let errorMessage = "حدث خطأ في تحديث الفئة"
 
         if (payload?.status === 404) {
-          errorMessage = payload.message || "الفئة غير موجودة";
+          errorMessage = payload.message || "الفئة غير موجودة"
         } else if (payload?.status === 403) {
-          errorMessage = payload.message || "ليس لديك صلاحية لتحديث هذه الفئة";
+          errorMessage = payload.message || "ليس لديك صلاحية لتحديث هذه الفئة"
         } else if (payload?.status === 400) {
-          errorMessage = payload.message || "بيانات غير صحيحة أو عدم تطابق ID";
+          errorMessage = payload.message || "بيانات غير صحيحة أو عدم تطابق ID"
         } else if (payload?.message) {
-          errorMessage = payload.message;
+          errorMessage = payload.message
         }
 
         state.updateError = {
@@ -388,56 +388,56 @@ export const categorySlice = createSlice({
           errors: payload?.errors || [],
           status: payload?.status,
           timestamp: new Date().toISOString(),
-        };
+        }
       })
 
       // Delete Category
       .addCase(deleteCategory.pending, (state) => {
-        state.loadingDeleteCategory = true;
-        state.deleteError = null;
-        state.deleteSuccess = false;
+        state.loadingDeleteCategory = true
+        state.deleteError = null
+        state.deleteSuccess = false
       })
       .addCase(deleteCategory.fulfilled, (state, action) => {
-        state.loadingDeleteCategory = false;
-        state.deleteError = null;
+        state.loadingDeleteCategory = false
+        state.deleteError = null
 
-        const response = action.payload;
+        const response = action.payload
         if (response.success) {
-          state.deleteSuccess = true;
-          state.deleteMessage = response.messageAr || response.message;
+          state.deleteSuccess = true
+          state.deleteMessage = response.messageAr || response.message
 
           state.categories = state.categories.filter(
             (cat) => cat.id !== response.deletedCategoryId
-          );
+          )
 
           if (state.pagination) {
-            state.pagination.totalCount -= 1;
+            state.pagination.totalCount -= 1
             state.pagination.totalPages = Math.ceil(
               state.pagination.totalCount / state.pagination.pageSize
-            );
+            )
           }
 
           if (state.selectedCategory?.id === response.deletedCategoryId) {
-            state.selectedCategory = null;
+            state.selectedCategory = null
           }
         }
       })
       .addCase(deleteCategory.rejected, (state, action) => {
-        state.loadingDeleteCategory = false;
-        state.deleteSuccess = false;
+        state.loadingDeleteCategory = false
+        state.deleteSuccess = false
 
-        const payload = action.payload;
-        let errorMessage = "حدث خطأ في حذف الفئة";
+        const payload = action.payload
+        let errorMessage = "حدث خطأ في حذف الفئة"
 
         if (payload?.status === 404) {
-          errorMessage = payload.message || "الفئة غير موجودة";
+          errorMessage = payload.message || "الفئة غير موجودة"
         } else if (payload?.status === 403) {
-          errorMessage = payload.message || "ليس لديك صلاحية لحذف هذه الفئة";
+          errorMessage = payload.message || "ليس لديك صلاحية لحذف هذه الفئة"
         } else if (payload?.status === 400) {
           errorMessage =
-            payload.message || "بيانات غير صحيحة أو سبب الحذف مطلوب";
+            payload.message || "بيانات غير صحيحة أو سبب الحذف مطلوب"
         } else if (payload?.message) {
-          errorMessage = payload.message;
+          errorMessage = payload.message
         }
 
         state.deleteError = {
@@ -445,21 +445,21 @@ export const categorySlice = createSlice({
           errors: payload?.errors || [],
           status: payload?.status,
           timestamp: new Date().toISOString(),
-        };
+        }
       })
 
       // Get Category-specific Pending Doctor Requests
       .addCase(getCategoryPendingRequests.pending, (state) => {
-        state.loadingGetCategoryPendingRequests = true;
-        state.categoryPendingRequestsError = null;
+        state.loadingGetCategoryPendingRequests = true
+        state.categoryPendingRequestsError = null
       })
       .addCase(getCategoryPendingRequests.fulfilled, (state, action) => {
-        state.loadingGetCategoryPendingRequests = false;
-        state.categoryPendingRequestsError = null;
+        state.loadingGetCategoryPendingRequests = false
+        state.categoryPendingRequestsError = null
 
-        const response = action.payload;
+        const response = action.payload
         if (response.success) {
-          state.categoryPendingRequests = response.data.items;
+          state.categoryPendingRequests = response.data.items
           state.categoryPendingRequestsPagination = {
             page: response.data.page,
             pageSize: response.data.pageSize,
@@ -469,29 +469,29 @@ export const categorySlice = createSlice({
             hasNext: response.data.hasNext,
             startIndex: response.data.startIndex,
             endIndex: response.data.endIndex,
-          };
-          state.selectedCategoryId = response.categoryId;
-          state.message = response.messageAr || response.messageEn;
-          state.timestamp = response.timestamp;
+          }
+          state.selectedCategoryId = response.categoryId
+          state.message = response.messageAr || response.messageEn
+          state.timestamp = response.timestamp
         }
       })
       .addCase(getCategoryPendingRequests.rejected, (state, action) => {
-        state.loadingGetCategoryPendingRequests = false;
-        state.categoryPendingRequests = [];
-        state.categoryPendingRequestsPagination = null;
+        state.loadingGetCategoryPendingRequests = false
+        state.categoryPendingRequests = []
+        state.categoryPendingRequestsPagination = null
 
-        const payload = action.payload;
-        let errorMessage = "حدث خطأ في جلب طلبات الفئة";
+        const payload = action.payload
+        let errorMessage = "حدث خطأ في جلب طلبات الفئة"
 
         if (payload?.status === 404) {
-          errorMessage = payload.message || "الفئة غير موجودة";
+          errorMessage = payload.message || "الفئة غير موجودة"
         } else if (payload?.status === 403) {
           errorMessage =
-            payload.message || "ليس لديك صلاحية للوصول لهذه البيانات";
+            payload.message || "ليس لديك صلاحية للوصول لهذه البيانات"
         } else if (payload?.status === 401) {
-          errorMessage = payload.message || "يجب تسجيل الدخول أولاً";
+          errorMessage = payload.message || "يجب تسجيل الدخول أولاً"
         } else if (payload?.message) {
-          errorMessage = payload.message;
+          errorMessage = payload.message
         }
 
         state.categoryPendingRequestsError = {
@@ -499,28 +499,28 @@ export const categorySlice = createSlice({
           errors: payload?.errors || [],
           status: payload?.status,
           timestamp: new Date().toISOString(),
-        };
+        }
       })
 
       // Approve/Reject Doctor Request
       .addCase(approveDoctorRequest.pending, (state) => {
-        state.loadingApproveRequest = true;
-        state.approvalError = null;
-        state.approvalSuccess = false;
+        state.loadingApproveRequest = true
+        state.approvalError = null
+        state.approvalSuccess = false
       })
       .addCase(approveDoctorRequest.fulfilled, (state, action) => {
-        state.loadingApproveRequest = false;
-        state.approvalError = null;
+        state.loadingApproveRequest = false
+        state.approvalError = null
 
-        const response = action.payload;
+        const response = action.payload
         if (response.success) {
-          state.approvalSuccess = true;
-          state.approvalMessage = response.messageAr || response.message;
+          state.approvalSuccess = true
+          state.approvalMessage = response.messageAr || response.message
 
           // Update the request status in the categoryPendingRequests array
           const requestIndex = state.categoryPendingRequests.findIndex(
             (request) => request.userId === response.userId
-          );
+          )
 
           if (requestIndex !== -1) {
             const updatedRequest = {
@@ -529,8 +529,8 @@ export const categorySlice = createSlice({
               processedAt: new Date().toISOString(),
               processedByName: response.processedByName || "System",
               processedNotes: response.processedNotes || "",
-            };
-            state.categoryPendingRequests[requestIndex] = updatedRequest;
+            }
+            state.categoryPendingRequests[requestIndex] = updatedRequest
           }
 
           // Also update in global pending requests if they exist
@@ -540,7 +540,7 @@ export const categorySlice = createSlice({
           ) {
             const globalRequestIndex = state.pendingDoctorRequests.findIndex(
               (request) => request.userId === response.userId
-            );
+            )
 
             if (globalRequestIndex !== -1) {
               const updatedGlobalRequest = {
@@ -549,29 +549,29 @@ export const categorySlice = createSlice({
                 processedAt: new Date().toISOString(),
                 processedByName: response.processedByName || "System",
                 processedNotes: response.processedNotes || "",
-              };
+              }
               state.pendingDoctorRequests[globalRequestIndex] =
-                updatedGlobalRequest;
+                updatedGlobalRequest
             }
           }
         }
       })
       .addCase(approveDoctorRequest.rejected, (state, action) => {
-        state.loadingApproveRequest = false;
-        state.approvalSuccess = false;
+        state.loadingApproveRequest = false
+        state.approvalSuccess = false
 
-        const payload = action.payload;
-        let errorMessage = "حدث خطأ في معالجة الطلب";
+        const payload = action.payload
+        let errorMessage = "حدث خطأ في معالجة الطلب"
 
         if (payload?.status === 400) {
           errorMessage =
-            payload.message || "معرف الطلب غير صحيح أو الطلب تم معالجته مسبقاً";
+            payload.message || "معرف الطلب غير صحيح أو الطلب تم معالجته مسبقاً"
         } else if (payload?.status === 403) {
-          errorMessage = payload.message || "لا توجد صلاحية لمعالجة هذا الطلب";
+          errorMessage = payload.message || "لا توجد صلاحية لمعالجة هذا الطلب"
         } else if (payload?.status === 404) {
-          errorMessage = payload.message || "الطلب غير موجود";
+          errorMessage = payload.message || "الطلب غير موجود"
         } else if (payload?.message) {
-          errorMessage = payload.message;
+          errorMessage = payload.message
         }
 
         state.approvalError = {
@@ -579,26 +579,26 @@ export const categorySlice = createSlice({
           errors: payload?.errors || [],
           status: payload?.status,
           timestamp: new Date().toISOString(),
-        };
+        }
       })
       .addCase(rejectDoctorRequest.pending, (state, action) => {
-        state.loadingRejectRequest = true;
+        state.loadingRejectRequest = true
       })
       .addCase(rejectDoctorRequest.fulfilled, (state, action) => {
-        state.loadingRejectRequest = false;
+        state.loadingRejectRequest = false
       })
       .addCase(rejectDoctorRequest.rejected, (state, action) => {
-        state.loadingRejectRequest = false;
+        state.loadingRejectRequest = false
       })
 
       .addCase(getCategoryHeads.pending, (state, action) => {
-        state.loadingGetCategoryHeads = true;
-        state.error = "";
+        state.loadingGetCategoryHeads = true
+        state.error = ""
       })
       .addCase(getCategoryHeads.fulfilled, (state, action) => {
-        state.loadingGetCategoryHeads = false;
+        state.loadingGetCategoryHeads = false
 
-        state.categoryHeads = action.payload.data?.items || [];
+        state.categoryHeads = action.payload.data?.items || []
         state.categoryHeadsPagination = {
           totalCount: action.payload.data?.totalCount || 0,
           pageNumber: action.payload.data?.page || 1,
@@ -608,40 +608,40 @@ export const categorySlice = createSlice({
           hasPreviousPage: action.payload.data?.hasPrevious || false,
           startIndex: action.payload.data?.startIndex || 0,
           endIndex: action.payload.data?.endIndex || 0,
-        };
+        }
 
-        console.log("Category heads loaded:", state.categoryHeads);
+        console.log("Category heads loaded:", state.categoryHeads)
       })
       .addCase(getCategoryHeads.rejected, (state, action) => {
-        state.loadingGetCategoryHeads = false;
-        state.error = action.error.message || "Failed to fetch category heads";
+        state.loadingGetCategoryHeads = false
+        state.error = action.error.message || "Failed to fetch category heads"
       })
       .addCase(assignCategoryHead.pending, (state, action) => {
-        state.loadingAssignCategoryHead = true;
+        state.loadingAssignCategoryHead = true
       })
       .addCase(assignCategoryHead.fulfilled, (state, action) => {
-        state.loadingAssignCategoryHead = false;
+        state.loadingAssignCategoryHead = false
       })
       .addCase(assignCategoryHead.rejected, (state, action) => {
-        state.loadingAssignCategoryHead = false;
+        state.loadingAssignCategoryHead = false
       })
       .addCase(removeCategoryHead.pending, (state, action) => {
-        state.loadingRemoveCategoryHead = true;
+        state.loadingRemoveCategoryHead = true
       })
       .addCase(removeCategoryHead.fulfilled, (state, action) => {
-        state.loadingRemoveCategoryHead = false;
-        const catIHeadId = action.payload.catHeadId;
-        console.log("action.payload", action.payload);
-        console.log("state.categoryHeads", state.categoryHeads);
+        state.loadingRemoveCategoryHead = false
+        const catIHeadId = action.payload.catHeadId
+        console.log("action.payload", action.payload)
+        console.log("state.categoryHeads", state.categoryHeads)
         state.categoryHeads = state.categoryHeads.filter(
           (catHead) => catHead.categoryId !== catIHeadId
-        );
+        )
       })
       .addCase(removeCategoryHead.rejected, (state, action) => {
-        state.loadingRemoveCategoryHead = false;
-      });
+        state.loadingRemoveCategoryHead = false
+      })
   },
-});
+})
 
 export const {
   // Category filters
@@ -696,9 +696,9 @@ export const {
   clearApprovalSuccess,
   clearApprovalError,
   resetApprovalForm,
-} = categorySlice.actions;
+} = categorySlice.actions
 
-export default categorySlice.reducer;
+export default categorySlice.reducer
 
 // Export async thunks
 export {
@@ -711,4 +711,4 @@ export {
   getCategoryPendingRequests,
   approveDoctorRequest,
   rejectDoctorRequest,
-};
+}

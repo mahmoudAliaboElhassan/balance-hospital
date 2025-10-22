@@ -185,7 +185,7 @@ export const updateShiftContractingType = createAsyncThunk(
 
     try {
       const res = await axiosInstance.put(
-        `/api/v1/RosterManagement/shift-contracting-types/${shiftContractingTypeId}`,
+        `/api/v1/RosterManagement/shift-contracting-types/${shiftContractingTypeId}?applyToWorkingHours={true}&increaseOnly={true}`,
         updateData,
         {
           headers: {

@@ -63,6 +63,7 @@ import "../../../styles/general.css"
 import { toast } from "react-toastify"
 import Swal from "sweetalert2"
 import CategoryHeadsManagement from "../../../components/categoryHeads"
+import Leaves from "../../../components/Leaves"
 
 const SpecificCategory = () => {
   const { catId: id } = useParams()
@@ -2256,7 +2257,7 @@ const SpecificCategory = () => {
             </option>
           </select>
         </div>
-        طلبات الأجازه
+        <Leaves />{" "}
         <CategoryHeadsManagement
           selectedCategory={selectedCategory}
           isDark={isDark}

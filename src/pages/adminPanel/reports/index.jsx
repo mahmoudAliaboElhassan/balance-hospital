@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
-import { getCategoryPendingRequests } from "../../../state/act/actCategory"
+import {
+  getCategories,
+  getCategoryPendingRequests,
+} from "../../../state/act/actCategory"
 import { getDepartmentByCategory } from "../../../state/act/actDepartment"
-import { getContractingTypes } from "../../../state/act/actContractingType"
+import {
+  getContractingTypes,
+  getContractingTypesForSignup,
+} from "../../../state/act/actContractingType"
 import { getScientificDegrees } from "../../../state/act/actScientificDegree"
 import LoadingGetData from "../../../components/LoadingGetData"
 import { useTranslation } from "react-i18next"
@@ -17,6 +23,7 @@ import {
 } from "lucide-react"
 import { clearReports, clearReportsError } from "../../../state/slices/reports"
 import { getReports } from "../../../state/act/actReports"
+import { getAvailbleScientficDegrees } from "../../../state/act/actRosterManagement"
 
 function Reports() {
   const { categoryManagerId: id } = useSelector((state) => state.auth)
@@ -25,26 +32,40 @@ function Reports() {
   const { t, i18n } = useTranslation()
 
   // Redux state
-  const { loadingGetContractingTypes, contractingTypes } = useSelector(
+  const { contractingTypes, loadingGetContractingTypes } = useSelector(
     (state) => state.contractingType
   )
+
+  const { loginRoleResponseDto } = useSelector((state) => state.auth)
+
+  const {
+    contractingTypesForSignup: contracting,
+    loadingGetContractingTypesForSignup: loadingContract,
+  } = useSelector((state) => state.contractingType)
+
+  console.log("contracting", contracting)
+
   const { categoryPendingRequests, loadingGetCategoryPendingRequests } =
     useSelector((state) => state.category)
-  const { scientificDegrees, loadingGetScientificDegrees } = useSelector(
-    (state) => state.scientificDegree
-  )
+
   const { departmentsByCategory, loadingGetDepartmentsByCategory } =
     useSelector((state) => state.department)
+  const { categories, loadingGetCategories } = useSelector(
+    (state) => state.category
+  )
   const { mymode } = useSelector((state) => state.mode)
   const { reports, loadingGetReports, getReportsError, totalPages } =
     useSelector((state) => state.reports)
 
   // Local state for filters
   const currentDate = new Date()
+  const isSystemAdmin =
+    loginRoleResponseDto.roleNameEn === "System Administrator"
+
   const [filters, setFilters] = useState({
     month: currentDate.getMonth() + 1,
     year: currentDate.getFullYear(),
-    categoryId: id,
+    categoryId: isSystemAdmin ? null : id,
     departmentId: null,
     doctorId: null,
     scientificDegreeId: null,
@@ -60,25 +81,43 @@ function Reports() {
 
   // Fetch initial data
   useEffect(() => {
-    dispatch(getDepartmentByCategory({ categoryId: id }))
-    dispatch(getContractingTypes())
-    dispatch(getScientificDegrees())
-    dispatch(
-      getCategoryPendingRequests({
-        categoryId: id,
-        filters: { status: "Approved" },
-      })
-    )
+    dispatch(getContractingTypesForSignup())
+    dispatch(getAvailbleScientficDegrees())
+
+    if (isSystemAdmin) {
+      dispatch(getCategories())
+    } else {
+      dispatch(getDepartmentByCategory({ categoryId: id }))
+      dispatch(
+        getCategoryPendingRequests({
+          categoryId: id,
+          filters: { status: "Approved" },
+        })
+      )
+    }
 
     return () => {
       dispatch(clearReports())
       dispatch(clearReportsError())
     }
-  }, [dispatch, id])
+  }, [dispatch, id, isSystemAdmin])
+
+  // Fetch departments and doctors when category changes
+  useEffect(() => {
+    if (filters.categoryId) {
+      dispatch(getDepartmentByCategory({ categoryId: filters.categoryId }))
+      dispatch(
+        getCategoryPendingRequests({
+          categoryId: filters.categoryId,
+          filters: { status: "Approved" },
+        })
+      )
+    }
+  }, [dispatch, filters.categoryId])
 
   // Fetch reports when filters change
   useEffect(() => {
-    if (filters.month && filters.year) {
+    if (filters.month && filters.year && filters.categoryId) {
       const params = { ...filters }
       // Remove null values
       Object.keys(params).forEach((key) => {
@@ -96,6 +135,8 @@ function Reports() {
       ...prev,
       [name]: value,
       page: 1, // Reset to first page on filter change
+      // Reset dependent filters when category changes
+      ...(name === "categoryId" && { departmentId: null, doctorId: null }),
     }))
   }
 
@@ -132,9 +173,10 @@ function Reports() {
   // Loading state
   if (
     loadingGetContractingTypes ||
-    loadingGetScientificDegrees ||
+    loadingContract ||
     loadingGetDepartmentsByCategory ||
-    loadingGetCategoryPendingRequests
+    loadingGetCategoryPendingRequests ||
+    loadingGetCategories
   ) {
     return <LoadingGetData text={t("gettingData.wait-data")} />
   }
@@ -207,6 +249,42 @@ function Reports() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Category Filter - Only for System Admin */}
+            {isSystemAdmin && (
+              <div>
+                <label
+                  className={`block text-sm font-medium ${
+                    isDark ? "text-gray-300" : "text-gray-700"
+                  } mb-2`}
+                >
+                  {t("adminPanel.categories") || "Category"}
+                </label>
+                <select
+                  value={filters.categoryId || ""}
+                  onChange={(e) =>
+                    handleFilterChange(
+                      "categoryId",
+                      e.target.value ? parseInt(e.target.value) : null
+                    )
+                  }
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    isDark
+                      ? "bg-gray-700 border-gray-600 text-white"
+                      : "bg-white border-gray-300 text-gray-900"
+                  } focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                >
+                  <option value="">
+                    {t("roster.form.selectCategory") || "Select Category"}
+                  </option>
+                  {categories?.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {currentLang === "ar" ? cat.nameArabic : cat.nameEnglish}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             {/* Month Filter */}
             <div>
               <label
@@ -361,11 +439,9 @@ function Reports() {
                 <option value="">
                   {t("reports.allDegrees") || "All Degrees"}
                 </option>
-                {scientificDegrees?.map((degree) => (
-                  <option key={degree.id} value={degree.id}>
-                    {currentLang === "ar"
-                      ? degree.nameArabic
-                      : degree.nameEnglish}
+                {contractingTypes?.map((type) => (
+                  <option key={type.id} value={type.id}>
+                    {currentLang === "ar" ? type.nameArabic : type.nameEnglish}
                   </option>
                 ))}
               </select>
@@ -395,7 +471,7 @@ function Reports() {
                 } focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
               >
                 <option value="">{t("reports.allTypes") || "All Types"}</option>
-                {contractingTypes?.map((type) => (
+                {contracting?.map((type) => (
                   <option key={type.id} value={type.id}>
                     {currentLang === "ar" ? type.nameArabic : type.nameEnglish}
                   </option>
@@ -568,7 +644,6 @@ function Reports() {
                 </div>
               </div>
             </div>
-
             {/* Reports Table */}
             <div
               className={`${

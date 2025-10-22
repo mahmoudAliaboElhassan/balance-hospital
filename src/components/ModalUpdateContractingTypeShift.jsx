@@ -1,48 +1,48 @@
-import i18next from "i18next";
-import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import { Save, X } from "lucide-react";
-import * as Yup from "yup";
+import i18next from "i18next"
+import { useTranslation } from "react-i18next"
+import { useDispatch, useSelector } from "react-redux"
+import { Formik, Form, Field, ErrorMessage } from "formik"
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
+import { Save, X } from "lucide-react"
+import * as Yup from "yup"
 import {
   getAvailbleScientficDegrees,
   getShiftContractingTypes,
   updateShiftContractingType,
-} from "../state/act/actRosterManagement";
-import { useEffect } from "react";
-import LoadingGetData from "./LoadingGetData";
-import UseFormValidation from "../hooks/use-form-validation";
+} from "../state/act/actRosterManagement"
+import { useEffect } from "react"
+import LoadingGetData from "./LoadingGetData"
+import UseFormValidation from "../hooks/use-form-validation"
 
 function ModalEditContractingTypeModal({
   selectedContractingType,
   selectedShift,
   onClose,
 }) {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
-  console.log("Selected Contracting Type:", selectedContractingType);
+  console.log("Selected Contracting Type:", selectedContractingType)
 
-  const { loading } = useSelector((state) => state.rosterManagement);
-  const { mymode } = useSelector((state) => state.mode);
-  const isDark = mymode === "dark";
+  const { loading } = useSelector((state) => state.rosterManagement)
+  const { mymode } = useSelector((state) => state.mode)
+  const isDark = mymode === "dark"
   const { contractingTypes, loadingGetContractingTypes } = useSelector(
     (state) => state.contractingType
-  );
+  )
 
-  const { t } = useTranslation();
-  const currentLang = i18next.language;
-  const isRTL = currentLang === "ar";
+  const { t } = useTranslation()
+  const currentLang = i18next.language
+  const isRTL = currentLang === "ar"
 
   useEffect(() => {
     // Fetch available contracting types when modal opens
-    dispatch(getAvailbleScientficDegrees());
-  }, [dispatch]);
+    dispatch(getAvailbleScientficDegrees())
+  }, [dispatch])
 
   // Validation schema - removed contractingTypeId validation since it's disabled
   const { VALIDATION_SCHEMA_EDIT_ROSTER_CONTRAFCTING_TYPES } =
-    UseFormValidation();
+    UseFormValidation()
   // Initial values
   const initialValues = {
     contractingTypeId: selectedContractingType?.contractingTypeId || "",
@@ -50,32 +50,32 @@ function ModalEditContractingTypeModal({
       selectedContractingType?.defaultRequiredDoctors || 1,
     defaultMaxDoctors: selectedContractingType?.defaultMaxDoctors || 1,
     notes: selectedContractingType?.notes || "",
-  };
+  }
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      console.log("Form values on submit:", values);
+      console.log("Form values on submit:", values)
       const updateData = {
         contractingTypeId: parseInt(values.contractingTypeId),
         defaultRequiredDoctors: parseInt(values.defaultRequiredDoctors),
         defaultMaxDoctors: parseInt(values.defaultMaxDoctors),
         notes: values.notes || "",
-      };
+      }
 
-      console.log("Updating contracting type:", updateData);
+      console.log("Updating contracting type:", updateData)
 
       await dispatch(
         updateShiftContractingType({
           shiftContractingTypeId: selectedContractingType.id,
           updateData,
         })
-      ).unwrap();
+      ).unwrap()
 
       dispatch(
         getShiftContractingTypes({
           departmentShiftId: localStorage.getItem("currentShiftId"),
         })
-      ).unwrap();
+      ).unwrap()
       toast.success(t("roster.contractingTypes.success.updated"), {
         position: "top-right",
         autoClose: 3000,
@@ -83,13 +83,13 @@ function ModalEditContractingTypeModal({
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-      });
+      })
 
       // Call the parent update function to refresh data
 
-      onClose();
+      onClose()
     } catch (error) {
-      console.error("Contracting type update error:", error);
+      console.error("Contracting type update error:", error)
 
       Swal.fire({
         title: t("roster.contractingTypes.error.updateTitle"),
@@ -106,11 +106,11 @@ function ModalEditContractingTypeModal({
         confirmButtonColor: "#ef4444",
         background: isDark ? "#1f2937" : "#ffffff",
         color: isDark ? "#f9fafb" : "#111827",
-      });
+      })
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
-  };
+  }
 
   return (
     <>
@@ -158,6 +158,64 @@ function ModalEditContractingTypeModal({
                 >
                   <X size={18} />
                 </button>
+              </div>
+
+              <div
+                className={`mb-4 p-4 rounded-lg border ${
+                  isDark
+                    ? "bg-blue-900/20 border-blue-700/50 text-blue-200"
+                    : "bg-blue-50 border-blue-200 text-blue-800"
+                }`}
+              >
+                <div className="flex items-start">
+                  <div className="flex-shrink-0">
+                    <svg
+                      className="h-5 w-5 text-blue-400"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <div className={`${isRTL ? "mr-3" : "ml-3"} flex-1 text-sm`}>
+                    <p className="font-semibold mb-2">
+                      {currentLang === "ar"
+                        ? "تنبيه هام عند تعديل الأعداد:"
+                        : "Important Notice When Modifying Numbers:"}
+                    </p>
+                    <ul
+                      className={`list-disc ${
+                        isRTL ? "mr-5" : "ml-5"
+                      } space-y-1`}
+                    >
+                      <li>
+                        {currentLang === "ar"
+                          ? "سيتم تطبيق هذه التعديلات على جميع ساعات العمل المستقبلية في هذه الوردية."
+                          : "These changes will be applied to all future work hours in this shift."}
+                      </li>
+                      <li>
+                        {currentLang === "ar"
+                          ? "إذا كان هناك أطباء معينون بالفعل وتريد تقليل العدد المطلوب أو الحد الأقصى، سيتم تخطي الساعات التي تحتوي على عدد أطباء أكبر من العدد الجديد."
+                          : "If there are already assigned doctors and you want to reduce the required or maximum number, hours with more assigned doctors than the new number will be skipped."}
+                      </li>
+                      <li className="font-medium">
+                        {currentLang === "ar"
+                          ? "مثال: إذا كان هناك 5 أطباء معينون والعدد المحدد 5، ولا يمكن تقليله إلى 2 لهذه الساعة المحددة. سيتم تحديث الساعات الأخرى التي لا تتأثر فقط."
+                          : "Example: If there are 5 assigned doctors with a limit of 5, it cannot be reduced to 2 for that specific hour. Only unaffected hours will be updated."}
+                      </li>
+                      <li className="text-xs mt-2 opacity-90">
+                        {currentLang === "ar"
+                          ? "النظام سيقوم تلقائياً بتحديث الساعات التي يمكن تعديلها وتخطي الساعات التي تحتوي على تعيينات تمنع التعديل."
+                          : "The system will automatically update modifiable hours and skip hours with assignments that prevent modification."}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
               </div>
 
               <Formik
@@ -360,7 +418,7 @@ function ModalEditContractingTypeModal({
         </div>
       </div>
     </>
-  );
+  )
 }
 
-export default ModalEditContractingTypeModal;
+export default ModalEditContractingTypeModal
