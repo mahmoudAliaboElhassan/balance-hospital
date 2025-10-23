@@ -96,3 +96,30 @@ export const getDashboardData = createAsyncThunk(
     }
   }
 )
+export const getDoctorReports = createAsyncThunk(
+  "reports/getDoctorReports",
+  async ({ doctorId }, { rejectWithValue }) => {
+    try {
+      const url = `/api/v1/Users/doctor/${doctorId}/report`
+
+      const response = await axiosInstance.get(url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      })
+
+      return response.data
+    } catch (error) {
+      return rejectWithValue({
+        message:
+          error.response?.data?.messageAr ||
+          error.response?.data?.messageEn ||
+          "حدث خطأ في جلب بيانات الدكتور",
+        errors: error.response?.data?.errors || [],
+        status: error.response?.status,
+        timestamp: new Date().toISOString(),
+      })
+    }
+  }
+)

@@ -1,5 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { getDashboardData, getReports } from "../act/actReports"
+import {
+  getDashboardData,
+  getDoctorReports,
+  getReports,
+} from "../act/actReports"
 
 // Initial state additions
 const initialState = {
@@ -10,6 +14,9 @@ const initialState = {
   loadingGetDashboardData: false,
   dashboardError: null,
   lastUpdated: null,
+  doctorReport: null,
+  loadingDoctorReport: false,
+  doctorReportError: null,
 }
 
 // Reducer cases for getReports
@@ -31,6 +38,14 @@ export const reportSlice = createSlice({
     },
     clearDashboardError: (state) => {
       state.dashboardError = null
+    },
+    clearDoctorReport: (state) => {
+      state.doctorReport = null
+      state.loadingDoctorReport = false
+      state.doctorReportError = null
+    },
+    clearDoctorReportError: (state) => {
+      state.doctorReportError = null
     },
   },
   extraReducers: (builder) => {
@@ -71,6 +86,18 @@ export const reportSlice = createSlice({
         state.dashboardError = action.payload
         state.dashboardData = null
       })
+      .addCase(getDoctorReports.pending, (state) => {
+        state.loadingDoctorReport = true
+        state.doctorReportError = null
+      })
+      .addCase(getDoctorReports.fulfilled, (state, action) => {
+        state.loadingDoctorReport = false
+        state.doctorReport = action.payload.data
+      })
+      .addCase(getDoctorReports.rejected, (state, action) => {
+        state.loadingDoctorReport = false
+        state.doctorReportError = action.payload
+      })
   },
 })
 
@@ -79,6 +106,8 @@ export const {
   clearReportsError,
   clearDashboardData,
   clearDashboardError,
+  clearDoctorReport,
+  clearDoctorReportError,
 } = reportSlice.actions
 
 export default reportSlice.reducer

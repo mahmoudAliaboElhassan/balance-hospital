@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import {
   getCategories,
   getCategoryPendingRequests,
@@ -20,6 +20,7 @@ import {
   Download,
   ChevronLeft,
   ChevronRight,
+  Eye,
 } from "lucide-react"
 import { clearReports, clearReportsError } from "../../../state/slices/reports"
 import { getReports } from "../../../state/act/actReports"
@@ -703,6 +704,13 @@ function Reports() {
                       >
                         {t("reports.table.shifts") || "Shifts"}
                       </th>
+                      <th
+                        className={`px-6 py-4 text-left text-xs font-medium ${
+                          isDark ? "text-gray-300" : "text-gray-700"
+                        } uppercase tracking-wider`}
+                      >
+                        {t("categories.table.actions") || "Shifts"}
+                      </th>
                     </tr>
                   </thead>
                   <tbody
@@ -800,6 +808,21 @@ function Reports() {
                                 </span>
                               )
                             )}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-center">
+                            {" "}
+                            <Link
+                              to={`/admin-panel/reports/doctor/${row.doctorId}`}
+                            >
+                              <button
+                                className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors cursor-pointer"
+                                title={t("categories.actions.view")}
+                              >
+                                <Eye size={16} />
+                              </button>
+                            </Link>
                           </div>
                         </td>
                       </tr>

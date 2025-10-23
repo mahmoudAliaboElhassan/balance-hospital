@@ -1774,6 +1774,7 @@
     "roles": "جاري تحميل الأدوار…",
     "wait-data": "يُرجى الانتظار حتى يتم تحميل جميع بيانات التصفية...",
     "roleData": "جاري تحميل بيانات الدور…",
+    "doctorReport": "جارٍ تحميل تقرير الطبيب...",
     "geofences": "جارٍ تحميل الأسوار الجغرافية...",
     "geofence": "جارٍ تحميل السور الجغرافي...",
     "doctorData": "جاري تحميل بيانات الطبيب",
@@ -3065,6 +3066,83 @@
         "overallCompletionRate": "معدل الإنجاز",
         "expiredRosters": "منتهية الصلاحية"
       }
+    }
+  },
+
+  "doctorReport": {
+    "title": "تقرير الطبيب",
+    "nationalId": "الرقم القومي",
+    "notFound": {
+      "title": "لم يتم العثور على التقرير"
+    },
+    "error": {
+      "title": "حدث خطأ أثناء تحميل التقرير"
+    },
+    "stats": {
+      "totalScheduledShifts": "إجمالي الورديات المجدولة",
+      "totalPresentDays": "أيام الحضور",
+      "totalLateDays": "أيام التأخير",
+      "totalWorkedHours": "عدد ساعات العمل",
+      "of": "من",
+      "hours": "ساعات"
+    },
+    "hoursAnalysis": {
+      "title": "تحليل الساعات",
+      "totalAssignedHours": "الساعات المقررة",
+      "totalWorkedHours": "الساعات المنفذة",
+      "compliancePercentage": "نسبة الالتزام",
+      "rosterTitle": "الجدول",
+      "assignedHours": "المقررة",
+      "workedHours": "المنفذة",
+      "compliance": "الالتزام"
+    },
+    "attendanceChart": {
+      "title": "ملخص الحضور (آخر 30 يومًا)",
+      "onTime": "في الموعد",
+      "late": "متأخر",
+      "absent": "غائب",
+      "earlyCheckout": "انصراف مبكر"
+    },
+    "monthlyDistribution": {
+      "title": "توزيع الورديات الشهري",
+      "totalShifts": "إجمالي الورديات",
+      "completedShifts": "المنجزة",
+      "workingHours": "ساعات العمل"
+    },
+    "attendanceRecords": {
+      "title": "سجلات الحضور الأخيرة",
+      "date": "التاريخ",
+      "department": "القسم",
+      "shiftType": "نوع الوردية",
+      "timeIn": "وقت الدخول",
+      "timeOut": "وقت الخروج",
+      "workedHours": "ساعات العمل",
+      "status": "الحالة",
+      "minutesLate": "دقائق التأخير"
+    },
+    "rosterAssignments": {
+      "title": "تعيينات الجدول",
+      "totalShifts": "إجمالي الورديات",
+      "completed": "المنجزة",
+      "date": "التاريخ",
+      "department": "القسم",
+      "shiftType": "نوع الوردية",
+      "time": "الوقت",
+      "attendanceStatus": "الحضور"
+    },
+    "leaveRecords": {
+      "title": "طلبات الإجازة",
+      "total": "إجمالي الطلبات",
+      "approved": "المعتمدة",
+      "pending": "قيد الانتظار",
+      "rejected": "المرفوضة"
+    },
+    "swapRecords": {
+      "title": "طلبات التبديل",
+      "total": "إجمالي الطلبات",
+      "approved": "المعتمدة",
+      "pending": "قيد الانتظار",
+      "rejected": "المرفوضة"
     }
   }
 }

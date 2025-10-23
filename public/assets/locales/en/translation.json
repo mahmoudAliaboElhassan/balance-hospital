@@ -1770,6 +1770,7 @@
     "roles": "Loading roles…",
     "roleData": "Loading role data…",
     "wait-data": "Wait for All Filteration Data...",
+    "doctorReport": "Loading Doctor Report...",
     "geofences": "Loading geofences...",
     "geofence": "Loading geofence...",
     "doctorData": "Loading Doctor data…",
@@ -3071,6 +3072,83 @@
         "overallCompletionRate": "Completion Rate",
         "expiredRosters": "Expired"
       }
+    }
+  },
+
+  "doctorReport": {
+    "title": "Doctor Report",
+    "nationalId": "National ID",
+    "notFound": {
+      "title": "Report Not Found"
+    },
+    "error": {
+      "title": "Error Loading Report"
+    },
+    "stats": {
+      "totalScheduledShifts": "Total Scheduled Shifts",
+      "totalPresentDays": "Present Days",
+      "totalLateDays": "Late Days",
+      "totalWorkedHours": "Worked Hours",
+      "of": "of",
+      "hours": "hours"
+    },
+    "hoursAnalysis": {
+      "title": "Hours Analysis",
+      "totalAssignedHours": "Assigned Hours",
+      "totalWorkedHours": "Worked Hours",
+      "compliancePercentage": "Compliance",
+      "rosterTitle": "Roster",
+      "assignedHours": "Assigned",
+      "workedHours": "Worked",
+      "compliance": "Compliance"
+    },
+    "attendanceChart": {
+      "title": "Attendance Summary (Last 30 Days)",
+      "onTime": "On Time",
+      "late": "Late",
+      "absent": "Absent",
+      "earlyCheckout": "Early Checkout"
+    },
+    "monthlyDistribution": {
+      "title": "Monthly Roster Distribution",
+      "totalShifts": "Total Shifts",
+      "completedShifts": "Completed",
+      "workingHours": "Working Hours"
+    },
+    "attendanceRecords": {
+      "title": "Recent Attendance Records",
+      "date": "Date",
+      "department": "Department",
+      "shiftType": "Shift Type",
+      "timeIn": "Time In",
+      "timeOut": "Time Out",
+      "workedHours": "Worked Hours",
+      "status": "Status",
+      "minutesLate": "min late"
+    },
+    "rosterAssignments": {
+      "title": "Roster Assignments",
+      "totalShifts": "Total Shifts",
+      "completed": "Completed",
+      "date": "Date",
+      "department": "Department",
+      "shiftType": "Shift Type",
+      "time": "Time",
+      "attendanceStatus": "Attendance"
+    },
+    "leaveRecords": {
+      "title": "Leave Requests",
+      "total": "Total Requests",
+      "approved": "Approved",
+      "pending": "Pending",
+      "rejected": "Rejected"
+    },
+    "swapRecords": {
+      "title": "Swap Requests",
+      "total": "Total Requests",
+      "approved": "Approved",
+      "pending": "Pending",
+      "rejected": "Rejected"
     }
   }
 }
