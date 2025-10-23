@@ -14,8 +14,6 @@ import {
   CheckCircle,
   XCircle,
   AlertCircle,
-  TrendingUp,
-  TrendingDown,
   BarChart3,
   FileText,
   Users,
@@ -30,6 +28,8 @@ import {
   clearDoctorReport,
   clearDoctorReportError,
 } from "../../../state/slices/reports"
+import { CollapsibleRosterCard } from "./collapsingRoster"
+import SwapRecordsSection from "./swapRequests"
 
 function DoctorReports() {
   const { docId } = useParams()
@@ -1090,274 +1090,43 @@ function DoctorReports() {
         )}
 
         {/* Roster Assignments */}
-        {report.rosterAssignments && report.rosterAssignments.length > 0 && (
-          <div
-            className={`${
-              isDark ? "bg-gray-800" : "bg-white"
-            } rounded-2xl shadow-xl p-8 mb-8`}
-          >
-            <h2
-              className={`text-2xl font-bold ${
-                isDark ? "text-white" : "text-gray-900"
-              } mb-6 flex items-center gap-3`}
+        <>
+          {report.rosterAssignments && report.rosterAssignments.length > 0 && (
+            <div
+              className={`${
+                isDark ? "bg-gray-800" : "bg-white"
+              } rounded-2xl shadow-xl p-8 mb-8`}
             >
-              <FileText
-                className={`w-6 h-6 ${
-                  isDark ? "text-indigo-400" : "text-indigo-600"
-                }`}
-              />
-              {t("doctorReport.rosterAssignments.title")}
-            </h2>
-
-            <div className="space-y-6">
-              {report.rosterAssignments.map((roster) => (
-                <div
-                  key={roster.rosterId}
-                  className={`border rounded-xl overflow-hidden ${
-                    isDark ? "border-gray-700" : "border-gray-200"
+              <h2
+                className={`text-2xl font-bold ${
+                  isDark ? "text-white" : "text-gray-900"
+                } mb-6 flex items-center gap-3`}
+              >
+                <FileText
+                  className={`w-6 h-6 ${
+                    isDark ? "text-indigo-400" : "text-indigo-600"
                   }`}
-                >
-                  {/* Roster Header */}
-                  <div
-                    className={`p-6 ${isDark ? "bg-gray-750" : "bg-gray-50"}`}
-                  >
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                      <div>
-                        <h3
-                          className={`text-xl font-semibold mb-2 ${
-                            isDark ? "text-white" : "text-gray-900"
-                          }`}
-                        >
-                          {roster.rosterTitle}
-                        </h3>
-                        <div className="flex flex-wrap gap-3">
-                          <span
-                            className={`text-sm ${
-                              isDark ? "text-gray-400" : "text-gray-600"
-                            }`}
-                          >
-                            {formatDate(roster.rosterStartDate)} -{" "}
-                            {formatDate(roster.rosterEndDate)}
-                          </span>
-                        </div>
-                      </div>
+                />
+                {t("doctorReport.rosterAssignments.title")}
+              </h2>
 
-                      <div className="flex flex-wrap gap-3">
-                        <div
-                          className={`px-4 py-2 rounded-lg ${
-                            isDark ? "bg-blue-900/30" : "bg-blue-100"
-                          }`}
-                        >
-                          <div
-                            className={`text-xs ${
-                              isDark ? "text-blue-300" : "text-blue-600"
-                            } mb-1`}
-                          >
-                            {t("doctorReport.rosterAssignments.totalShifts")}
-                          </div>
-                          <div
-                            className={`text-lg font-bold ${
-                              isDark ? "text-white" : "text-gray-900"
-                            }`}
-                          >
-                            {roster.totalShiftsInRoster}
-                          </div>
-                        </div>
-
-                        <div
-                          className={`px-4 py-2 rounded-lg ${
-                            isDark ? "bg-green-900/30" : "bg-green-100"
-                          }`}
-                        >
-                          <div
-                            className={`text-xs ${
-                              isDark ? "text-green-300" : "text-green-600"
-                            } mb-1`}
-                          >
-                            {t("doctorReport.rosterAssignments.completed")}
-                          </div>
-                          <div
-                            className={`text-lg font-bold ${
-                              isDark ? "text-white" : "text-gray-900"
-                            }`}
-                          >
-                            {roster.completedShiftsInRoster}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Shifts Table */}
-                  {roster.shifts && roster.shifts.length > 0 && (
-                    <div className="overflow-x-auto">
-                      <table className="w-full">
-                        <thead>
-                          <tr
-                            className={`border-b ${
-                              isDark ? "border-gray-700" : "border-gray-200"
-                            }`}
-                          >
-                            <th
-                              className={`text-${
-                                isRTL ? "right" : "left"
-                              } p-4 font-semibold text-sm ${
-                                isDark ? "text-white" : "text-gray-900"
-                              }`}
-                            >
-                              {t("doctorReport.rosterAssignments.date")}
-                            </th>
-                            <th
-                              className={`text-${
-                                isRTL ? "right" : "left"
-                              } p-4 font-semibold text-sm ${
-                                isDark ? "text-white" : "text-gray-900"
-                              }`}
-                            >
-                              {t("doctorReport.rosterAssignments.department")}
-                            </th>
-                            <th
-                              className={`text-${
-                                isRTL ? "right" : "left"
-                              } p-4 font-semibold text-sm ${
-                                isDark ? "text-white" : "text-gray-900"
-                              }`}
-                            >
-                              {t("doctorReport.rosterAssignments.shiftType")}
-                            </th>
-                            <th
-                              className={`text-${
-                                isRTL ? "right" : "left"
-                              } p-4 font-semibold text-sm ${
-                                isDark ? "text-white" : "text-gray-900"
-                              }`}
-                            >
-                              {t("doctorReport.rosterAssignments.time")}
-                            </th>
-                            <th
-                              className={`text-${
-                                isRTL ? "right" : "left"
-                              } p-4 font-semibold text-sm ${
-                                isDark ? "text-white" : "text-gray-900"
-                              }`}
-                            >
-                              {t(
-                                "doctorReport.rosterAssignments.attendanceStatus"
-                              )}
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {roster.shifts.map((shift) => (
-                            <tr
-                              key={shift.scheduleId}
-                              className={`border-b ${
-                                isDark
-                                  ? "border-gray-700 hover:bg-gray-750"
-                                  : "border-gray-200 hover:bg-gray-50"
-                              } transition-colors`}
-                            >
-                              <td
-                                className={`p-4 ${
-                                  isDark ? "text-gray-300" : "text-gray-700"
-                                }`}
-                              >
-                                <div className="font-medium">
-                                  {formatDate(shift.shiftDate)}
-                                </div>
-                                <div
-                                  className={`text-xs ${
-                                    isDark ? "text-gray-500" : "text-gray-400"
-                                  }`}
-                                >
-                                  {currentLang === "en"
-                                    ? shift.dayNameEn
-                                    : shift.dayNameAr}
-                                </div>
-                              </td>
-                              <td
-                                className={`p-4 text-sm ${
-                                  isDark ? "text-gray-300" : "text-gray-700"
-                                }`}
-                              >
-                                {currentLang === "en"
-                                  ? shift.departmentNameEn
-                                  : shift.departmentNameAr}
-                              </td>
-                              <td
-                                className={`p-4 text-sm ${
-                                  isDark ? "text-gray-300" : "text-gray-700"
-                                }`}
-                              >
-                                <div>
-                                  {currentLang === "en"
-                                    ? shift.shiftTypeNameEn
-                                    : shift.shiftTypeNameAr}
-                                </div>
-                                {shift.shiftHours > 0 && (
-                                  <div
-                                    className={`text-xs ${
-                                      isDark ? "text-gray-500" : "text-gray-400"
-                                    }`}
-                                  >
-                                    {shift.shiftHours}{" "}
-                                    {t("doctorReport.stats.hours")}
-                                  </div>
-                                )}
-                              </td>
-                              <td
-                                className={`p-4 text-sm ${
-                                  isDark ? "text-gray-300" : "text-gray-700"
-                                }`}
-                              >
-                                {shift.startTime} - {shift.endTime}
-                              </td>
-                              <td className="p-4">
-                                {shift.attendanceStatus === "لا توجد سجلات" ? (
-                                  <span
-                                    className={`text-xs ${
-                                      isDark ? "text-gray-500" : "text-gray-400"
-                                    }`}
-                                  >
-                                    {shift.attendanceStatus}
-                                  </span>
-                                ) : (
-                                  <div>
-                                    <span
-                                      className={`px-3 py-1 rounded-full text-xs font-medium ${getAttendanceStatusColor(
-                                        shift.attendanceStatus
-                                      )}`}
-                                    >
-                                      {shift.attendanceStatus}
-                                    </span>
-                                    {shift.lateMinutes > 0 && (
-                                      <div
-                                        className={`text-xs mt-1 ${
-                                          isDark
-                                            ? "text-gray-500"
-                                            : "text-gray-400"
-                                        }`}
-                                      >
-                                        {shift.lateMinutes}{" "}
-                                        {t(
-                                          "doctorReport.attendanceRecords.minutesLate"
-                                        )}
-                                      </div>
-                                    )}
-                                  </div>
-                                )}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-                </div>
-              ))}
+              <div className="space-y-6">
+                {report.rosterAssignments.map((roster) => (
+                  <CollapsibleRosterCard
+                    key={roster.rosterId}
+                    roster={roster}
+                    isDark={isDark}
+                    isRTL={isRTL}
+                    currentLang={currentLang}
+                    t={t}
+                    formatDate={formatDate}
+                    getAttendanceStatusColor={getAttendanceStatusColor}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </>
 
         {/* Leave and Swap Records Summary */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -1452,94 +1221,14 @@ function DoctorReports() {
           </div>
 
           {/* Swap Records */}
-          <div
-            className={`${
-              isDark ? "bg-gray-800" : "bg-white"
-            } rounded-xl shadow-lg p-6`}
-          >
-            <h3
-              className={`text-lg font-semibold mb-4 ${
-                isDark ? "text-white" : "text-gray-900"
-              } flex items-center gap-2`}
-            >
-              <Users
-                className={`w-5 h-5 ${
-                  isDark ? "text-purple-400" : "text-purple-600"
-                }`}
-              />
-              {t("doctorReport.swapRecords.title")}
-            </h3>
-
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span
-                  className={`text-sm ${
-                    isDark ? "text-gray-400" : "text-gray-600"
-                  }`}
-                >
-                  {t("doctorReport.swapRecords.total")}
-                </span>
-                <span
-                  className={`text-2xl font-bold ${
-                    isDark ? "text-white" : "text-gray-900"
-                  }`}
-                >
-                  {report.stats.totalSwapRequests}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span
-                  className={`text-sm ${
-                    isDark ? "text-gray-400" : "text-gray-600"
-                  }`}
-                >
-                  {t("doctorReport.swapRecords.approved")}
-                </span>
-                <span
-                  className={`font-semibold ${
-                    isDark ? "text-green-400" : "text-green-600"
-                  }`}
-                >
-                  {report.stats.approvedSwaps}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span
-                  className={`text-sm ${
-                    isDark ? "text-gray-400" : "text-gray-600"
-                  }`}
-                >
-                  {t("doctorReport.swapRecords.pending")}
-                </span>
-                <span
-                  className={`font-semibold ${
-                    isDark ? "text-yellow-400" : "text-yellow-600"
-                  }`}
-                >
-                  {report.stats.pendingSwaps}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span
-                  className={`text-sm ${
-                    isDark ? "text-gray-400" : "text-gray-600"
-                  }`}
-                >
-                  {t("doctorReport.swapRecords.rejected")}
-                </span>
-                <span
-                  className={`font-semibold ${
-                    isDark ? "text-red-400" : "text-red-600"
-                  }`}
-                >
-                  {report.stats.rejectedSwaps}
-                </span>
-              </div>
-            </div>
-          </div>
+          <SwapRecordsSection
+            report={report}
+            isDark={isDark}
+            isRTL={isRTL}
+            currentLang={currentLang}
+            t={t}
+            formatDate={formatDate}
+          />
         </div>
       </div>
     </div>

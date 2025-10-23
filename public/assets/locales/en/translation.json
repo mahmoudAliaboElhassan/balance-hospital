@@ -3148,7 +3148,13 @@
       "total": "Total Requests",
       "approved": "Approved",
       "pending": "Pending",
-      "rejected": "Rejected"
+      "rejected": "Rejected",
+      "swapWith": "Swap With",
+      "dateRange": "Date Range",
+      "shiftType": "Shift Type",
+      "department": "Department",
+      "reason": "Reason",
+      "createdAt": "Created At"
     }
   }
 }

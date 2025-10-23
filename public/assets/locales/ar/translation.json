@@ -3142,7 +3142,14 @@
       "total": "إجمالي الطلبات",
       "approved": "المعتمدة",
       "pending": "قيد الانتظار",
-      "rejected": "المرفوضة"
+      "rejected": "المرفوضة",
+
+      "swapWith": "تم التبديل مع",
+      "dateRange": "نطاق التاريخ",
+      "shiftType": "نوع الوردية",
+      "department": "القسم",
+      "reason": "السبب",
+      "createdAt": "تاريخ الإنشاء"
     }
   }
 }
