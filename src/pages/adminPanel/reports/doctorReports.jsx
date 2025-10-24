@@ -22,6 +22,7 @@ import {
   ArrowRight,
   Briefcase,
   Building,
+  Download,
 } from "lucide-react"
 import LoadingGetData from "../../../components/LoadingGetData"
 import {
@@ -31,6 +32,7 @@ import {
 import { CollapsibleRosterCard } from "./collapsingRoster"
 import SwapRecordsSection from "./swapRequests"
 import LeaveRecordsSection from "./leavesRequests"
+import { exportDoctorReportToExcel } from "./exportToExcel"
 
 function DoctorReports() {
   const { docId } = useParams()
@@ -209,22 +211,30 @@ function DoctorReports() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <button
-            onClick={() => navigate(-1)}
-            className={`inline-flex items-center gap-2 ${
-              isDark
-                ? "text-blue-400 hover:text-blue-300"
-                : "text-blue-600 hover:text-blue-800"
-            } transition-colors duration-200 mb-4`}
-          >
-            {currentLang === "en" ? (
-              <ArrowLeft className="w-5 h-5" />
-            ) : (
-              <ArrowRight className="w-5 h-5" />
-            )}
-            {t("common.goBack")}
-          </button>
-
+          <div className="flex justify-between items-center mb-8">
+            <button
+              onClick={() => navigate(-1)}
+              className={`inline-flex items-center gap-2 ${
+                isDark
+                  ? "text-blue-400 hover:text-blue-300"
+                  : "text-blue-600 hover:text-blue-800"
+              } transition-colors duration-200 mb-4`}
+            >
+              {currentLang === "en" ? (
+                <ArrowLeft className="w-5 h-5" />
+              ) : (
+                <ArrowRight className="w-5 h-5" />
+              )}
+              {t("common.goBack")}
+            </button>
+            <button
+              onClick={() => exportDoctorReportToExcel(report, currentLang, t)}
+              className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+            >
+              <Download size={20} />
+              <span>{t("reports.export") || "Export"}</span>
+            </button>
+          </div>
           {/* Doctor Info Card */}
           <div
             className={`${
