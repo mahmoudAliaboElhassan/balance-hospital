@@ -2978,7 +2978,7 @@
     "doctor": "الطبيب",
     "scientificDegree": "الدرجة العلمية",
     "contractingType": "نوع التعاقد",
-    "allDepartments": "جميع الأقسام",
+    "allDepartments": "جميع الأماكن",
     "allDoctors": "جميع الأطباء",
     "allDegrees": "جميع الدرجات",
     "allTypes": "جميع الأنواع",
@@ -3053,8 +3053,8 @@
         "totalDoctorsInCategories": "إجمالي الأطباء"
       },
       "departments": {
-        "title": "الأقسام",
-        "totalDepartments": "إجمالي الأقسام",
+        "title": "الأماكن",
+        "totalDepartments": "إجمالي الأماكن",
         "activeDepartments": "النشطة",
         "departmentsWithManagers": "بمديرين",
         "totalActiveSchedules": "الجداول النشطة"
@@ -3112,7 +3112,7 @@
     "attendanceRecords": {
       "title": "سجلات الحضور الأخيرة",
       "date": "التاريخ",
-      "department": "القسم",
+      "department": "المكان",
       "shiftType": "نوع الوردية",
       "timeIn": "وقت الدخول",
       "timeOut": "وقت الخروج",
@@ -3125,7 +3125,7 @@
       "totalShifts": "إجمالي الورديات",
       "completed": "المنجزة",
       "date": "التاريخ",
-      "department": "القسم",
+      "department": "المكان",
       "shiftType": "نوع الوردية",
       "time": "الوقت",
       "attendanceStatus": "الحضور"
@@ -3155,7 +3155,7 @@
       "swapWith": "تم التبديل مع",
       "dateRange": "نطاق التاريخ",
       "shiftType": "نوع الوردية",
-      "department": "القسم",
+      "department": "المكان",
       "reason": "السبب",
       "createdAt": "تاريخ الإنشاء"
     }
