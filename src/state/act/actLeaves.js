@@ -108,7 +108,7 @@ export const rejectLeave = createAsyncThunk(
 
       const response = await axiosInstance.put(
         url,
-        {},
+        { reason: "Rejected via admin panel" },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

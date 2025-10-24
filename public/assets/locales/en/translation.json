@@ -3141,12 +3141,21 @@
       "total": "Total Requests",
       "approved": "Approved",
       "pending": "Pending",
-      "rejected": "Rejected"
+      "rejected": "Rejected",
+      "days": "days",
+      "duration": "Duration",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "reason": "Reason",
+      "approvedBy": "Approved By",
+      "requestedAt": "Requested At",
+      "noRecords": "No leave records found"
     },
     "swapRecords": {
       "title": "Swap Requests",
       "total": "Total Requests",
       "approved": "Approved",
+      "noRecords": "No Swaps records found",
       "pending": "Pending",
       "rejected": "Rejected",
       "swapWith": "Swap With",
@@ -3155,6 +3164,48 @@
       "department": "Department",
       "reason": "Reason",
       "createdAt": "Created At"
+    }
+  },
+  "leaves": {
+    "title": "Leave Requests",
+    "count": "Requests",
+    "loading": "Loading leave requests...",
+    "noRequests": "No Leave Requests",
+    "noRequestsWithFilter": "No requests found with the selected filter",
+    "noRequestsDefault": "There are no leave requests at the moment",
+    "showAllRequests": "Show All Requests",
+    "resultsCount": "Showing {{count}} of {{total}} requests",
+    "nameNotSpecified": "Name not specified",
+    "from": "From",
+    "to": "To",
+    "days": "days",
+    "processedOn": "Processed on {{date}}",
+    "processedBy": "By {{name}}",
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "unknown": "Unknown"
+    },
+    "filters": {
+      "filterByStatus": "Filter by Status",
+      "all": "All",
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "actions": {
+      "approve": "Approve",
+      "reject": "Reject"
+    },
+    "errors": {
+      "actionError": "Processing Error",
+      "dataLoadError": "Error Loading Leave Requests"
+    },
+    "success": {
+      "processed": "Request Processed",
+      "approved": "Leave request has been approved successfully",
+      "rejected": "Leave request has been rejected successfully"
     }
   }
 }

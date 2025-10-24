@@ -54,7 +54,7 @@ const leavesSlice = createSlice({
       })
       .addCase(getLeaves.fulfilled, (state, action) => {
         state.loading = false
-        state.leaves = action.payload.leaves
+        state.leaves = action.payload.leaves.data
         state.error = null
       })
       .addCase(getLeaves.rejected, (state, action) => {
@@ -172,4 +172,6 @@ export const selectCurrentFilter = (state) => state.leaves.currentFilter
 export const selectLastAction = (state) => state.leaves.lastAction
 
 // Export reducer
+export { getLeaves, approveLeave, rejectLeave }
+
 export default leavesSlice.reducer

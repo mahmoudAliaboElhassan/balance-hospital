@@ -3135,7 +3135,15 @@
       "total": "إجمالي الطلبات",
       "approved": "المعتمدة",
       "pending": "قيد الانتظار",
-      "rejected": "المرفوضة"
+      "rejected": "المرفوضة",
+      "days": "أيام",
+      "duration": "المدة",
+      "startDate": "تاريخ البدء",
+      "endDate": "تاريخ الانتهاء",
+      "reason": "السبب",
+      "approvedBy": "تمت الموافقة بواسطة",
+      "requestedAt": "تاريخ الطلب",
+      "noRecords": "لا توجد سجلات إجازة"
     },
     "swapRecords": {
       "title": "طلبات التبديل",
@@ -3143,13 +3151,55 @@
       "approved": "المعتمدة",
       "pending": "قيد الانتظار",
       "rejected": "المرفوضة",
-
+      "noRecords": "لا توجد سجلات تبديلات",
       "swapWith": "تم التبديل مع",
       "dateRange": "نطاق التاريخ",
       "shiftType": "نوع الوردية",
       "department": "القسم",
       "reason": "السبب",
       "createdAt": "تاريخ الإنشاء"
+    }
+  },
+  "leaves": {
+    "title": "طلبات الإجازات",
+    "count": "طلب",
+    "loading": "جاري تحميل طلبات الإجازات...",
+    "noRequests": "لا توجد طلبات إجازة",
+    "noRequestsWithFilter": "لم يتم العثور على طلبات بالفلتر المحدد",
+    "noRequestsDefault": "لا توجد طلبات إجازة في الوقت الحالي",
+    "showAllRequests": "عرض جميع الطلبات",
+    "resultsCount": "عرض {{count}} من {{total}} طلب",
+    "nameNotSpecified": "الاسم غير محدد",
+    "from": "من",
+    "to": "إلى",
+    "days": "يوم",
+    "processedOn": "تمت المعالجة في {{date}}",
+    "processedBy": "بواسطة {{name}}",
+    "status": {
+      "pending": "قيد الانتظار",
+      "approved": "موافق عليه",
+      "rejected": "مرفوض",
+      "unknown": "غير معروف"
+    },
+    "filters": {
+      "filterByStatus": "تصفية حسب الحالة",
+      "all": "الكل",
+      "pending": "قيد الانتظار",
+      "approved": "موافق عليه",
+      "rejected": "مرفوض"
+    },
+    "actions": {
+      "approve": "موافقة",
+      "reject": "رفض"
+    },
+    "errors": {
+      "actionError": "خطأ في المعالجة",
+      "dataLoadError": "خطأ في تحميل طلبات الإجازات"
+    },
+    "success": {
+      "processed": "تمت معالجة الطلب",
+      "approved": "تمت الموافقة على طلب الإجازة بنجاح",
+      "rejected": "تم رفض طلب الإجازة بنجاح"
     }
   }
 }
