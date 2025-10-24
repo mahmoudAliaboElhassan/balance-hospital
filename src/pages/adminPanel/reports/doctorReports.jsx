@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux"
 import { getDoctorReports } from "../../../state/act/actReports"
 import { useParams, useNavigate } from "react-router-dom"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import i18next from "i18next"
 import {
@@ -23,6 +23,7 @@ import {
   Briefcase,
   Building,
   Download,
+  Filter,
 } from "lucide-react"
 import LoadingGetData from "../../../components/LoadingGetData"
 import {
@@ -40,6 +41,11 @@ function DoctorReports() {
   const navigate = useNavigate()
   const { t } = useTranslation()
 
+  // Date filter states
+  const [dateFrom, setDateFrom] = useState("")
+  const [dateTo, setDateTo] = useState("")
+  const [showFilters, setShowFilters] = useState(false)
+
   const { doctorReport, loadingDoctorReport, doctorReportError } = useSelector(
     (state) => state.reports
   )
@@ -51,7 +57,13 @@ function DoctorReports() {
 
   useEffect(() => {
     if (docId) {
-      dispatch(getDoctorReports({ doctorId: docId }))
+      dispatch(
+        getDoctorReports({
+          doctorId: docId,
+          dateFrom: dateFrom || undefined,
+          dateTo: dateTo || undefined,
+        })
+      )
     }
 
     return () => {
@@ -59,6 +71,32 @@ function DoctorReports() {
       dispatch(clearDoctorReportError())
     }
   }, [dispatch, docId])
+
+  // Function to apply filters
+  const handleApplyFilters = () => {
+    if (docId) {
+      dispatch(
+        getDoctorReports({
+          doctorId: docId,
+          dateFrom: dateFrom || undefined,
+          dateTo: dateTo || undefined,
+        })
+      )
+    }
+  }
+
+  // Function to clear filters
+  const handleClearFilters = () => {
+    setDateFrom("")
+    setDateTo("")
+    if (docId) {
+      dispatch(
+        getDoctorReports({
+          doctorId: docId,
+        })
+      )
+    }
+  }
 
   // Helper Functions
   const formatDate = (dateString) => {
@@ -211,14 +249,14 @@ function DoctorReports() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex justify-between items-center mb-4">
             <button
               onClick={() => navigate(-1)}
               className={`inline-flex items-center gap-2 ${
                 isDark
                   ? "text-blue-400 hover:text-blue-300"
                   : "text-blue-600 hover:text-blue-800"
-              } transition-colors duration-200 mb-4`}
+              } transition-colors duration-200`}
             >
               {currentLang === "en" ? (
                 <ArrowLeft className="w-5 h-5" />
@@ -227,14 +265,115 @@ function DoctorReports() {
               )}
               {t("common.goBack")}
             </button>
-            <button
-              onClick={() => exportDoctorReportToExcel(report, currentLang, t)}
-              className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
-            >
-              <Download size={20} />
-              <span>{t("reports.export") || "Export"}</span>
-            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className={`${
+                  isDark
+                    ? "bg-gray-700 hover:bg-gray-600"
+                    : "bg-white hover:bg-gray-50"
+                } px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl border ${
+                  isDark ? "border-gray-600" : "border-gray-200"
+                }`}
+              >
+                <Filter
+                  size={20}
+                  className={isDark ? "text-blue-400" : "text-blue-600"}
+                />
+                <span className={isDark ? "text-white" : "text-gray-900"}>
+                  {t("reports.filters") || "Filters"}
+                </span>
+              </button>
+              <button
+                onClick={() =>
+                  exportDoctorReportToExcel(report, currentLang, t)
+                }
+                className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              >
+                <Download size={20} />
+                <span>{t("reports.export") || "Export"}</span>
+              </button>
+            </div>
           </div>
+
+          {/* Date Filters */}
+          {showFilters && (
+            <div
+              className={`${
+                isDark ? "bg-gray-800" : "bg-white"
+              } rounded-2xl shadow-xl p-6 mb-6`}
+            >
+              <h3
+                className={`text-lg font-semibold ${
+                  isDark ? "text-white" : "text-gray-900"
+                } mb-4 flex items-center gap-2`}
+              >
+                <Filter className="w-5 h-5" />
+                {t("department.filters.title") || "Date Filters"}
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                  <label
+                    className={`block text-sm font-medium mb-2 ${
+                      isDark ? "text-gray-300" : "text-gray-700"
+                    }`}
+                  >
+                    {t("contractingTypes.filters.fromDate") || "Date From"}
+                  </label>
+                  <input
+                    type="date"
+                    value={dateFrom}
+                    onChange={(e) => setDateFrom(e.target.value)}
+                    className={`w-full px-4 py-2 rounded-lg border ${
+                      isDark
+                        ? "bg-gray-700 border-gray-600 text-white"
+                        : "bg-white border-gray-300 text-gray-900"
+                    } focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                  />
+                </div>
+                <div>
+                  <label
+                    className={`block text-sm font-medium mb-2 ${
+                      isDark ? "text-gray-300" : "text-gray-700"
+                    }`}
+                  >
+                    {t("contractingTypes.filters.toDate") || "Date To"}
+                  </label>
+                  <input
+                    type="date"
+                    value={dateTo}
+                    onChange={(e) => setDateTo(e.target.value)}
+                    className={`w-full px-4 py-2 rounded-lg border ${
+                      isDark
+                        ? "bg-gray-700 border-gray-600 text-white"
+                        : "bg-white border-gray-300 text-gray-900"
+                    } focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                  />
+                </div>
+                <div className="flex items-end gap-2">
+                  <button
+                    onClick={handleApplyFilters}
+                    className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-2 rounded-lg transition-all duration-200 transform hover:scale-105"
+                  >
+                    {t("department.filters.apply") || "Apply"}
+                  </button>
+                  <button
+                    onClick={handleClearFilters}
+                    className={`flex-1 ${
+                      isDark
+                        ? "bg-gray-700 hover:bg-gray-600"
+                        : "bg-gray-200 hover:bg-gray-300"
+                    } px-6 py-2 rounded-lg transition-all duration-200 ${
+                      isDark ? "text-white" : "text-gray-900"
+                    }`}
+                  >
+                    {t("department.filters.clear") || "Clear"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Doctor Info Card */}
           <div
             className={`${

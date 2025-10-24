@@ -98,9 +98,16 @@ export const getDashboardData = createAsyncThunk(
 )
 export const getDoctorReports = createAsyncThunk(
   "reports/getDoctorReports",
-  async ({ doctorId }, { rejectWithValue }) => {
+  async ({ doctorId, dateFrom, dateTo }, { rejectWithValue }) => {
     try {
-      const url = `/api/v1/Users/doctor/${doctorId}/report`
+      const params = new URLSearchParams()
+      if (dateFrom) params.append("DateFrom", dateFrom)
+      if (dateTo) params.append("DateTo", dateTo)
+
+      const queryString = params.toString()
+      const url = `/api/v1/Users/doctor/${doctorId}/report${
+        queryString ? `?${queryString}` : ""
+      }`
 
       const response = await axiosInstance.get(url, {
         headers: {
