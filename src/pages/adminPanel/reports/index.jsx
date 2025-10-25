@@ -5,7 +5,7 @@ import {
   getCategories,
   getCategoryPendingRequests,
 } from "../../../state/act/actCategory"
-import { getDepartmentByCategory } from "../../../state/act/actDepartment"
+import { getDepartments } from "../../../state/act/actDepartment"
 import {
   getContractingTypes,
   getContractingTypesForSignup,
@@ -25,6 +25,7 @@ import {
 import { clearReports, clearReportsError } from "../../../state/slices/reports"
 import { getReports } from "../../../state/act/actReports"
 import { getAvailbleScientficDegrees } from "../../../state/act/actRosterManagement"
+import { getUserSummaries } from "../../../state/act/actUsers"
 
 function Reports() {
   const { categoryManagerId: id } = useSelector((state) => state.auth)
@@ -46,11 +47,11 @@ function Reports() {
 
   console.log("contracting", contracting)
 
-  const { categoryPendingRequests, loadingGetCategoryPendingRequests } =
-    useSelector((state) => state.category)
+  const { users, loading } = useSelector((state) => state.users)
 
-  const { departmentsByCategory, loadingGetDepartmentsByCategory } =
-    useSelector((state) => state.department)
+  const { departments, loadingGetDepartments } = useSelector(
+    (state) => state.department
+  )
   const { categories, loadingGetCategories } = useSelector(
     (state) => state.category
   )
@@ -84,17 +85,16 @@ function Reports() {
   useEffect(() => {
     dispatch(getContractingTypesForSignup())
     dispatch(getAvailbleScientficDegrees())
-
+    dispatch(getDepartments({ pageSize: 1000, page: 1 }))
+    dispatch(
+      getUserSummaries({
+        page: 1,
+        pageSize: 1000,
+        categoryId: filters.categoryId,
+      })
+    )
     if (isSystemAdmin) {
       dispatch(getCategories())
-    } else {
-      dispatch(getDepartmentByCategory({ categoryId: id }))
-      dispatch(
-        getCategoryPendingRequests({
-          categoryId: id,
-          filters: { status: "Approved" },
-        })
-      )
     }
 
     return () => {
@@ -106,11 +106,11 @@ function Reports() {
   // Fetch departments and doctors when category changes
   useEffect(() => {
     if (filters.categoryId) {
-      dispatch(getDepartmentByCategory({ categoryId: filters.categoryId }))
       dispatch(
-        getCategoryPendingRequests({
+        getUserSummaries({
+          page: 1,
+          pageSize: 1000,
           categoryId: filters.categoryId,
-          filters: { status: "Approved", pageSize: 1000 },
         })
       )
     }
@@ -118,7 +118,7 @@ function Reports() {
 
   // Fetch reports when filters change
   useEffect(() => {
-    if (filters.month && filters.year && filters.categoryId) {
+    if (filters.month && filters.year) {
       const params = { ...filters }
       // Remove null values
       Object.keys(params).forEach((key) => {
@@ -175,8 +175,8 @@ function Reports() {
   if (
     loadingGetContractingTypes ||
     loadingContract ||
-    loadingGetDepartmentsByCategory ||
-    loadingGetCategoryPendingRequests ||
+    loadingGetDepartments ||
+    loading?.list ||
     loadingGetCategories
   ) {
     return <LoadingGetData text={t("gettingData.wait-data")} />
@@ -269,7 +269,7 @@ function Reports() {
                   } focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                 >
                   <option value="">
-                    {t("roster.form.selectCategory") || "Select Category"}
+                    {t("categories.filters.all") || "Select Category"}
                   </option>
                   {categories?.map((cat) => (
                     <option key={cat.id} value={cat.id}>
@@ -364,7 +364,7 @@ function Reports() {
                 <option value="">
                   {t("reports.allDepartments") || "All Departments"}
                 </option>
-                {departmentsByCategory?.map((dept) => (
+                {departments?.map((dept) => (
                   <option key={dept.id} value={dept.id}>
                     {currentLang === "ar" ? dept.nameArabic : dept.nameEnglish}
                   </option>
@@ -398,11 +398,11 @@ function Reports() {
                 <option value="">
                   {t("reports.allDoctors") || "All Doctors"}
                 </option>
-                {categoryPendingRequests?.map((request) => (
-                  <option key={request.userId} value={request.userId}>
+                {users?.map((request) => (
+                  <option key={request.id} value={request.id}>
                     {currentLang === "ar"
-                      ? request.doctorNameArabic
-                      : request.doctorNameEnglish}
+                      ? request.nameArabic
+                      : request.nameEnglish}
                   </option>
                 ))}
               </select>

@@ -59,31 +59,31 @@ const usersSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // Get User Summaries
-      // .addCase(getUserSummaries.pending, (state) => {
-      //   state.loading.list = true;
-      //   state.error = "";
-      // })
-      // .addCase(getUserSummaries.fulfilled, (state, action) => {
-      //   state.loading.list = false;
-      //   if (action.payload.success) {
-      //     state.users = action.payload.data?.items || [];
-      //     state.pagination = {
-      //       totalCount: action.payload.data?.totalCount || 0,
-      //       page: action.payload.data?.page || 1,
-      //       pageSize: action.payload.data?.pageSize || 10,
-      //       totalPages: action.payload.data?.totalPages || 0,
-      //       hasNextPage: action.payload.data?.hasNextPage || false,
-      //       hasPreviousPage: action.payload.data?.hasPreviousPage || false,
-      //     };
-      //   }
-      // })
-      // .addCase(getUserSummaries.rejected, (state, action) => {
-      //   state.loading.list = false;
-      //   state.error =
-      //     action.payload?.messageEn ||
-      //     action.payload ||
-      //     "Failed to fetch user summaries";
-      // })
+      .addCase(getUserSummaries.pending, (state) => {
+        state.loading.list = true
+        state.error = ""
+      })
+      .addCase(getUserSummaries.fulfilled, (state, action) => {
+        state.loading.list = false
+        if (action.payload.success) {
+          state.users = action.payload.data?.items || []
+          state.pagination = {
+            totalCount: action.payload.data?.totalCount || 0,
+            page: action.payload.data?.page || 1,
+            pageSize: action.payload.data?.pageSize || 10,
+            totalPages: action.payload.data?.totalPages || 0,
+            hasNextPage: action.payload.data?.hasNextPage || false,
+            hasPreviousPage: action.payload.data?.hasPreviousPage || false,
+          }
+        }
+      })
+      .addCase(getUserSummaries.rejected, (state, action) => {
+        state.loading.list = false
+        state.error =
+          action.payload?.messageEn ||
+          action.payload ||
+          "Failed to fetch user summaries"
+      })
       .addCase(doctorForAssignment.pending, (state) => {
         state.loading.list = true
         state.error = ""

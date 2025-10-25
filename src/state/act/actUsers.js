@@ -8,16 +8,22 @@ export const getUserSummaries = createAsyncThunk(
     const { rejectWithValue } = thunkAPI
 
     try {
-      //   const { page = 1, pageSize = 10, searchTerm = "" } = params;
+      const { page = 1, pageSize = 10, categoryId, searchTerm = "" } = params
+
+      // Build query params object
+      const queryParams = {
+        isEmailVerified: true,
+        isApproved: true,
+      }
+
+      // Add optional parameters if provided
+      if (page) queryParams.page = page
+      if (pageSize) queryParams.pageSize = pageSize
+      if (searchTerm) queryParams.searchTerm = searchTerm
+      if (categoryId) queryParams.categoryId = categoryId
 
       const res = await axiosInstance.get("/api/v1/Users/summaries", {
-        params: {
-          isEmailVerified: true,
-          isApproved: true,
-          // page,
-          // pageSize,
-          // searchTerm,
-        },
+        params: queryParams,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

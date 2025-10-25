@@ -496,4 +496,3 @@ export const removeCategoryHead = createAsyncThunk(
     }
   }
 )
-
