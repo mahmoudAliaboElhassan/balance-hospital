@@ -565,7 +565,7 @@ const SpecificCategory = () => {
     return (
       <div className="flex gap-2">
         {/* Show Approve button for Pending and Rejected status */}
-        {(request.status === "Pending" || request.status === "Rejected") && (
+        {request.status === "Pending" && (
           <button
             onClick={() => handleApproveRequest(request.userId)}
             disabled={isProcessing}

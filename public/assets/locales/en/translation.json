@@ -3018,10 +3018,37 @@
     "loading": "Loading dashboard data...",
     "refresh": "Refresh",
     "lastUpdated": "Last updated",
+
     "error": {
       "title": "Error Loading Dashboard",
       "retry": "Try Again"
     },
+
+    "charts": {
+      "title": "Dashboard Analytics",
+      "subtitle": "Visual insights and data analytics",
+      "usersDistribution": "Users Distribution",
+      "rolesDistribution": "Roles Distribution",
+      "categoriesResources": "Categories - Doctors & Resources",
+      "departmentsActivity": "Departments Activity",
+      "pendingRequestsBreakdown": "Pending Requests Breakdown",
+      "degreesDistribution": "Degrees Distribution",
+      "contractingTypes": "Contracting Types - Users & Max Hours",
+      "shiftTypesUsage": "Shift Types - Today's Usage",
+      "rostersCompletion": "Active Rosters - Completion Progress",
+      "doctors": "Doctors",
+      "departments": "Departments",
+      "activeRosters": "Active Rosters",
+      "activeSchedules": "Active Schedules",
+      "assignedDoctors": "Assigned Doctors",
+      "usersCount": "Users Count",
+      "maxHoursWeek": "Max Hours/Week",
+      "usageToday": "Usage Today",
+      "shiftHours": "Shift Hours",
+      "completionPercent": "Completion %",
+      "emptyShifts": "Empty Shifts"
+    },
+
     "sections": {
       "users": {
         "title": "Users",
@@ -3033,6 +3060,7 @@
         "newUsersThisMonth": "New This Month",
         "pendingUsers": "Pending Users"
       },
+
       "pendingRequests": {
         "title": "Pending Requests",
         "totalPendingRequests": "Total Pending",
@@ -3043,6 +3071,7 @@
         "overdueRequests": "Overdue",
         "recentRequests": "Recent Requests"
       },
+
       "quickStats": {
         "title": "Quick Statistics",
         "dailyAttendanceRate": "Attendance Rate",
@@ -3051,20 +3080,48 @@
         "averageResponseTime": "Avg Response Time",
         "emailsSentToday": "Emails Sent Today"
       },
+
       "categories": {
         "title": "Categories",
         "totalCategories": "Total Categories",
         "activeCategories": "Active",
         "categoriesWithManagers": "With Managers",
-        "totalDoctorsInCategories": "Total Doctors"
+        "totalDoctorsInCategories": "Total Doctors",
+        "topActiveCategories": "Top Active Categories",
+        "doctors": "Doctors",
+        "departments": "Departments",
+        "rosters": "Rosters",
+        "manager": "Manager",
+        "alerts": "Category Alerts"
       },
+
+      "configuration": {
+        "title": "Configuration Summary",
+        "activeDegrees": "Active Degrees",
+        "activeContractingTypes": "Contracting Types",
+        "activeShiftTypes": "Shift Types",
+        "contractingTypes": "Contracting Types",
+        "overtimeAllowed": "Overtime ✓",
+        "noOvertime": "No Overtime",
+        "users": "Users",
+        "usageToday": "Max Hours/Week",
+        "duration": "Duration"
+      },
+
       "departments": {
         "title": "Departments",
         "totalDepartments": "Total Departments",
         "activeDepartments": "Active",
         "departmentsWithManagers": "With Managers",
-        "totalActiveSchedules": "Active Schedules"
+        "totalActiveSchedules": "Active Schedules",
+        "topActiveDepartments": "Top Active Departments",
+        "schedules": "Schedules",
+        "doctors": "Doctors",
+        "categories": "Categories",
+        "alerts": "Department Alerts",
+        "geoFenceCoverage": "GeoFence Coverage"
       },
+
       "rosters": {
         "title": "Rosters",
         "totalRosters": "Total Rosters",

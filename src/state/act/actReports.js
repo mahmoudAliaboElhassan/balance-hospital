@@ -36,12 +36,12 @@ export const getReports = createAsyncThunk(
       if (contractingTypeId !== undefined && contractingTypeId !== null) {
         params.append("contractingTypeId", contractingTypeId)
       }
-      if (page !== undefined && page !== null) {
-        params.append("page", page)
-      }
-      if (pageSize !== undefined && pageSize !== null) {
-        params.append("pageSize", pageSize)
-      }
+      // if (page !== undefined && page !== null) {
+      //   params.append("page", page)
+      // }
+      // if (pageSize !== undefined && pageSize !== null) {
+      //   params.append("pageSize", pageSize)
+      // }
 
       const queryString = params.toString()
       const url = `/api/v1/ScheduleReporting/monthly/${month}/${year}${

@@ -110,7 +110,7 @@ function Reports() {
       dispatch(
         getCategoryPendingRequests({
           categoryId: filters.categoryId,
-          filters: { status: "Approved" },
+          filters: { status: "Approved", pageSize: 1000 },
         })
       )
     }

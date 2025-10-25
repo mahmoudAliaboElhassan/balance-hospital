@@ -3012,53 +3012,110 @@
     "loading": "جاري تحميل بيانات لوحة التحكم...",
     "refresh": "تحديث",
     "lastUpdated": "آخر تحديث",
+
     "error": {
       "title": "خطأ في تحميل لوحة التحكم",
       "retry": "حاول مرة أخرى"
     },
+
+    "charts": {
+      "title": "تحليلات لوحة التحكم",
+      "subtitle": "رؤى بصرية وتحليلات البيانات",
+      "usersDistribution": "توزيع المستخدمين",
+      "rolesDistribution": "توزيع الأدوار",
+      "categoriesResources": "الفئات - الأطباء والموارد",
+      "departmentsActivity": "نشاط الأقسام",
+      "pendingRequestsBreakdown": "تفصيل الطلبات المعلقة",
+      "degreesDistribution": "توزيع الدرجات",
+      "contractingTypes": "أنواع التعاقد - المستخدمين وأقصى ساعات",
+      "shiftTypesUsage": "أنواع الورديات - الاستخدام اليوم",
+      "rostersCompletion": "الجداول النشطة - تقدم الإنجاز",
+      "doctors": "الأطباء",
+      "departments": "الأقسام",
+      "activeRosters": "الجداول النشطة",
+      "activeSchedules": "الجداول النشطة",
+      "assignedDoctors": "الأطباء المعينين",
+      "usersCount": "عدد المستخدمين",
+      "maxHoursWeek": "أقصى ساعات/أسبوع",
+      "usageToday": "الاستخدام اليوم",
+      "shiftHours": "ساعات الوردية",
+      "completionPercent": "نسبة الإنجاز %",
+      "emptyShifts": "الورديات الفارغة"
+    },
+
     "sections": {
       "users": {
-        "title": "المستخدمين",
+        "title": "المستخدمون",
         "totalUsers": "إجمالي المستخدمين",
-        "activeUsers": "المستخدمين النشطين",
+        "activeUsers": "المستخدمون النشطون",
         "doctorsCount": "الأطباء",
-        "residentsCount": "المقيمين",
-        "onlineUsers": "المستخدمين المتصلين",
+        "residentsCount": "المقيمون",
+        "onlineUsers": "المستخدمون المتصلون",
         "newUsersThisMonth": "جدد هذا الشهر",
-        "pendingUsers": "مستخدمين معلقين"
+        "pendingUsers": "المستخدمون المعلقون"
       },
+
       "pendingRequests": {
         "title": "الطلبات المعلقة",
         "totalPendingRequests": "إجمالي المعلقة",
-        "pendingLeaveRequests": "طلبات الإجازة",
+        "pendingLeaveRequests": "طلبات الإجازات",
         "pendingSwapRequests": "طلبات التبديل",
         "pendingDoctorJoinRequests": "طلبات الانضمام",
-        "urgentRequests": "عاجلة",
+        "urgentRequests": "عاجل",
         "overdueRequests": "متأخرة",
         "recentRequests": "الطلبات الأخيرة"
       },
+
       "quickStats": {
         "title": "إحصائيات سريعة",
         "dailyAttendanceRate": "معدل الحضور",
         "userSatisfactionRate": "معدل الرضا",
-        "taskCompletionRate": "معدل إنجاز المهام",
+        "taskCompletionRate": "إنجاز المهام",
         "averageResponseTime": "متوسط وقت الاستجابة",
-        "emailsSentToday": "الرسائل المرسلة اليوم"
+        "emailsSentToday": "رسائل البريد المرسلة اليوم"
       },
+
       "categories": {
         "title": "الفئات",
         "totalCategories": "إجمالي الفئات",
-        "activeCategories": "النشطة",
+        "activeCategories": "نشطة",
         "categoriesWithManagers": "بمديرين",
-        "totalDoctorsInCategories": "إجمالي الأطباء"
+        "totalDoctorsInCategories": "إجمالي الأطباء",
+        "topActiveCategories": "أكثر الفئات نشاطاً",
+        "doctors": "الأطباء",
+        "departments": "الأقسام",
+        "rosters": "الجداول",
+        "manager": "المدير",
+        "alerts": "تنبيهات الفئات"
       },
+
+      "configuration": {
+        "title": "ملخص الإعدادات",
+        "activeDegrees": "الدرجات النشطة",
+        "activeContractingTypes": "أنواع التعاقد",
+        "activeShiftTypes": "أنواع الورديات",
+        "contractingTypes": "أنواع التعاقد",
+        "overtimeAllowed": "ساعات إضافية ✓",
+        "noOvertime": "بدون ساعات إضافية",
+        "users": "المستخدمون",
+        "usageToday": "أقصى ساعات/أسبوع",
+        "duration": "المدة"
+      },
+
       "departments": {
-        "title": "الأماكن",
-        "totalDepartments": "إجمالي الأماكن",
-        "activeDepartments": "النشطة",
+        "title": "الأقسام",
+        "totalDepartments": "إجمالي الأقسام",
+        "activeDepartments": "نشطة",
         "departmentsWithManagers": "بمديرين",
-        "totalActiveSchedules": "الجداول النشطة"
+        "totalActiveSchedules": "الجداول النشطة",
+        "topActiveDepartments": "أكثر الأقسام نشاطاً",
+        "schedules": "الجداول",
+        "doctors": "الأطباء",
+        "categories": "الفئات",
+        "alerts": "تنبيهات الأقسام",
+        "geoFenceCoverage": "تغطية السياج الجغرافي"
       },
+
       "rosters": {
         "title": "الجداول",
         "totalRosters": "إجمالي الجداول",
