@@ -59,7 +59,7 @@ export const getCategoryById = createAsyncThunk(
       // Validate categoryId
       if (!categoryId) {
         return rejectWithValue({
-          message: "معرف الفئة مطلوب",
+          message: "معرف التخصص مطلوب",
           messageEn: "Category ID is required",
         })
       }
@@ -78,7 +78,7 @@ export const getCategoryById = createAsyncThunk(
       // Handle specific error cases
       if (error.response?.status === 404) {
         return rejectWithValue({
-          message: "الفئة غير موجودة",
+          message: "التخصص غير موجودة",
           messageEn: "Category not found",
           status: 404,
         })
@@ -86,7 +86,7 @@ export const getCategoryById = createAsyncThunk(
 
       if (error.response?.status === 403) {
         return rejectWithValue({
-          message: "ليس لديك صلاحية للوصول لهذه الفئة",
+          message: "ليس لديك صلاحية للوصول لهذه التخصص",
           messageEn: "You don't have permission to access this category",
           status: 403,
         })
@@ -129,7 +129,7 @@ export const updateCategory = createAsyncThunk(
       // Validate categoryId
       if (!categoryId) {
         return rejectWithValue({
-          message: "معرف الفئة مطلوب",
+          message: "معرف التخصص مطلوب",
           messageEn: "Category ID is required",
         })
       }
@@ -153,7 +153,7 @@ export const updateCategory = createAsyncThunk(
       // Handle specific error cases
       if (error.response?.status === 404) {
         return rejectWithValue({
-          message: "الفئة غير موجودة",
+          message: "التخصص غير موجودة",
           messageEn: "Category not found",
           status: 404,
         })
@@ -161,7 +161,7 @@ export const updateCategory = createAsyncThunk(
 
       if (error.response?.status === 403) {
         return rejectWithValue({
-          message: "ليس لديك صلاحية لتحديث هذه الفئة",
+          message: "ليس لديك صلاحية لتحديث هذه التخصص",
           messageEn: "You don't have permission to update this category",
           status: 403,
         })
@@ -203,7 +203,7 @@ export const deleteCategory = createAsyncThunk(
       // Handle specific error cases
       if (error.response?.status === 404) {
         return rejectWithValue({
-          message: "الفئة غير موجودة",
+          message: "التخصص غير موجودة",
           messageEn: "Category not found",
           status: 404,
         })
@@ -211,7 +211,7 @@ export const deleteCategory = createAsyncThunk(
 
       if (error.response?.status === 403) {
         return rejectWithValue({
-          message: "ليس لديك صلاحية لحذف هذه الفئة",
+          message: "ليس لديك صلاحية لحذف هذه التخصص",
           messageEn: "You don't have permission to delete this category",
           status: 403,
         })
@@ -405,7 +405,7 @@ export const getCategoryPendingRequests = createAsyncThunk(
         message:
           error.response?.data?.messageAr ||
           error.response?.data?.messageEn ||
-          "حدث خطأ في جلب طلبات الفئة",
+          "حدث خطأ في جلب طلبات التخصص",
         errors: error.response?.data?.errors || [],
         status: error.response?.status,
         timestamp: new Date().toISOString(),

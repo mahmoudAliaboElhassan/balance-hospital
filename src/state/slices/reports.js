@@ -3,13 +3,17 @@ import {
   getDashboardData,
   getDoctorReports,
   getReports,
+  getReportsAttend,
 } from "../act/actReports"
 
 // Initial state additions
 const initialState = {
   reports: null,
+  reportsAttend: null,
   loadingGetReports: false,
+  loadingGetReportsAttend: false,
   getReportsError: null,
+  getReportsAttendError: null,
   dashboardData: null,
   loadingGetDashboardData: false,
   dashboardError: null,
@@ -27,6 +31,10 @@ export const reportSlice = createSlice({
     clearReports: (state) => {
       state.reports = null
       state.getReportsError = null
+    },
+    clearReportsAttend: (state) => {
+      state.reportsAttend = null
+      state.getReportsAttendError = null
     },
     clearReportsError: (state) => {
       state.getReportsError = null
@@ -69,6 +77,28 @@ export const reportSlice = createSlice({
       .addCase(getReports.rejected, (state, action) => {
         state.loadingGetReports = false
         state.getReportsError = action.payload
+      })
+      .addCase(getReportsAttend.pending, (state) => {
+        state.loadingGetReportsAttend = true
+        state.getReportsError = null
+      })
+      .addCase(getReportsAttend.fulfilled, (state, action) => {
+        state.loadingGetReportsAttend = false
+        state.reportsAttend = action.payload.reports.data
+        // const pageSize = action.payload.pageSize
+        // console.log("Page Size:", pageSize)
+        // state.totalPages = Math.ceil(
+        //   action.payload.reports.data.totalRecords / pageSize
+        // )
+
+        console.log("reportsAttend:", action.payload)
+
+        console.log("Total Pages:", state.totalPages)
+        state.getReportsError = null
+      })
+      .addCase(getReportsAttend.rejected, (state, action) => {
+        state.loadingGetReportsAttend = false
+        state.getReportsAttendError = action.payload
       })
 
       .addCase(getDashboardData.pending, (state) => {

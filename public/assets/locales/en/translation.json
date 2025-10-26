@@ -2976,8 +2976,16 @@
   "reports": {
     "title": "Monthly Reports",
     "subtitle": "View and manage monthly attendance reports",
-    "export": "Export",
     "filters": "Filters",
+    "export": {
+      "title": "Export Report",
+      "exporting": "Exporting...",
+      "excel": "Export Excel",
+      "pdf": "Export PDF",
+      "csv": "Export CSV",
+      "selectFormat": "Select Export Format",
+      "note": "Download will start automatically"
+    },
     "month": "Month",
     "year": "Year",
     "department": "Department",

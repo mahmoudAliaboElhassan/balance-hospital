@@ -297,7 +297,7 @@ export const categorySlice = createSlice({
         state.loadingCreateCategory = false
         state.createSuccess = false
         state.createError = {
-          message: action.payload?.message || "حدث خطأ في إنشاء الفئة",
+          message: action.payload?.message || "حدث خطأ في إنشاء التخصص",
           errors: action.payload?.errors || [],
           timestamp: new Date().toISOString(),
         }
@@ -324,12 +324,12 @@ export const categorySlice = createSlice({
         state.selectedCategory = null
 
         const payload = action.payload
-        let errorMessage = "حدث خطأ في جلب الفئة"
+        let errorMessage = "حدث خطأ في جلب التخصص"
 
         if (payload?.status === 404) {
-          errorMessage = payload.message || "الفئة غير موجودة"
+          errorMessage = payload.message || "التخصص غير موجودة"
         } else if (payload?.status === 403) {
-          errorMessage = payload.message || "ليس لديك صلاحية للوصول لهذه الفئة"
+          errorMessage = payload.message || "ليس لديك صلاحية للوصول لهذه التخصص"
         } else if (payload?.message) {
           errorMessage = payload.message
         }
@@ -371,12 +371,12 @@ export const categorySlice = createSlice({
         state.updateSuccess = false
 
         const payload = action.payload
-        let errorMessage = "حدث خطأ في تحديث الفئة"
+        let errorMessage = "حدث خطأ في تحديث التخصص"
 
         if (payload?.status === 404) {
-          errorMessage = payload.message || "الفئة غير موجودة"
+          errorMessage = payload.message || "التخصص غير موجودة"
         } else if (payload?.status === 403) {
-          errorMessage = payload.message || "ليس لديك صلاحية لتحديث هذه الفئة"
+          errorMessage = payload.message || "ليس لديك صلاحية لتحديث هذه التخصص"
         } else if (payload?.status === 400) {
           errorMessage = payload.message || "بيانات غير صحيحة أو عدم تطابق ID"
         } else if (payload?.message) {
@@ -427,12 +427,12 @@ export const categorySlice = createSlice({
         state.deleteSuccess = false
 
         const payload = action.payload
-        let errorMessage = "حدث خطأ في حذف الفئة"
+        let errorMessage = "حدث خطأ في حذف التخصص"
 
         if (payload?.status === 404) {
-          errorMessage = payload.message || "الفئة غير موجودة"
+          errorMessage = payload.message || "التخصص غير موجودة"
         } else if (payload?.status === 403) {
-          errorMessage = payload.message || "ليس لديك صلاحية لحذف هذه الفئة"
+          errorMessage = payload.message || "ليس لديك صلاحية لحذف هذه التخصص"
         } else if (payload?.status === 400) {
           errorMessage =
             payload.message || "بيانات غير صحيحة أو سبب الحذف مطلوب"
@@ -481,10 +481,10 @@ export const categorySlice = createSlice({
         state.categoryPendingRequestsPagination = null
 
         const payload = action.payload
-        let errorMessage = "حدث خطأ في جلب طلبات الفئة"
+        let errorMessage = "حدث خطأ في جلب طلبات التخصص"
 
         if (payload?.status === 404) {
-          errorMessage = payload.message || "الفئة غير موجودة"
+          errorMessage = payload.message || "التخصص غير موجودة"
         } else if (payload?.status === 403) {
           errorMessage =
             payload.message || "ليس لديك صلاحية للوصول لهذه البيانات"

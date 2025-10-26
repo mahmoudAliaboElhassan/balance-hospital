@@ -23,9 +23,11 @@ import {
   Eye,
 } from "lucide-react"
 import { clearReports, clearReportsError } from "../../../state/slices/reports"
-import { getReports } from "../../../state/act/actReports"
+import { getReports, getReportsAttend } from "../../../state/act/actReports"
 import { getAvailbleScientficDegrees } from "../../../state/act/actRosterManagement"
 import { getUserSummaries } from "../../../state/act/actUsers"
+import ExportReportsDropdown from "./exportFullReport"
+import ExportDoctorAttendanceReport from "./exportDoctorsAttend"
 
 function Reports() {
   const { categoryManagerId: id } = useSelector((state) => state.auth)
@@ -56,8 +58,15 @@ function Reports() {
     (state) => state.category
   )
   const { mymode } = useSelector((state) => state.mode)
-  const { reports, loadingGetReports, getReportsError, totalPages } =
-    useSelector((state) => state.reports)
+  const {
+    reports,
+    loadingGetReports,
+    getReportsError,
+    totalPages,
+    getReportsAttendError,
+    reportsAttend,
+    loadingGetReportsAttend,
+  } = useSelector((state) => state.reports)
 
   // Local state for filters
   const currentDate = new Date()
@@ -127,6 +136,7 @@ function Reports() {
         }
       })
       dispatch(getReports(params))
+      dispatch(getReportsAttend(params))
     }
   }, [dispatch, filters])
 
@@ -211,7 +221,25 @@ function Reports() {
                   {t("reports.subtitle") ||
                     "View and manage monthly attendance reports"}
                 </p>
-              </div>
+              </div>{" "}
+              {/* Add Export Button Here */}
+              {reports?.rows && reports.rows.length > 0 && (
+                <ExportReportsDropdown
+                  filters={filters}
+                  onExportStart={(format) => {
+                    console.log("Export started:", format)
+                  }}
+                  onExportSuccess={(format, label) => {
+                    // Optional: Show success toast/notification
+                    console.log("Export successful:", label)
+                  }}
+                  onExportError={(error, format) => {
+                    // Optional: Show error toast/notification
+                    console.error("Export failed:", error)
+                  }}
+                />
+              )}
+              <ExportDoctorAttendanceReport reportsAttend={reportsAttend} />
             </div>
           </div>
         </div>
@@ -477,9 +505,9 @@ function Reports() {
         </div>
 
         {/* Reports Content */}
-        {loadingGetReports ? (
+        {loadingGetReports || loadingGetReportsAttend ? (
           <LoadingGetData text={t("reports.loading") || "Loading reports..."} />
-        ) : getReportsError ? (
+        ) : getReportsError || getReportsAttendError ? (
           <div
             className={`${
               isDark ? "bg-gray-800" : "bg-white"
@@ -691,13 +719,7 @@ function Reports() {
                       >
                         {t("reports.table.contractType") || "Contract"}
                       </th>
-                      <th
-                        className={`px-6 py-4 text-left text-xs font-medium ${
-                          isDark ? "text-gray-300" : "text-gray-700"
-                        } uppercase tracking-wider`}
-                      >
-                        {t("reports.table.shifts") || "Shifts"}
-                      </th>
+
                       <th
                         className={`px-6 py-4 text-left text-xs font-medium ${
                           isDark ? "text-gray-300" : "text-gray-700"
@@ -764,8 +786,8 @@ function Reports() {
                           }`}
                         >
                           {currentLang === "ar"
-                            ? row.departmentNameAr
-                            : row.departmentNameEn}
+                            ? row.departmentsJoinedAr
+                            : row.departmentsJoinedEn}
                         </td>
                         <td
                           className={`px-6 py-4 whitespace-nowrap text-sm ${
@@ -785,25 +807,7 @@ function Reports() {
                             ? row.contractingTypeName
                             : row.contractingTypeNameEn}
                         </td>
-                        <td className="px-6 py-4">
-                          <div className="flex flex-wrap gap-1">
-                            {Object.entries(row.dailyShifts).map(
-                              ([day, shift]) => (
-                                <span
-                                  key={day}
-                                  className={`px-2 py-1 text-xs rounded ${
-                                    isDark
-                                      ? "bg-blue-900/30 text-blue-300"
-                                      : "bg-blue-100 text-blue-800"
-                                  }`}
-                                  title={`Day ${day}: ${shift}`}
-                                >
-                                  {`Day ${day}: ${shift}`}
-                                </span>
-                              )
-                            )}
-                          </div>
-                        </td>
+
                         <td className="px-6 py-4">
                           <div className="text-center">
                             {" "}
@@ -826,7 +830,7 @@ function Reports() {
               </div>
 
               {/* Pagination */}
-              {totalPages > 1 && (
+              {/* {totalPages > 1 && (
                 <div
                   className={`${
                     isDark ? "bg-gray-750" : "bg-gray-50"
@@ -936,7 +940,7 @@ function Reports() {
                     </button>
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
           </>
         )}

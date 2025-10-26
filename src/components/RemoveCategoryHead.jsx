@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
-import { X, AlertTriangle, User, Tag } from "lucide-react";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import i18next from "i18next";
-import { removeCategoryHead } from "../state/act/actCategory";
+import React, { useState } from "react"
+import { useTranslation } from "react-i18next"
+import { useDispatch, useSelector } from "react-redux"
+import { X, AlertTriangle, User, Tag } from "lucide-react"
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
+import i18next from "i18next"
+import { removeCategoryHead } from "../state/act/actCategory"
 
 const RemoveCategoryHeadModal = ({
   isOpen,
@@ -15,27 +15,27 @@ const RemoveCategoryHeadModal = ({
   categoryHeadId,
   loading = false,
 }) => {
-  const { t, i18n } = useTranslation();
-  const { mymode } = useSelector((state) => state.mode);
-  const [reason, setReason] = useState("");
-  const [error, setError] = useState("");
+  const { t, i18n } = useTranslation()
+  const { mymode } = useSelector((state) => state.mode)
+  const [reason, setReason] = useState("")
+  const [error, setError] = useState("")
 
-  console.log("categoryInfo", categoryInfo);
+  console.log("categoryInfo", categoryInfo)
 
-  const isDark = mymode === "dark";
-  const isRTL = i18n.language === "ar";
-  const dispatch = useDispatch();
-  const { loadingRemoveCategoryHead } = useSelector((state) => state.category);
+  const isDark = mymode === "dark"
+  const isRTL = i18n.language === "ar"
+  const dispatch = useDispatch()
+  const { loadingRemoveCategoryHead } = useSelector((state) => state.category)
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!reason.trim()) {
       setError(
         t("categoryHead.removeCategoryHead.reasonRequired") ||
           "Reason is required"
-      );
-      return;
+      )
+      return
     }
 
     dispatch(
@@ -67,14 +67,14 @@ const RemoveCategoryHeadModal = ({
             pauseOnHover: true,
             draggable: true,
           }
-        );
-        handleClose();
+        )
+        handleClose()
         // Optionally refresh the category data or navigate
         // Simple refresh, you might want to dispatch getCategoryHeads instead
       })
       .catch((error) => {
-        handleClose();
-        console.log("Error removing category head:", error);
+        handleClose()
+        console.log("Error removing category head:", error)
 
         // Choose the right language message
         const message =
@@ -82,7 +82,7 @@ const RemoveCategoryHeadModal = ({
             ? error?.messageEn ||
               error?.message ||
               "Failed to remove category head"
-            : error?.messageAr || error?.message || "فشل في إزالة رئيس الفئة";
+            : error?.messageAr || error?.message || "فشل في إزالة رئيس التخصص"
 
         Swal.fire({
           title: t("categoryHead.removeCategoryHead.error.title") || "Error",
@@ -95,17 +95,17 @@ const RemoveCategoryHeadModal = ({
           customClass: {
             popup: isDark ? "swal2-dark-popup" : "",
           },
-        });
-      });
-  };
+        })
+      })
+  }
 
   const handleClose = () => {
-    setReason("");
-    setError("");
-    onClose();
-  };
+    setReason("")
+    setError("")
+    onClose()
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <div
@@ -263,8 +263,8 @@ const RemoveCategoryHeadModal = ({
             <textarea
               value={reason}
               onChange={(e) => {
-                setReason(e.target.value);
-                if (error) setError("");
+                setReason(e.target.value)
+                if (error) setError("")
               }}
               placeholder={
                 t("categoryHead.removeCategoryHead.reasonPlaceholder") ||
@@ -322,7 +322,7 @@ const RemoveCategoryHeadModal = ({
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default RemoveCategoryHeadModal;
+export default RemoveCategoryHeadModal

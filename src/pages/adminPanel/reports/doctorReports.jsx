@@ -291,7 +291,7 @@ function DoctorReports() {
                 className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
                 <Download size={20} />
-                <span>{t("reports.export") || "Export"}</span>
+                <span>{t("reports.export.title") || "Export"}</span>
               </button>
             </div>
           </div>
