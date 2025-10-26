@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useTranslation } from "react-i18next";
+import React, { useEffect, useState, useCallback } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useTranslation } from "react-i18next"
 import {
   Search,
   Filter,
@@ -17,10 +17,10 @@ import {
   Users,
   UserCheck,
   Calendar,
-} from "lucide-react";
-import { getSubDepartments } from "../../../state/act/actSubDepartment";
-import { getDepartments } from "../../../state/act/actDepartment";
-import { getCategories } from "../../../state/act/actCategory";
+} from "lucide-react"
+import { getSubDepartments } from "../../../state/act/actSubDepartment"
+import { getDepartments } from "../../../state/act/actDepartment"
+import { getCategories } from "../../../state/act/actCategory"
 import {
   clearError,
   setCurrentPage,
@@ -29,115 +29,104 @@ import {
   setDepartmentFilter,
   setCategoryFilter,
   clearFilters,
-} from "../../../state/slices/subDepartment";
-import { Link } from "react-router-dom";
-import DeleteSubDepartmentModal from "../../../components/DeleteSubDepartmentModal";
+} from "../../../state/slices/subDepartment"
+import { Link } from "react-router-dom"
+import DeleteSubDepartmentModal from "../../../components/DeleteSubDepartmentModal"
+import { formatDate } from "../../../utils/formtDate"
 
 function SubDepartment() {
-  const { t, i18n } = useTranslation();
-  const dispatch = useDispatch();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [toDelete, setToDelete] = useState({ id: null, name: "" });
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+  const [modalOpen, setModalOpen] = useState(false)
+  const [toDelete, setToDelete] = useState({ id: null, name: "" })
   const {
     subDepartments,
     pagination,
     filters,
     loadingGetSubDepartments,
     error,
-  } = useSelector((state) => state.subDepartment);
-  const { departments } = useSelector((state) => state.department);
-  const { categories } = useSelector((state) => state.category);
-  const { mymode } = useSelector((state) => state.mode);
+  } = useSelector((state) => state.subDepartment)
+  const { departments } = useSelector((state) => state.department)
+  const { categories } = useSelector((state) => state.category)
+  const { mymode } = useSelector((state) => state.mode)
 
-  const [searchInput, setSearchInput] = useState(filters.search);
-  const [showFilters, setShowFilters] = useState(false);
-  const [showMobileTable, setShowMobileTable] = useState(false);
+  const [searchInput, setSearchInput] = useState(filters.search)
+  const [showFilters, setShowFilters] = useState(false)
+  const [showMobileTable, setShowMobileTable] = useState(false)
 
   // Debounced search
-  const [searchTimeout, setSearchTimeout] = useState(null);
+  const [searchTimeout, setSearchTimeout] = useState(null)
 
   // Check if we're in dark mode
-  const isDark = mymode === "dark";
+  const isDark = mymode === "dark"
 
   // Check if current language is RTL
-  const language = i18n.language;
-  const isRTL = language === "ar";
+  const language = i18n.language
+  const isRTL = language === "ar"
 
   // Fetch subDepartments when filters change
   useEffect(() => {
-    dispatch(getSubDepartments(filters));
-  }, [dispatch, filters]);
+    dispatch(getSubDepartments(filters))
+  }, [dispatch, filters])
 
   // Fetch departments and categories for filter dropdowns
   useEffect(() => {
-    dispatch(getDepartments({ pageSize: 100, isActive: true }));
-    dispatch(getCategories({ pageSize: 100, isActive: true }));
-  }, [dispatch]);
+    dispatch(getDepartments({ pageSize: 100, isActive: true }))
+    dispatch(getCategories({ pageSize: 100, isActive: true }))
+  }, [dispatch])
 
   const handleSearchChange = useCallback(
     (value) => {
-      setSearchInput(value);
+      setSearchInput(value)
 
       if (searchTimeout) {
-        clearTimeout(searchTimeout);
+        clearTimeout(searchTimeout)
       }
 
       const timeout = setTimeout(() => {
-        dispatch(setFilters({ search: value, page: 1 }));
-      }, 500);
+        dispatch(setFilters({ search: value, page: 1 }))
+      }, 500)
 
-      setSearchTimeout(timeout);
+      setSearchTimeout(timeout)
     },
     [dispatch, searchTimeout]
-  );
+  )
 
   // Handle filter changes
   const handleFilterChange = (key, value) => {
-    dispatch(setFilters({ [key]: value, page: 1 }));
-  };
+    dispatch(setFilters({ [key]: value, page: 1 }))
+  }
 
   // Handle pagination
   const handlePageChange = (newPage) => {
-    dispatch(setCurrentPage(newPage));
-  };
+    dispatch(setCurrentPage(newPage))
+  }
 
   const handlePageSizeChange = (newPageSize) => {
-    dispatch(setPageSize(parseInt(newPageSize)));
-  };
-
-  // Format date
-  const formatDate = (dateString) => {
-    const locale = i18n.language === "ar" ? "ar-EG" : "en-US";
-    return new Date(dateString).toLocaleDateString(locale, {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
+    dispatch(setPageSize(parseInt(newPageSize)))
+  }
 
   // Generate page numbers for pagination
   const getPageNumbers = () => {
-    const pages = [];
-    const totalPages = pagination?.totalPages || 1;
-    const currentPage = pagination?.page || 1;
+    const pages = []
+    const totalPages = pagination?.totalPages || 1
+    const currentPage = pagination?.page || 1
 
     // Show up to 3 page numbers on mobile, 5 on desktop
-    const maxPages = window.innerWidth < 768 ? 3 : 5;
-    let startPage = Math.max(1, currentPage - Math.floor(maxPages / 2));
-    let endPage = Math.min(totalPages, startPage + maxPages - 1);
+    const maxPages = window.innerWidth < 768 ? 3 : 5
+    let startPage = Math.max(1, currentPage - Math.floor(maxPages / 2))
+    let endPage = Math.min(totalPages, startPage + maxPages - 1)
 
     if (endPage - startPage < maxPages - 1) {
-      startPage = Math.max(1, endPage - maxPages + 1);
+      startPage = Math.max(1, endPage - maxPages + 1)
     }
 
     for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
+      pages.push(i)
     }
 
-    return pages;
-  };
+    return pages
+  }
 
   // Mobile card component for each subDepartment
   const SubDepartmentCard = ({ subDepartment }) => (
@@ -267,15 +256,15 @@ function SubDepartment() {
                 language === "en"
                   ? subDepartment.nameEnglish
                   : subDepartment.nameArabic,
-            });
-            setModalOpen(true);
+            })
+            setModalOpen(true)
           }}
         >
           <Trash2 size={16} />
         </button>
       </div>
     </div>
-  );
+  )
 
   return (
     <div
@@ -412,8 +401,8 @@ function SubDepartment() {
                       value={filters.departmentId || ""}
                       onChange={(e) => {
                         const value =
-                          e.target.value === "" ? "" : parseInt(e.target.value);
-                        handleFilterChange("departmentId", value);
+                          e.target.value === "" ? "" : parseInt(e.target.value)
+                        handleFilterChange("departmentId", value)
                       }}
                       className={`w-full p-2 border rounded-lg ${
                         isDark
@@ -448,8 +437,8 @@ function SubDepartment() {
                         const value =
                           e.target.value === ""
                             ? null
-                            : parseInt(e.target.value);
-                        handleFilterChange("categoryId", value);
+                            : parseInt(e.target.value)
+                        handleFilterChange("categoryId", value)
                       }}
                       className={`w-full p-2 border rounded-lg ${
                         isDark
@@ -488,8 +477,8 @@ function SubDepartment() {
                         const value =
                           e.target.value === "all"
                             ? null
-                            : e.target.value === "true";
-                        handleFilterChange("isActive", value);
+                            : e.target.value === "true"
+                        handleFilterChange("isActive", value)
                       }}
                       className={`w-full p-2 border rounded-lg ${
                         isDark
@@ -845,8 +834,8 @@ function SubDepartment() {
                                     language === "en"
                                       ? subDepartment.nameEnglish
                                       : subDepartment.nameArabic,
-                                });
-                                setModalOpen(true);
+                                })
+                                setModalOpen(true)
                               }}
                               className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors"
                               title={t("subDepartment.actions.delete")}
@@ -1008,8 +997,8 @@ function SubDepartment() {
                                     language === "en"
                                       ? subDepartment.nameEnglish
                                       : subDepartment.nameArabic,
-                                });
-                                setModalOpen(true);
+                                })
+                                setModalOpen(true)
                               }}
                             >
                               <Trash2 size={14} />
@@ -1119,7 +1108,7 @@ function SubDepartment() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default SubDepartment;
+export default SubDepartment

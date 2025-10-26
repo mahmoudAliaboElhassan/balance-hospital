@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { getScientificDegreeById } from "../../../state/act/actScientificDegree";
+import React, { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useParams, useNavigate, Link } from "react-router-dom"
+import { getScientificDegreeById } from "../../../state/act/actScientificDegree"
 import {
   clearSingleScientificDegree,
   clearSingleScientificDegreeError,
-} from "../../../state/slices/scientificDegree";
-import LoadingGetData from "../../../components/LoadingGetData";
-import { useTranslation } from "react-i18next";
+} from "../../../state/slices/scientificDegree"
+import LoadingGetData from "../../../components/LoadingGetData"
+import { useTranslation } from "react-i18next"
 import {
   ArrowLeft,
   ArrowRight,
@@ -24,86 +24,75 @@ import {
   Shield,
   Hash,
   Info,
-} from "lucide-react";
-import i18next from "i18next";
+} from "lucide-react"
+import i18next from "i18next"
+import { formatDate } from "../../../utils/formtDate"
 
 function SpecificScientificDegree() {
-  const { id } = useParams();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const { id } = useParams()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const {
     selectedScientificDegree,
     loadingGetSingleScientificDegree,
     singleScientificDegreeError,
-  } = useSelector((state) => state.scientificDegree);
+  } = useSelector((state) => state.scientificDegree)
 
-  const { mymode } = useSelector((state) => state.mode);
-  const { t, i18n } = useTranslation();
+  const { mymode } = useSelector((state) => state.mode)
+  const { t, i18n } = useTranslation()
 
   // Get current language direction
-  const isRTL = i18n.language === "ar";
-  const currentLang = i18n.language || "ar";
-  const isDark = mymode === "dark";
+  const isRTL = i18n.language === "ar"
+  const currentLang = i18n.language || "ar"
+  const isDark = mymode === "dark"
 
   useEffect(() => {
     if (id) {
-      dispatch(clearSingleScientificDegree());
-      dispatch(getScientificDegreeById(id));
+      dispatch(clearSingleScientificDegree())
+      dispatch(getScientificDegreeById(id))
     }
 
     return () => {
-      dispatch(clearSingleScientificDegree());
-      dispatch(clearSingleScientificDegreeError());
-    };
-  }, [dispatch, id]);
+      dispatch(clearSingleScientificDegree())
+      dispatch(clearSingleScientificDegreeError())
+    }
+  }, [dispatch, id])
 
   useEffect(() => {
     if (singleScientificDegreeError) {
       if (singleScientificDegreeError.status === 404) {
-        console.error("Scientific Degree not found");
+        console.error("Scientific Degree not found")
       } else if (singleScientificDegreeError.status === 403) {
-        console.error("Access denied");
+        console.error("Access denied")
       }
     }
-  }, [singleScientificDegreeError, navigate]);
+  }, [singleScientificDegreeError, navigate])
 
   // Get scientific degree name based on current language
   const getScientificDegreeName = () => {
-    if (!selectedScientificDegree) return "";
+    if (!selectedScientificDegree) return ""
     return currentLang === "en"
       ? selectedScientificDegree.nameEnglish
-      : selectedScientificDegree.nameArabic;
-  };
+      : selectedScientificDegree.nameArabic
+  }
 
   // Get scientific degree secondary name (opposite language)
   const getScientificDegreeSecondaryName = () => {
-    if (!selectedScientificDegree) return "";
+    if (!selectedScientificDegree) return ""
     return currentLang === "en"
       ? selectedScientificDegree.nameArabic
-      : selectedScientificDegree.nameEnglish;
-  };
+      : selectedScientificDegree.nameEnglish
+  }
 
   // Get user name based on current language
   const getUserName = (user) => {
-    if (!user) return "";
-    return currentLang === "en" ? user.nameEnglish : user.nameArabic;
-  };
-
-  // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable");
-    return new Intl.DateTimeFormat(i18next.language, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(dateString));
-  };
+    if (!user) return ""
+    return currentLang === "en" ? user.nameEnglish : user.nameArabic
+  }
 
   if (loadingGetSingleScientificDegree) {
-    return <LoadingGetData text={t("gettingData.scientificDegreeData")} />;
+    return <LoadingGetData text={t("gettingData.scientificDegreeData")} />
   }
 
   if (singleScientificDegreeError) {
@@ -144,7 +133,7 @@ function SpecificScientificDegree() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   if (!selectedScientificDegree) {
@@ -181,7 +170,7 @@ function SpecificScientificDegree() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -654,7 +643,7 @@ function SpecificScientificDegree() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default SpecificScientificDegree;
+export default SpecificScientificDegree

@@ -36,6 +36,7 @@ import { getRostersPaged } from "../../../state/act/actRosterManagement"
 import ModalUpdateRosterStatus from "../../../components/ModalUpdateRosterStatus"
 import ModalDeleteRoster from "../../../components/ModalDeleteRoster"
 import i18next from "i18next"
+import { formatDate } from "../../../utils/formtDate"
 
 function Roster() {
   const { t, i18n } = useTranslation()
@@ -130,16 +131,6 @@ function Roster() {
   }
 
   // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable")
-    return new Intl.DateTimeFormat(i18next.language, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(dateString))
-  }
 
   // Format month/year display
   const formatMonthYear = (month, year) => {

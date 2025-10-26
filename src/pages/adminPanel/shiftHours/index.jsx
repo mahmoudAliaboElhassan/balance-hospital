@@ -31,6 +31,7 @@ import { getShiftHoursTypes } from "../../../state/act/actShiftHours"
 import DeleteShiftHoursTypeModal from "../../../components/DeleteShiftHoursTypeModal"
 import "../../../styles/general.css"
 import i18next from "i18next"
+import { formatDate } from "../../../utils/formtDate"
 
 function ShiftHours() {
   const { t, i18n } = useTranslation()
@@ -126,17 +127,6 @@ function ShiftHours() {
   const handleClearFilters = () => {
     dispatch(clearFilters())
     setSearchInput("")
-  }
-  // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable")
-    return new Intl.DateTimeFormat(i18next.language, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(dateString))
   }
 
   // Format hours for display

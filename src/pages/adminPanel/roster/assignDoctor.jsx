@@ -28,6 +28,7 @@ import {
   getWorkingHour,
 } from "../../../state/act/actRosterManagement"
 import LoadingGetData from "../../../components/LoadingGetData"
+import { formatDate } from "../../../utils/formtDate"
 
 // Constants
 const MAX_NOTES_LENGTH = 500
@@ -325,16 +326,7 @@ const ShiftInfo = ({ workingHour, isDark, isRTL, t }) => {
   if (!workingHour) return null
 
   // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable")
-    return new Intl.DateTimeFormat(i18next.language, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(dateString))
-  }
+   
 
   // Format time
   const formatTime = (timeString) => {

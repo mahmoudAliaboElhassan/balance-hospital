@@ -36,6 +36,7 @@ import {
   Send,
 } from "lucide-react"
 import i18next from "i18next"
+import { formatDate } from "../../../utils/formtDate"
 
 function RosterDetails() {
   const { rosterId } = useParams()
@@ -124,30 +125,7 @@ function RosterDetails() {
     return statusMap[status] || statusMap.DRAFT_BASIC
   }
 
-  // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable")
-    return new Intl.DateTimeFormat(i18next.language, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(dateString))
-  }
-
   // Format date with time
-  const formatDateTime = (dateString) => {
-    if (!dateString) return "-"
-    const date = new Date(dateString)
-    return date.toLocaleDateString(currentLang === "ar" ? "ar-SA" : "en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  }
 
   // Get progress color
   const getProgressColor = (percentage) => {
@@ -1119,7 +1097,7 @@ function RosterDetails() {
                       isDark ? "text-white" : "text-gray-900"
                     }`}
                   >
-                    {formatDateTime(selectedRoster.createdAt)}
+                    {formatDate(selectedRoster.createdAt)}
                   </p>
                 </div>
 
@@ -1163,7 +1141,7 @@ function RosterDetails() {
                         isDark ? "text-white" : "text-gray-900"
                       }`}
                     >
-                      {formatDateTime(selectedRoster.updatedAt)}
+                      {formatDate(selectedRoster.updatedAt)}
                     </p>
                   </div>
                 )}
@@ -1214,7 +1192,7 @@ function RosterDetails() {
                           isDark ? "text-white" : "text-gray-900"
                         }`}
                       >
-                        {formatDateTime(selectedRoster.publishedAt)}
+                        {formatDate(selectedRoster.publishedAt)}
                       </span>
                     </div>
                   </div>
@@ -1240,7 +1218,7 @@ function RosterDetails() {
                           isDark ? "text-white" : "text-gray-900"
                         }`}
                       >
-                        {formatDateTime(selectedRoster.closedAt)}
+                        {formatDate(selectedRoster.closedAt)}
                       </span>
                     </div>
                   </div>

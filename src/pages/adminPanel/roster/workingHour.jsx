@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
-import i18next from "i18next";
-import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import React, { useEffect } from "react"
+import i18next from "i18next"
+import { useTranslation } from "react-i18next"
+import { useDispatch, useSelector } from "react-redux"
+import { useParams, useNavigate, Link } from "react-router-dom"
 import {
   ArrowLeft,
   ArrowRight,
@@ -20,76 +20,65 @@ import {
   UserCheck,
   Edit,
   UserPlus,
-} from "lucide-react";
-import { getWorkingHour } from "../../../state/act/actRosterManagement";
-import LoadingGetData from "../../../components/LoadingGetData";
+} from "lucide-react"
+import { getWorkingHour } from "../../../state/act/actRosterManagement"
+import LoadingGetData from "../../../components/LoadingGetData"
+import { formatDate } from "../../../utils/formtDate"
 
 function WorkingHour() {
-  const { workingHourId } = useParams();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { workingHourId } = useParams()
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const { workingHour, loading, errors } = useSelector(
     (state) => state.rosterManagement
-  );
-  const { mymode } = useSelector((state) => state.mode);
-  const isDark = mymode === "dark";
+  )
+  const { mymode } = useSelector((state) => state.mode)
+  const isDark = mymode === "dark"
 
-  const { t } = useTranslation();
-  const currentLang = i18next.language;
-  const isRTL = currentLang === "ar";
+  const { t } = useTranslation()
+  const currentLang = i18next.language
+  const isRTL = currentLang === "ar"
 
   const handleNavigateToSchedule = (doctor) => {
-    navigate(`/admin-panel/rosters/doctors/${doctor.doctorId}`);
-  };
+    navigate(`/admin-panel/rosters/doctors/${doctor.doctorId}`)
+  }
 
   useEffect(() => {
     if (workingHourId) {
-      dispatch(getWorkingHour({ workingHourId }));
+      dispatch(getWorkingHour({ workingHourId }))
     }
-  }, [dispatch, workingHourId]);
-
-  // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable");
-    return new Intl.DateTimeFormat(i18next.language, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(dateString));
-  };
+  }, [dispatch, workingHourId])
 
   // Format time
   const formatTime = (timeString) => {
-    if (!timeString) return "-";
-    const time = new Date(timeString);
+    if (!timeString) return "-"
+    const time = new Date(timeString)
     return time.toLocaleTimeString(currentLang === "ar" ? "ar-SA" : "en-US", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
-    });
-  };
+    })
+  }
 
   // Get fill percentage color
   const getFillColor = (percentage) => {
-    if (percentage >= 80) return isDark ? "text-green-400" : "text-green-600";
-    if (percentage >= 50) return isDark ? "text-yellow-400" : "text-yellow-600";
-    if (percentage >= 25) return isDark ? "text-orange-400" : "text-orange-600";
-    return isDark ? "text-red-400" : "text-red-600";
-  };
+    if (percentage >= 80) return isDark ? "text-green-400" : "text-green-600"
+    if (percentage >= 50) return isDark ? "text-yellow-400" : "text-yellow-600"
+    if (percentage >= 25) return isDark ? "text-orange-400" : "text-orange-600"
+    return isDark ? "text-red-400" : "text-red-600"
+  }
 
   // Get fill background color
   const getFillBgColor = (percentage) => {
-    if (percentage >= 80) return "bg-green-500";
-    if (percentage >= 50) return "bg-yellow-500";
-    if (percentage >= 25) return "bg-orange-500";
-    return "bg-red-500";
-  };
+    if (percentage >= 80) return "bg-green-500"
+    if (percentage >= 50) return "bg-yellow-500"
+    if (percentage >= 25) return "bg-orange-500"
+    return "bg-red-500"
+  }
 
   if (loading?.fetch) {
-    return <LoadingGetData text={t("gettingData.workingHour")} />;
+    return <LoadingGetData text={t("gettingData.workingHour")} />
   }
 
   if (errors.workingHours) {
@@ -124,7 +113,7 @@ function WorkingHour() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   if (!workingHour) {
@@ -138,7 +127,7 @@ function WorkingHour() {
           <p>{t("roster.workingHours.error.notFound")}</p>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -778,7 +767,7 @@ function WorkingHour() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default WorkingHour;
+export default WorkingHour

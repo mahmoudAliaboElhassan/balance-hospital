@@ -34,6 +34,7 @@ import { CollapsibleRosterCard } from "./collapsingRoster"
 import SwapRecordsSection from "./swapRequests"
 import LeaveRecordsSection from "./leavesRequests"
 import { exportDoctorReportToExcel } from "./exportToExcel"
+import { formatDate } from "../../../utils/formtDate"
 
 function DoctorReports() {
   const { docId } = useParams()
@@ -96,27 +97,6 @@ function DoctorReports() {
         })
       )
     }
-  }
-
-  // Helper Functions
-  const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable")
-    return new Intl.DateTimeFormat(currentLang, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }).format(new Date(dateString))
-  }
-
-  const formatDateTime = (dateString) => {
-    if (!dateString) return t("common.notAvailable")
-    return new Intl.DateTimeFormat(currentLang, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(dateString))
   }
 
   const getComplianceStatusColor = (status) => {

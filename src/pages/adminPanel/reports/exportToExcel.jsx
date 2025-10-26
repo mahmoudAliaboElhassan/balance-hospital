@@ -1,4 +1,5 @@
 import ExcelJS from "exceljs"
+import { formatDate } from "../../../utils/formtDate"
 
 export const exportDoctorReportToExcel = async (report, currentLang, t) => {
   const workbook = new ExcelJS.Workbook()
@@ -447,13 +448,6 @@ export const exportDoctorReportToExcel = async (report, currentLang, t) => {
     // Data rows
     currentRow = 4
     report.attendanceRecords.forEach((record) => {
-      const formatDate = (dateStr) => {
-        if (!dateStr) return "-"
-        return new Date(dateStr).toLocaleDateString(
-          isArabic ? "ar-EG" : "en-US"
-        )
-      }
-
       const formatTime = (dateStr) => {
         if (!dateStr) return "-"
         return new Date(dateStr).toLocaleTimeString(
@@ -668,13 +662,6 @@ export const exportDoctorReportToExcel = async (report, currentLang, t) => {
     // Data rows
     currentRow = 4
     report.rolesHistory.forEach((role) => {
-      const formatDate = (dateStr) => {
-        if (!dateStr) return "-"
-        return new Date(dateStr).toLocaleDateString(
-          isArabic ? "ar-EG" : "en-US"
-        )
-      }
-
       rolesSheet.getCell(currentRow, 1).value = isArabic
         ? role.roleNameAr
         : role.role

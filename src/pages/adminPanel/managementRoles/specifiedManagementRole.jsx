@@ -38,6 +38,7 @@ import {
 
 import LoadingGetData from "../../../components/LoadingGetData.jsx"
 import i18next from "i18next"
+import { formatDate } from "../../../utils/formtDate.js"
 
 function SpecifiedManagementRole() {
   const { t, i18n } = useTranslation()
@@ -198,16 +199,6 @@ function SpecifiedManagementRole() {
   }, [error])
 
   // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable")
-    return new Intl.DateTimeFormat(i18next.language, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(dateString))
-  }
 
   // Users search and pagination handlers
   const handleUsersSearch = (e) => {

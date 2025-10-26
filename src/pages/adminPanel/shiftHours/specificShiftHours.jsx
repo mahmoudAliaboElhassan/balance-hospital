@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { getShiftHoursTypeById } from "../../../state/act/actShiftHours";
+import React, { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useParams, useNavigate, Link } from "react-router-dom"
+import { getShiftHoursTypeById } from "../../../state/act/actShiftHours"
 import {
   clearSingleShiftHoursType,
   clearSingleShiftHoursTypeError,
-} from "../../../state/slices/shiftHours";
-import LoadingGetData from "../../../components/LoadingGetData";
-import { useTranslation } from "react-i18next";
+} from "../../../state/slices/shiftHours"
+import LoadingGetData from "../../../components/LoadingGetData"
+import { useTranslation } from "react-i18next"
 import {
   ArrowLeft,
   ArrowRight,
@@ -27,128 +27,119 @@ import {
   Timer,
   MapPin,
   AlertTriangle,
-} from "lucide-react";
-import i18next from "i18next";
+} from "lucide-react"
+import i18next from "i18next"
+import { formatDate } from "../../../utils/formtDate"
 
 function SpecificShiftHoursType() {
-  const { id } = useParams();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const { id } = useParams()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const {
     selectedShiftHoursType,
     loadingGetSingleShiftHoursType,
     singleShiftHoursTypeError,
-  } = useSelector((state) => state.shiftHour);
+  } = useSelector((state) => state.shiftHour)
 
-  const { mymode } = useSelector((state) => state.mode);
-  const { t, i18n } = useTranslation();
+  const { mymode } = useSelector((state) => state.mode)
+  const { t, i18n } = useTranslation()
 
   // Get current language direction
-  const isRTL = i18n.language === "ar";
-  const currentLang = i18n.language || "ar";
-  const isDark = mymode === "dark";
+  const isRTL = i18n.language === "ar"
+  const currentLang = i18n.language || "ar"
+  const isDark = mymode === "dark"
 
   useEffect(() => {
     if (id) {
-      dispatch(clearSingleShiftHoursType());
-      dispatch(getShiftHoursTypeById(id));
+      dispatch(clearSingleShiftHoursType())
+      dispatch(getShiftHoursTypeById(id))
     }
 
     return () => {
-      dispatch(clearSingleShiftHoursType());
-      dispatch(clearSingleShiftHoursTypeError());
-    };
-  }, [dispatch, id]);
+      dispatch(clearSingleShiftHoursType())
+      dispatch(clearSingleShiftHoursTypeError())
+    }
+  }, [dispatch, id])
 
   useEffect(() => {
     if (singleShiftHoursTypeError) {
       if (singleShiftHoursTypeError.status === 404) {
-        console.error("ShiftHoursType not found");
+        console.error("ShiftHoursType not found")
       } else if (singleShiftHoursTypeError.status === 403) {
-        console.error("Access denied");
+        console.error("Access denied")
       }
     }
-  }, [singleShiftHoursTypeError, navigate]);
+  }, [singleShiftHoursTypeError, navigate])
 
   // Get shift hours type name based on current language
   const getShiftHoursTypeName = () => {
-    if (!selectedShiftHoursType) return "";
+    if (!selectedShiftHoursType) return ""
     return currentLang === "en"
       ? selectedShiftHoursType.nameEnglish
-      : selectedShiftHoursType.nameArabic;
-  };
+      : selectedShiftHoursType.nameArabic
+  }
 
   // Get shift hours type secondary name (opposite language)
   const getShiftHoursTypeSecondaryName = () => {
-    if (!selectedShiftHoursType) return "";
+    if (!selectedShiftHoursType) return ""
     return currentLang === "en"
       ? selectedShiftHoursType.nameArabic
-      : selectedShiftHoursType.nameEnglish;
-  };
+      : selectedShiftHoursType.nameEnglish
+  }
 
   // Get user name based on current language
   const getUserName = (user) => {
-    if (!user) return "";
-    return currentLang === "en" ? user.nameEnglish : user.nameArabic;
-  };
+    if (!user) return ""
+    return currentLang === "en" ? user.nameEnglish : user.nameArabic
+  }
 
   // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable");
-    return new Intl.DateTimeFormat(i18next.language, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(dateString));
-  };
 
   // Format time
   const formatTime = (timeString) => {
-    if (!timeString) return "-";
-    const [hours, minutes] = timeString.split(":");
-    const hour24 = parseInt(hours);
-    const hour12 = hour24 === 0 ? 12 : hour24 > 12 ? hour24 - 12 : hour24;
-    const ampm = hour24 >= 12 ? "PM" : "AM";
-    return `${hour12}:${minutes} ${ampm}`;
-  };
+    if (!timeString) return "-"
+    const [hours, minutes] = timeString.split(":")
+    const hour24 = parseInt(hours)
+    const hour12 = hour24 === 0 ? 12 : hour24 > 12 ? hour24 - 12 : hour24
+    const ampm = hour24 >= 12 ? "PM" : "AM"
+    return `${hour12}:${minutes} ${ampm}`
+  }
 
   // Get period icon
   const getPeriodIcon = (period) => {
     switch (period?.toLowerCase()) {
       case "morning":
-        return Sunrise;
+        return Sunrise
       case "afternoon":
-        return Sun;
+        return Sun
       case "evening":
-        return Sunset;
+        return Sunset
       case "night":
-        return Moon;
+        return Moon
       default:
-        return Clock;
+        return Clock
     }
-  };
+  }
 
   // Get period color
   const getPeriodColor = (period) => {
     switch (period?.toLowerCase()) {
       case "morning":
-        return "text-yellow-500";
+        return "text-yellow-500"
       case "afternoon":
-        return "text-orange-500";
+        return "text-orange-500"
       case "evening":
-        return "text-purple-500";
+        return "text-purple-500"
       case "night":
-        return "text-blue-500";
+        return "text-blue-500"
       default:
-        return "text-gray-500";
+        return "text-gray-500"
     }
-  };
+  }
 
   if (loadingGetSingleShiftHoursType)
-    return <LoadingGetData text={t("gettingData.shiftHourData")} />;
+    return <LoadingGetData text={t("gettingData.shiftHourData")} />
 
   if (singleShiftHoursTypeError) {
     return (
@@ -182,7 +173,7 @@ function SpecificShiftHoursType() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   if (!selectedShiftHoursType) {
@@ -220,10 +211,10 @@ function SpecificShiftHoursType() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
-  const PeriodIcon = getPeriodIcon(selectedShiftHoursType.period);
+  const PeriodIcon = getPeriodIcon(selectedShiftHoursType.period)
 
   return (
     <div
@@ -916,7 +907,7 @@ function SpecificShiftHoursType() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default SpecificShiftHoursType;
+export default SpecificShiftHoursType

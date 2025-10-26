@@ -32,6 +32,7 @@ import { getDepartments } from "../../../state/act/actDepartment"
 import CollapsibleDateCard from "./collapsWorkingHour"
 import i18next from "i18next"
 import * as ExcelJS from "exceljs"
+import { formatDate } from "../../../utils/formtDate"
 
 function WorkingHours() {
   const { rosterId } = useParams()
@@ -95,16 +96,6 @@ function WorkingHours() {
   }
 
   // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable")
-    return new Intl.DateTimeFormat(i18next.language, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(dateString))
-  }
 
   // Format time
   const formatTime = (timeString) => {

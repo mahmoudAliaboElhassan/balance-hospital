@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { getContractingTypeById } from "../../../state/act/actContractingType";
+import React, { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useParams, useNavigate, Link } from "react-router-dom"
+import { getContractingTypeById } from "../../../state/act/actContractingType"
 import {
   clearSingleContractingType,
   clearSingleContractingTypeError,
-} from "../../../state/slices/contractingType";
-import LoadingGetData from "../../../components/LoadingGetData";
-import { useTranslation } from "react-i18next";
+} from "../../../state/slices/contractingType"
+import LoadingGetData from "../../../components/LoadingGetData"
+import { useTranslation } from "react-i18next"
 import {
   ArrowLeft,
   ArrowRight,
@@ -24,86 +24,77 @@ import {
   Shield,
   Hash,
   Info,
-} from "lucide-react";
-import i18next from "i18next";
+} from "lucide-react"
+import i18next from "i18next"
+import { formatDate } from "../../../utils/formtDate"
 
 function SpecificContractingType() {
-  const { id } = useParams();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const { id } = useParams()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const {
     selectedContractingType,
     loadingGetSingleContractingType,
     singleContractingTypeError,
-  } = useSelector((state) => state.contractingType);
+  } = useSelector((state) => state.contractingType)
 
-  const { mymode } = useSelector((state) => state.mode);
-  const { t, i18n } = useTranslation();
+  const { mymode } = useSelector((state) => state.mode)
+  const { t, i18n } = useTranslation()
 
   // Get current language direction
-  const isRTL = i18n.language === "ar";
-  const currentLang = i18n.language || "ar";
-  const isDark = mymode === "dark";
+  const isRTL = i18n.language === "ar"
+  const currentLang = i18n.language || "ar"
+  const isDark = mymode === "dark"
 
   useEffect(() => {
     if (id) {
-      dispatch(clearSingleContractingType());
-      dispatch(getContractingTypeById(id));
+      dispatch(clearSingleContractingType())
+      dispatch(getContractingTypeById(id))
     }
 
     return () => {
-      dispatch(clearSingleContractingType());
-      dispatch(clearSingleContractingTypeError());
-    };
-  }, [dispatch, id]);
+      dispatch(clearSingleContractingType())
+      dispatch(clearSingleContractingTypeError())
+    }
+  }, [dispatch, id])
 
   useEffect(() => {
     if (singleContractingTypeError) {
       if (singleContractingTypeError.status === 404) {
-        console.error("ContractingType not found");
+        console.error("ContractingType not found")
       } else if (singleContractingTypeError.status === 403) {
-        console.error("Access denied");
+        console.error("Access denied")
       }
     }
-  }, [singleContractingTypeError, navigate]);
+  }, [singleContractingTypeError, navigate])
 
   // Get contracting type name based on current language
   const getContractingTypeName = () => {
-    if (!selectedContractingType) return "";
+    if (!selectedContractingType) return ""
     return currentLang === "en"
       ? selectedContractingType.nameEnglish
-      : selectedContractingType.nameArabic;
-  };
+      : selectedContractingType.nameArabic
+  }
 
   // Get contracting type secondary name (opposite language)
   const getContractingTypeSecondaryName = () => {
-    if (!selectedContractingType) return "";
+    if (!selectedContractingType) return ""
     return currentLang === "en"
       ? selectedContractingType.nameArabic
-      : selectedContractingType.nameEnglish;
-  };
+      : selectedContractingType.nameEnglish
+  }
 
   // Get user name based on current language
   const getUserName = (user) => {
-    if (!user) return "";
-    return currentLang === "en" ? user.nameEnglish : user.nameArabic;
-  };
+    if (!user) return ""
+    return currentLang === "en" ? user.nameEnglish : user.nameArabic
+  }
 
   // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable");
-    return new Intl.DateTimeFormat(i18next.language, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(dateString));
-  };
 
   if (loadingGetSingleContractingType)
-    return <LoadingGetData text={t("gettingData.contractingTypeData")} />;
+    return <LoadingGetData text={t("gettingData.contractingTypeData")} />
 
   if (singleContractingTypeError) {
     return (
@@ -137,7 +128,7 @@ function SpecificContractingType() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   if (!selectedContractingType) {
@@ -175,7 +166,7 @@ function SpecificContractingType() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -705,7 +696,7 @@ function SpecificContractingType() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default SpecificContractingType;
+export default SpecificContractingType

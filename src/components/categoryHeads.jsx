@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useState, useEffect } from "react"
+import { useSelector, useDispatch } from "react-redux"
 import {
   UserCog,
   UserPlus,
@@ -12,12 +12,13 @@ import {
   Clock,
   ChevronLeft,
   ChevronRight,
-} from "lucide-react";
-import LoadingGetData from "./LoadingGetData";
-import { useTranslation } from "react-i18next";
-import i18next from "i18next";
-import { useNavigate, useParams } from "react-router-dom";
-import RemoveCategoryHeadModal from "./RemoveCategoryHead";
+} from "lucide-react"
+import LoadingGetData from "./LoadingGetData"
+import { useTranslation } from "react-i18next"
+import i18next from "i18next"
+import { useNavigate, useParams } from "react-router-dom"
+import RemoveCategoryHeadModal from "./RemoveCategoryHead"
+import { formatDate } from "../utils/formtDate"
 
 const CategoryHeadsManagement = ({
   selectedCategory,
@@ -25,58 +26,48 @@ const CategoryHeadsManagement = ({
   isRTL = false,
 }) => {
   const { categoryHeads, categoryHeadsPagination, loadingGetCategoryHeads } =
-    useSelector((state) => state.category);
-  const { catId: id } = useParams();
-  const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
-  const [selectedCategoryHead, setSelectedCategoryHead] = useState(null);
-  const { t } = useTranslation();
-  const language = i18next.language;
+    useSelector((state) => state.category)
+  const { catId: id } = useParams()
+  const navigate = useNavigate()
+  const [currentPage, setCurrentPage] = useState(1)
+  const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false)
+  const [selectedCategoryHead, setSelectedCategoryHead] = useState(null)
+  const { t } = useTranslation()
+  const language = i18next.language
 
-  const { loginRoleResponseDto } = useSelector((state) => state.auth);
+  const { loginRoleResponseDto } = useSelector((state) => state.auth)
 
   // Filter category heads for the selected category
   const filteredCategoryHeads = categoryHeads.filter(
     (head) => head.categoryId === selectedCategory?.id
-  );
+  )
 
-  const { loadingRemoveCategoryHead } = useSelector((state) => state.category);
-  const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable");
-    return new Intl.DateTimeFormat(i18next.language, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(dateString));
-  };
+  const { loadingRemoveCategoryHead } = useSelector((state) => state.category)
 
   const formatDaysInRole = (days) => {
-    if (days === 0) return t("categoryHead.justAssigned") || "Just assigned";
-    if (days === 1) return t("categoryHead.oneDay") || "1 day";
-    return `${days} ${t("categoryHead.days") || "days"}`;
-  };
+    if (days === 0) return t("categoryHead.justAssigned") || "Just assigned"
+    if (days === 1) return t("categoryHead.oneDay") || "1 day"
+    return `${days} ${t("categoryHead.days") || "days"}`
+  }
 
   const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
+    setCurrentPage(newPage)
     // Dispatch action to fetch category heads for the new page
     // dispatch(getCategoryHeads({ page: newPage, pageSize: 10 }));
-  };
+  }
 
   const handleRemoveClick = (categoryHead) => {
-    setSelectedCategoryHead(categoryHead);
-    setIsRemoveModalOpen(true);
-  };
+    setSelectedCategoryHead(categoryHead)
+    setIsRemoveModalOpen(true)
+  }
 
   const handleCloseModal = () => {
-    setIsRemoveModalOpen(false);
-    setSelectedCategoryHead(null);
-  };
+    setIsRemoveModalOpen(false)
+    setSelectedCategoryHead(null)
+  }
 
   if (loadingGetCategoryHeads) {
-    return <LoadingGetData text={t("gettingData.categoryHeads")} />;
+    return <LoadingGetData text={t("gettingData.categoryHeads")} />
   }
 
   if (selectedCategoryHead && isRemoveModalOpen) {
@@ -92,7 +83,7 @@ const CategoryHeadsManagement = ({
         }
         categoryHeadId={selectedCategoryHead.userId}
       />
-    );
+    )
   }
   return (
     <div
@@ -402,7 +393,7 @@ const CategoryHeadsManagement = ({
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default CategoryHeadsManagement;
+export default CategoryHeadsManagement

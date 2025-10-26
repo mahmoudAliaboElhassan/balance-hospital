@@ -64,6 +64,7 @@ import { toast } from "react-toastify"
 import Swal from "sweetalert2"
 import CategoryHeadsManagement from "../../../components/categoryHeads"
 import Leaves from "../../../components/Leaves"
+import { formatDate } from "../../../utils/formtDate"
 
 const SpecificCategory = () => {
   const { catId: id } = useParams()
@@ -407,16 +408,6 @@ const SpecificCategory = () => {
   }
 
   // Format date based on language
-  const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable")
-    return new Intl.DateTimeFormat(i18next.language, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(dateString))
-  }
 
   const [depClickId, setDepClickId] = useState(null)
   const handleLinkDepartment = async (departmentId) => {

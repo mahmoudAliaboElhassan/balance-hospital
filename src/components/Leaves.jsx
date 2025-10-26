@@ -31,6 +31,7 @@ import {
 import Swal from "sweetalert2"
 import { toast } from "react-toastify"
 import i18next from "i18next"
+import { formatDate } from "../utils/formtDate"
 
 const Leaves = () => {
   const dispatch = useDispatch()
@@ -232,26 +233,8 @@ const Leaves = () => {
   }
 
   // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable")
-    return new Intl.DateTimeFormat(currentLang, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }).format(new Date(dateString))
-  }
 
   // Format datetime
-  const formatDateTime = (dateString) => {
-    if (!dateString) return t("common.notAvailable")
-    return new Intl.DateTimeFormat(currentLang, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(dateString))
-  }
 
   // Calculate leave duration
   const calculateDuration = (from, to) => {
@@ -722,7 +705,7 @@ const Leaves = () => {
                             isDark ? "text-gray-500" : "text-gray-400"
                           }`}
                         />
-                        <span>{formatDateTime(request.requestedAt)}</span>
+                        <span>{formatDate(request.requestedAt)}</span>
                       </div>
 
                       {/* Approved/Rejected info */}
@@ -738,7 +721,7 @@ const Leaves = () => {
                             }`}
                           >
                             {t("leaves.processedOn", {
-                              date: formatDateTime(request.approvedAt),
+                              date: formatDate(request.approvedAt),
                             })}
                           </div>
                           {request.approvedByNameAr && (

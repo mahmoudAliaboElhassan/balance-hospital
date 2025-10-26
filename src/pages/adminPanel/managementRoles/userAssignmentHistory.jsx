@@ -1,10 +1,10 @@
 // pages/ManagementRoles/UserAssignmentHistory.jsx
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useTranslation } from "react-i18next";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { toast } from "react-toastify";
-import "../../../styles/general.css";
+import React, { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useTranslation } from "react-i18next"
+import { useParams, useNavigate, Link } from "react-router-dom"
+import { toast } from "react-toastify"
+import "../../../styles/general.css"
 
 import {
   ArrowLeft,
@@ -15,7 +15,7 @@ import {
   Clock,
   Shield,
   FileText,
-} from "lucide-react";
+} from "lucide-react"
 
 // Import the action
 
@@ -24,42 +24,43 @@ import {
   selectLoading,
   selectError,
   selectSuccess,
-} from "../../../state/slices/managementRole.js";
+} from "../../../state/slices/managementRole.js"
 
-import LoadingGetData from "../../../components/LoadingGetData.jsx";
-import { getUserAssignmentHistory } from "../../../state/act/actManagementRole.js";
-import i18next from "i18next";
+import LoadingGetData from "../../../components/LoadingGetData.jsx"
+import { getUserAssignmentHistory } from "../../../state/act/actManagementRole.js"
+import i18next from "i18next"
+import { formatDate } from "../../../utils/formtDate.js"
 
 function UserAssignmentHistory() {
-  const { t, i18n } = useTranslation();
-  const dispatch = useDispatch();
-  const { id } = useParams(); // userId
-  const navigate = useNavigate();
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+  const { id } = useParams() // userId
+  const navigate = useNavigate()
 
   // Selectors
-  const loading = useSelector(selectLoading);
-  const error = useSelector(selectError);
-  const success = useSelector(selectSuccess);
+  const loading = useSelector(selectLoading)
+  const error = useSelector(selectError)
+  const success = useSelector(selectSuccess)
   const { userAssignmentHistory, userAssignmentHistoryPagination } =
-    useSelector((state) => state.managementRoles);
+    useSelector((state) => state.managementRoles)
 
-  const { mymode } = useSelector((state) => state.mode);
+  const { mymode } = useSelector((state) => state.mode)
 
   // Local state for pagination
   const [historyFilters, setHistoryFilters] = useState({
     page: 1,
     pageSize: 10,
-  });
+  })
 
   // Theme and language
-  const isDark = mymode === "dark";
-  const language = i18n.language;
-  const isRTL = language === "ar";
+  const isDark = mymode === "dark"
+  const language = i18n.language
+  const isRTL = language === "ar"
 
   // name for doctor
 
-  const name = JSON.parse(localStorage.getItem("doctorName"));
-  const docorName = language == "en" ? name.doctorNameEn : name.doctorNameAr;
+  const name = JSON.parse(localStorage.getItem("doctorName"))
+  const docorName = language == "en" ? name.doctorNameEn : name.doctorNameAr
 
   // Load user assignment history on component mount and when filters change
   useEffect(() => {
@@ -72,63 +73,51 @@ function UserAssignmentHistory() {
             pageSize: historyFilters.pageSize,
           },
         })
-      );
+      )
     }
-  }, [id, historyFilters, dispatch]);
+  }, [id, historyFilters, dispatch])
 
   // Handle success/error messages
   useEffect(() => {
     if (success) {
-      toast.success(success);
+      toast.success(success)
     }
-  }, [success]);
+  }, [success])
 
   useEffect(() => {
     if (error) {
-      toast.error(error);
+      toast.error(error)
     }
-  }, [error]);
-
-  // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable");
-    return new Intl.DateTimeFormat(i18next.language, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(dateString));
-  };
+  }, [error])
 
   // Pagination handlers
   const handlePageChange = (newPage) => {
-    setHistoryFilters((prev) => ({ ...prev, page: newPage }));
-  };
+    setHistoryFilters((prev) => ({ ...prev, page: newPage }))
+  }
 
   // Get change type styling
   const getChangeTypeStyle = (changeType) => {
     switch (changeType?.toLowerCase()) {
       case "إلغاء":
-        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
       case "تعيين":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300";
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
       default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300";
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300"
     }
-  };
+  }
 
   // Get border color for history entries
   const getBorderColor = (changeType) => {
     switch (changeType?.toLowerCase()) {
       case "إلغاء":
-        return "border-red-500";
+        return "border-red-500"
       case "تعيين":
-        return "border-blue-500";
+        return "border-blue-500"
       default:
-        return "border-gray-500";
+        return "border-gray-500"
     }
-  };
+  }
 
   // Loading state
   if (loading.userHistory) {
@@ -136,7 +125,7 @@ function UserAssignmentHistory() {
       <LoadingGetData
         text={t("gettingData.userHistory") || "Loading user history..."}
       />
-    );
+    )
   }
 
   return (
@@ -460,12 +449,12 @@ function UserAssignmentHistory() {
                               },
                               (_, i) => {
                                 const pageNum =
-                                  Math.max(1, historyFilters.page - 2) + i;
+                                  Math.max(1, historyFilters.page - 2) + i
                                 if (
                                   pageNum >
                                   userAssignmentHistoryPagination.totalPages
                                 )
-                                  return null;
+                                  return null
 
                                 return (
                                   <button
@@ -479,7 +468,7 @@ function UserAssignmentHistory() {
                                   >
                                     {pageNum}
                                   </button>
-                                );
+                                )
                               }
                             )}
 
@@ -534,7 +523,7 @@ function UserAssignmentHistory() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default UserAssignmentHistory;
+export default UserAssignmentHistory

@@ -1,119 +1,107 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom";
-import { getSubDepartmentById } from "../../../state/act/actSubDepartment";
+import React, { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useParams, useNavigate } from "react-router-dom"
+import { getSubDepartmentById } from "../../../state/act/actSubDepartment"
 import {
   clearSingleSubDepartment,
   clearSingleSubDepartmentError,
-} from "../../../state/slices/subDepartment";
-import { useTranslation } from "react-i18next";
-import LoadingGetData from "../../../components/LoadingGetData";
+} from "../../../state/slices/subDepartment"
+import { useTranslation } from "react-i18next"
+import LoadingGetData from "../../../components/LoadingGetData"
+import { formatDate } from "../../../utils/formtDate"
 
 function SpecificSubDepartment() {
-  const { id } = useParams();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const { id } = useParams()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const {
     selectedSubDepartment,
     loadingGetSingleSubDepartment,
     singleSubDepartmentError,
-  } = useSelector((state) => state.subDepartment);
+  } = useSelector((state) => state.subDepartment)
 
   // Get departments for displaying department name
-  const { departments } = useSelector((state) => state.department);
+  const { departments } = useSelector((state) => state.department)
 
   // Get mode and translation function
-  const { mymode } = useSelector((state) => state.mode);
-  const { t, i18n } = useTranslation();
+  const { mymode } = useSelector((state) => state.mode)
+  const { t, i18n } = useTranslation()
 
   // Get current language direction
-  const isRTL = i18n.language === "ar";
-  const currentLang = i18n.language || "ar";
-  const isDark = mymode === "dark";
+  const isRTL = i18n.language === "ar"
+  const currentLang = i18n.language || "ar"
+  const isDark = mymode === "dark"
 
   useEffect(() => {
     if (id) {
       // Clear previous data before fetching
-      dispatch(clearSingleSubDepartment());
-      dispatch(getSubDepartmentById(id));
+      dispatch(clearSingleSubDepartment())
+      dispatch(getSubDepartmentById(id))
     }
 
     // Cleanup on unmount
     return () => {
-      dispatch(clearSingleSubDepartment());
-      dispatch(clearSingleSubDepartmentError());
-    };
-  }, [dispatch, id]);
+      dispatch(clearSingleSubDepartment())
+      dispatch(clearSingleSubDepartmentError())
+    }
+  }, [dispatch, id])
 
   // Handle error cases
   useEffect(() => {
     if (singleSubDepartmentError) {
       if (singleSubDepartmentError.status === 404) {
-        console.error("SubDepartment not found");
+        console.error("SubDepartment not found")
       } else if (singleSubDepartmentError.status === 403) {
-        console.error("Access denied");
+        console.error("Access denied")
       }
     }
-  }, [singleSubDepartmentError, navigate]);
+  }, [singleSubDepartmentError, navigate])
 
   // Get subDepartment name based on current language
   const getSubDepartmentName = () => {
-    if (!selectedSubDepartment) return "";
+    if (!selectedSubDepartment) return ""
     return currentLang === "en"
       ? selectedSubDepartment.nameEnglish
-      : selectedSubDepartment.nameArabic;
-  };
+      : selectedSubDepartment.nameArabic
+  }
 
   // Get subDepartment secondary name (opposite language)
   const getSubDepartmentSecondaryName = () => {
-    if (!selectedSubDepartment) return "";
+    if (!selectedSubDepartment) return ""
     return currentLang === "en"
       ? selectedSubDepartment.nameArabic
-      : selectedSubDepartment.nameEnglish;
-  };
+      : selectedSubDepartment.nameEnglish
+  }
 
   // Get department name based on current language
   const getDepartmentName = () => {
-    if (!selectedSubDepartment?.department && !departments) return "";
+    if (!selectedSubDepartment?.department && !departments) return ""
 
     if (selectedSubDepartment?.department) {
       return currentLang === "en"
         ? selectedSubDepartment.department.nameEnglish
-        : selectedSubDepartment.department.nameArabic;
+        : selectedSubDepartment.department.nameArabic
     }
 
     // Fallback to find department from departments list
     const department = departments?.find(
       (dept) => dept.id === selectedSubDepartment?.departmentId
-    );
+    )
     if (department) {
       return currentLang === "en"
         ? department.nameEnglish
-        : department.nameArabic;
+        : department.nameArabic
     }
 
-    return t("subDepartment.details.noDepartmentInfo");
-  };
+    return t("subDepartment.details.noDepartmentInfo")
+  }
 
   // Format date based on language
-  const formatDate = (dateString) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    const locale = currentLang === "en" ? "en-US" : "ar-EG";
-    const options = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    };
-    return date.toLocaleDateString(locale, options);
-  };
 
   // Loading Component
   if (loadingGetSingleSubDepartment) {
-    return <LoadingGetData text={t("gettingData.subDepartmentData")} />;
+    return <LoadingGetData text={t("gettingData.subDepartmentData")} />
   }
 
   // Error Component
@@ -173,7 +161,7 @@ function SpecificSubDepartment() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   // Not Found Component
@@ -234,7 +222,7 @@ function SpecificSubDepartment() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   // Main Component
@@ -769,7 +757,7 @@ function SpecificSubDepartment() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default SpecificSubDepartment;
+export default SpecificSubDepartment

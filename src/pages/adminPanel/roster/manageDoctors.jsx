@@ -37,6 +37,7 @@ import {
 } from "lucide-react"
 import ApproveRequestModal from "../../../components/ApprovalRequest"
 import RejectRequestModal from "../../../components/RejectRequest"
+import { formatDate } from "../../../utils/formtDate"
 
 function ManageDoctors() {
   const { id } = useParams()
@@ -137,15 +138,6 @@ function ManageDoctors() {
       ...prev,
       [date]: !prev[date],
     }))
-  }
-
-  const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable")
-    return new Intl.DateTimeFormat(i18n.language, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }).format(new Date(dateString))
   }
 
   const formatTime = (timeString) => {

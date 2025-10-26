@@ -44,6 +44,7 @@ import { StatCard } from "../../../components/stateCard"
 import { getDashboardData } from "../../../state/act/actReports"
 import { clearDashboardError } from "../../../state/slices/reports"
 import { useNavigate } from "react-router-dom"
+import { formatDate } from "../../../utils/formtDate"
 
 const COLORS = [
   "#3B82F6",
@@ -652,17 +653,6 @@ const Dashboard = () => {
       ...prev,
       [section]: !prev[section],
     }))
-  }
-
-  const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable")
-    return new Intl.DateTimeFormat(i18next.language, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(dateString))
   }
 
   if (loadingGetDashboardData && !dashboardData) {

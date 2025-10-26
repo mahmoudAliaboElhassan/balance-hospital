@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import i18next from "i18next";
-import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react"
+import i18next from "i18next"
+import { useTranslation } from "react-i18next"
+import { useDispatch, useSelector } from "react-redux"
+import { useParams, useNavigate } from "react-router-dom"
 import {
   ArrowLeft,
   ArrowRight,
@@ -23,30 +23,31 @@ import {
   MapPin,
   Hash,
   UserX,
-} from "lucide-react";
-import { getDoctorSchedule } from "../../../state/act/actRosterManagement";
-import LoadingGetData from "../../../components/LoadingGetData";
-import UnAssignDoctorModal from "../../../components/UnAsssignDoctorModal";
+} from "lucide-react"
+import { getDoctorSchedule } from "../../../state/act/actRosterManagement"
+import LoadingGetData from "../../../components/LoadingGetData"
+import UnAssignDoctorModal from "../../../components/UnAsssignDoctorModal"
+import { formatDate } from "../../../utils/formtDate"
 
 function DoctorSchedule() {
-  const { doctorId } = useParams();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { doctorId } = useParams()
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
-  const currentLange = i18next.language;
+  const currentLange = i18next.language
 
-  const [modalOpen, setModalOpen] = useState(false);
-  const [doctorData, setDoctorData] = useState({});
+  const [modalOpen, setModalOpen] = useState(false)
+  const [doctorData, setDoctorData] = useState({})
 
   const { doctorSchedule, loading, errors } = useSelector(
     (state) => state.rosterManagement
-  );
-  const { mymode } = useSelector((state) => state.mode);
-  const isDark = mymode === "dark";
+  )
+  const { mymode } = useSelector((state) => state.mode)
+  const isDark = mymode === "dark"
 
-  const { t } = useTranslation();
-  const currentLang = i18next.language;
-  const isRTL = currentLang === "ar";
+  const { t } = useTranslation()
+  const currentLang = i18next.language
+  const isRTL = currentLang === "ar"
 
   useEffect(() => {
     if (doctorId) {
@@ -55,49 +56,39 @@ function DoctorSchedule() {
           doctorId,
           rosterId: localStorage.getItem("rosterId"),
         })
-      );
+      )
     }
-  }, [dispatch, doctorId]);
+  }, [dispatch, doctorId])
 
   // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable");
-    return new Intl.DateTimeFormat(i18next.language, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(dateString));
-  };
 
   // Format time
   const formatTime = (timeString) => {
-    if (!timeString) return "-";
-    const time = new Date(timeString);
+    if (!timeString) return "-"
+    const time = new Date(timeString)
     return time.toLocaleTimeString(currentLang === "ar" ? "ar-SA" : "en-US", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
-    });
-  };
+    })
+  }
 
   // Get status background color
   const getStatusBgColor = (status) => {
     switch (status) {
       case "CONFIRMED":
-        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
       case "PENDING":
-        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300";
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300"
       case "CANCELLED":
-        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
       default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300";
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300"
     }
-  };
+  }
 
   if (loading?.doctorSchedule) {
-    return <LoadingGetData text={t("gettingData.doctorSchedule")} />;
+    return <LoadingGetData text={t("gettingData.doctorSchedule")} />
   }
 
   if (errors.doctorSchedule) {
@@ -132,7 +123,7 @@ function DoctorSchedule() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   if (!doctorSchedule) {
@@ -146,7 +137,7 @@ function DoctorSchedule() {
           <p>{t("roster.doctorSchedule.error.notFound")}</p>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -438,8 +429,8 @@ function DoctorSchedule() {
                                       ? doctorSchedule.doctorNameEn
                                       : doctorSchedule.doctorNameAr,
                                   doctorScheule: assignment.scheduleId,
-                                });
-                                setModalOpen(true);
+                                })
+                                setModalOpen(true)
                               }}
                               className={`p-1.5 rounded-md transition-colors ${
                                 isDark
@@ -738,7 +729,7 @@ function DoctorSchedule() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default DoctorSchedule;
+export default DoctorSchedule

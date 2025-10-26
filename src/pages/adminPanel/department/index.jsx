@@ -32,6 +32,7 @@ import {
 import { Link } from "react-router-dom"
 import DeleteDepartmentModal from "../../../components/DeleteDepartmentModal"
 import i18next from "i18next"
+import { formatDate } from "../../../utils/formtDate"
 
 function Department() {
   const { t, i18n } = useTranslation()
@@ -102,18 +103,6 @@ function Department() {
     dispatch(clearFilters())
     setSearchInput("")
     handleFilterChange("isActive", true)
-  }
-
-  // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable")
-    return new Intl.DateTimeFormat(i18next.language, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(dateString))
   }
 
   // Generate page numbers for pagination

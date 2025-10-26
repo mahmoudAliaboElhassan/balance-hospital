@@ -24,6 +24,7 @@ import {
   Edit,
 } from "lucide-react"
 import LoadingGetData from "../../../components/LoadingGetData"
+import { formatDate } from "../../../utils/formtDate"
 
 function DoctorData() {
   const { id } = useParams()
@@ -52,16 +53,7 @@ function DoctorData() {
   }, [dispatch, id])
 
   // Helper function to format date
-  const formatDate = (dateString) => {
-    if (!dateString) return t("common.notAvailable")
-    return new Intl.DateTimeFormat(currentLang, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(dateString))
-  }
+   
 
   // Helper function to get status badge
   const getStatusBadge = (isActive, label) => {
