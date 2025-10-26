@@ -1,30 +1,30 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
-import UseInitialValues from "../../../hooks/use-initial-values";
-import UseFormValidation from "../../../hooks/use-form-validation";
+import React, { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { Formik, Form, Field, ErrorMessage } from "formik"
+import * as Yup from "yup"
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
+import { useTranslation } from "react-i18next"
+import { useNavigate, useParams } from "react-router-dom"
+import UseInitialValues from "../../../hooks/use-initial-values"
+import UseFormValidation from "../../../hooks/use-form-validation"
 import {
   getShiftHoursTypeById,
   updateShiftHoursType,
-} from "../../../state/act/actShiftHours";
+} from "../../../state/act/actShiftHours"
 import {
   clearSingleShiftHoursType,
   clearSingleShiftHoursTypeError,
   resetUpdateForm,
-} from "../../../state/slices/shiftHours";
-import LoadingGetData from "../../../components/LoadingGetData";
+} from "../../../state/slices/shiftHours"
+import LoadingGetData from "../../../components/LoadingGetData"
 function EditShiftHourType() {
-  const { t, i18n } = useTranslation();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { id } = useParams();
-  const currentLang = i18n.language;
-  const isRTL = currentLang === "ar";
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { id } = useParams()
+  const currentLang = i18n.language
+  const isRTL = currentLang === "ar"
 
   const {
     selectedShiftHoursType,
@@ -34,33 +34,34 @@ function EditShiftHourType() {
     updateError,
     updateSuccess,
     updateMessage,
-  } = useSelector((state) => state.shiftHour);
+  } = useSelector((state) => state.shiftHour)
 
   // Validation schema with translations
-  const { VALIDATION_SCHEMA_ADD_SHIFT_HOUR_TYPE } = UseFormValidation();
+  const { VALIDATION_SCHEMA_ADD_SHIFT_HOUR_TYPE } = UseFormValidation()
 
   // Default initial values
 
   // Period options
   const periodOptions = [
-    { value: "Morning", labelKey: "shiftHourTypeForm.periods.morning" },
-    { value: "Evening", labelKey: "shiftHourTypeForm.periods.evening" },
-    { value: "Night", labelKey: "shiftHourTypeForm.periods.night" },
-  ];
+    { value: 1, labelKey: "shiftHourTypeForm.periods.morning" },
+    { value: 2, labelKey: "shiftHourTypeForm.periods.evening" },
+    { value: 3, labelKey: "shiftHourTypeForm.periods.night" },
+    { value: 4, labelKey: "shiftHourTypeForm.periods.allDay" },
+  ]
 
   // Load shift hour type data on component mount
   useEffect(() => {
     if (id) {
-      dispatch(getShiftHoursTypeById(id));
+      dispatch(getShiftHoursTypeById(id))
     }
 
     // Cleanup on unmount
     return () => {
-      dispatch(clearSingleShiftHoursType());
-      dispatch(clearSingleShiftHoursTypeError());
-      dispatch(resetUpdateForm());
-    };
-  }, [dispatch, id]);
+      dispatch(clearSingleShiftHoursType())
+      dispatch(clearSingleShiftHoursTypeError())
+      dispatch(resetUpdateForm())
+    }
+  }, [dispatch, id])
 
   // Handle update success
   useEffect(() => {
@@ -72,10 +73,10 @@ function EditShiftHourType() {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-      });
-      navigate("/admin-panel/shift-hours-types");
+      })
+      navigate("/admin-panel/shift-hours-types")
     }
-  }, [updateSuccess, updateMessage, navigate, t]);
+  }, [updateSuccess, updateMessage, navigate, t])
 
   // Prepare initial values for form
   const getInitialValues = () => {
@@ -84,7 +85,7 @@ function EditShiftHourType() {
         nameArabic: selectedShiftHoursType.nameArabic || "",
         nameEnglish: selectedShiftHoursType.nameEnglish || "",
         code: selectedShiftHoursType.code || "",
-        period: selectedShiftHoursType.period || "",
+        period: parseInt(selectedShiftHoursType.period) || 0,
         hours: selectedShiftHoursType.hours || "",
         startTime: selectedShiftHoursType.startTime || "",
         endTime: selectedShiftHoursType.endTime || "",
@@ -93,20 +94,20 @@ function EditShiftHourType() {
           selectedShiftHoursType.isActive !== undefined
             ? selectedShiftHoursType.isActive
             : true,
-      };
+      }
     }
-    return INITIAL_VALUES_ADD_SHIFT_HOUR_TYPE;
-  };
+    return INITIAL_VALUES_ADD_SHIFT_HOUR_TYPE
+  }
 
   const handleSubmit = async (values, { setSubmitting, setFieldError }) => {
-    const data = { ...values, id };
+    const data = { ...values, id, period: parseInt(values.period) }
     dispatch(updateShiftHoursType({ id, shiftHoursTypeData: data }))
       .unwrap()
       .then(() => {
         // Success is handled in useEffect
       })
       .catch((error) => {
-        console.error("Shift hour type update error:", error);
+        console.error("Shift hour type update error:", error)
 
         Swal.fire({
           title: t("shiftHourTypeForm.error.edit-title"),
@@ -116,16 +117,16 @@ function EditShiftHourType() {
           confirmButtonColor: "#ef4444",
           background: "#ffffff",
           color: "#111827",
-        });
+        })
       })
       .finally(() => {
-        setSubmitting(false);
-      });
-  };
+        setSubmitting(false)
+      })
+  }
 
   // Handle loading state
   if (loadingGetSingleShiftHoursType) {
-    return <LoadingGetData text={t("gettingData.shiftHourData")} />;
+    return <LoadingGetData text={t("gettingData.shiftHourData")} />
   }
 
   // Handle error state
@@ -164,7 +165,7 @@ function EditShiftHourType() {
           </button>
         </div>
       </div>
-    );
+    )
   }
 
   // Handle case where shift hour type not found
@@ -201,7 +202,7 @@ function EditShiftHourType() {
           </button>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -297,8 +298,8 @@ function EditShiftHourType() {
                 }`}
                 placeholder={t("shiftHourTypeForm.placeholders.code")}
                 onChange={(e) => {
-                  const upperValue = e.target.value.toUpperCase();
-                  setFieldValue("code", upperValue);
+                  const upperValue = e.target.value.toUpperCase()
+                  setFieldValue("code", upperValue)
                 }}
               />
               <ErrorMessage
@@ -330,7 +331,7 @@ function EditShiftHourType() {
                     : "border-gray-300"
                 }`}
               >
-                <option value="">
+                <option value={null}>
                   {t("shiftHourTypeForm.placeholders.period")}
                 </option>
                 {periodOptions.map((option) => (
@@ -484,7 +485,7 @@ function EditShiftHourType() {
                 type="button"
                 className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 onClick={() => {
-                  navigate("/admin-panel/shift-hours-types");
+                  navigate("/admin-panel/shift-hours-types")
                 }}
               >
                 {t("shiftHourTypeForm.buttons.cancel")}
@@ -532,7 +533,7 @@ function EditShiftHourType() {
         )}
       </Formik>
     </div>
-  );
+  )
 }
 
-export default EditShiftHourType;
+export default EditShiftHourType

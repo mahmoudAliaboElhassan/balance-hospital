@@ -1,52 +1,57 @@
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import UseInitialValues from "../../../hooks/use-initial-values";
-import UseFormValidation from "../../../hooks/use-form-validation";
-import { createShiftHoursType } from "../../../state/act/actShiftHours";
+import React from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { Formik, Form, Field, ErrorMessage } from "formik"
+import * as Yup from "yup"
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
+import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom"
+import UseInitialValues from "../../../hooks/use-initial-values"
+import UseFormValidation from "../../../hooks/use-form-validation"
+import { createShiftHoursType } from "../../../state/act/actShiftHours"
 
 function CreateShiftHourType() {
-  const { t, i18n } = useTranslation();
-  const dispatch = useDispatch();
-  const currentLang = i18n.language;
-  const isRTL = currentLang === "ar";
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+  const currentLang = i18n.language
+  const isRTL = currentLang === "ar"
 
   const {
     loadingCreateShiftHoursType,
     createError,
     createSuccess,
     createMessage,
-  } = useSelector((state) => state.shiftHour);
+  } = useSelector((state) => state.shiftHour)
 
   // Validation schema with translations
-  const { VALIDATION_SCHEMA_ADD_SHIFT_HOUR_TYPE } = UseFormValidation();
-  const navigate = useNavigate();
+  const { VALIDATION_SCHEMA_ADD_SHIFT_HOUR_TYPE } = UseFormValidation()
+  const navigate = useNavigate()
 
   // Initial form values
-  const { INITIAL_VALUES_ADD_SHIFT_HOUR_TYPE } = UseInitialValues();
+  const { INITIAL_VALUES_ADD_SHIFT_HOUR_TYPE } = UseInitialValues()
 
   // Period options
   const periodOptions = [
-    { value: "Morning", labelKey: "shiftHourTypeForm.periods.morning" },
-    { value: "Evening", labelKey: "shiftHourTypeForm.periods.evening" },
-    { value: "Night", labelKey: "shiftHourTypeForm.periods.night" },
-  ];
+    { value: 1, labelKey: "shiftHourTypeForm.periods.morning" },
+    { value: 2, labelKey: "shiftHourTypeForm.periods.evening" },
+    { value: 3, labelKey: "shiftHourTypeForm.periods.night" },
+    { value: 4, labelKey: "shiftHourTypeForm.periods.allDay" },
+  ]
   const handleSubmit = async (
     values,
     { setSubmitting, resetForm, setFieldError }
   ) => {
-    console.log("values", values);
-    const vals = { ...values, hoursCount: values.hours };
+    console.log("values", values)
+    const vals = {
+      ...values,
+      hoursCount: values.hours,
+      period: parseInt(values.period),
+    }
     dispatch(createShiftHoursType(vals))
       .unwrap()
       .then(() => {
         // Success handling
-        resetForm();
+        resetForm()
         toast.success(t("shiftHourTypeForm.success.created"), {
           position: "top-right",
           autoClose: 3000,
@@ -54,11 +59,11 @@ function CreateShiftHourType() {
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
-        });
-        navigate("/admin-panel/shift-hours-types");
+        })
+        navigate("/admin-panel/shift-hours-types")
       })
       .catch((error) => {
-        console.error("Shift hour type creation error:", error);
+        console.error("Shift hour type creation error:", error)
 
         Swal.fire({
           title: t("shiftHourTypeForm.error.title"),
@@ -68,9 +73,9 @@ function CreateShiftHourType() {
           confirmButtonColor: "#ef4444",
           background: "#ffffff",
           color: "#111827",
-        });
-      });
-  };
+        })
+      })
+  }
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
@@ -165,8 +170,8 @@ function CreateShiftHourType() {
                 }`}
                 placeholder={t("shiftHourTypeForm.placeholders.code")}
                 onChange={(e) => {
-                  const upperValue = e.target.value.toUpperCase();
-                  setFieldValue("code", upperValue);
+                  const upperValue = e.target.value.toUpperCase()
+                  setFieldValue("code", upperValue)
                 }}
               />
               <ErrorMessage
@@ -378,7 +383,7 @@ function CreateShiftHourType() {
                 type="button"
                 className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 onClick={() => {
-                  window.history.back();
+                  window.history.back()
                 }}
               >
                 {t("shiftHourTypeForm.buttons.cancel")}
@@ -426,7 +431,7 @@ function CreateShiftHourType() {
         )}
       </Formik>
     </div>
-  );
+  )
 }
 
-export default CreateShiftHourType;
+export default CreateShiftHourType

@@ -617,20 +617,20 @@ const Dashboard = () => {
   const navigate = useNavigate()
 
   const [expandedSections, setExpandedSections] = useState({
-    users: true,
-    pendingRequests: true,
-    notifications: true,
-    systemAlerts: true,
-    quickStats: true,
-    configuration: true,
-    shiftInsights: true,
-    roles: true,
-    emailQueue: true,
-    categories: true,
-    departments: true,
-    managers: true,
-    rosters: true,
-    charts: true,
+    users: false,
+    pendingRequests: false,
+    notifications: false,
+    systemAlerts: false,
+    quickStats: false,
+    configuration: false,
+    shiftInsights: false,
+    roles: false,
+    emailQueue: false,
+    categories: false,
+    departments: false,
+    managers: false,
+    rosters: false,
+    charts: false,
   })
 
   const isDark = mymode === "dark"

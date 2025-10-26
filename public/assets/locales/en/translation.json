@@ -1351,7 +1351,8 @@
       "morning": "Morning",
       "day": "Day",
       "evening": "Evening",
-      "night": "Night"
+      "night": "Night",
+      "allDay": "All Day"
     },
     "fields": {
       "nameArabic": "Name (Arabic)",
