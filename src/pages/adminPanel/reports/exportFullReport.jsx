@@ -49,22 +49,22 @@ function ExportReportsDropdown({
       mimeType:
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     },
-    {
-      format: 1,
-      label: t("reports.export.pdf") || "Export PDF",
-      icon: FileText,
-      color: "red",
-      fileType: ".pdf",
-      mimeType: "application/pdf",
-    },
-    {
-      format: 2,
-      label: t("reports.export.csv") || "Export CSV",
-      icon: FileSpreadsheet,
-      color: "blue",
-      fileType: ".csv",
-      mimeType: "text/csv",
-    },
+    //   {
+    //     format: 1,
+    //     label: t("reports.export.pdf") || "Export PDF",
+    //     icon: FileText,
+    //     color: "red",
+    //     fileType: ".pdf",
+    //     mimeType: "application/pdf",
+    //   },
+    //   {
+    //     format: 2,
+    //     label: t("reports.export.csv") || "Export CSV",
+    //     icon: FileSpreadsheet,
+    //     color: "blue",
+    //     fileType: ".csv",
+    //     mimeType: "text/csv",
+    //   },
   ]
 
   // Handle export action
