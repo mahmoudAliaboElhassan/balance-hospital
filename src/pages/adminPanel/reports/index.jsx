@@ -239,7 +239,10 @@ function Reports() {
                   }}
                 />
               )}
-              <ExportDoctorAttendanceReport reportsAttend={reportsAttend} />
+              <ExportDoctorAttendanceReport
+                reportsAttend={reportsAttend}
+                loadingGetReportsAttend={loadingGetReportsAttend}
+              />
             </div>
           </div>
         </div>

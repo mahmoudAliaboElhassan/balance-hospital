@@ -3,7 +3,11 @@ import { Download } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useSelector } from "react-redux"
 
-const ExportDoctorAttendanceReport = ({ reportsAttend, filters }) => {
+const ExportDoctorAttendanceReport = ({
+  reportsAttend,
+  filters,
+  loadingGetReportsAttend,
+}) => {
   const { t, i18n } = useTranslation()
   const { mymode } = useSelector((state) => state.mode)
   const currentLang = i18n.language || "ar"
@@ -528,7 +532,11 @@ const ExportDoctorAttendanceReport = ({ reportsAttend, filters }) => {
   return (
     <button
       onClick={exportToExcel}
-      disabled={!reportsAttend?.rows || reportsAttend.rows.length === 0}
+      disabled={
+        !reportsAttend?.rows ||
+        reportsAttend.rows.length === 0 ||
+        loadingGetReportsAttend
+      }
       className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
         isDark
           ? "bg-green-600 hover:bg-green-700 text-white"
