@@ -938,6 +938,9 @@
     "ok": "OK",
     "cancel": "Cancel",
     "confirm": "Confirm",
+    "generating": "Generating...",
+    "all": "All",
+    "back": "Back",
     "save": "Save",
     "edit": "Edit",
     "filters": "Filters",
@@ -2049,27 +2052,49 @@
       "infoTitle": "About Working Hours Generation",
       "infoDescription": "This process will create individual working hour slots for each day of the roster period, for each shift and contracting type combination. This is required before doctors can be assigned to specific shifts.",
       "generateSettings": "Generation Settings",
+      "summary": {
+        "added": "Added ",
+        "updated": "Updated ",
+        "skipped": "Skipped ",
+        "completion": "Completion"
+      },
       "overwriteExisting": "Overwrite Existing Shifts Requirements",
       "overwriteExistingHelp": "Replace any existing working hours. WARNING: This will remove all doctor assignments!",
       "warningTitle": "Warning",
       "overwriteWarning": "Overwriting existing working hours will remove all current doctor assignments. This action cannot be undone.",
       "existingTitle": "Existing Shifts Requirements",
       "existingMessage": "{{count}} working hours already exist for this roster.",
-      "buttons": {
-        "back": "Back",
-        "generate": "Generate Shifts Requirements",
-        "generating": "Generating..."
-      },
+      "overallProgress": "Overall Progress",
+      "cellsGenerated": "cells generated",
+      "selectStructure": "Select Structure to Generate",
+      "hierarchyInfo": "Select departments, then shifts, then scientific degrees. Leave empty to generate for all.",
+      "noStructure": "No roster structure found",
+      "selectionSummary": "Selection Summary",
+      "departments": "Departments",
+      "shifts": "Shifts",
+      "degrees": "Scientific Degrees",
+      "overwriteHelp": "Replace existing working hours with defaults",
       "success": {
-        "generated": "Working hours generated successfully"
+        "generated": "Working hours generated successfully",
+        "summaryTitle": "Generation Complete",
+        "summary": {
+          "added": "Added",
+          "updated": "Updated",
+          "skipped": "Skipped",
+          "completion": "Completion"
+        }
       },
       "error": {
         "title": "Failed to generate Shifts Requirements",
         "message": "An error occurred while generating working hours. Please try again.",
         "noRosterId": "Roster ID is missing. Please open a roster first."
+      },
+      "buttons": {
+        "back": "Back",
+        "generate": "Generate Working Hours",
+        "generating": "Generating..."
       }
     },
-
     "contractingTypes": {
       "title": "Scientific Degrees Management",
       "editTitle": "Scientific Degree Degree",

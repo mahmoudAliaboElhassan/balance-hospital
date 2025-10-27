@@ -185,7 +185,7 @@ export const updateShiftContractingType = createAsyncThunk(
 
     try {
       const res = await axiosInstance.put(
-        `/api/v1/RosterManagement/shift-contracting-types/${shiftContractingTypeId}?applyToWorkingHours={true}&increaseOnly={true}`,
+        `/api/v1/RosterManagement/shift-contracting-types/${shiftContractingTypeId}?applyToWorkingHours=true&increaseOnly=true`,
         updateData,
         {
           headers: {
@@ -250,7 +250,34 @@ export const addWorkingHours = createAsyncThunk(
     }
   }
 )
+// Add this to your actRosterManagement.js file
 
+export const getRosterTree = createAsyncThunk(
+  "rosterManagement/getRosterTree",
+  async (
+    { rosterId, startDate = null, endDate = null },
+    { rejectWithValue }
+  ) => {
+    try {
+      const params = new URLSearchParams()
+      if (startDate) params.append("startDate", startDate)
+      if (endDate) params.append("endDate", endDate)
+
+      const queryString = params.toString()
+      const url = `/api/v1/RosterManagement/${rosterId}/filters/tree-with-progress${
+        queryString ? `?${queryString}` : ""
+      }`
+
+      const res = await axiosInstance.get(url, {
+        headers: getAuthHeaders(),
+      })
+
+      return res.data
+    } catch (error) {
+      return handleError(error, rejectWithValue)
+    }
+  }
+)
 /**
  * Get working hours for department shift
  * الحصول على ساعات العمل لشفت قسم

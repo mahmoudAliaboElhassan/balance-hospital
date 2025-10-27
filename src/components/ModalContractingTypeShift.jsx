@@ -235,18 +235,6 @@ function ModalContractingTypesDepartment({ selectedShift, onClose }) {
                                 }`}
                               >
                                 <div className="flex justify-between items-center mb-3">
-                                  <h4
-                                    className={`text-sm font-medium ${
-                                      isDark ? "text-white" : "text-gray-700"
-                                    }`}
-                                  >
-                                    {t(
-                                      "roster.contractingTypes.contractingTypeNumber",
-                                      {
-                                        number: index + 1,
-                                      }
-                                    )}
-                                  </h4>
                                   {values.contractingTypes.length > 1 && (
                                     <button
                                       type="button"

@@ -59,6 +59,7 @@ import {
   approveRequest,
   getDoctorsRequests,
   autoAcceptRequests,
+  getRosterTree,
 } from "../act/actRosterManagement"
 import i18next from "i18next"
 
@@ -71,6 +72,9 @@ const initialState = {
   rosters: [],
   selectedRoster: null,
   rosterList: [], // للقائمة المبسطة
+  rosterTree: {
+    departments: [],
+  },
 
   doctorRequests: {
     data: null,
@@ -139,6 +143,7 @@ const initialState = {
     rejectRequest: false,
     addContracting: false,
     addWorkingHours: false,
+    getRosterTree: false,
     getShiftContractingTypes: false,
     addShiftContractingTypes: false,
     updateShiftContractingType: false,
@@ -184,8 +189,8 @@ const initialState = {
   success: {
     createBasic: false,
     addShifts: false,
-    addContracting: false,
     addWorkingHours: false,
+    addContracting: false,
     applyTemplate: false,
     markReady: false,
     publish: false,
@@ -205,6 +210,8 @@ const initialState = {
   // ===== ERROR STATES (حالات الأخطاء) =====
   errors: {
     general: null,
+    rosterTree: null,
+    workingHours: null,
     create: null,
     update: null,
     assign: null,
@@ -220,7 +227,6 @@ const initialState = {
     doctorRequests: null,
     processRequest: null,
     contracting: null,
-    workingHours: null,
   },
 
   // ===== UI STATE (حالة واجهة المستخدم) =====
@@ -724,12 +730,26 @@ const rosterManagementSlice = createSlice({
         // Handle error
       })
 
-    // ===================================================================
-    // PHASE 4: WORKING HOURS (المرحلة 4: ساعات العمل)
-    // ===================================================================
+      // ===================================================================
+      // PHASE 4: WORKING HOURS (المرحلة 4: ساعات العمل)
+      // ===================================================================
 
-    // Add Working Hours
-    builder
+      // Add Working Hours
+      .addCase(getRosterTree.pending, (state) => {
+        state.loading.getRosterTree = true
+        state.errors.rosterTree = null
+      })
+      .addCase(getRosterTree.fulfilled, (state, action) => {
+        state.loading.getRosterTree = false
+        state.rosterTree = action.payload || { departments: [] }
+      })
+      .addCase(getRosterTree.rejected, (state, action) => {
+        state.loading.getRosterTree = false
+        state.errors.rosterTree = action.payload
+        state.rosterTree = { departments: [] }
+      })
+
+      // Add Working Hours (updated)
       .addCase(addWorkingHours.pending, (state) => {
         state.loading.addWorkingHours = true
         state.errors.workingHours = null
@@ -739,17 +759,15 @@ const rosterManagementSlice = createSlice({
         state.loading.addWorkingHours = false
         state.success.addWorkingHours = true
 
-        // if (action.payload?.data) {
-        //   state.workingHours.push(
-        //     ...(Array.isArray(action.payload.data)
-        //       ? action.payload.data
-        //       : [action.payload.data])
-        //   );
-        // }
+        // Store the generation summary
+        if (action.payload?.data) {
+          state.generationSummary = action.payload.data
+        }
       })
       .addCase(addWorkingHours.rejected, (state, action) => {
         state.loading.addWorkingHours = false
         state.errors.workingHours = action.payload
+        state.success.addWorkingHours = false
       })
 
     // Get Working Hours
