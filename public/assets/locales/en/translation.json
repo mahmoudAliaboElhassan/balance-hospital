@@ -3040,6 +3040,7 @@
       "nationalId": "National ID",
       "category": "Category",
       "department": "Department",
+      "day": "Day",
       "degree": "Degree",
       "contractType": "Contract",
       "shifts": "Shifts",

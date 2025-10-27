@@ -670,280 +670,283 @@ function Reports() {
                 </div>
               </div>
             </div>
+
             {/* Reports Table */}
+            {/* Reports Table - Split into two sections */}
             <div
               className={`${
                 isDark ? "bg-gray-800" : "bg-white"
               } rounded-2xl shadow-xl overflow-hidden`}
             >
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className={`${isDark ? "bg-gray-700" : "bg-gray-50"}`}>
-                    <tr>
-                      <th
-                        className={`px-6 py-4 text-left text-xs font-medium ${
-                          isDark ? "text-gray-300" : "text-gray-700"
-                        } uppercase tracking-wider`}
-                      >
-                        {t("reports.table.doctor") || "Doctor"}
-                      </th>
-                      <th
-                        className={`px-6 py-4 text-left text-xs font-medium ${
-                          isDark ? "text-gray-300" : "text-gray-700"
-                        } uppercase tracking-wider`}
-                      >
-                        {t("reports.table.nationalId") || "National ID"}
-                      </th>
-                      <th
-                        className={`px-6 py-4 text-left text-xs font-medium ${
-                          isDark ? "text-gray-300" : "text-gray-700"
-                        } uppercase tracking-wider`}
-                      >
-                        {t("reports.table.category") || "Category"}
-                      </th>
-                      <th
-                        className={`px-6 py-4 text-left text-xs font-medium ${
-                          isDark ? "text-gray-300" : "text-gray-700"
-                        } uppercase tracking-wider`}
-                      >
-                        {t("reports.table.department") || "Department"}
-                      </th>
-                      <th
-                        className={`px-6 py-4 text-left text-xs font-medium ${
-                          isDark ? "text-gray-300" : "text-gray-700"
-                        } uppercase tracking-wider`}
-                      >
-                        {t("reports.table.degree") || "Degree"}
-                      </th>
-                      <th
-                        className={`px-6 py-4 text-left text-xs font-medium ${
-                          isDark ? "text-gray-300" : "text-gray-700"
-                        } uppercase tracking-wider`}
-                      >
-                        {t("reports.table.contractType") || "Contract"}
-                      </th>
-
-                      <th
-                        className={`px-6 py-4 text-left text-xs font-medium ${
-                          isDark ? "text-gray-300" : "text-gray-700"
-                        } uppercase tracking-wider`}
-                      >
-                        {t("categories.table.actions") || "Shifts"}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody
-                    className={`${
-                      isDark ? "bg-gray-800" : "bg-white"
-                    } divide-y ${
-                      isDark ? "divide-gray-700" : "divide-gray-200"
-                    }`}
-                  >
-                    {reports.rows.map((row, index) => (
-                      <tr
-                        key={`${row.doctorId}-${row.departmentId}-${index}`}
-                        className={`${
-                          isDark ? "hover:bg-gray-750" : "hover:bg-gray-50"
-                        } transition-colors`}
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div>
-                            <div
-                              className={`text-sm font-medium ${
-                                isDark ? "text-white" : "text-gray-900"
-                              }`}
-                            >
-                              {currentLang === "ar"
-                                ? row.doctorNameAr
-                                : row.doctorNameEn}
-                            </div>
-                            <div
-                              className={`text-sm ${
-                                isDark ? "text-gray-400" : "text-gray-500"
-                              }`}
-                            >
-                              {t("reports.table.printNumber") || "Print"}:{" "}
-                              {row.printNumber}
-                            </div>
-                          </div>
-                        </td>
-                        <td
-                          className={`px-6 py-4 whitespace-nowrap text-sm ${
-                            isDark ? "text-gray-300" : "text-gray-900"
-                          }`}
-                        >
-                          {row.nationalId}
-                        </td>
-                        <td
-                          className={`px-6 py-4 text-sm ${
-                            isDark ? "text-gray-300" : "text-gray-900"
-                          }`}
-                        >
-                          {currentLang === "ar"
-                            ? row.categoryNameAr
-                            : row.categoryNameEn}
-                        </td>
-                        <td
-                          className={`px-6 py-4 text-sm ${
-                            isDark ? "text-gray-300" : "text-gray-900"
-                          }`}
-                        >
-                          {currentLang === "ar"
-                            ? row.departmentsJoinedAr
-                            : row.departmentsJoinedEn}
-                        </td>
-                        <td
-                          className={`px-6 py-4 whitespace-nowrap text-sm ${
-                            isDark ? "text-gray-300" : "text-gray-900"
-                          }`}
-                        >
-                          {currentLang === "ar"
-                            ? row.scientificDegreeName
-                            : row.scientificDegreeNameEn}
-                        </td>
-                        <td
-                          className={`px-6 py-4 text-sm ${
-                            isDark ? "text-gray-300" : "text-gray-900"
-                          }`}
-                        >
-                          {currentLang === "ar"
-                            ? row.contractingTypeName
-                            : row.contractingTypeNameEn}
-                        </td>
-
-                        <td className="px-6 py-4">
-                          <div className="text-center">
-                            {" "}
-                            <Link
-                              to={`/admin-panel/reports/doctor/${row.doctorId}`}
-                            >
-                              <button
-                                className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors cursor-pointer"
-                                title={t("categories.actions.view")}
-                              >
-                                <Eye size={16} />
-                              </button>
-                            </Link>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Pagination */}
-              {/* {totalPages > 1 && (
-                <div
-                  className={`${
-                    isDark ? "bg-gray-750" : "bg-gray-50"
-                  } px-6 py-4 flex items-center justify-between border-t ${
-                    isDark ? "border-gray-700" : "border-gray-200"
-                  }`}
-                >
-                  <select
-                    value={filters.pageSize}
-                    onChange={(e) =>
-                      setFilters((prev) => ({
-                        ...prev,
-                        pageSize: Number(e.target.value),
-                      }))
-                    }
-                    className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    <option value={10}>
-                      10 {t("pendingDoctorRequests.pagination.perPage")}
-                    </option>
-                    <option value={20}>
-                      20 {t("pendingDoctorRequests.pagination.perPage")}
-                    </option>
-                    <option value={50}>
-                      50 {t("pendingDoctorRequests.pagination.perPage")}
-                    </option>
-                  </select>
-
-                  <div
-                    className={`text-sm ${
-                      isDark ? "text-gray-400" : "text-gray-700"
-                    }`}
-                  >
-                    {t("reports.showing") || "Showing"}{" "}
-                    <span className="font-medium">
-                      {(filters.page - 1) * filters.pageSize + 1}
-                    </span>{" "}
-                    {t("reports.to") || "to"}{" "}
-                    <span className="font-medium">
-                      {Math.min(
-                        filters.page * filters.pageSize,
-                        reports.totalRecords
-                      )}
-                    </span>{" "}
-                    {t("reports.of") || "of"}{" "}
-                    <span className="font-medium">{reports.totalRecords}</span>{" "}
-                    {t("reports.results") || "results"}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => handlePageChange(filters.page - 1)}
-                      disabled={filters.page === 1}
-                      className={`px-3 py-2 rounded-lg ${
-                        filters.page !== 1
-                          ? `${
-                              isDark
-                                ? "bg-gray-700 hover:bg-gray-600 text-white"
-                                : "bg-white hover:bg-gray-100 text-gray-700"
-                            } border ${
-                              isDark ? "border-gray-600" : "border-gray-300"
-                            }`
-                          : `${
-                              isDark
-                                ? "bg-gray-800 text-gray-600"
-                                : "bg-gray-100 text-gray-400"
-                            } cursor-not-allowed`
-                      } transition-colors`}
+              <div className="flex">
+                {/* Left Table - Fixed Doctor Info */}
+                <div className="flex-1 overflow-x-auto">
+                  <table className="w-full border-collapse">
+                    <thead
+                      className={`${isDark ? "bg-gray-700" : "bg-gray-50"}`}
                     >
-                      {currentLang == "en" ? (
-                        <ChevronLeft size={20} />
-                      ) : (
-                        <ChevronRight size={20} />
-                      )}
-                    </button>
-                    <span
-                      className={`px-4 py-2 ${
-                        isDark ? "text-gray-300" : "text-gray-700"
+                      <tr>
+                        {/* Daily shift columns (1-31) */}
+                        {Array.from({ length: 31 }, (_, i) => i + 1).map(
+                          (day) => (
+                            <th
+                              key={day}
+                              className={`px-3 py-4 text-center text-xs font-medium ${
+                                isDark ? "text-gray-300" : "text-gray-700"
+                              } uppercase tracking-wider whitespace-nowrap`}
+                              style={{ minWidth: "100px" }}
+                            >
+                              {t("reports.table.day") || "Day"} {day}
+                            </th>
+                          )
+                        )}
+                        <th
+                          className={`px-6 py-4 text-center text-xs font-medium ${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          } uppercase tracking-wider whitespace-nowrap sticky right-0 z-10 ${
+                            isDark ? "bg-gray-700" : "bg-gray-50"
+                          } shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]`}
+                          style={{ minWidth: "100px" }}
+                        >
+                          {t("categories.table.actions") || "Actions"}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody
+                      className={`${
+                        isDark ? "bg-gray-800" : "bg-white"
+                      } divide-y ${
+                        isDark ? "divide-gray-700" : "divide-gray-200"
                       }`}
                     >
-                      {t("reports.page") || "Page"} {filters.page}{" "}
-                      {t("reports.of") || "of"} {totalPages}
-                    </span>
-                    <button
-                      onClick={() => handlePageChange(filters.page + 1)}
-                      disabled={totalPages == filters.page}
-                      className={`px-3 py-2 rounded-lg ${
-                        totalPages !== filters.page
-                          ? `${
-                              isDark
-                                ? "bg-gray-700 hover:bg-gray-600 text-white"
-                                : "bg-white hover:bg-gray-100 text-gray-700"
-                            } border ${
-                              isDark ? "border-gray-600" : "border-gray-300"
-                            }`
-                          : `${
-                              isDark
-                                ? "bg-gray-800 text-gray-600"
-                                : "bg-gray-100 text-gray-400"
-                            } cursor-not-allowed`
-                      } transition-colors`}
-                    >
-                      {currentLang == "ar" ? (
-                        <ChevronLeft size={20} />
-                      ) : (
-                        <ChevronRight size={20} />
-                      )}{" "}
-                    </button>
-                  </div>
+                      {reports.rows.map((row, index) => {
+                        // Create a map of day -> shift data for quick lookup
+                        const shiftMap = {}
+                        row.dailyShifts?.forEach((shift) => {
+                          shiftMap[shift.day] = shift
+                        })
+
+                        return (
+                          <tr
+                            key={`right-${row.doctorId}-${row.departmentId}-${index}`}
+                            className={`${
+                              isDark ? "hover:bg-gray-750" : "hover:bg-gray-50"
+                            } transition-colors`}
+                          >
+                            {/* Daily shift columns (1-31) */}
+                            {Array.from({ length: 31 }, (_, i) => i + 1).map(
+                              (day) => {
+                                const shift = shiftMap[day]
+                                return (
+                                  <td
+                                    key={day}
+                                    className={`px-3 py-4 text-center text-xs whitespace-nowrap ${
+                                      isDark ? "text-gray-300" : "text-gray-900"
+                                    }`}
+                                    style={{ minWidth: "100px" }}
+                                    title={
+                                      shift
+                                        ? currentLang === "ar"
+                                          ? shift.departmentAr
+                                          : shift.departmentEn
+                                        : ""
+                                    }
+                                  >
+                                    {shift ? (
+                                      <div className="flex flex-col items-center gap-1">
+                                        <span className="font-semibold text-sm">
+                                          {shift.code}
+                                        </span>
+                                        <span
+                                          className={`text-[10px] ${
+                                            isDark
+                                              ? "text-gray-400"
+                                              : "text-gray-500"
+                                          }`}
+                                        >
+                                          {currentLang === "ar"
+                                            ? shift.departmentAr
+                                            : shift.departmentEn}
+                                        </span>
+                                      </div>
+                                    ) : (
+                                      <span className="text-gray-400">-</span>
+                                    )}
+                                  </td>
+                                )
+                              }
+                            )}
+
+                            {/* Actions Column - Sticky on right */}
+                            <td
+                              className={`px-6 py-4 sticky right-0 z-10 ${
+                                isDark ? "bg-gray-800" : "bg-white"
+                              } shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]`}
+                              style={{ minWidth: "100px" }}
+                            >
+                              <div className="text-center">
+                                <Link
+                                  to={`/admin-panel/reports/doctor/${row.doctorId}`}
+                                >
+                                  <button
+                                    className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors cursor-pointer"
+                                    title={t("categories.actions.view")}
+                                  >
+                                    <Eye size={16} />
+                                  </button>
+                                </Link>
+                              </div>
+                            </td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
                 </div>
-              )} */}
+                <div className="flex-shrink-0 border-r-2 border-gray-300 dark:border-gray-600">
+                  <table className="w-full border-collapse">
+                    <thead
+                      className={`${isDark ? "bg-gray-700" : "bg-gray-50"}`}
+                    >
+                      <tr>
+                        <th
+                          className={`px-6 py-4 text-left text-xs font-medium ${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          } uppercase tracking-wider`}
+                          style={{ minWidth: "200px" }}
+                        >
+                          {t("reports.table.doctor") || "Doctor"}
+                        </th>
+                        {/* <th
+                          className={`px-6 py-4 text-left text-xs font-medium ${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          } uppercase tracking-wider`}
+                          style={{ minWidth: "120px" }}
+                        >
+                          {t("reports.table.nationalId") || "National ID"}
+                        </th> */}
+                        <th
+                          className={`px-6 py-4 text-left text-xs font-medium ${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          } uppercase tracking-wider`}
+                          style={{ minWidth: "150px" }}
+                        >
+                          {t("reports.table.category") || "Category"}
+                        </th>
+                        <th
+                          className={`px-6 py-4 text-left text-xs font-medium ${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          } uppercase tracking-wider`}
+                          style={{ minWidth: "150px" }}
+                        >
+                          {t("reports.table.department") || "Department"}
+                        </th>
+                        <th
+                          className={`px-6 py-4 text-left text-xs font-medium ${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          } uppercase tracking-wider`}
+                          style={{ minWidth: "120px" }}
+                        >
+                          {t("reports.table.degree") || "Degree"}
+                        </th>
+                        <th
+                          className={`px-6 py-4 text-left text-xs font-medium ${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          } uppercase tracking-wider`}
+                          style={{ minWidth: "120px" }}
+                        >
+                          {t("reports.table.contractType") || "Contract"}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody
+                      className={`${
+                        isDark ? "bg-gray-800" : "bg-white"
+                      } divide-y ${
+                        isDark ? "divide-gray-700" : "divide-gray-200"
+                      }`}
+                    >
+                      {reports.rows.map((row, index) => (
+                        <tr
+                          key={`left-${row.doctorId}-${row.departmentId}-${index}`}
+                          className={`${
+                            isDark ? "hover:bg-gray-750" : "hover:bg-gray-50"
+                          } transition-colors`}
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div>
+                              <div
+                                className={`text-sm font-medium ${
+                                  isDark ? "text-white" : "text-gray-900"
+                                }`}
+                              >
+                                {currentLang === "ar"
+                                  ? row.doctorNameAr
+                                  : row.doctorNameEn}
+                              </div>
+                              <div
+                                className={`text-sm ${
+                                  isDark ? "text-gray-400" : "text-gray-500"
+                                }`}
+                              >
+                                {t("reports.table.printNumber") || "Print"}:{" "}
+                                {row.printNumber}
+                              </div>
+                            </div>
+                          </td>
+                          {/* <td
+                            className={`px-6 py-4 whitespace-nowrap text-sm ${
+                              isDark ? "text-gray-300" : "text-gray-900"
+                            }`}
+                          >
+                            {row.nationalId}
+                          </td> */}
+                          <td
+                            className={`px-6 py-4 text-sm ${
+                              isDark ? "text-gray-300" : "text-gray-900"
+                            }`}
+                          >
+                            {currentLang === "ar"
+                              ? row.categoryNameAr
+                              : row.categoryNameEn}
+                          </td>
+                          <td
+                            className={`px-6 py-4 text-sm ${
+                              isDark ? "text-gray-300" : "text-gray-900"
+                            }`}
+                          >
+                            {currentLang === "ar"
+                              ? row.departmentsJoinedAr
+                              : row.departmentsJoinedEn}
+                          </td>
+                          <td
+                            className={`px-6 py-4 whitespace-nowrap text-sm ${
+                              isDark ? "text-gray-300" : "text-gray-900"
+                            }`}
+                          >
+                            {currentLang === "ar"
+                              ? row.scientificDegreeName
+                              : row.scientificDegreeNameEn}
+                          </td>
+                          <td
+                            className={`px-6 py-4 text-sm ${
+                              isDark ? "text-gray-300" : "text-gray-900"
+                            }`}
+                          >
+                            {currentLang === "ar"
+                              ? row.contractingTypeName
+                              : row.contractingTypeNameEn}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Right Table - Scrollable Days + Actions */}
+              </div>
+
+              {/* Pagination - same as before */}
             </div>
           </>
         )}
