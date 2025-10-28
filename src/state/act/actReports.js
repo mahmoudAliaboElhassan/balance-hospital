@@ -181,8 +181,8 @@ export const exportExcel = createAsyncThunk(
       if (language !== undefined && language !== null) {
         requestBody.language = language
       }
-      requestBody.includeDetails = true
-      requestBody.includeStatistics = true
+      requestBody.IncludeStatistics = true
+      requestBody.IncludeCategories = true
 
       const url = `/api/v1/ScheduleReporting/export/excel`
 
