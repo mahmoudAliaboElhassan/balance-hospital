@@ -248,22 +248,6 @@ const SpecificCategory = () => {
   }
 
   // Format date for pending doctors
-  const formatPendingDate = (dateString) => {
-    if (!dateString) return t("pendingDoctorRequests.fields.notSpecified")
-
-    try {
-      const locale = currentLang === "ar" ? "ar-EG" : "en-US"
-      return new Date(dateString).toLocaleDateString(locale, {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-    } catch (error) {
-      return t("pendingDoctorRequests.fields.invalidDate")
-    }
-  }
 
   // Handle pending doctor actions
   const handleApproveRequest = (userId) => {
@@ -1793,11 +1777,11 @@ const SpecificCategory = () => {
               {loadingPending ? (
                 <div className="text-center py-8">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                  <p
+                  <span
                     className={`${isDark ? "text-gray-400" : "text-gray-600"}`}
                   >
                     {t("pendingDoctorRequests.loading.requests")}
-                  </p>
+                  </span>
                 </div>
               ) : !categoryPendingRequests ||
                 categoryPendingRequests.length === 0 ? (
@@ -2009,7 +1993,7 @@ const SpecificCategory = () => {
                                   isDark ? "text-gray-300" : "text-gray-700"
                                 }`}
                               >
-                                {formatPendingDate(request.requestedAt)}
+                                {formatDate(request.requestedAt)}
                               </div>
                             </td>{" "}
                             <td className="p-4">
@@ -2107,9 +2091,7 @@ const SpecificCategory = () => {
 
                             <div className="flex items-center text-sm text-gray-600">
                               <Clock className="w-4 h-4 ml-2 flex-shrink-0 text-gray-400" />
-                              <span>
-                                {formatPendingDate(request.requestedAt)}
-                              </span>
+                              <span>{formatDate(request.requestedAt)}</span>
                             </div>
 
                             {request.notes && (

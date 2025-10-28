@@ -67,7 +67,14 @@ const CategoryHeadsManagement = ({
   }
 
   if (loadingGetCategoryHeads) {
-    return <LoadingGetData text={t("gettingData.categoryHeads")} />
+    return (
+      <div className="text-center py-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <span className={`${isDark ? "text-gray-400" : "text-gray-600"}`}>
+          {t("gettingData.categoryHeads")}{" "}
+        </span>
+      </div>
+    )
   }
 
   if (selectedCategoryHead && isRemoveModalOpen) {

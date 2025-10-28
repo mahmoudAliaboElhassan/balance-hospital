@@ -615,7 +615,7 @@ const Dashboard = () => {
   } = useSelector((state) => state.reports)
 
   const navigate = useNavigate()
-
+  console.log("dashboardError", dashboardError)
   const [expandedSections, setExpandedSections] = useState({
     users: false,
     pendingRequests: false,

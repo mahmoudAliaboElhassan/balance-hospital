@@ -672,208 +672,130 @@ function Reports() {
             </div>
 
             {/* Reports Table */}
-            {/* Reports Table - Split into two sections */}
             <div
               className={`${
                 isDark ? "bg-gray-800" : "bg-white"
               } rounded-2xl shadow-xl overflow-hidden`}
             >
-              <div className="flex">
-                {/* Left Table - Fixed Doctor Info */}
-                <div className="flex-1 overflow-x-auto">
-                  <table className="w-full border-collapse">
-                    <thead
-                      className={`${isDark ? "bg-gray-700" : "bg-gray-50"}`}
-                    >
-                      <tr>
-                        {/* Daily shift columns (1-31) */}
-                        {Array.from({ length: 31 }, (_, i) => i + 1).map(
-                          (day) => (
-                            <th
-                              key={day}
-                              className={`px-3 py-4 text-center text-xs font-medium ${
-                                isDark ? "text-gray-300" : "text-gray-700"
-                              } uppercase tracking-wider whitespace-nowrap`}
-                              style={{ minWidth: "100px" }}
-                            >
-                              {t("reports.table.day") || "Day"} {day}
-                            </th>
-                          )
-                        )}
-                        <th
-                          className={`px-6 py-4 text-center text-xs font-medium ${
-                            isDark ? "text-gray-300" : "text-gray-700"
-                          } uppercase tracking-wider whitespace-nowrap sticky right-0 z-10 ${
-                            isDark ? "bg-gray-700" : "bg-gray-50"
-                          } shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]`}
-                          style={{ minWidth: "100px" }}
-                        >
-                          {t("categories.table.actions") || "Actions"}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody
-                      className={`${
-                        isDark ? "bg-gray-800" : "bg-white"
-                      } divide-y ${
-                        isDark ? "divide-gray-700" : "divide-gray-200"
-                      }`}
-                    >
-                      {reports.rows.map((row, index) => {
-                        // Create a map of day -> shift data for quick lookup
-                        const shiftMap = {}
-                        row.dailyShifts?.forEach((shift) => {
-                          shiftMap[shift.day] = shift
-                        })
+              {/* Single scroll container */}
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse">
+                  <thead className={`${isDark ? "bg-gray-700" : "bg-gray-50"}`}>
+                    <tr>
+                      {/* Doctor Info Headers */}
+                      <th
+                        className={`px-4 py-4 text-${
+                          currentLang === "ar" ? "right" : "left"
+                        } text-xs font-medium ${
+                          isDark ? "text-gray-300" : "text-gray-700"
+                        } uppercase tracking-wider whitespace-nowrap sticky ${
+                          currentLang === "ar" ? "right-0" : "left-0"
+                        } z-30 ${isDark ? "bg-gray-700" : "bg-gray-50"}`}
+                        style={{ minWidth: "180px" }}
+                      >
+                        {t("reports.table.doctor") || "Doctor"}
+                      </th>
+                      <th
+                        className={`px-4 py-4 text-${
+                          currentLang === "ar" ? "right" : "left"
+                        } text-xs font-medium ${
+                          isDark ? "text-gray-300" : "text-gray-700"
+                        } uppercase tracking-wider whitespace-nowrap sticky ${
+                          currentLang === "ar"
+                            ? "right-[180px]"
+                            : "left-[180px]"
+                        } z-30 ${
+                          isDark ? "bg-gray-700" : "bg-gray-50"
+                        } hidden sm:table-cell ${
+                          currentLang === "ar" ? "border-l-2" : "border-r-2"
+                        } border-gray-300 dark:border-gray-600`}
+                        style={{ minWidth: "130px" }}
+                      >
+                        {t("reports.table.category") || "Category"}
+                      </th>
+                      <th
+                        className={`px-4 py-4 text-${
+                          currentLang === "ar" ? "right" : "left"
+                        } text-xs font-medium ${
+                          isDark ? "text-gray-300" : "text-gray-700"
+                        } uppercase tracking-wider whitespace-nowrap sticky ${
+                          currentLang === "ar"
+                            ? "right-[180px] sm:right-[310px]"
+                            : "left-[180px] sm:left-[310px]"
+                        } z-30 ${
+                          isDark ? "bg-gray-700" : "bg-gray-50"
+                        } hidden md:table-cell ${
+                          currentLang === "ar" ? "border-l-2" : "border-r-2"
+                        } border-gray-300 dark:border-gray-600`}
+                        style={{ minWidth: "140px" }}
+                      >
+                        {t("reports.table.department") || "Department"}
+                      </th>
 
-                        return (
-                          <tr
-                            key={`right-${row.doctorId}-${row.departmentId}-${index}`}
-                            className={`${
-                              isDark ? "hover:bg-gray-750" : "hover:bg-gray-50"
-                            } transition-colors`}
+                      {/* Daily shift columns (1-31) */}
+                      {Array.from({ length: 31 }, (_, i) => i + 1).map(
+                        (day) => (
+                          <th
+                            key={day}
+                            className={`px-2 py-4 text-center text-xs font-medium ${
+                              isDark ? "text-gray-300" : "text-gray-700"
+                            } uppercase tracking-wider whitespace-nowrap`}
+                            style={{ minWidth: "80px" }}
                           >
-                            {/* Daily shift columns (1-31) */}
-                            {Array.from({ length: 31 }, (_, i) => i + 1).map(
-                              (day) => {
-                                const shift = shiftMap[day]
-                                return (
-                                  <td
-                                    key={day}
-                                    className={`px-3 py-4 text-center text-xs whitespace-nowrap ${
-                                      isDark ? "text-gray-300" : "text-gray-900"
-                                    }`}
-                                    style={{ minWidth: "100px" }}
-                                    title={
-                                      shift
-                                        ? currentLang === "ar"
-                                          ? shift.departmentAr
-                                          : shift.departmentEn
-                                        : ""
-                                    }
-                                  >
-                                    {shift ? (
-                                      <div className="flex flex-col items-center gap-1">
-                                        <span className="font-semibold text-sm">
-                                          {shift.code}
-                                        </span>
-                                        <span
-                                          className={`text-[10px] ${
-                                            isDark
-                                              ? "text-gray-400"
-                                              : "text-gray-500"
-                                          }`}
-                                        >
-                                          {currentLang === "ar"
-                                            ? shift.departmentAr
-                                            : shift.departmentEn}
-                                        </span>
-                                      </div>
-                                    ) : (
-                                      <span className="text-gray-400">-</span>
-                                    )}
-                                  </td>
-                                )
-                              }
-                            )}
-
-                            {/* Actions Column - Sticky on right */}
-                            <td
-                              className={`px-6 py-4 sticky right-0 z-10 ${
-                                isDark ? "bg-gray-800" : "bg-white"
-                              } shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]`}
-                              style={{ minWidth: "100px" }}
-                            >
-                              <div className="text-center">
-                                <Link
-                                  to={`/admin-panel/reports/doctor/${row.doctorId}`}
-                                >
-                                  <button
-                                    className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors cursor-pointer"
-                                    title={t("categories.actions.view")}
-                                  >
-                                    <Eye size={16} />
-                                  </button>
-                                </Link>
-                              </div>
-                            </td>
-                          </tr>
+                            {t("reports.table.day") || "Day"} {day}
+                          </th>
                         )
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-                <div className="flex-shrink-0 border-r-2 border-gray-300 dark:border-gray-600">
-                  <table className="w-full border-collapse">
-                    <thead
-                      className={`${isDark ? "bg-gray-700" : "bg-gray-50"}`}
-                    >
-                      <tr>
-                        <th
-                          className={`px-6 py-4 text-left text-xs font-medium ${
-                            isDark ? "text-gray-300" : "text-gray-700"
-                          } uppercase tracking-wider`}
-                          style={{ minWidth: "200px" }}
-                        >
-                          {t("reports.table.doctor") || "Doctor"}
-                        </th>
-                        {/* <th
-                          className={`px-6 py-4 text-left text-xs font-medium ${
-                            isDark ? "text-gray-300" : "text-gray-700"
-                          } uppercase tracking-wider`}
-                          style={{ minWidth: "120px" }}
-                        >
-                          {t("reports.table.nationalId") || "National ID"}
-                        </th> */}
-                        <th
-                          className={`px-6 py-4 text-left text-xs font-medium ${
-                            isDark ? "text-gray-300" : "text-gray-700"
-                          } uppercase tracking-wider`}
-                          style={{ minWidth: "150px" }}
-                        >
-                          {t("reports.table.category") || "Category"}
-                        </th>
-                        <th
-                          className={`px-6 py-4 text-left text-xs font-medium ${
-                            isDark ? "text-gray-300" : "text-gray-700"
-                          } uppercase tracking-wider`}
-                          style={{ minWidth: "150px" }}
-                        >
-                          {t("reports.table.department") || "Department"}
-                        </th>
-                        <th
-                          className={`px-6 py-4 text-left text-xs font-medium ${
-                            isDark ? "text-gray-300" : "text-gray-700"
-                          } uppercase tracking-wider`}
-                          style={{ minWidth: "120px" }}
-                        >
-                          {t("reports.table.degree") || "Degree"}
-                        </th>
-                        <th
-                          className={`px-6 py-4 text-left text-xs font-medium ${
-                            isDark ? "text-gray-300" : "text-gray-700"
-                          } uppercase tracking-wider`}
-                          style={{ minWidth: "120px" }}
-                        >
-                          {t("reports.table.contractType") || "Contract"}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody
-                      className={`${
-                        isDark ? "bg-gray-800" : "bg-white"
-                      } divide-y ${
-                        isDark ? "divide-gray-700" : "divide-gray-200"
-                      }`}
-                    >
-                      {reports.rows.map((row, index) => (
+                      )}
+
+                      {/* Actions Header */}
+                      <th
+                        className={`px-4 py-4 text-center text-xs font-medium ${
+                          isDark ? "text-gray-300" : "text-gray-700"
+                        } uppercase tracking-wider whitespace-nowrap sticky ${
+                          currentLang === "ar" ? "left-0" : "right-0"
+                        } z-30 ${isDark ? "bg-gray-700" : "bg-gray-50"} ${
+                          currentLang === "ar"
+                            ? "shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+                            : "shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+                        }`}
+                        style={{ minWidth: "80px" }}
+                      >
+                        {t("categories.table.actions") || "Actions"}
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody
+                    className={`${
+                      isDark ? "bg-gray-800" : "bg-white"
+                    } divide-y ${
+                      isDark ? "divide-gray-700" : "divide-gray-200"
+                    }`}
+                  >
+                    {reports.rows.map((row, index) => {
+                      const shiftMap = {}
+                      row.dailyShifts?.forEach((shift) => {
+                        shiftMap[shift.day] = shift
+                      })
+
+                      return (
                         <tr
-                          key={`left-${row.doctorId}-${row.departmentId}-${index}`}
+                          key={`${row.doctorId}-${row.departmentId}-${index}`}
                           className={`${
                             isDark ? "hover:bg-gray-750" : "hover:bg-gray-50"
                           } transition-colors`}
                         >
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          {/* Doctor Name - Sticky */}
+                          <td
+                            className={`px-4 py-4 whitespace-nowrap sticky ${
+                              currentLang === "ar" ? "right-0" : "left-0"
+                            } z-20 ${isDark ? "bg-gray-800" : "bg-white"} ${
+                              currentLang === "ar"
+                                ? "shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+                                : "shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+                            }`}
+                            // style={{ minWidth: "180px" }}
+                          >
                             <div>
                               <div
                                 className={`text-sm font-medium ${
@@ -885,68 +807,148 @@ function Reports() {
                                   : row.doctorNameEn}
                               </div>
                               <div
-                                className={`text-sm ${
+                                className={`text-xs ${
                                   isDark ? "text-gray-400" : "text-gray-500"
                                 }`}
                               >
                                 {t("reports.table.printNumber") || "Print"}:{" "}
                                 {row.printNumber}
                               </div>
+                              {/* Show category on mobile */}
+                              <div
+                                className={`text-xs sm:hidden mt-1 ${
+                                  isDark ? "text-gray-400" : "text-gray-600"
+                                }`}
+                              >
+                                {currentLang === "ar"
+                                  ? row.categoryNameAr
+                                  : row.categoryNameEn}
+                              </div>
                             </div>
                           </td>
-                          {/* <td
-                            className={`px-6 py-4 whitespace-nowrap text-sm ${
-                              isDark ? "text-gray-300" : "text-gray-900"
-                            }`}
-                          >
-                            {row.nationalId}
-                          </td> */}
+
+                          {/* Category - Sticky */}
                           <td
-                            className={`px-6 py-4 text-sm ${
-                              isDark ? "text-gray-300" : "text-gray-900"
+                            className={`px-4 py-4 text-sm hidden sm:table-cell sticky ${
+                              currentLang === "ar"
+                                ? "right-[180px]"
+                                : "left-[180px]"
+                            } z-20 ${
+                              isDark
+                                ? "bg-gray-800 text-gray-300"
+                                : "bg-white text-gray-900"
+                            } ${
+                              currentLang === "ar" ? "border-l-2" : "border-r-2"
+                            } border-gray-300 dark:border-gray-600 ${
+                              currentLang === "ar"
+                                ? "shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+                                : "shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
                             }`}
+                            style={{ minWidth: "130px" }}
                           >
                             {currentLang === "ar"
                               ? row.categoryNameAr
                               : row.categoryNameEn}
                           </td>
+
+                          {/* Department - Sticky */}
                           <td
-                            className={`px-6 py-4 text-sm ${
-                              isDark ? "text-gray-300" : "text-gray-900"
+                            className={`px-4 py-4 text-sm hidden md:table-cell sticky ${
+                              currentLang === "ar"
+                                ? "right-[180px] sm:right-[310px]"
+                                : "left-[180px] sm:left-[310px]"
+                            } z-20 ${
+                              isDark
+                                ? "bg-gray-800 text-gray-300"
+                                : "bg-white text-gray-900"
+                            } ${
+                              currentLang === "ar" ? "border-l-2" : "border-r-2"
+                            } border-gray-300 dark:border-gray-600 ${
+                              currentLang === "ar"
+                                ? "shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+                                : "shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
                             }`}
+                            style={{ minWidth: "140px" }}
                           >
                             {currentLang === "ar"
                               ? row.departmentsJoinedAr
                               : row.departmentsJoinedEn}
                           </td>
+
+                          {/* Daily shift columns (1-31) */}
+                          {Array.from({ length: 31 }, (_, i) => i + 1).map(
+                            (day) => {
+                              const shift = shiftMap[day]
+                              return (
+                                <td
+                                  key={day}
+                                  className={`px-2 py-4 text-center text-xs whitespace-nowrap ${
+                                    isDark ? "text-gray-300" : "text-gray-900"
+                                  }`}
+                                  style={{ minWidth: "80px" }}
+                                  title={
+                                    shift
+                                      ? currentLang === "ar"
+                                        ? shift.departmentAr
+                                        : shift.departmentEn
+                                      : ""
+                                  }
+                                >
+                                  {shift ? (
+                                    <div className="flex flex-col items-center gap-1">
+                                      <span className="font-semibold text-sm">
+                                        {shift.code}
+                                      </span>
+                                      <span
+                                        className={`text-[10px] ${
+                                          isDark
+                                            ? "text-gray-400"
+                                            : "text-gray-500"
+                                        }`}
+                                      >
+                                        {currentLang === "ar"
+                                          ? shift.departmentAr
+                                          : shift.departmentEn}
+                                      </span>
+                                    </div>
+                                  ) : (
+                                    <span className="text-gray-400">-</span>
+                                  )}
+                                </td>
+                              )
+                            }
+                          )}
+
+                          {/* Actions Column - Sticky on right */}
                           <td
-                            className={`px-6 py-4 whitespace-nowrap text-sm ${
-                              isDark ? "text-gray-300" : "text-gray-900"
+                            className={`px-4 py-4 sticky ${
+                              currentLang === "ar" ? "left-0" : "right-0"
+                            } z-20 ${isDark ? "bg-gray-800" : "bg-white"} ${
+                              currentLang === "ar"
+                                ? "shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+                                : "shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]"
                             }`}
+                            style={{ minWidth: "80px" }}
                           >
-                            {currentLang === "ar"
-                              ? row.scientificDegreeName
-                              : row.scientificDegreeNameEn}
-                          </td>
-                          <td
-                            className={`px-6 py-4 text-sm ${
-                              isDark ? "text-gray-300" : "text-gray-900"
-                            }`}
-                          >
-                            {currentLang === "ar"
-                              ? row.contractingTypeName
-                              : row.contractingTypeNameEn}
+                            <div className="text-center">
+                              <Link
+                                to={`/admin-panel/reports/doctor/${row.doctorId}`}
+                              >
+                                <button
+                                  className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors cursor-pointer"
+                                  title={t("categories.actions.view")}
+                                >
+                                  <Eye size={16} />
+                                </button>
+                              </Link>
+                            </div>
                           </td>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Right Table - Scrollable Days + Actions */}
+                      )
+                    })}
+                  </tbody>
+                </table>
               </div>
-
-              {/* Pagination - same as before */}
             </div>
           </>
         )}

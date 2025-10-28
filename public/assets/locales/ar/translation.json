@@ -3058,7 +3058,7 @@
       "subtitle": "رؤى بصرية وتحليلات البيانات",
       "usersDistribution": "توزيع المستخدمين",
       "rolesDistribution": "توزيع الأدوار",
-      "categoriesResources": "الفئات - الأطباء والموارد",
+      "categoriesResources": "التخصصات - الأطباء والموارد",
       "departmentsActivity": "نشاط الأقسام",
       "pendingRequestsBreakdown": "تفصيل الطلبات المعلقة",
       "degreesDistribution": "توزيع الدرجات",
@@ -3111,17 +3111,17 @@
       },
 
       "categories": {
-        "title": "الفئات",
-        "totalCategories": "إجمالي الفئات",
+        "title": "التخصصات",
+        "totalCategories": "إجمالي التخصصات",
         "activeCategories": "نشطة",
         "categoriesWithManagers": "بمديرين",
         "totalDoctorsInCategories": "إجمالي الأطباء",
-        "topActiveCategories": "أكثر الفئات نشاطاً",
+        "topActiveCategories": "أكثر التخصصات نشاطاً",
         "doctors": "الأطباء",
         "departments": "الأقسام",
         "rosters": "الجداول",
         "manager": "المدير",
-        "alerts": "تنبيهات الفئات"
+        "alerts": "تنبيهات التخصصات"
       },
 
       "configuration": {
@@ -3146,7 +3146,7 @@
         "topActiveDepartments": "أكثر الأقسام نشاطاً",
         "schedules": "الجداول",
         "doctors": "الأطباء",
-        "categories": "الفئات",
+        "categories": "التخصصات",
         "alerts": "تنبيهات الأقسام",
         "geoFenceCoverage": "تغطية السياج الجغرافي"
       },

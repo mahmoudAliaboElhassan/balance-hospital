@@ -86,15 +86,7 @@ export const approveLeave = createAsyncThunk(
 
       return { leave: response.data, id }
     } catch (error) {
-      return rejectWithValue({
-        message:
-          error.response?.data?.messageAr ||
-          error.response?.data?.messageEn ||
-          "حدث خطأ في الموافقة على الأجازة",
-        errors: error.response?.data?.errors || [],
-        status: error.response?.status,
-        timestamp: new Date().toISOString(),
-      })
+      return rejectWithValue(error)
     }
   }
 )
@@ -119,15 +111,7 @@ export const rejectLeave = createAsyncThunk(
 
       return { leave: response.data, id }
     } catch (error) {
-      return rejectWithValue({
-        message:
-          error.response?.data?.messageAr ||
-          error.response?.data?.messageEn ||
-          "حدث خطأ في رفض الأجازة",
-        errors: error.response?.data?.errors || [],
-        status: error.response?.status,
-        timestamp: new Date().toISOString(),
-      })
+      return rejectWithValue(error)
     }
   }
 )

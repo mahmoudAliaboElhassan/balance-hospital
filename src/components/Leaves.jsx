@@ -99,8 +99,8 @@ const Leaves = () => {
       if (res?.data?.data === false) {
         const message =
           i18next.language === "ar"
-            ? res.data.messageAr || "حدث خطأ أثناء الموافقة على الطلب"
-            : res.data.messageEn ||
+            ? res.response.data.messageAr || "حدث خطأ أثناء الموافقة على الطلب"
+            : res.response.data.messageEn ||
               "An error occurred while approving the request"
 
         Swal.fire({
@@ -125,8 +125,9 @@ const Leaves = () => {
     } catch (err) {
       const errorMsg =
         i18next.language === "ar"
-          ? "حدث خطأ غير متوقع أثناء العملية"
-          : "An unexpected error occurred"
+          ? err.response.data.messageAr || "حدث خطأ أثناء رفض الطلب"
+          : err.response.data.messageEn ||
+            "An error occurred while rejecting the request"
 
       Swal.fire({
         icon: "error",
@@ -167,10 +168,13 @@ const Leaves = () => {
         position: "top-right",
       })
     } catch (err) {
+      console.log("err", err)
+
       const errorMsg =
         i18next.language === "ar"
-          ? "حدث خطأ غير متوقع أثناء العملية"
-          : "An unexpected error occurred"
+          ? err.response.data.messageAr || "حدث خطأ أثناء رفض الطلب"
+          : err.response.data.messageEn ||
+            "An error occurred while rejecting the request"
 
       Swal.fire({
         icon: "error",
@@ -267,7 +271,7 @@ const Leaves = () => {
 
     return (
       <div className="flex gap-2">
-        {(request.statusCode === 0 || request.statusCode === 2) && (
+        {request.statusCode === 0 && (
           <button
             onClick={() => handleApproveRequest(request.requestId)}
             disabled={isProcessing}
@@ -286,7 +290,7 @@ const Leaves = () => {
           </button>
         )}
 
-        {(request.statusCode === 0 || request.statusCode === 1) && (
+        {request.statusCode === 0 && (
           <button
             onClick={() => handleRejectRequest(request.requestId)}
             disabled={isProcessing}
