@@ -265,6 +265,11 @@
       "inactive": "Inactive"
     },
     "sections": {
+      "leaves": {
+        "title": "Leaves Management",
+        "description": "Manage leave requests and schedules for this category",
+        "viewButton": "View Leaves"
+      },
       "description": {
         "title": "Description",
         "noDescription": "No description available"
@@ -3284,7 +3289,9 @@
       "all": "All",
       "pending": "Pending",
       "approved": "Approved",
-      "rejected": "Rejected"
+      "rejected": "Rejected",
+      "cancelled": "Cancelled",
+      "underReview": "Under Review"
     },
     "actions": {
       "approve": "Approve",

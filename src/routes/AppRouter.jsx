@@ -12,6 +12,7 @@ import AssignDepartmentManager from "../pages/adminPanel/department/assignDepart
 import AdminPanelIndex from "../pages/adminPanel/homePanel.jsx"
 import SpecifyRole from "../pages/adminPanel/specifyRole.jsx"
 
+const Leaves = lazy(() => import("../pages/adminPanel/category/Leaves.jsx"))
 const DoctorReports = lazy(() =>
   import("../pages/adminPanel/reports/doctorReports.jsx")
 )
@@ -220,6 +221,7 @@ const ProtectedAdminPanel = withGuard(AdminPanel)
 
 // Category Management (Requires userCanManageCategory permission)
 const ProtectedCategory = withGuard(Category, "userCanManageCategory")
+const ProtectedLeaves = withGuard(Leaves, "userCanManageCategory")
 const ProtedReports = withGuard(Reports, "userCanManageCategory")
 const ProtedDoctorReports = withGuard(DoctorReports, "userCanManageCategory")
 const ProtectedDashboard = withGuard(Dashboard, "userCanManageRostors")
@@ -459,6 +461,8 @@ const router = createBrowserRouter([
           // ========== CATEGORY MANAGEMENT ==========
           // Permission Required: userCanManageCategory
           { path: "categories", element: withSuspense(ProtectedCategory) },
+          { path: "categories", element: withSuspense(ProtectedCategory) },
+          { path: "leaves/:catId", element: withSuspense(ProtectedLeaves) },
           { path: "reports", element: withSuspense(ProtedReports) },
           {
             path: "reports/doctor/:docId",

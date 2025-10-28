@@ -4,6 +4,7 @@ import {
   getLeaveForReview,
   getLeaves,
   rejectLeave,
+  reviewReview,
 } from "../act/actLeaves"
 
 const initialState = {
@@ -58,6 +59,18 @@ const leavesSlice = createSlice({
         state.error = null
       })
       .addCase(getLeaves.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload
+      })
+      .addCase(reviewReview.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(reviewReview.fulfilled, (state, action) => {
+        state.loading = false
+        state.error = null
+      })
+      .addCase(reviewReview.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload
       })

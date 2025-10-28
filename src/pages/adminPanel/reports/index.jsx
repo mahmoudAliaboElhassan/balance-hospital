@@ -223,26 +223,30 @@ function Reports() {
                 </p>
               </div>{" "}
               {/* Add Export Button Here */}
-              {reports?.rows && reports.rows.length > 0 && (
-                <ExportReportsDropdown
-                  filters={filters}
-                  onExportStart={(format) => {
-                    console.log("Export started:", format)
-                  }}
-                  onExportSuccess={(format, label) => {
-                    // Optional: Show success toast/notification
-                    console.log("Export successful:", label)
-                  }}
-                  onExportError={(error, format) => {
-                    // Optional: Show error toast/notification
-                    console.error("Export failed:", error)
-                  }}
-                />
-              )}
-              <ExportDoctorAttendanceReport
-                reportsAttend={reportsAttend}
-                loadingGetReportsAttend={loadingGetReportsAttend}
-              />
+              <div className="flex flex-col gap-1 justify-center items-center">
+                {reports?.rows && reports.rows.length > 0 && (
+                  <ExportReportsDropdown
+                    filters={filters}
+                    onExportStart={(format) => {
+                      console.log("Export started:", format)
+                    }}
+                    onExportSuccess={(format, label) => {
+                      // Optional: Show success toast/notification
+                      console.log("Export successful:", label)
+                    }}
+                    onExportError={(error, format) => {
+                      // Optional: Show error toast/notification
+                      console.error("Export failed:", error)
+                    }}
+                  />
+                )}
+                {reportsAttend?.rows && reportsAttend.rows.length > 0 && (
+                  <ExportDoctorAttendanceReport
+                    reportsAttend={reportsAttend}
+                    loadingGetReportsAttend={loadingGetReportsAttend}
+                  />
+                )}
+              </div>
             </div>
           </div>
         </div>

@@ -63,7 +63,6 @@ import "../../../styles/general.css"
 import { toast } from "react-toastify"
 import Swal from "sweetalert2"
 import CategoryHeadsManagement from "../../../components/categoryHeads"
-import Leaves from "../../../components/Leaves"
 import { formatDate } from "../../../utils/formtDate"
 
 const SpecificCategory = () => {
@@ -2230,7 +2229,60 @@ const SpecificCategory = () => {
             </option>
           </select>
         </div>
-        <Leaves />{" "}
+        <div
+          className={`${
+            isDark ? "bg-gray-800" : "bg-white"
+          } rounded-2xl shadow-xl p-6 mb-8`}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div
+                className={`w-10 h-10 ${
+                  isDark ? "bg-yellow-900/30" : "bg-yellow-100"
+                } rounded-lg flex items-center justify-center ${
+                  isRTL ? "mr-3" : "ml-3"
+                }`}
+              >
+                <Calendar
+                  className={`w-5 h-5 ${
+                    isDark ? "text-yellow-400" : "text-yellow-600"
+                  }`}
+                />
+              </div>
+              <div>
+                <h2
+                  className={`text-xl font-bold ${
+                    isDark ? "text-white" : "text-gray-900"
+                  }`}
+                >
+                  {t(
+                    "specificCategory.sections.leaves.title",
+                    "Leaves Management"
+                  )}
+                </h2>
+                <p
+                  className={`text-sm ${
+                    isDark ? "text-gray-400" : "text-gray-500"
+                  } mt-1`}
+                >
+                  {t(
+                    "specificCategory.sections.leaves.description",
+                    "Manage leave requests and schedules"
+                  )}
+                </p>
+              </div>
+            </div>
+            <Link to={`/admin-panel/leaves/${id}`}>
+              <button className="inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                <ExternalLink size={18} />
+                {t(
+                  "specificCategory.sections.leaves.viewButton",
+                  "View Leaves"
+                )}
+              </button>
+            </Link>
+          </div>
+        </div>{" "}
         <CategoryHeadsManagement
           selectedCategory={selectedCategory}
           isDark={isDark}

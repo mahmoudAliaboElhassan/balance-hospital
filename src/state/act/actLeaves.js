@@ -90,6 +90,29 @@ export const approveLeave = createAsyncThunk(
     }
   }
 )
+export const reviewReview = createAsyncThunk(
+  "leaves/reviewReview",
+  async ({ id }, { rejectWithValue }) => {
+    try {
+      const url = `/api/v1/Leaves/${id}/review`
+
+      const response = await axiosInstance.put(
+        url,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      )
+
+      return { leave: response.data, id }
+    } catch (error) {
+      return rejectWithValue(error)
+    }
+  }
+)
 
 // Reject leave - FIXED: was using wrong action type "leaves/getLeaveForReview"
 export const rejectLeave = createAsyncThunk(

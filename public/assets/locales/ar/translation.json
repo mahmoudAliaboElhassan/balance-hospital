@@ -267,6 +267,11 @@
       "inactive": "غير نشط"
     },
     "sections": {
+      "leaves": {
+        "title": "إدارة الإجازات",
+        "description": "إدارة طلبات الإجازات والجداول الزمنية لهذا التخصص",
+        "viewButton": "عرض الإجازات"
+      },
       "description": {
         "title": "الوصف",
         "noDescription": "لا يوجد وصف"
@@ -3278,7 +3283,9 @@
       "all": "الكل",
       "pending": "قيد الانتظار",
       "approved": "موافق عليه",
-      "rejected": "مرفوض"
+      "rejected": "مرفوض",
+      "cancelled": "ملغي",
+      "underReview": "تحت المراجعه"
     },
     "actions": {
       "approve": "موافقة",

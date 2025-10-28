@@ -23,11 +23,12 @@ import {
   clearActionError,
   setFilter,
   clearLastAction,
-} from "../state/slices/leaves"
+} from "../../../state/slices/leaves"
 import Swal from "sweetalert2"
 import { toast } from "react-toastify"
 import i18next from "i18next"
-import { formatDate } from "../utils/formtDate"
+import { formatDate } from "../../../utils/formtDate"
+import { reviewReview } from "../../../state/act/actLeaves"
 
 const Leaves = () => {
   const dispatch = useDispatch()
@@ -87,18 +88,22 @@ const Leaves = () => {
 
   // Handle approve/reject actions
 
-  const handleApproveRequest = async (requestId) => {
+  const handleApproveRequest = async (requestId, status) => {
     try {
+      if (status !== 4) {
+        await dispatch(reviewReview({ id: requestId })).unwrap()
+      }
       const res = await dispatch(approveLeave({ id: requestId })).unwrap()
-
       // لو فشل الطلب
-      if (res?.data?.data === false) {
+      console.log("res", res)
+      console.log("res leav", res.leave.data)
+
+      if (res?.leave?.data === false) {
         const message =
           i18next.language === "ar"
             ? res.response.data.messageAr || "حدث خطأ أثناء الموافقة على الطلب"
             : res.response.data.messageEn ||
               "An error occurred while approving the request"
-
         Swal.fire({
           icon: "error",
           title: i18next.language === "ar" ? "فشل العملية" : "Operation Failed",
@@ -107,24 +112,23 @@ const Leaves = () => {
         })
         return
       }
-
       // في حالة النجاح
       const successMsg =
         i18next.language === "ar"
-          ? res.data.messageAr || "تمت الموافقة بنجاح"
-          : res.data.messageEn || "Approved successfully"
-
+          ? res.leave.messageAr || "تمت الموافقة بنجاح"
+          : res.leave.messageEn || "Approved successfully"
       toast.success(successMsg, {
         duration: 3000,
         position: "top-right",
       })
+      handleStatusChange("")
     } catch (err) {
+      console.log("err", err)
       const errorMsg =
         i18next.language === "ar"
-          ? err.response.data.messageAr || "حدث خطأ أثناء رفض الطلب"
-          : err.response.data.messageEn ||
-            "An error occurred while rejecting the request"
-
+          ? err.response?.data.messageAr || "حدث خطأ أثناء قبول الطلب"
+          : err.response?.data.messageEn ||
+            "An error occurred while approving the request"
       Swal.fire({
         icon: "error",
         title: i18next.language === "ar" ? "خطأ في النظام" : "System Error",
@@ -134,10 +138,14 @@ const Leaves = () => {
     }
   }
 
-  const handleRejectRequest = async (requestId) => {
+  const handleRejectRequest = async (requestId, status) => {
     try {
+      if (status !== 4) {
+        await dispatch(reviewReview({ id: requestId })).unwrap()
+      }
       const res = await dispatch(rejectLeave({ id: requestId })).unwrap()
-      console.log("res", res.leave.data)
+      console.log("res", res)
+      console.log("res leav", res.leave.data)
       if (res?.leave?.data === false) {
         const message =
           i18next.language === "ar"
@@ -156,13 +164,14 @@ const Leaves = () => {
 
       const successMsg =
         i18next.language === "ar"
-          ? res.data.messageAr || "تم رفض الطلب بنجاح"
-          : res.data.messageEn || "Request rejected successfully"
+          ? res.leave.messageAr || "تم رفض الطلب بنجاح"
+          : res.leave.messageEn || "Request rejected successfully"
 
       toast.success(successMsg, {
         duration: 3000,
         position: "top-right",
       })
+      handleStatusChange("")
     } catch (err) {
       console.log("err", err)
 
@@ -252,6 +261,8 @@ const Leaves = () => {
     { value: "0", label: t("leaves.filters.pending") },
     { value: "1", label: t("leaves.filters.approved") },
     { value: "2", label: t("leaves.filters.rejected") },
+    { value: "3", label: t("leaves.filters.cancelled") },
+    { value: "4", label: t("leaves.filters.underReview") },
   ]
 
   // Filter leaves based on status
@@ -265,47 +276,50 @@ const Leaves = () => {
   const renderActionButtons = (request) => {
     const isProcessing = actionLoading
 
+    console.log("request")
     return (
       <div className="flex gap-2">
-        {request.statusCode === 0 ||
-          (request.statusCode === 4 && (
-            <button
-              onClick={() => handleApproveRequest(request.requestId)}
-              disabled={isProcessing}
-              className={`flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-                isDark
-                  ? "bg-green-600 hover:bg-green-700 text-white"
-                  : "bg-green-600 hover:bg-green-700 text-white"
-              }`}
-            >
-              {isProcessing ? (
-                <RefreshCw className="w-4 h-4 animate-spin" />
-              ) : (
-                <Check className="w-4 h-4" />
-              )}
-              {t("leaves.actions.approve")}
-            </button>
-          ))}
+        {(request.statusCode === 0 || request.statusCode === 4) && (
+          <button
+            onClick={() =>
+              handleApproveRequest(request.requestId, request.statusCode)
+            }
+            disabled={isProcessing}
+            className={`flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+              isDark
+                ? "bg-green-600 hover:bg-green-700 text-white"
+                : "bg-green-600 hover:bg-green-700 text-white"
+            }`}
+          >
+            {isProcessing ? (
+              <RefreshCw className="w-4 h-4 animate-spin" />
+            ) : (
+              <Check className="w-4 h-4" />
+            )}
+            {t("leaves.actions.approve")}
+          </button>
+        )}
 
-        {request.statusCode === 0 ||
-          (request.statusCode === 4 && (
-            <button
-              onClick={() => handleRejectRequest(request.requestId)}
-              disabled={isProcessing}
-              className={`flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-                isDark
-                  ? "bg-red-600 hover:bg-red-700 text-white"
-                  : "bg-red-600 hover:bg-red-700 text-white"
-              }`}
-            >
-              {isProcessing ? (
-                <RefreshCw className="w-4 h-4 animate-spin" />
-              ) : (
-                <X className="w-4 h-4" />
-              )}
-              {t("leaves.actions.reject")}
-            </button>
-          ))}
+        {(request.statusCode === 0 || request.statusCode === 4) && (
+          <button
+            onClick={() =>
+              handleRejectRequest(request.requestId, request.statusCode)
+            }
+            disabled={isProcessing}
+            className={`flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+              isDark
+                ? "bg-red-600 hover:bg-red-700 text-white"
+                : "bg-red-600 hover:bg-red-700 text-white"
+            }`}
+          >
+            {isProcessing ? (
+              <RefreshCw className="w-4 h-4 animate-spin" />
+            ) : (
+              <X className="w-4 h-4" />
+            )}
+            {t("leaves.actions.reject")}
+          </button>
+        )}
       </div>
     )
   }
@@ -378,7 +392,7 @@ const Leaves = () => {
       {showLeaves && (
         <>
           {/* Action Error Alert */}
-          {actionError && (
+          {/* {actionError && (
             <div
               className={`mb-6 rounded-lg p-4 ${
                 isDark
@@ -420,7 +434,7 @@ const Leaves = () => {
                 </button>
               </div>
             </div>
-          )}
+          )} */}
 
           {/* Success Alert */}
           {lastAction && (
@@ -583,17 +597,10 @@ const Leaves = () => {
                             isDark ? "text-white" : "text-gray-900"
                           }`}
                         >
-                          {request.doctorNameAr || t("leaves.nameNotSpecified")}
+                          {currentLang == "en"
+                            ? request.doctorNameEn
+                            : request.doctorNameAr}{" "}
                         </h3>
-                        {request.doctorNameEn && (
-                          <p
-                            className={`text-sm truncate ${
-                              isDark ? "text-gray-400" : "text-gray-600"
-                            }`}
-                          >
-                            {request.doctorNameEn}
-                          </p>
-                        )}
                       </div>
                       <div className="mr-3 flex-shrink-0">
                         {renderStatusBadge(
