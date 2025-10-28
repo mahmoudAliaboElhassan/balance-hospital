@@ -1,5 +1,6 @@
 import ExcelJS from "exceljs"
 import { formatDate } from "../../../utils/formtDate"
+import { useTranslation } from "react-i18next"
 
 export const exportDoctorReportToExcel = async (report, currentLang, t) => {
   const workbook = new ExcelJS.Workbook()
@@ -7,7 +8,6 @@ export const exportDoctorReportToExcel = async (report, currentLang, t) => {
   // Set workbook properties
   workbook.creator = "Hospital Management System"
   workbook.created = new Date()
-
   const isArabic = currentLang === "ar"
 
   // ============ SHEET 1: Doctor Information & Summary ============

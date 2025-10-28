@@ -1,8 +1,7 @@
 import i18next from "i18next"
+import { useTranslation } from "react-i18next"
 
 export const formatDate = (dateString) => {
-  if (!dateString) return t("common.notAvailable")
-
   const date = new Date(dateString)
   date.setHours(date.getHours() + 3)
 
