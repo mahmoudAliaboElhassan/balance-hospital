@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
 import {
+  exportExcel,
   getDashboardData,
   getDoctorReports,
   getReports,
@@ -16,6 +17,7 @@ const initialState = {
   getReportsAttendError: null,
   dashboardData: null,
   loadingGetDashboardData: false,
+  loadingExportReport: false,
   dashboardError: null,
   lastUpdated: null,
   doctorReport: null,
@@ -127,6 +129,15 @@ export const reportSlice = createSlice({
       .addCase(getDoctorReports.rejected, (state, action) => {
         state.loadingDoctorReport = false
         state.doctorReportError = action.payload
+      })
+      .addCase(exportExcel.pending, (state) => {
+        state.loadingExportReport = true
+      })
+      .addCase(exportExcel.fulfilled, (state, action) => {
+        state.loadingExportReport = false
+      })
+      .addCase(exportExcel.rejected, (state, action) => {
+        state.loadingExportReport = false
       })
   },
 })

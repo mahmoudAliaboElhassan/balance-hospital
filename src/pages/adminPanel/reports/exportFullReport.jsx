@@ -29,7 +29,7 @@ function ExportReportsDropdown({
   const dispatch = useDispatch()
   const { t, i18n } = useTranslation()
   const { mymode } = useSelector((state) => state.mode)
-  const { loadingExportExcel } = useSelector((state) => state.reports)
+  const { loadingExportReport } = useSelector((state) => state.reports)
 
   const [showExportMenu, setShowExportMenu] = useState(false)
   const [exportingFormat, setExportingFormat] = useState(null)
@@ -169,18 +169,18 @@ function ExportReportsDropdown({
       {/* Main Export Button */}
       <button
         onClick={() => setShowExportMenu(!showExportMenu)}
-        disabled={loadingExportExcel}
+        disabled={loadingExportReport}
         className={`flex items-center justify-center w-full gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
           isDark
             ? "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
             : "bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
         } ${
-          loadingExportExcel
+          loadingExportReport
             ? "opacity-50 cursor-not-allowed"
             : "shadow-lg hover:shadow-xl"
         }`}
       >
-        {loadingExportExcel ? (
+        {loadingExportReport ? (
           <>
             <Loader2 size={20} className="animate-spin" />
             <span>{t("reports.export.exporting") || "Exporting..."}</span>
@@ -200,7 +200,7 @@ function ExportReportsDropdown({
       </button>
 
       {/* Dropdown Menu */}
-      {showExportMenu && !loadingExportExcel && (
+      {showExportMenu && !loadingExportReport && (
         <div
           className={`absolute ${
             isRTL ? "left-0" : "right-0"
