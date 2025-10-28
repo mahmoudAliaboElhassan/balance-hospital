@@ -326,7 +326,6 @@ const ShiftInfo = ({ workingHour, isDark, isRTL, t }) => {
   if (!workingHour) return null
 
   // Format date
-   
 
   // Format time
   const formatTime = (timeString) => {

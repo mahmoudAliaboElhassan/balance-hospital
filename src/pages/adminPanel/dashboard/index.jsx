@@ -630,7 +630,7 @@ const Dashboard = () => {
     departments: false,
     managers: false,
     rosters: false,
-    charts: false,
+    charts: true,
   })
 
   const isDark = mymode === "dark"
@@ -1213,6 +1213,9 @@ const Dashboard = () => {
                         (category) => (
                           <div
                             key={category.id}
+                            onClick={() =>
+                              navigate(`/admin-panel/category/${category.id}`)
+                            }
                             className={`p-4 rounded-lg border ${
                               isDark
                                 ? "bg-gray-700 border-gray-600 hover:bg-gray-650"
@@ -1231,14 +1234,6 @@ const Dashboard = () => {
                                   >
                                     {category.code}
                                   </span>
-                                  <ExternalLink
-                                    onClick={() =>
-                                      navigate(
-                                        `/admin-panel/category/${category.id}`
-                                      )
-                                    }
-                                    className="w-4 h-4 text-gray-400"
-                                  />
                                 </div>
                                 <p
                                   className={`font-medium text-sm ${
@@ -1667,6 +1662,9 @@ const Dashboard = () => {
                         (dept) => (
                           <div
                             key={dept.id}
+                            onClick={() =>
+                              navigate(`/admin-panel/department/${dept.id}`)
+                            }
                             className={`p-4 rounded-lg border ${
                               isDark
                                 ? "bg-gray-700 border-gray-600 hover:bg-gray-650"
@@ -1688,14 +1686,6 @@ const Dashboard = () => {
                                   {dept.hasGeoFence && (
                                     <MapPin className="w-4 h-4 text-green-500" />
                                   )}
-                                  <ExternalLink
-                                    onClick={() =>
-                                      navigate(
-                                        `/admin-panel/department/${dept.id}`
-                                      )
-                                    }
-                                    className="w-4 h-4 text-gray-400"
-                                  />
                                 </div>
                                 <p
                                   className={`font-medium text-sm mb-1 ${

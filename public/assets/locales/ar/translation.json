@@ -2069,7 +2069,7 @@
 
     "workingHourss": {
       "generateTitle": "توليد متطلبات الورديات",
-      "generateSubtitle": "توليد ساعات العمل لجميع الورديات والأقسام",
+      "generateSubtitle": "توليد ساعات العمل لجميع الورديات والأماكن",
       "infoTitle": "حول عملية توليد ساعات العمل",
       "infoDescription": "تقوم هذه العملية بإنشاء فترات ساعات عمل فردية لكل يوم من فترة الجدول، لكل وردية ونوع تعاقد. هذا مطلوب قبل تعيين الأطباء في ورديات محددة.",
       "generateSettings": "إعدادات التوليد",
@@ -2088,10 +2088,10 @@
       "overallProgress": "التقدم العام",
       "cellsGenerated": "فترات تم توليدها",
       "selectStructure": "اختر الهيكل لتوليد الساعات",
-      "hierarchyInfo": "اختر الأقسام ثم الورديات ثم الدرجات العلمية. اتركها فارغة لتوليدها للجميع.",
+      "hierarchyInfo": "اختر الأماكن ثم الورديات ثم الدرجات العلمية. اتركها فارغة لتوليدها للجميع.",
       "noStructure": "لم يتم العثور على هيكل للجدول",
       "selectionSummary": "ملخص التحديد",
-      "departments": "الأقسام",
+      "departments": "الأماكن",
       "shifts": "الورديات",
       "degrees": "الدرجات العلمية",
       "overwriteHelp": "استبدال ساعات العمل الحالية بالقيم الافتراضية",
@@ -2909,7 +2909,7 @@
     },
 
     "placeholders": {
-      "name": "مثلاً: قسم الطوارئ - المدخل الرئيسي"
+      "name": "مثلاً: مكان الطوارئ - المدخل الرئيسي"
     },
 
     "hints": {
@@ -3059,14 +3059,14 @@
       "usersDistribution": "توزيع المستخدمين",
       "rolesDistribution": "توزيع الأدوار",
       "categoriesResources": "التخصصات - الأطباء والموارد",
-      "departmentsActivity": "نشاط الأقسام",
+      "departmentsActivity": "نشاط الأماكن",
       "pendingRequestsBreakdown": "تفصيل الطلبات المعلقة",
       "degreesDistribution": "توزيع الدرجات",
       "contractingTypes": "أنواع التعاقد - المستخدمين وأقصى ساعات",
       "shiftTypesUsage": "أنواع الورديات - الاستخدام اليوم",
       "rostersCompletion": "الجداول النشطة - تقدم الإنجاز",
       "doctors": "الأطباء",
-      "departments": "الأقسام",
+      "departments": "الأماكن",
       "activeRosters": "الجداول النشطة",
       "activeSchedules": "الجداول النشطة",
       "assignedDoctors": "الأطباء المعينين",
@@ -3118,7 +3118,7 @@
         "totalDoctorsInCategories": "إجمالي الأطباء",
         "topActiveCategories": "أكثر التخصصات نشاطاً",
         "doctors": "الأطباء",
-        "departments": "الأقسام",
+        "departments": "الأماكن",
         "rosters": "الجداول",
         "manager": "المدير",
         "alerts": "تنبيهات التخصصات"
@@ -3138,16 +3138,16 @@
       },
 
       "departments": {
-        "title": "الأقسام",
-        "totalDepartments": "إجمالي الأقسام",
+        "title": "الأماكن",
+        "totalDepartments": "إجمالي الأماكن",
         "activeDepartments": "نشطة",
         "departmentsWithManagers": "بمديرين",
         "totalActiveSchedules": "الجداول النشطة",
-        "topActiveDepartments": "أكثر الأقسام نشاطاً",
+        "topActiveDepartments": "أكثر الأماكن نشاطاً",
         "schedules": "الجداول",
         "doctors": "الأطباء",
         "categories": "التخصصات",
-        "alerts": "تنبيهات الأقسام",
+        "alerts": "تنبيهات الأماكن",
         "geoFenceCoverage": "تغطية السياج الجغرافي"
       },
 

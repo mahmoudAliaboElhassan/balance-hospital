@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useTranslation } from "react-i18next"
 import {
@@ -13,10 +13,6 @@ import {
   FileText,
   CalendarDays,
   Filter,
-  Award,
-  Mail,
-  Phone,
-  Eye,
 } from "lucide-react"
 import { Link, useParams } from "react-router-dom"
 import {
@@ -271,43 +267,45 @@ const Leaves = () => {
 
     return (
       <div className="flex gap-2">
-        {request.statusCode === 0 && (
-          <button
-            onClick={() => handleApproveRequest(request.requestId)}
-            disabled={isProcessing}
-            className={`flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-              isDark
-                ? "bg-green-600 hover:bg-green-700 text-white"
-                : "bg-green-600 hover:bg-green-700 text-white"
-            }`}
-          >
-            {isProcessing ? (
-              <RefreshCw className="w-4 h-4 animate-spin" />
-            ) : (
-              <Check className="w-4 h-4" />
-            )}
-            {t("leaves.actions.approve")}
-          </button>
-        )}
+        {request.statusCode === 0 ||
+          (request.statusCode === 4 && (
+            <button
+              onClick={() => handleApproveRequest(request.requestId)}
+              disabled={isProcessing}
+              className={`flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                isDark
+                  ? "bg-green-600 hover:bg-green-700 text-white"
+                  : "bg-green-600 hover:bg-green-700 text-white"
+              }`}
+            >
+              {isProcessing ? (
+                <RefreshCw className="w-4 h-4 animate-spin" />
+              ) : (
+                <Check className="w-4 h-4" />
+              )}
+              {t("leaves.actions.approve")}
+            </button>
+          ))}
 
-        {request.statusCode === 0 && (
-          <button
-            onClick={() => handleRejectRequest(request.requestId)}
-            disabled={isProcessing}
-            className={`flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-              isDark
-                ? "bg-red-600 hover:bg-red-700 text-white"
-                : "bg-red-600 hover:bg-red-700 text-white"
-            }`}
-          >
-            {isProcessing ? (
-              <RefreshCw className="w-4 h-4 animate-spin" />
-            ) : (
-              <X className="w-4 h-4" />
-            )}
-            {t("leaves.actions.reject")}
-          </button>
-        )}
+        {request.statusCode === 0 ||
+          (request.statusCode === 4 && (
+            <button
+              onClick={() => handleRejectRequest(request.requestId)}
+              disabled={isProcessing}
+              className={`flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                isDark
+                  ? "bg-red-600 hover:bg-red-700 text-white"
+                  : "bg-red-600 hover:bg-red-700 text-white"
+              }`}
+            >
+              {isProcessing ? (
+                <RefreshCw className="w-4 h-4 animate-spin" />
+              ) : (
+                <X className="w-4 h-4" />
+              )}
+              {t("leaves.actions.reject")}
+            </button>
+          ))}
       </div>
     )
   }
