@@ -53,7 +53,6 @@ function DoctorData() {
   }, [dispatch, id])
 
   // Helper function to format date
-   
 
   // Helper function to get status badge
   const getStatusBadge = (isActive, label) => {

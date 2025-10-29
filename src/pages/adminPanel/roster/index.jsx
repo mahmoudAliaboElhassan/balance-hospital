@@ -807,7 +807,7 @@ function Roster() {
                         >
                           {t("roster.createFirstRoster")}
                         </p>
-                        <button
+                        {/* <button
                           onClick={() =>
                             navigate("/admin-panel/rosters/create")
                           }
@@ -815,7 +815,7 @@ function Roster() {
                         >
                           <Plus size={16} className={isRTL ? "ml-2" : "mr-2"} />
                           {t("roster.actions.createBasic")}
-                        </button>
+                        </button> */}
                       </td>
                     </tr>
                   ) : (
