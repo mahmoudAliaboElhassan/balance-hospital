@@ -2272,15 +2272,19 @@ const SpecificCategory = () => {
                 </p>
               </div>
             </div>
-            <Link to={`/admin-panel/leaves/${id}`}>
-              <button className="inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
-                <ExternalLink size={18} />
-                {t(
-                  "specificCategory.sections.leaves.viewButton",
-                  "View Leaves"
-                )}
-              </button>
-            </Link>
+
+            <button
+              onClick={() => {
+                window.scrollTo({
+                  top: 0,
+                })
+                navigate(`/admin-panel/leaves/${id}`)
+              }}
+              className="inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+            >
+              <ExternalLink size={18} />
+              {t("specificCategory.sections.leaves.viewButton", "View Leaves")}
+            </button>
           </div>
         </div>{" "}
         <CategoryHeadsManagement
