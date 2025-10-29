@@ -1444,7 +1444,7 @@ const Dashboard = () => {
                             onClick={() => {
                               window.scrollTo({
                                 top: 0,
-                                behavior: "smooth",
+                                // behavior: "smooth",
                               })
                               navigate(`/admin-panel/category/${category.id}`)
                             }}
@@ -1897,7 +1897,7 @@ const Dashboard = () => {
                             onClick={() => {
                               window.scrollTo({
                                 top: 0,
-                                behavior: "smooth",
+                                // behavior: "smooth",
                               })
                               navigate(`/admin-panel/department/${dept.id}`)
                             }}
