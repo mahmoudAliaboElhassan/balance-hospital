@@ -23,6 +23,7 @@ import {
   clearActionError,
   setFilter,
   clearLastAction,
+  clearLeaves,
 } from "../../../state/slices/leaves"
 import Swal from "sweetalert2"
 import { toast } from "react-toastify"
@@ -35,9 +36,6 @@ const Leaves = () => {
   const { catId: categoryId } = useParams()
   const { t, i18n } = useTranslation()
   const { mymode } = useSelector((state) => state.mode)
-
-  const [showLeaves, setShowLeaves] = useState(true)
-  const [localFilters, setLocalFilters] = useState({ status: "" })
 
   const {
     leaves,
@@ -53,18 +51,46 @@ const Leaves = () => {
   const isRTL = i18n.language === "ar"
   const currentLang = i18n.language || "ar"
 
+  const [showLeaves, setShowLeaves] = useState(true)
+  const [localFilters, setLocalFilters] = useState({ status: "" })
+
+  // Get first and last day of current month
+  const getCurrentMonthDates = () => {
+    const now = new Date()
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 2)
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+
+    return {
+      fromDate: firstDay.toISOString().split("T")[0],
+      toDate: lastDay.toISOString().split("T")[0],
+    }
+  }
+
+  const [dateFilters, setDateFilters] = useState(getCurrentMonthDates())
+
   // Fetch leaves on component mount
   useEffect(() => {
     if (categoryId && !isNaN(categoryId)) {
-      dispatch(getLeaves({ categoryId }))
+      dispatch(
+        getLeaves({
+          categoryId,
+          fromDate: dateFilters.fromDate,
+          toDate: dateFilters.toDate,
+        })
+      )
     }
   }, [dispatch, categoryId])
-
   // Handle last action success
   useEffect(() => {
     if (lastAction) {
       if (categoryId && !isNaN(categoryId)) {
-        dispatch(getLeaves({ categoryId }))
+        dispatch(
+          getLeaves({
+            categoryId,
+            fromDate: dateFilters.fromDate,
+            toDate: dateFilters.toDate,
+          })
+        )
       }
       const timer = setTimeout(() => {
         dispatch(clearLastAction())
@@ -72,7 +98,6 @@ const Leaves = () => {
       return () => clearTimeout(timer)
     }
   }, [lastAction, categoryId, dispatch])
-
   // Handle status filter change
   const handleStatusChange = (status) => {
     setLocalFilters((prev) => ({ ...prev, status }))
@@ -80,12 +105,45 @@ const Leaves = () => {
   }
 
   // Handle refresh
-  const handleRefresh = () => {
-    if (categoryId && !isNaN(categoryId)) {
-      dispatch(getLeaves({ categoryId }))
-    }
+  const handleDateChange = (field, value) => {
+    setDateFilters((prev) => ({ ...prev, [field]: value }))
   }
 
+  // Handle apply date filters
+  const handleApplyDateFilters = () => {
+    if (categoryId && !isNaN(categoryId)) {
+      dispatch(
+        getLeaves({
+          categoryId,
+          fromDate: dateFilters.fromDate,
+          toDate: dateFilters.toDate,
+        })
+      )
+        .unwrap()
+        .catch((err) => {
+          const errorMsg = err.message
+          Swal.fire({
+            icon: "error",
+            title:
+              i18next.language === "ar" ? "فشل العملية" : "Operation Failed",
+            text: errorMsg,
+            confirmButtonText: i18next.language === "ar" ? "حسناً" : "OK",
+          })
+        })
+      dispatch(clearLeaves())
+    }
+  }
+  const handleRefresh = () => {
+    if (categoryId && !isNaN(categoryId)) {
+      dispatch(
+        getLeaves({
+          categoryId,
+          fromDate: dateFilters.fromDate,
+          toDate: dateFilters.toDate,
+        })
+      )
+    }
+  }
   // Handle approve/reject actions
 
   const handleApproveRequest = async (requestId, status) => {
@@ -483,6 +541,89 @@ const Leaves = () => {
             </div>
           )}
 
+          <div
+            className={`p-4 rounded-lg mb-4 ${
+              isDark ? "bg-gray-700" : "bg-gray-50"
+            }`}
+          >
+            <div className="flex flex-wrap gap-4 items-end">
+              <div className="flex items-center gap-2 mb-2">
+                <Calendar
+                  className={`w-5 h-5 ${
+                    isDark ? "text-gray-400" : "text-gray-500"
+                  }`}
+                />
+                <span
+                  className={`text-sm font-medium ${
+                    isDark ? "text-gray-300" : "text-gray-700"
+                  }`}
+                >
+                  {t("department.filters.dateRange") || "تصفية حسب التاريخ"}
+                </span>
+              </div>
+
+              <div className="flex flex-wrap gap-4 items-end flex-1">
+                <div className="flex-1 min-w-[200px]">
+                  <label
+                    className={`block text-sm font-medium mb-2 ${
+                      isDark ? "text-gray-300" : "text-gray-700"
+                    }`}
+                  >
+                    {t("leaves.from") || "من"}
+                  </label>
+                  <input
+                    type="date"
+                    value={dateFilters.fromDate}
+                    onChange={(e) =>
+                      handleDateChange("fromDate", e.target.value)
+                    }
+                    className={`w-full px-3 py-2 rounded-lg border transition-colors ${
+                      isDark
+                        ? "bg-gray-600 border-gray-500 text-white focus:border-blue-500"
+                        : "bg-white border-gray-300 text-gray-900 focus:border-blue-500"
+                    } focus:outline-none focus:ring-2 focus:ring-blue-500/20`}
+                  />
+                </div>
+
+                <div className="flex-1 min-w-[200px]">
+                  <label
+                    className={`block text-sm font-medium mb-2 ${
+                      isDark ? "text-gray-300" : "text-gray-700"
+                    }`}
+                  >
+                    {t("leaves.to") || "إلى"}
+                  </label>
+                  <input
+                    type="date"
+                    value={dateFilters.toDate}
+                    onChange={(e) => handleDateChange("toDate", e.target.value)}
+                    className={`w-full px-3 py-2 rounded-lg border transition-colors ${
+                      isDark
+                        ? "bg-gray-600 border-gray-500 text-white focus:border-blue-500"
+                        : "bg-white border-gray-300 text-gray-900 focus:border-blue-500"
+                    } focus:outline-none focus:ring-2 focus:ring-blue-500/20`}
+                  />
+                </div>
+
+                <button
+                  onClick={handleApplyDateFilters}
+                  disabled={loading}
+                  className={`px-6 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                    isDark
+                      ? "bg-blue-600 hover:bg-blue-700 text-white"
+                      : "bg-blue-600 hover:bg-blue-700 text-white"
+                  }`}
+                >
+                  {loading ? (
+                    <RefreshCw className="w-5 h-5 animate-spin" />
+                  ) : (
+                    t("common.apply") || "تطبيق"
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+
           {/* Filters */}
           <div
             className={`p-4 rounded-lg mb-6 ${
@@ -580,184 +721,185 @@ const Leaves = () => {
 
               {/* Requests Grid */}
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {filteredLeaves?.map((request) => (
-                  <div
-                    key={request.requestId}
-                    className={`rounded-lg shadow-sm border p-6 transition-all duration-200 hover:shadow-md ${
-                      isDark
-                        ? "bg-gray-700 border-gray-600 hover:border-gray-500"
-                        : "bg-white border-gray-200 hover:border-gray-300"
-                    }`}
-                  >
-                    {/* Header */}
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex-1 min-w-0">
-                        <h3
-                          className={`text-lg font-semibold mb-1 truncate ${
-                            isDark ? "text-white" : "text-gray-900"
-                          }`}
-                        >
-                          {currentLang == "en"
-                            ? request.doctorNameEn
-                            : request.doctorNameAr}{" "}
-                        </h3>
-                      </div>
-                      <div className="mr-3 flex-shrink-0">
-                        {renderStatusBadge(
-                          request.statusCode,
-                          request.statusNameAr
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Leave Type */}
+                {filteredLeaves &&
+                  filteredLeaves?.map((request) => (
                     <div
-                      className={`mb-4 p-3 rounded-lg border ${
+                      key={request.requestId}
+                      className={`rounded-lg shadow-sm border p-6 transition-all duration-200 hover:shadow-md ${
                         isDark
-                          ? "bg-blue-900/20 border-blue-700"
-                          : "bg-blue-50 border-blue-100"
+                          ? "bg-gray-700 border-gray-600 hover:border-gray-500"
+                          : "bg-white border-gray-200 hover:border-gray-300"
                       }`}
                     >
-                      <div className="flex items-center gap-2">
-                        <FileText
-                          className={`w-4 h-4 ${
-                            isDark ? "text-blue-400" : "text-blue-600"
-                          }`}
-                        />
-                        <span
-                          className={`text-sm font-medium ${
-                            isDark ? "text-blue-300" : "text-blue-900"
-                          }`}
-                        >
-                          {request.leaveTypeNameAr}
-                        </span>
-                        <span
-                          className={`text-xs ${
-                            isDark ? "text-blue-400" : "text-blue-600"
-                          }`}
-                        >
-                          ({request.leaveTypeNameEn})
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Details */}
-                    <div className="space-y-3">
-                      {/* Date Range */}
-                      <div className="flex items-start text-sm">
-                        <Calendar
-                          className={`w-4 h-4 ml-2 mt-0.5 flex-shrink-0 ${
-                            isDark ? "text-gray-500" : "text-gray-400"
-                          }`}
-                        />
-                        <div className="flex-1">
-                          <div
-                            className={
-                              isDark ? "text-gray-300" : "text-gray-600"
-                            }
-                          >
-                            <span className="font-medium">
-                              {t("leaves.from")}:
-                            </span>{" "}
-                            {formatDate(request.from)}
-                          </div>
-                          <div
-                            className={
-                              isDark ? "text-gray-300" : "text-gray-600"
-                            }
-                          >
-                            <span className="font-medium">
-                              {t("leaves.to")}:
-                            </span>{" "}
-                            {formatDate(request.to)}
-                          </div>
-                          <div
-                            className={`font-medium mt-1 ${
-                              isDark ? "text-blue-400" : "text-blue-600"
+                      {/* Header */}
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1 min-w-0">
+                          <h3
+                            className={`text-lg font-semibold mb-1 truncate ${
+                              isDark ? "text-white" : "text-gray-900"
                             }`}
                           >
-                            {calculateDuration(request.from, request.to)}{" "}
-                            {t("leaves.days")}
-                          </div>
+                            {currentLang == "en"
+                              ? request.doctorNameEn
+                              : request.doctorNameAr}{" "}
+                          </h3>
+                        </div>
+                        <div className="mr-3 flex-shrink-0">
+                          {renderStatusBadge(
+                            request.statusCode,
+                            request.statusNameAr
+                          )}
                         </div>
                       </div>
 
-                      {/* Reason */}
-                      {request.reason && (
-                        <div
-                          className={`flex items-start text-sm ${
-                            isDark ? "text-gray-300" : "text-gray-600"
-                          }`}
-                        >
+                      {/* Leave Type */}
+                      <div
+                        className={`mb-4 p-3 rounded-lg border ${
+                          isDark
+                            ? "bg-blue-900/20 border-blue-700"
+                            : "bg-blue-50 border-blue-100"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
                           <FileText
+                            className={`w-4 h-4 ${
+                              isDark ? "text-blue-400" : "text-blue-600"
+                            }`}
+                          />
+                          <span
+                            className={`text-sm font-medium ${
+                              isDark ? "text-blue-300" : "text-blue-900"
+                            }`}
+                          >
+                            {request.leaveTypeNameAr}
+                          </span>
+                          <span
+                            className={`text-xs ${
+                              isDark ? "text-blue-400" : "text-blue-600"
+                            }`}
+                          >
+                            ({request.leaveTypeNameEn})
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Details */}
+                      <div className="space-y-3">
+                        {/* Date Range */}
+                        <div className="flex items-start text-sm">
+                          <Calendar
                             className={`w-4 h-4 ml-2 mt-0.5 flex-shrink-0 ${
                               isDark ? "text-gray-500" : "text-gray-400"
                             }`}
                           />
-                          <span
-                            className="line-clamp-2 leading-relaxed"
-                            title={request.reason}
-                          >
-                            {request.reason}
-                          </span>
+                          <div className="flex-1">
+                            <div
+                              className={
+                                isDark ? "text-gray-300" : "text-gray-600"
+                              }
+                            >
+                              <span className="font-medium">
+                                {t("leaves.from")}:
+                              </span>{" "}
+                              {formatDate(request.startDate)}
+                            </div>
+                            <div
+                              className={
+                                isDark ? "text-gray-300" : "text-gray-600"
+                              }
+                            >
+                              <span className="font-medium">
+                                {t("leaves.to")}:
+                              </span>{" "}
+                              {formatDate(request.endDate)}
+                            </div>
+                            <div
+                              className={`font-medium mt-1 ${
+                                isDark ? "text-blue-400" : "text-blue-600"
+                              }`}
+                            >
+                              {calculateDuration(request.from, request.to)}{" "}
+                              {t("leaves.days")}
+                            </div>
+                          </div>
                         </div>
-                      )}
 
-                      {/* Requested At */}
-                      <div
-                        className={`flex items-center text-sm ${
-                          isDark ? "text-gray-300" : "text-gray-600"
-                        }`}
-                      >
-                        <Clock
-                          className={`w-4 h-4 ml-2 flex-shrink-0 ${
-                            isDark ? "text-gray-500" : "text-gray-400"
-                          }`}
-                        />
-                        <span>{formatDate(request.requestedAt)}</span>
-                      </div>
-
-                      {/* Approved/Rejected info */}
-                      {request.statusCode !== 0 && request.approvedAt && (
-                        <div
-                          className={`pt-2 border-t ${
-                            isDark ? "border-gray-600" : "border-gray-100"
-                          }`}
-                        >
+                        {/* Reason */}
+                        {request.reason && (
                           <div
-                            className={`text-xs ${
-                              isDark ? "text-gray-400" : "text-gray-500"
+                            className={`flex items-start text-sm ${
+                              isDark ? "text-gray-300" : "text-gray-600"
                             }`}
                           >
-                            {t("leaves.processedOn", {
-                              date: formatDate(request.approvedAt),
-                            })}
+                            <FileText
+                              className={`w-4 h-4 ml-2 mt-0.5 flex-shrink-0 ${
+                                isDark ? "text-gray-500" : "text-gray-400"
+                              }`}
+                            />
+                            <span
+                              className="line-clamp-2 leading-relaxed"
+                              title={request.reason}
+                            >
+                              {request.reason}
+                            </span>
                           </div>
-                          {request.approvedByNameAr && (
+                        )}
+
+                        {/* Requested At */}
+                        <div
+                          className={`flex items-center text-sm ${
+                            isDark ? "text-gray-300" : "text-gray-600"
+                          }`}
+                        >
+                          <Clock
+                            className={`w-4 h-4 ml-2 flex-shrink-0 ${
+                              isDark ? "text-gray-500" : "text-gray-400"
+                            }`}
+                          />
+                          <span>{formatDate(request.requestedAt)}</span>
+                        </div>
+
+                        {/* Approved/Rejected info */}
+                        {request.statusCode !== 0 && request.approvedAt && (
+                          <div
+                            className={`pt-2 border-t ${
+                              isDark ? "border-gray-600" : "border-gray-100"
+                            }`}
+                          >
                             <div
                               className={`text-xs ${
                                 isDark ? "text-gray-400" : "text-gray-500"
                               }`}
                             >
-                              {t("leaves.processedBy", {
-                                name: request.approvedByNameAr,
+                              {t("leaves.processedOn", {
+                                date: formatDate(request.approvedAt),
                               })}
                             </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
+                            {request.approvedByNameAr && (
+                              <div
+                                className={`text-xs ${
+                                  isDark ? "text-gray-400" : "text-gray-500"
+                                }`}
+                              >
+                                {t("leaves.processedBy", {
+                                  name: request.approvedByNameAr,
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
 
-                    {/* Actions */}
-                    <div
-                      className={`mt-6 pt-4 border-t ${
-                        isDark ? "border-gray-600" : "border-gray-100"
-                      }`}
-                    >
-                      {renderActionButtons(request)}
+                      {/* Actions */}
+                      <div
+                        className={`mt-6 pt-4 border-t ${
+                          isDark ? "border-gray-600" : "border-gray-100"
+                        }`}
+                      >
+                        {renderActionButtons(request)}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             </>
           )}

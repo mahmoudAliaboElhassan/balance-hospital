@@ -4,16 +4,24 @@ import axiosInstance from "../../utils/axiosInstance"
 // Get leaves list
 export const getLeaves = createAsyncThunk(
   "leaves/getLeaves",
-  async ({ categoryId }, { rejectWithValue }) => {
+  async ({ categoryId,fromDate,toDate }, { rejectWithValue }) => {
     try {
       const params = new URLSearchParams()
 
       if (categoryId !== undefined && categoryId !== null) {
         params.append("categoryId", categoryId)
       }
+      if (fromDate !== undefined && fromDate !== null) {
+        params.append("fromDate", fromDate)
+      }
+      if (toDate !== undefined && toDate !== null) {
+        params.append("toDate", toDate)
+      }
 
       const queryString = params.toString()
-      const url = `/api/v1/Leaves/inbox${queryString ? `?${queryString}` : ""}`
+      const url = `/api/v1/Leaves/calendar${
+        queryString ? `?${queryString}` : ""
+      }`
 
       const response = await axiosInstance.get(url, {
         headers: {

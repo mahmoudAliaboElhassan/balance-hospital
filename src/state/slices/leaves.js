@@ -55,7 +55,7 @@ const leavesSlice = createSlice({
       })
       .addCase(getLeaves.fulfilled, (state, action) => {
         state.loading = false
-        state.leaves = action.payload.leaves.data
+        state.leaves = action.payload.leaves.data.leaves
         state.error = null
       })
       .addCase(getLeaves.rejected, (state, action) => {
