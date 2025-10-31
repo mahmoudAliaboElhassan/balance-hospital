@@ -15,3 +15,15 @@ export const formatDate = (dateString) => {
   }
   return null
 }
+export const formatDay = (dateString) => {
+  const date = new Date(dateString)
+  date.setHours(date.getHours() + 3)
+  if (dateString) {
+    return new Intl.DateTimeFormat(i18next.language, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(date)
+  }
+  return null
+}

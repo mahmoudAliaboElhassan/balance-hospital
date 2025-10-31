@@ -131,6 +131,10 @@ const ConflictDetails = ({
 }) => {
   if (!doctor.hasConflict || !doctor.conflictDetails?.length) return null
 
+  const confilcts =
+    i18next.language === "en"
+      ? doctor.conflictDetails
+      : doctor.conflictDetailsAr
   return (
     <div className="mt-2">
       <button
@@ -154,7 +158,7 @@ const ConflictDetails = ({
               : "bg-yellow-50 text-yellow-700"
           }`}
         >
-          {doctor.conflictDetails.map((conflict, index) => (
+          {confilcts.map((conflict, index) => (
             <div
               key={index}
               className="flex items-center space-x-1 rtl:space-x-reverse"

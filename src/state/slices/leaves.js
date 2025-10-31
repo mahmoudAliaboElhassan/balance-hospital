@@ -55,7 +55,8 @@ const leavesSlice = createSlice({
       })
       .addCase(getLeaves.fulfilled, (state, action) => {
         state.loading = false
-        state.leaves = action.payload.leaves.data.leaves
+        console.log("Leaves fetched:", action.payload)
+        state.leaves = action.payload.leaves.data.items
         state.error = null
       })
       .addCase(getLeaves.rejected, (state, action) => {

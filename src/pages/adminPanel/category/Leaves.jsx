@@ -13,6 +13,7 @@ import {
   FileText,
   CalendarDays,
   Filter,
+  Briefcase,
 } from "lucide-react"
 import { Link, useParams } from "react-router-dom"
 import {
@@ -28,7 +29,7 @@ import {
 import Swal from "sweetalert2"
 import { toast } from "react-toastify"
 import i18next from "i18next"
-import { formatDate } from "../../../utils/formtDate"
+import { formatDate, formatDay } from "../../../utils/formtDate"
 import { reviewReview } from "../../../state/act/actLeaves"
 
 const Leaves = () => {
@@ -53,7 +54,14 @@ const Leaves = () => {
 
   const [showLeaves, setShowLeaves] = useState(true)
   const [localFilters, setLocalFilters] = useState({ status: "" })
+  const [expandedShifts, setExpandedShifts] = useState({})
 
+  const toggleShiftDetails = (requestId) => {
+    setExpandedShifts((prev) => ({
+      ...prev,
+      [requestId]: !prev[requestId],
+    }))
+  }
   // Get first and last day of current month
   const getCurrentMonthDates = () => {
     const now = new Date()
@@ -377,6 +385,157 @@ const Leaves = () => {
             )}
             {t("leaves.actions.reject")}
           </button>
+        )}
+      </div>
+    )
+  }
+
+  // Render shift assignments
+  const renderShiftAssignments = (request) => {
+    const assignments = request.assignmentsSummary
+    if (
+      !assignments ||
+      !assignments.shifts ||
+      assignments.shifts.length === 0
+    ) {
+      return null
+    }
+
+    const isExpanded = expandedShifts[request.requestId]
+
+    return (
+      <div
+        className={`mt-4 pt-4 border-t ${
+          isDark ? "border-gray-600" : "border-gray-100"
+        }`}
+      >
+        <button
+          onClick={() => toggleShiftDetails(request.requestId)}
+          className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors ${
+            isDark
+              ? "bg-gray-600 hover:bg-gray-500"
+              : "bg-gray-50 hover:bg-gray-100"
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            <Briefcase
+              className={`w-4 h-4 ${
+                isDark ? "text-blue-400" : "text-blue-600"
+              }`}
+            />
+            <span
+              className={`text-sm font-medium ${
+                isDark ? "text-gray-200" : "text-gray-700"
+              }`}
+            >
+              {currentLang === "ar" ? "النوبات المتأثرة" : "Affected Shifts"}
+              <span
+                className={`mr-2 ${isDark ? "text-blue-400" : "text-blue-600"}`}
+              >
+                ({assignments.totalShiftsCount})
+              </span>
+            </span>
+          </div>
+          {isExpanded ? (
+            <ChevronUp className="w-4 h-4" />
+          ) : (
+            <ChevronDown className="w-4 h-4" />
+          )}
+        </button>
+
+        {isExpanded && (
+          <div className="mt-3 space-y-2">
+            {assignments.shifts.map((shift, index) => (
+              <div
+                key={index}
+                className={`p-3 rounded-lg border ${
+                  isDark
+                    ? "bg-gray-600/50 border-gray-500"
+                    : "bg-white border-gray-200"
+                }`}
+              >
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div>
+                    <span
+                      className={`font-medium ${
+                        isDark ? "text-gray-400" : "text-gray-500"
+                      }`}
+                    >
+                      {currentLang === "ar" ? "التاريخ:" : "Date:"}
+                    </span>
+                    <div className={isDark ? "text-gray-200" : "text-gray-700"}>
+                      {formatDate(shift.shiftDate)}
+                    </div>
+                  </div>
+                  <div>
+                    <span
+                      className={`font-medium ${
+                        isDark ? "text-gray-400" : "text-gray-500"
+                      }`}
+                    >
+                      {currentLang === "ar" ? "اليوم:" : "Day:"}
+                    </span>
+                    <div className={isDark ? "text-gray-200" : "text-gray-700"}>
+                      {currentLang === "ar"
+                        ? shift.dayOfWeekAr
+                        : shift.dayOfWeekEn}
+                    </div>
+                  </div>
+                  <div>
+                    <span
+                      className={`font-medium ${
+                        isDark ? "text-gray-400" : "text-gray-500"
+                      }`}
+                    >
+                      {currentLang === "ar" ? "النوبة:" : "Shift:"}
+                    </span>
+                    <div className={isDark ? "text-gray-200" : "text-gray-700"}>
+                      {currentLang === "ar"
+                        ? shift.shiftNameAr
+                        : shift.shiftNameEn}
+                    </div>
+                  </div>
+                  <div>
+                    <span
+                      className={`font-medium ${
+                        isDark ? "text-gray-400" : "text-gray-500"
+                      }`}
+                    >
+                      {currentLang === "ar" ? "القسم:" : "Department:"}
+                    </span>
+                    <div className={isDark ? "text-gray-200" : "text-gray-700"}>
+                      {currentLang === "ar"
+                        ? shift.departmentNameAr
+                        : shift.departmentNameEn}
+                    </div>
+                  </div>
+                  <div className="col-span-2">
+                    <span
+                      className={`font-medium ${
+                        isDark ? "text-gray-400" : "text-gray-500"
+                      }`}
+                    >
+                      {currentLang === "ar" ? "الوقت:" : "Time:"}
+                    </span>
+                    <div className={isDark ? "text-gray-200" : "text-gray-700"}>
+                      {shift.startTime} - {shift.endTime} ({shift.durationHours}{" "}
+                      {currentLang === "ar" ? "ساعة" : "hours"})
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+            <div
+              className={`p-2 rounded text-center text-sm font-medium ${
+                isDark
+                  ? "bg-blue-900/30 text-blue-400"
+                  : "bg-blue-50 text-blue-700"
+              }`}
+            >
+              {currentLang === "ar" ? "إجمالي الساعات:" : "Total Hours:"}{" "}
+              {assignments.totalHours}
+            </div>
+          </div>
         )}
       </div>
     )
@@ -801,7 +960,7 @@ const Leaves = () => {
                               <span className="font-medium">
                                 {t("leaves.from")}:
                               </span>{" "}
-                              {formatDate(request.startDate)}
+                              {formatDay(request.leaveStartDate)}
                             </div>
                             <div
                               className={
@@ -811,14 +970,17 @@ const Leaves = () => {
                               <span className="font-medium">
                                 {t("leaves.to")}:
                               </span>{" "}
-                              {formatDate(request.endDate)}
+                              {formatDay(request.leaveEndDate)}
                             </div>
                             <div
                               className={`font-medium mt-1 ${
                                 isDark ? "text-blue-400" : "text-blue-600"
                               }`}
                             >
-                              {calculateDuration(request.from, request.to)}{" "}
+                              {calculateDuration(
+                                request.leaveStartDate,
+                                request.leaveEndDate
+                              )}{" "}
                               {t("leaves.days")}
                             </div>
                           </div>
@@ -889,6 +1051,7 @@ const Leaves = () => {
                           </div>
                         )}
                       </div>
+                      {renderShiftAssignments(request)}
 
                       {/* Actions */}
                       <div
