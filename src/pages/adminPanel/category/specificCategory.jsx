@@ -555,7 +555,7 @@ const SpecificCategory = () => {
         )}
 
         {/* Show Reject button for Pending and Approved status */}
-        {(request.status === "Pending" || request.status === "Approved") && (
+        {request.status === "Pending" && (
           <button
             onClick={() => handleRejectRequest(request.userId)}
             disabled={isProcessing}

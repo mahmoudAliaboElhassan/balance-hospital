@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
 
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next"
 import {
   Clock,
   ArrowRight,
@@ -15,30 +15,30 @@ import {
   EyeOff,
   ChevronDown,
   ChevronUp,
-} from "lucide-react";
+} from "lucide-react"
 import {
   getRosterDepartments,
   getDepartmentShifts,
   deleteDepartmentShift,
   getShiftContractingTypes,
   deleteShiftContractingType,
-} from "../../../state/act/actRosterManagement";
-import LoadingGetData from "../../../components/LoadingGetData";
-import ModalShiftsDepartment from "../../../components/ModalShiftsDepartment";
-import ModalContractingTypesDepartment from "../../../components/ModalContractingTypeShift";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import ModalEditContractingTypeModal from "../../../components/ModalUpdateContractingTypeShift";
-import { AddDepartmentButton } from "../../../components/AddDepartment";
+} from "../../../state/act/actRosterManagement"
+import LoadingGetData from "../../../components/LoadingGetData"
+import ModalShiftsDepartment from "../../../components/ModalShiftsDepartment"
+import ModalContractingTypesDepartment from "../../../components/ModalContractingTypeShift"
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
+import ModalEditContractingTypeModal from "../../../components/ModalUpdateContractingTypeShift"
+import { AddDepartmentButton } from "../../../components/AddDepartment"
 
 function RosterDepartments() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
-  const currentLang = i18n.language;
-  const isRTL = currentLang === "ar";
-  const [deleteIdx, setDeleteIdx] = useState(false);
-  const [deleteContractingIdx, setdDleteContractingIdx] = useState(false);
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { t, i18n } = useTranslation()
+  const currentLang = i18n.language
+  const isRTL = currentLang === "ar"
+  const [deleteIdx, setDeleteIdx] = useState(false)
+  const [deleteContractingIdx, setdDleteContractingIdx] = useState(false)
 
   // Redux state
   const {
@@ -46,36 +46,36 @@ function RosterDepartments() {
     loading,
     selectedDepartmentShifts,
     shiftContractingTypes,
-  } = useSelector((state) => state.rosterManagement);
+  } = useSelector((state) => state.rosterManagement)
 
-  const [selectedContractingType, setSelectedContractingType] = useState(null);
-  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedContractingType, setSelectedContractingType] = useState(null)
+  const [editModalOpen, setEditModalOpen] = useState(false)
 
-  const [selectedDepartment, setSelectedDepartment] = useState(null);
-  const [activeDepartment, setActiveDepartment] = useState(null); // Track which department is expanded
-  const [selectedShift, setSelectedShift] = useState(null);
-  const [isShiftModalOpen, setIsShiftModalOpen] = useState(false);
-  const [isContractingModalOpen, setIsContractingModalOpen] = useState(false);
-  const [loadingShifts, setLoadingShifts] = useState(false);
-  const [loadingContractingTypes, setLoadingContractingTypes] = useState({});
+  const [selectedDepartment, setSelectedDepartment] = useState(null)
+  const [activeDepartment, setActiveDepartment] = useState(null) // Track which department is expanded
+  const [selectedShift, setSelectedShift] = useState(null)
+  const [isShiftModalOpen, setIsShiftModalOpen] = useState(false)
+  const [isContractingModalOpen, setIsContractingModalOpen] = useState(false)
+  const [loadingShifts, setLoadingShifts] = useState(false)
+  const [loadingContractingTypes, setLoadingContractingTypes] = useState({})
 
   // Add state to track which contracting types sections are visible
-  const [visibleContractingTypes, setVisibleContractingTypes] = useState({});
+  const [visibleContractingTypes, setVisibleContractingTypes] = useState({})
 
   const handleUpdateContractingType = (contractingType) => {
-    setSelectedContractingType(contractingType);
-    console.log("from function", contractingType);
-    setEditModalOpen(true);
-  };
+    setSelectedContractingType(contractingType)
+    console.log("from function", contractingType)
+    setEditModalOpen(true)
+  }
 
   const goToRosterData = () => {
-    const id = localStorage.getItem("rosterId");
+    const id = localStorage.getItem("rosterId")
     if (id) {
-      navigate(`/admin-panel/rosters/${id}`);
+      navigate(`/admin-panel/rosters/${id}`)
     } else {
-      navigate("/admin-panel/rosters");
+      navigate("/admin-panel/rosters")
     }
-  };
+  }
 
   const handleDeleteContractingType = (contractingTypeId, index) => {
     dispatch(deleteShiftContractingType({ contractingId: contractingTypeId }))
@@ -88,9 +88,9 @@ function RosterDepartments() {
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
-        });
+        })
 
-        setdDleteContractingIdx(index);
+        setdDleteContractingIdx(index)
       })
 
       .catch((error) => {
@@ -109,118 +109,118 @@ function RosterDepartments() {
           confirmButtonColor: "#ef4444",
           background: isDark ? "#1f2937" : "#ffffff",
           color: isDark ? "#f9fafb" : "#111827",
-        });
-      });
-  };
+        })
+      })
+  }
 
   useEffect(() => {
-    const storedRosterId = localStorage.getItem("rosterId") || "";
+    const storedRosterId = localStorage.getItem("rosterId") || ""
     if (storedRosterId) {
       dispatch(getRosterDepartments({ rosterId: storedRosterId }))
         .unwrap()
         .then((response) => {
-          console.log("Fetched roster departments:", response);
+          console.log("Fetched roster departments:", response)
           dispatch(
             getDepartmentShifts({
               rosterDepartmentId: response.data[0]?.id,
             })
-          );
-          setActiveDepartment(response.data[0]);
+          )
+          setActiveDepartment(response.data[0])
         })
         .catch((err) => {
-          console.error("Failed to fetch roster departments:", err);
-        });
+          console.error("Failed to fetch roster departments:", err)
+        })
     }
-  }, [dispatch]);
+  }, [dispatch])
 
   const openShiftModal = (department) => {
-    setSelectedDepartment(department);
-    setIsShiftModalOpen(true);
-  };
+    setSelectedDepartment(department)
+    setIsShiftModalOpen(true)
+  }
 
   const closeShiftModal = () => {
-    setSelectedDepartment(null);
-    setIsShiftModalOpen(false);
-  };
+    setSelectedDepartment(null)
+    setIsShiftModalOpen(false)
+  }
 
   const openContractingModal = (shift) => {
-    setSelectedShift(shift);
-    setIsContractingModalOpen(true);
-  };
+    setSelectedShift(shift)
+    setIsContractingModalOpen(true)
+  }
 
   const closeContractingModal = () => {
-    setSelectedShift(null);
-    setIsContractingModalOpen(false);
-  };
+    setSelectedShift(null)
+    setIsContractingModalOpen(false)
+  }
   const closeEditContractingModal = () => {
-    setSelectedContractingType(null);
-    setEditModalOpen(false);
-  };
+    setSelectedContractingType(null)
+    setEditModalOpen(false)
+  }
 
   // Updated function to handle department card click
   const handleDepartmentClick = async (department) => {
     // If clicking on the same department that's already active, collapse it
     if (activeDepartment && activeDepartment.id === department.id) {
-      return;
+      return
     }
 
     // Set the new active department and fetch its shifts
-    setActiveDepartment(department);
-    setLoadingShifts(true);
+    setActiveDepartment(department)
+    setLoadingShifts(true)
 
     try {
       await dispatch(
         getDepartmentShifts({ rosterDepartmentId: department.id })
-      ).unwrap();
-      console.log("Fetched department shifts successfully");
+      ).unwrap()
+      console.log("Fetched department shifts successfully")
     } catch (error) {
-      console.error("Failed to fetch department shifts:", error);
+      console.error("Failed to fetch department shifts:", error)
     } finally {
-      setLoadingShifts(false);
+      setLoadingShifts(false)
     }
-  };
+  }
 
   const handleViewContractingTypes = async (shift) => {
-    localStorage.setItem("currentShiftId", shift.id);
+    localStorage.setItem("currentShiftId", shift.id)
 
     // Toggle visibility
-    const isCurrentlyVisible = visibleContractingTypes[shift.id];
+    const isCurrentlyVisible = visibleContractingTypes[shift.id]
 
     if (isCurrentlyVisible) {
       // If currently visible, just hide it
-      setVisibleContractingTypes((prev) => ({ ...prev, [shift.id]: false }));
+      setVisibleContractingTypes((prev) => ({ ...prev, [shift.id]: false }))
     } else {
       // If not visible, fetch data and show
-      setLoadingContractingTypes((prev) => ({ ...prev, [shift.id]: true }));
+      setLoadingContractingTypes((prev) => ({ ...prev, [shift.id]: true }))
       try {
         await dispatch(
           getShiftContractingTypes({ departmentShiftId: shift.id })
-        ).unwrap();
-        console.log("Fetched shift contracting types successfully");
-        setVisibleContractingTypes((prev) => ({ ...prev, [shift.id]: true }));
+        ).unwrap()
+        console.log("Fetched shift contracting types successfully")
+        setVisibleContractingTypes((prev) => ({ ...prev, [shift.id]: true }))
       } catch (error) {
-        console.error("Failed to fetch shift contracting types:", error);
+        console.error("Failed to fetch shift contracting types:", error)
       } finally {
-        setLoadingContractingTypes((prev) => ({ ...prev, [shift.id]: false }));
+        setLoadingContractingTypes((prev) => ({ ...prev, [shift.id]: false }))
       }
     }
-  };
+  }
 
   const handleDeleteShift = (shift, index) => {
-    console.log("Delete shift:", shift);
-    setDeleteIdx(index);
-    dispatch(deleteDepartmentShift(shift.id));
-  };
+    console.log("Delete shift:", shift)
+    setDeleteIdx(index)
+    dispatch(deleteDepartmentShift(shift.id))
+  }
 
-  const { mymode } = useSelector((state) => state.mode);
-  const isDark = mymode === "dark";
+  const { mymode } = useSelector((state) => state.mode)
+  const isDark = mymode === "dark"
 
   const navigateToNextPhase = () => {
-    navigate(`/admin-panel/rosters/working-hours/generate`);
-  };
+    navigate(`/admin-panel/rosters/working-hours/generate`)
+  }
 
   if (loading.fetch) {
-    return <LoadingGetData text={t("gettingData.rosterDepartments")} />;
+    return <LoadingGetData text={t("gettingData.rosterDepartments")} />
   }
 
   return (
@@ -854,7 +854,7 @@ function RosterDepartments() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default RosterDepartments;
+export default RosterDepartments
