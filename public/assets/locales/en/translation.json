@@ -1809,7 +1809,7 @@
     "workingHour": "Loading working hour Data...",
     "availableDoctors": "Loading available doctors...",
     "doctorSchedule": "Loading doctor schedule...",
-    "userHistory": "Loading user history...s"
+    "userHistory": "Loading user history..."
   },
 
   "error": {

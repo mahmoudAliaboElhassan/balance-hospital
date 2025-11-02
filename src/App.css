@@ -9,26 +9,78 @@
   height: 6em;
   padding: 1.5em;
   will-change: filter;
+  -webkit-transition: filter 300ms;
+  -moz-transition: filter 300ms;
+  -ms-transition: filter 300ms;
+  -o-transition: filter 300ms;
   transition: filter 300ms;
 }
+
 .logo:hover {
+  -webkit-filter: drop-shadow(0 0 2em #646cffaa);
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
+  -webkit-filter: drop-shadow(0 0 2em #61dafbaa);
   filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@-webkit-keyframes logo-spin {
+  from {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@-moz-keyframes logo-spin {
+  from {
+    -moz-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -moz-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@-o-keyframes logo-spin {
+  from {
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes logo-spin {
   from {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
     transform: rotate(0deg);
   }
   to {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
     transform: rotate(360deg);
   }
 }
 
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
+    -webkit-animation: logo-spin infinite 20s linear;
+    -moz-animation: logo-spin infinite 20s linear;
+    -o-animation: logo-spin infinite 20s linear;
     animation: logo-spin infinite 20s linear;
   }
 }

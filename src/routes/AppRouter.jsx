@@ -169,6 +169,9 @@ const EditShiftHourType = lazy(() =>
 const ManagementRoles = lazy(() =>
   import("../pages/adminPanel/managementRoles")
 )
+const UserAssignmentHistory = lazy(() =>
+  import("../pages/adminPanel/managementRoles/userAssignmentHistory.jsx")
+)
 const SpecifiedManagementRole = lazy(() =>
   import("../pages/adminPanel/managementRoles/specifiedManagementRole")
 )
@@ -353,6 +356,10 @@ const ProtectedEditShiftHourType = withGuard(
 
 // Management Roles (Requires userCanManageRole permission)
 const ProtectedManagementRoles = withGuard(ManagementRoles, "userCanManageRole")
+const ProtectedUserManagementRoleHistory = withGuard(
+  UserAssignmentHistory,
+  "userCanManageRole"
+)
 const ProtectedSpecifiedManagementRole = withGuard(
   SpecifiedManagementRole,
   "userCanManageRole"
@@ -604,6 +611,10 @@ const router = createBrowserRouter([
           {
             path: "management-roles",
             element: withSuspense(ProtectedManagementRoles),
+          },
+          {
+            path: "/admin-panel/management-roles/role/user-history/:id",
+            element: withSuspense(ProtectedUserManagementRoleHistory),
           },
           {
             path: "management-roles/role/:id",

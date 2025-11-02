@@ -1,36 +1,36 @@
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate, useLocation } from "react-router-dom";
-import UseAdminPanel from "../../hooks/use-admin-panel";
+import { useState, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { useNavigate, useLocation } from "react-router-dom"
+import UseAdminPanel from "../../hooks/use-admin-panel"
 
 export default function TabsViewFancy({ isExpanded = false, click }) {
-  const [activeTab, setActiveTab] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const { adminPanelRoutes } = UseAdminPanel();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [activeTab, setActiveTab] = useState(1)
+  const [isLoading, setIsLoading] = useState(false)
+  const { adminPanelRoutes } = UseAdminPanel()
+  const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     // Set active tab based on current route
     const currentRoute = adminPanelRoutes.find((route) =>
       location.pathname.includes(route.path)
-    );
+    )
     if (currentRoute) {
-      setActiveTab(currentRoute.id);
+      setActiveTab(currentRoute.id)
     }
-  }, [location.pathname, adminPanelRoutes]);
+  }, [location.pathname, adminPanelRoutes])
 
   const handleTabClick = (tab) => {
-    setActiveTab(tab.id);
-    click();
-    setIsLoading(true);
-    navigate(tab.path);
+    setActiveTab(tab.id)
+    click()
+    setIsLoading(true)
+    navigate(tab.path)
 
     const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 400);
-    return () => clearTimeout(timer);
-  };
+      setIsLoading(false)
+    }, 400)
+    return () => clearTimeout(timer)
+  }
 
   return (
     <div className="w-full max-w-2xl mx-auto">
@@ -107,5 +107,5 @@ export default function TabsViewFancy({ isExpanded = false, click }) {
         </div>
       </div>
     </div>
-  );
+  )
 }
