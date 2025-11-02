@@ -666,7 +666,11 @@ function ManageDoctors() {
                               </div>
                             )}
 
-                            {request.issues && request.issues.length > 0 && (
+                            {(
+                              (i18n.language === "ar"
+                                ? request.issues
+                                : request.issuesEn) || []
+                            ).length > 0 && (
                               <div className="mb-3">
                                 <div className="flex items-start gap-2">
                                   <AlertCircle
@@ -683,7 +687,10 @@ function ManageDoctors() {
                                       {t("doctorRequests.fields.issues")}:
                                     </span>
                                     <ul className="mt-1 space-y-1">
-                                      {request.issues.map((issue, index) => (
+                                      {(i18n.language === "ar"
+                                        ? request.issues
+                                        : request.issuesEn
+                                      )?.map((issue, index) => (
                                         <li
                                           key={index}
                                           className={`text-sm ${
