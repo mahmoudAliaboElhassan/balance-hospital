@@ -5,8 +5,8 @@ import { toast, ToastContainer } from "react-toastify"
 import { useEffect } from "react"
 import { logOut } from "../../state/slices/auth"
 import { useTranslation } from "react-i18next"
-import ConnectionStatusBadge from "../../components/ConnectionStatus"
 import { useSignalR } from "../../hooks/use-singalr"
+import ConnectionStatusBadge from "../../components/notifications/ConnectionStatus"
 
 function RootLayout() {
   const { mymode } = useSelector((state) => state.mode)

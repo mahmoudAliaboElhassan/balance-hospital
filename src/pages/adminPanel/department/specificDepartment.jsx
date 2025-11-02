@@ -12,9 +12,9 @@ import {
 import LoadingGetData from "../../../components/LoadingGetData"
 import { useTranslation } from "react-i18next"
 import { Edit, Eye, UserPlus, UserCog, UserX, Shield } from "lucide-react"
-import RemoveManagerModal from "../../../components/RemoveMangerModal"
+import RemoveManagerModal from "../../../components/modals/RemoveMangerModal"
 import Forbidden from "../../../components/forbidden"
-import RosterDepartmentMonths from "../../../components/RosterDepartmentMonths"
+import RosterDepartmentMonths from "../../../components//modals/RosterDepartmentMonths"
 import { formatDate } from "../../../utils/formtDate"
 import DepartmentGeoFences from "./geofence"
 

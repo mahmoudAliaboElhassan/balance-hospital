@@ -28,9 +28,8 @@ import {
 import { Link } from "react-router-dom"
 import LoadingGetData from "../../../components/LoadingGetData"
 import { getShiftHoursTypes } from "../../../state/act/actShiftHours"
-import DeleteShiftHoursTypeModal from "../../../components/DeleteShiftHoursTypeModal"
+import DeleteShiftHoursTypeModal from "../../../components/modals/DeleteShiftHoursTypeModal"
 import "../../../styles/general.css"
-import i18next from "i18next"
 import { formatDate } from "../../../utils/formtDate"
 
 function ShiftHours() {

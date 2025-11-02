@@ -24,8 +24,7 @@ import {
   setPageSize,
 } from "../../../state/slices/category"
 import { Link } from "react-router-dom"
-import DeleteCategoryModal from "../../../components/DeleteCategoryModal"
-import i18next from "i18next"
+import DeleteCategoryModal from "../../../components/modals/DeleteCategoryModal"
 import { formatDate } from "../../../utils/formtDate"
 
 function Category() {

@@ -28,9 +28,8 @@ import {
   clearFilters,
 } from "../../../state/slices/contractingType"
 import { Link } from "react-router-dom"
-import DeleteContractingTypeModal from "../../../components/DeleteContractingType"
+import DeleteContractingTypeModal from "../../../components/modals/DeleteContractingType"
 import "../../../styles/general.css"
-import i18next from "i18next"
 
 function ContractingTypes() {
   const { t, i18n } = useTranslation()

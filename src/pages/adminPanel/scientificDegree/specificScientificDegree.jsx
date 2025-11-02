@@ -25,7 +25,6 @@ import {
   Hash,
   Info,
 } from "lucide-react"
-import i18next from "i18next"
 import { formatDate } from "../../../utils/formtDate"
 
 function SpecificScientificDegree() {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useParams, useNavigate, Link } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { getWorkingHours } from "../../../state/act/actRosterManagement"
@@ -9,23 +9,12 @@ import {
   ArrowRight,
   Calendar,
   Clock,
-  Users,
-  Building,
-  Filter,
   Search,
   AlertCircle,
-  CheckCircle,
-  User,
-  Target,
   TrendingUp,
   RefreshCw,
-  FileText,
-  Eye,
-  Briefcase,
   Timer,
   UserCheck,
-  Edit,
-  UserPlus,
   Download,
 } from "lucide-react"
 import { getDepartments } from "../../../state/act/actDepartment"

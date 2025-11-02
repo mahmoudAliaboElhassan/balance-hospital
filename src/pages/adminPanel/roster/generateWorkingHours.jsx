@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
@@ -478,14 +478,10 @@ function GenerateWorkingHours() {
                             className="rounded"
                           />
                           <button
-                            onClick={() =>
-                              toggleDepartment(dept.departmentId)
-                            }
+                            onClick={() => toggleDepartment(dept.departmentId)}
                             className="flex items-center gap-2 flex-1 text-left"
                           >
-                            {expandedDepartments.has(
-                              dept.departmentId
-                            ) ? (
+                            {expandedDepartments.has(dept.departmentId) ? (
                               <ChevronDown size={16} />
                             ) : (
                               <ChevronRight size={16} />
@@ -577,9 +573,7 @@ function GenerateWorkingHours() {
                             </div>
 
                             {/* Scientific Degrees */}
-                            {expandedShifts.has(
-                              shift.shiftHoursTypeId
-                            ) && (
+                            {expandedShifts.has(shift.shiftHoursTypeId) && (
                               <div
                                 className={`${
                                   isRTL ? "mr-6" : "ml-6"

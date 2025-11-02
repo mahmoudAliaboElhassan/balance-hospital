@@ -1,44 +1,41 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import i18next from "i18next";
-import {
-  getDepartmentMonthView,
-  getDepartmentRosterCalender,
-} from "../../../state/act/actDepartment";
-import { formatDate } from "../../../utils/formtDate";
-import LoadingGetData from "../../../components/LoadingGetData";
+import { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useNavigate, useParams } from "react-router-dom"
+import { useTranslation } from "react-i18next"
+import i18next from "i18next"
+import { getDepartmentMonthView } from "../../../state/act/actDepartment"
+import { formatDate } from "../../../utils/formtDate"
+import LoadingGetData from "../../../components/LoadingGetData"
 
 function DepartmentMonth() {
-  const { depId: id, month, year } = useParams();
-  const dispatch = useDispatch();
-  const { t } = useTranslation();
-  const currentLang = i18next.language;
-  const isRTL = currentLang === "ar";
+  const { depId: id, month, year } = useParams()
+  const dispatch = useDispatch()
+  const { t } = useTranslation()
+  const currentLang = i18next.language
+  const isRTL = currentLang === "ar"
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const getRosterIds = (departmentMonthView) => {
     if (!departmentMonthView || !departmentMonthView.categories) {
-      return [];
+      return []
     }
 
-    const rosterIds = [];
+    const rosterIds = []
 
     departmentMonthView.categories.forEach((category) => {
       if (category.rosters && Array.isArray(category.rosters)) {
         category.rosters.forEach((roster) => {
-          rosterIds.push(roster.rosterId);
-        });
+          rosterIds.push(roster.rosterId)
+        })
       }
-    });
+    })
 
-    return rosterIds;
-  };
+    return rosterIds
+  }
 
-  const { mymode } = useSelector((state) => state.mode);
-  const isDark = mymode === "dark";
+  const { mymode } = useSelector((state) => state.mode)
+  const isDark = mymode === "dark"
 
   // Get state from Redux store
   const {
@@ -48,26 +45,26 @@ function DepartmentMonth() {
     departmentCategories,
     departmentTotals,
     error,
-  } = useSelector((state) => state.department); // Adjust selector path as needed
+  } = useSelector((state) => state.department) // Adjust selector path as needed
 
   useEffect(() => {
     dispatch(getDepartmentMonthView({ departmentId: id, month, year }))
       .unwrap()
       .then((res) => {
-        const rosterIds = getRosterIds(res.data);
-      });
-  }, [dispatch, id, month, year]);
+        const rosterIds = getRosterIds(res.data)
+      })
+  }, [dispatch, id, month, year])
 
   // Helper function to get localized department name
   const getDepartmentName = () => {
-    if (!currentDepartment) return t("department.title");
-    return isRTL ? currentDepartment.nameAr : currentDepartment.nameEn;
-  };
+    if (!currentDepartment) return t("department.title")
+    return isRTL ? currentDepartment.nameAr : currentDepartment.nameEn
+  }
 
   // Helper function to get localized category name
   const getCategoryName = (category) => {
-    return isRTL ? category.categoryNameAr : category.categoryNameEn;
-  };
+    return isRTL ? category.categoryNameAr : category.categoryNameEn
+  }
 
   // Loading state
   if (loadingGetDepartmentMonthView) {
@@ -83,7 +80,7 @@ function DepartmentMonth() {
           }
         />
       </div>
-    );
+    )
   }
 
   // Error state
@@ -100,7 +97,7 @@ function DepartmentMonth() {
           </p>
         </div>
       </div>
-    );
+    )
   }
 
   // No data state
@@ -119,7 +116,7 @@ function DepartmentMonth() {
           </p>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -519,7 +516,7 @@ function DepartmentMonth() {
           ))}
       </div>
     </div>
-  );
+  )
 }
 
-export default DepartmentMonth;
+export default DepartmentMonth

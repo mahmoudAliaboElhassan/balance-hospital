@@ -1,27 +1,12 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
-import {
-  getCategories,
-  getCategoryPendingRequests,
-} from "../../../state/act/actCategory"
+import { getCategories } from "../../../state/act/actCategory"
 import { getDepartments } from "../../../state/act/actDepartment"
-import {
-  getContractingTypes,
-  getContractingTypesForSignup,
-} from "../../../state/act/actContractingType"
-import { getScientificDegrees } from "../../../state/act/actScientificDegree"
+import { getContractingTypesForSignup } from "../../../state/act/actContractingType"
 import LoadingGetData from "../../../components/LoadingGetData"
 import { useTranslation } from "react-i18next"
-import {
-  Calendar,
-  Filter,
-  FileText,
-  Download,
-  ChevronLeft,
-  ChevronRight,
-  Eye,
-} from "lucide-react"
+import { Calendar, Filter, FileText, Eye } from "lucide-react"
 import { clearReports, clearReportsError } from "../../../state/slices/reports"
 import { getReports, getReportsAttend } from "../../../state/act/actReports"
 import { getAvailbleScientficDegrees } from "../../../state/act/actRosterManagement"

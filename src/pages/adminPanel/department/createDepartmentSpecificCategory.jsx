@@ -1,44 +1,44 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import { useTranslation } from "react-i18next";
-import { createDepartment } from "../../../state/act/actDepartment";
-import { useNavigate } from "react-router-dom";
-import UseInitialValues from "../../../hooks/use-initial-values";
-import UseFormValidation from "../../../hooks/use-form-validation";
-import i18next from "i18next";
+import React, { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { Formik, Form, Field, ErrorMessage } from "formik"
+import * as Yup from "yup"
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
+import { useTranslation } from "react-i18next"
+import { createDepartment } from "../../../state/act/actDepartment"
+import { useNavigate } from "react-router-dom"
+import UseInitialValues from "../../../hooks/use-initial-values"
+import UseFormValidation from "../../../hooks/use-form-validation"
+import i18next from "i18next"
 
 function CreateDepartmentSpecificCategory() {
-  const { t, i18n } = useTranslation();
-  const dispatch = useDispatch();
-  const currentLang = i18n.language;
-  const isRTL = currentLang === "ar";
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+  const currentLang = i18n.language
+  const isRTL = currentLang === "ar"
 
   const { loadingCreateDepartment, createError, createSuccess, createMessage } =
-    useSelector((state) => state.department);
+    useSelector((state) => state.department)
 
   // Validation schema with translations
-  const { VALIDATION_SCHEMA_ADD_DEPARTMENT } = UseFormValidation();
-  const navigate = useNavigate();
+  const { VALIDATION_SCHEMA_ADD_DEPARTMENT } = UseFormValidation()
+  const navigate = useNavigate()
 
   // Initial form values
-  const { INITIAL_VALUES_ADD_DEPARTMENT } = UseInitialValues();
+  const { INITIAL_VALUES_ADD_DEPARTMENT } = UseInitialValues()
 
   // Get categoryId from localStorage
-  const categoryId = localStorage.getItem("categoryId");
-  const currentLanguage = i18next.language;
+  const categoryId = localStorage.getItem("categoryId")
+  const currentLanguage = i18next.language
   const name =
     currentLanguage === "en"
       ? localStorage.getItem("categoryEnglishName")
-      : localStorage.getItem("categoryArabicName");
+      : localStorage.getItem("categoryArabicName")
   // Enhanced initial values with categoryId from localStorage
   const enhancedInitialValues = {
     ...INITIAL_VALUES_ADD_DEPARTMENT,
     categoryId: categoryId || "",
-  };
+  }
 
   const handleSubmit = async (
     values,
@@ -48,13 +48,13 @@ function CreateDepartmentSpecificCategory() {
     const submissionValues = {
       ...values,
       categoryId: categoryId || values.categoryId,
-    };
+    }
 
     dispatch(createDepartment(submissionValues))
       .unwrap()
       .then(() => {
         // Success handling
-        resetForm();
+        resetForm()
         toast.success(t("departmentForm.success.created"), {
           position: "top-right",
           autoClose: 3000,
@@ -62,11 +62,11 @@ function CreateDepartmentSpecificCategory() {
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
-        });
-        navigate("/admin-panel/departments");
+        })
+        navigate("/admin-panel/departments")
       })
       .catch((error) => {
-        console.error("Department creation error:", error);
+        console.error("Department creation error:", error)
 
         Swal.fire({
           title: t("departmentForm.error.title"),
@@ -81,21 +81,21 @@ function CreateDepartmentSpecificCategory() {
           confirmButtonColor: "#ef4444",
           background: "#ffffff",
           color: "#111827",
-        });
-      });
-  };
+        })
+      })
+  }
 
   // Check if categoryId exists in localStorage
   useEffect(() => {
     if (!categoryId) {
-      console.warn("No categoryId found in localStorage");
+      console.warn("No categoryId found in localStorage")
       // Optionally show a warning or redirect
       toast.warning(t("departmentForm.warning.noCategorySelected"), {
         position: "top-right",
         autoClose: 5000,
-      });
+      })
     }
-  }, [categoryId, t]);
+  }, [categoryId, t])
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
@@ -244,7 +244,7 @@ function CreateDepartmentSpecificCategory() {
                 type="button"
                 className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 onClick={() => {
-                  window.history.back();
+                  window.history.back()
                 }}
               >
                 {t("departmentForm.buttons.cancel")}
@@ -294,7 +294,7 @@ function CreateDepartmentSpecificCategory() {
         )}
       </Formik>
     </div>
-  );
+  )
 }
 
-export default CreateDepartmentSpecificCategory;
+export default CreateDepartmentSpecificCategory

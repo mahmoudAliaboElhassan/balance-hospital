@@ -26,7 +26,7 @@ import {
 } from "lucide-react"
 import { getDoctorSchedule } from "../../../state/act/actRosterManagement"
 import LoadingGetData from "../../../components/LoadingGetData"
-import UnAssignDoctorModal from "../../../components/UnAsssignDoctorModal"
+import UnAssignDoctorModal from "../../../components/modals/UnAsssignDoctorModal"
 import { formatDate } from "../../../utils/formtDate"
 
 function DoctorSchedule() {

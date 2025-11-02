@@ -10,11 +10,9 @@ import {
   ChevronRight,
   Eye,
   Edit,
-  Trash2,
   Plus,
   Menu,
   X,
-  UserPlus,
   FileText,
   Calendar,
   Users,
@@ -24,7 +22,6 @@ import {
 import {
   clearAllErrors,
   clearFilters,
-  selectFilters,
   setCurrentPage,
   // setCurrentPage,
   setFilters,
@@ -33,9 +30,8 @@ import {
 } from "../../../state/slices/roster"
 import { Link, useNavigate } from "react-router-dom"
 import { getRostersPaged } from "../../../state/act/actRosterManagement"
-import ModalUpdateRosterStatus from "../../../components/ModalUpdateRosterStatus"
-import ModalDeleteRoster from "../../../components/ModalDeleteRoster"
-import i18next from "i18next"
+import ModalUpdateRosterStatus from "../../../components/modals/ModalUpdateRosterStatus"
+import ModalDeleteRoster from "../../../components/modals/ModalDeleteRoster"
 import { formatDate } from "../../../utils/formtDate"
 
 function Roster() {

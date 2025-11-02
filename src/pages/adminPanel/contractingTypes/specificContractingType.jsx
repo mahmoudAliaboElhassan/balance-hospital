@@ -25,7 +25,6 @@ import {
   Hash,
   Info,
 } from "lucide-react"
-import i18next from "i18next"
 import { formatDate } from "../../../utils/formtDate"
 
 function SpecificContractingType() {
@@ -439,7 +438,7 @@ function SpecificContractingType() {
                   </h2>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {selectedContractingType.users.slice(0, 6).map((user) => (
+                    {selectedContractingType.users.map((user) => (
                       <div
                         key={user.id}
                         className={`flex items-center p-4 ${
@@ -500,7 +499,7 @@ function SpecificContractingType() {
                     ))}
                   </div>
 
-                  {selectedContractingType.users.length > 6 && (
+                  {/* {selectedContractingType.users.length > 6 && (
                     <div className="mt-4 text-center">
                       <p
                         className={`text-sm ${
@@ -512,7 +511,7 @@ function SpecificContractingType() {
                         })}
                       </p>
                     </div>
-                  )}
+                  )} */}
                 </div>
               )}
           </div>

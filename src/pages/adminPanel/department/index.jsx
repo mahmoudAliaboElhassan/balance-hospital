@@ -30,7 +30,7 @@ import {
   clearFilters,
 } from "../../../state/slices/department"
 import { Link } from "react-router-dom"
-import DeleteDepartmentModal from "../../../components/DeleteDepartmentModal"
+import DeleteDepartmentModal from "../../../components/modals/DeleteDepartmentModal"
 import i18next from "i18next"
 import { formatDate } from "../../../utils/formtDate"
 

@@ -19,21 +19,16 @@ const DoctorReports = lazy(() =>
 const Dashboard = lazy(() => import("../pages/adminPanel/dashboard/index.jsx"))
 
 const Notification = lazy(() => import("../pages/adminPanel/notification"))
-const Prefrences = lazy(() =>
-  import("../pages/adminPanel/notification/preferences")
-)
 
 const EditDoctorData = lazy(() =>
   import("../pages/adminPanel/category/editDoctorData.jsx")
 )
 
 // Roster Management Components
-const EditManagerPermission = lazy(() =>
-  import("../pages/adminPanel/department/editManagerPermission")
-)
-const AddRosterDepartment = lazy(() =>
-  import("../pages/adminPanel/roster/addRosterDepartment")
-)
+// const EditManagerPermission = lazy(() =>
+//   import("../pages/adminPanel/department/editManagerPermission")
+// )
+
 const EditWorkingHour = lazy(() =>
   import("../pages/adminPanel/roster/editWorkingHours")
 )
@@ -86,9 +81,6 @@ const SpecificCategory = lazy(() =>
 )
 const EditCategory = lazy(() =>
   import("../pages/adminPanel/category/editCategory")
-)
-const PendingDoctorRequests = lazy(() =>
-  import("../pages/adminPanel/category/pendingDoctors")
 )
 
 // Department Management Components
@@ -183,18 +175,18 @@ const SpecifiedManagementRole = lazy(() =>
 const UserRoleHistory = lazy(() =>
   import("../pages/adminPanel/managementRoles/userAssignmentHistory.jsx")
 )
-const CreateManagementRole = lazy(() =>
-  import("../pages/adminPanel/managementRoles/createManagementRole")
-)
-const EditManagementRole = lazy(() =>
-  import("../pages/adminPanel/managementRoles/editManagementRole")
-)
-const AssignUserToRole = lazy(() =>
-  import("../pages/adminPanel/managementRoles/assignUser")
-)
-const EditAssignUserToRole = lazy(() =>
-  import("../pages/adminPanel/managementRoles/editAssignUserToRole")
-)
+// const CreateManagementRole = lazy(() =>
+//   import("../pages/adminPanel/managementRoles/createManagementRole")
+// )
+// const EditManagementRole = lazy(() =>
+//   import("../pages/adminPanel/managementRoles/editManagementRole")
+// )
+// const AssignUserToRole = lazy(() =>
+//   import("../pages/adminPanel/managementRoles/assignUser")
+// )
+// const EditAssignUserToRole = lazy(() =>
+//   import("../pages/adminPanel/managementRoles/editAssignUserToRole")
+// )
 
 // Roster Management Components
 const roster = lazy(() => import("../pages/adminPanel/roster"))
@@ -239,10 +231,7 @@ const ProtectedSpecificCategory = withGuard(
   "userCanManageCategory"
 )
 const ProtectedEditCategory = withGuard(EditCategory, "userCanManageCategory")
-const ProtectedPendingDoctorRequests = withGuard(
-  PendingDoctorRequests,
-  "userCanManageCategory"
-)
+
 const ProtectedDoctorPerRoster = withGuard(
   DoctorPerRoster,
   "userCanManageCategory"
@@ -276,10 +265,10 @@ const ProtectedMonthDepartment = withGuard(DepartmentMonth, [
   "userCanManageCategory",
   "userCanManageDepartments",
 ])
-const ProtectedEditManagerPermission = withGuard(
-  EditManagerPermission,
-  "userCanManageDepartments"
-)
+// const ProtectedEditManagerPermission = withGuard(
+//   EditManagerPermission,
+//   "userCanManageDepartments"
+// )
 const ProtectedAssignDepartmentManager = withGuard(AssignDepartmentManager, [
   "userCanManageCategory",
   "userCanManageDepartments",
@@ -369,22 +358,22 @@ const ProtectedSpecifiedManagementRole = withGuard(
   "userCanManageRole"
 )
 const ProtectedUserHistory = withGuard(UserRoleHistory, "userCanManageRole")
-const ProtectedCreateManagementRole = withGuard(
-  CreateManagementRole,
-  "userCanManageRole"
-)
-const ProtectedEditManagementRole = withGuard(
-  EditManagementRole,
-  "userCanManageRole"
-)
-const ProtectedAssignUserToRole = withGuard(
-  AssignUserToRole,
-  "userCanManageRole"
-)
-const ProtectedEditAssignUserToRole = withGuard(
-  EditAssignUserToRole,
-  "userCanManageRole"
-)
+// const ProtectedCreateManagementRole = withGuard(
+//   CreateManagementRole,
+//   "userCanManageRole"
+// )
+// const ProtectedEditManagementRole = withGuard(
+//   EditManagementRole,
+//   "userCanManageRole"
+// )
+// const ProtectedAssignUserToRole = withGuard(
+//   AssignUserToRole,
+//   "userCanManageRole"
+// )
+// const ProtectedEditAssignUserToRole = withGuard(
+//   EditAssignUserToRole,
+//   "userCanManageRole"
+// )
 
 // Roster Management (Requires userCanManageRostors permission)
 const ProtectedRoster = withGuard(roster, "userCanManageRostors")
@@ -395,10 +384,7 @@ const ProtectedRosterDepartments = withGuard(
   RosterDepartments,
   "userCanManageRostors"
 )
-const ProtectedAddRosterDepartment = withGuard(
-  AddRosterDepartment,
-  "userCanManageRostors"
-)
+
 const ProtectedGenerateWorkingHours = withGuard(
   GenerateWorkingHours,
   "userCanManageRostors"
@@ -453,10 +439,6 @@ const router = createBrowserRouter([
           // Default route - Shows categories by default
           { index: true, element: withSuspense(AdminPanelIndex) },
           { path: "notifications", element: withSuspense(Notification) },
-          {
-            path: "notifications/preferences",
-            element: withSuspense(Prefrences),
-          },
 
           // ========== CATEGORY MANAGEMENT ==========
           // Permission Required: userCanManageCategory
@@ -488,10 +470,6 @@ const router = createBrowserRouter([
           {
             path: "category/edit/:catId",
             element: withSuspense(ProtectedEditCategory),
-          },
-          {
-            path: "category/doctors/pendig-doctors",
-            element: withSuspense(ProtectedPendingDoctorRequests),
           },
 
           // ========== DEPARTMENT MANAGEMENT ==========
@@ -526,10 +504,10 @@ const router = createBrowserRouter([
             path: "department/:depId/:month/:year",
             element: withSuspense(ProtectedMonthDepartment),
           },
-          {
-            path: "department/edit-manager-permissions/:depId",
-            element: withSuspense(ProtectedEditManagerPermission),
-          },
+          // {
+          //   path: "department/edit-manager-permissions/:depId",
+          //   element: withSuspense(ProtectedEditManagerPermission),
+          // },
           {
             path: "department/assign-manager/:depId",
             element: withSuspense(ProtectedAssignDepartmentManager),
@@ -635,22 +613,22 @@ const router = createBrowserRouter([
             path: "management-roles/role/user-history/:id",
             element: withSuspense(ProtectedUserHistory),
           },
-          {
-            path: "management-roles/create",
-            element: withSuspense(ProtectedCreateManagementRole),
-          },
-          {
-            path: "management-roles/edit/:id",
-            element: withSuspense(ProtectedEditManagementRole),
-          },
-          {
-            path: "management-roles/assign-user-to-role",
-            element: withSuspense(ProtectedAssignUserToRole),
-          },
-          {
-            path: "management-roles/edit-assign-user-to-role/:id",
-            element: withSuspense(ProtectedEditAssignUserToRole),
-          },
+          // {
+          //   path: "management-roles/create",
+          //   element: withSuspense(ProtectedCreateManagementRole),
+          // },
+          // {
+          //   path: "management-roles/edit/:id",
+          //   element: withSuspense(ProtectedEditManagementRole),
+          // },
+          // {
+          //   path: "management-roles/assign-user-to-role",
+          //   element: withSuspense(ProtectedAssignUserToRole),
+          // },
+          // {
+          //   path: "management-roles/edit-assign-user-to-role/:id",
+          //   element: withSuspense(ProtectedEditAssignUserToRole),
+          // },
 
           // ========== ROSTER MANAGEMENT ==========
           // Permission Required: userCanManageRostors
@@ -674,10 +652,7 @@ const router = createBrowserRouter([
             path: "rosters/departments",
             element: withSuspense(ProtectedRosterDepartments),
           },
-          {
-            path: "rosters/departments/create",
-            element: withSuspense(ProtectedAddRosterDepartment),
-          },
+
           {
             path: "rosters/working-hours/generate",
             element: withSuspense(ProtectedGenerateWorkingHours),

@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Formik, Form, Field, ErrorMessage } from "formik"
-import * as Yup from "yup"
 import { toast } from "react-toastify"
 import Swal from "sweetalert2"
 import { useTranslation } from "react-i18next"
@@ -12,7 +11,7 @@ import UseFormValidation from "../../../hooks/use-form-validation"
 import { getCategoryTypes } from "../../../state/act/actCategory"
 import { getUserSummaries } from "../../../state/slices/user"
 import LoadingGetData from "../../../components/LoadingGetData"
-import { Search, User, ArrowLeft, ArrowRight } from "lucide-react"
+import { ArrowLeft, ArrowRight } from "lucide-react"
 
 function CreateDepartment() {
   const { t, i18n } = useTranslation()

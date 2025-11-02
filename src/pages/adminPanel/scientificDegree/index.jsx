@@ -30,7 +30,7 @@ import {
   clearFilters,
 } from "../../../state/slices/scientificDegree"
 import { Link } from "react-router-dom"
-import DeleteScientificDegreeModal from "../../../components/DeleteScientificDegreeModal"
+import DeleteScientificDegreeModal from "../../../components/modals/DeleteScientificDegreeModal"
 import LoadingGetData from "../../../components/LoadingGetData"
 import i18next from "i18next"
 

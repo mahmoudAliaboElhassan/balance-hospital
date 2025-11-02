@@ -1,6 +1,5 @@
-import React, { useState } from "react"
-import { FileText, ChevronDown, ChevronRight } from "lucide-react"
-import i18next from "i18next"
+import { useState } from "react"
+import { ChevronDown, ChevronRight } from "lucide-react"
 
 export const CollapsibleRosterCard = ({
   roster,

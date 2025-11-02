@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { useParams, useNavigate, Link } from "react-router-dom"
+import { useParams, Link } from "react-router-dom"
 import {
-  addWorkingHours,
   autoAcceptRequests,
   getRosterById,
 } from "../../../state/act/actRosterManagement"
 import { useTranslation } from "react-i18next"
 import LoadingGetData from "../../../components/LoadingGetData"
-import ModalUpdateRosterStatus from "../../../components/ModalUpdateRosterStatus"
+import ModalUpdateRosterStatus from "../../../components/modals/ModalUpdateRosterStatus"
 import {
   ArrowLeft,
   ArrowRight,

@@ -9,11 +9,8 @@ import {
   Building2,
   Eye,
   Users,
-  Plus,
-  CheckCircle,
   AlertCircle,
   EyeOff,
-  ChevronDown,
   ChevronUp,
 } from "lucide-react"
 import {
@@ -24,12 +21,12 @@ import {
   deleteShiftContractingType,
 } from "../../../state/act/actRosterManagement"
 import LoadingGetData from "../../../components/LoadingGetData"
-import ModalShiftsDepartment from "../../../components/ModalShiftsDepartment"
-import ModalContractingTypesDepartment from "../../../components/ModalContractingTypeShift"
+import ModalShiftsDepartment from "../../../components/modals/ModalShiftsDepartment"
+import ModalContractingTypesDepartment from "../../../components/modals/ModalContractingTypeShift"
+import ModalEditContractingTypeModal from "../../../components/modals/ModalUpdateContractingTypeShift"
+import { AddDepartmentButton } from "../../../components/modals/AddDepartment"
 import { toast } from "react-toastify"
 import Swal from "sweetalert2"
-import ModalEditContractingTypeModal from "../../../components/ModalUpdateContractingTypeShift"
-import { AddDepartmentButton } from "../../../components/AddDepartment"
 
 function RosterDepartments() {
   const dispatch = useDispatch()

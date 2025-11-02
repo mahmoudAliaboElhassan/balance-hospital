@@ -1,43 +1,42 @@
-import React, { useEffect } from "react";
-import i18next from "i18next";
-import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import { Save, ArrowLeft } from "lucide-react";
-import * as Yup from "yup";
+import { useEffect } from "react"
+import i18next from "i18next"
+import { useTranslation } from "react-i18next"
+import { useDispatch, useSelector } from "react-redux"
+import { useParams, useNavigate } from "react-router-dom"
+import { Formik, Form, Field, ErrorMessage } from "formik"
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
+import { Save, ArrowLeft } from "lucide-react"
 import {
   getWorkingHour,
   updateWorkingHour,
-} from "../../../state/act/actRosterManagement";
-import UseFormValidation from "../../../hooks/use-form-validation";
-import LoadingGetData from "../../../components/LoadingGetData";
+} from "../../../state/act/actRosterManagement"
+import UseFormValidation from "../../../hooks/use-form-validation"
+import LoadingGetData from "../../../components/LoadingGetData"
 
 function EditWorkingHour() {
-  const { workingHourId } = useParams();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { workingHourId } = useParams()
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const { workingHour, loading } = useSelector(
     (state) => state.rosterManagement
-  );
-  const { mymode } = useSelector((state) => state.mode);
-  const isDark = mymode === "dark";
+  )
+  const { mymode } = useSelector((state) => state.mode)
+  const isDark = mymode === "dark"
 
-  const { t } = useTranslation();
-  const currentLang = i18next.language;
-  const isRTL = currentLang === "ar";
+  const { t } = useTranslation()
+  const currentLang = i18next.language
+  const isRTL = currentLang === "ar"
 
   useEffect(() => {
     if (workingHourId) {
-      dispatch(getWorkingHour({ workingHourId }));
+      dispatch(getWorkingHour({ workingHourId }))
     }
-  }, [dispatch, workingHourId]);
+  }, [dispatch, workingHourId])
 
   // Validation schema
-  const { VALIDATION_SCHEMA_EDIT_WORKING_HOUR } = UseFormValidation();
+  const { VALIDATION_SCHEMA_EDIT_WORKING_HOUR } = UseFormValidation()
 
   // Initial values from store
   const initialValues = {
@@ -46,7 +45,7 @@ function EditWorkingHour() {
     maxDoctors: workingHour?.maxDoctors || 1,
     notes: workingHour?.notes || "",
     modificationReason: "",
-  };
+  }
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
@@ -56,16 +55,16 @@ function EditWorkingHour() {
         maxDoctors: parseInt(values.maxDoctors),
         notes: values.notes || "",
         modificationReason: values.modificationReason,
-      };
+      }
 
-      console.log("Updating working hour:", updateData);
+      console.log("Updating working hour:", updateData)
 
       await dispatch(
         updateWorkingHour({
           workingHourId: workingHourId,
           data: updateData,
         })
-      ).unwrap();
+      ).unwrap()
 
       toast.success(t("roster.workingHours.success.updated"), {
         position: "top-right",
@@ -74,12 +73,12 @@ function EditWorkingHour() {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-      });
+      })
 
       // Navigate back or to a specific route
-      navigate(-1); // Go back to previous page
+      navigate(-1) // Go back to previous page
     } catch (error) {
-      console.error("Working hour update error:", error);
+      console.error("Working hour update error:", error)
 
       Swal.fire({
         title: t("roster.workingHours.error.updateTitle"),
@@ -96,14 +95,14 @@ function EditWorkingHour() {
         confirmButtonColor: "#ef4444",
         background: isDark ? "#1f2937" : "#ffffff",
         color: isDark ? "#f9fafb" : "#111827",
-      });
+      })
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
-  };
+  }
 
   if (loading?.fetch) {
-    return <LoadingGetData text={t("gettingData.workingHour")} />;
+    return <LoadingGetData text={t("gettingData.workingHour")} />
   }
 
   if (!workingHour) {
@@ -117,7 +116,7 @@ function EditWorkingHour() {
           <p>{t("roster.workingHours.error.notFound")}</p>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -366,7 +365,7 @@ function EditWorkingHour() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default EditWorkingHour;
+export default EditWorkingHour

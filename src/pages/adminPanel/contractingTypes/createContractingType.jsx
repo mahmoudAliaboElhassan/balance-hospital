@@ -1,30 +1,30 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import { useTranslation } from "react-i18next";
-import { createContractingType } from "../../../state/act/actContractingType";
-import { useNavigate, Link } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Save, X } from "lucide-react";
+import React, { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { Formik, Form, Field, ErrorMessage } from "formik"
+import * as Yup from "yup"
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
+import { useTranslation } from "react-i18next"
+import { createContractingType } from "../../../state/act/actContractingType"
+import { useNavigate, Link } from "react-router-dom"
+import { ArrowLeft, ArrowRight, Save, X } from "lucide-react"
 
 function CreateContractingType() {
-  const { t, i18n } = useTranslation();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const currentLang = i18n.language;
-  const isRTL = currentLang === "ar";
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const currentLang = i18n.language
+  const isRTL = currentLang === "ar"
 
   const {
     loadingCreateContractingType,
     createError,
     createSuccess,
     createMessage,
-  } = useSelector((state) => state.contractingType);
+  } = useSelector((state) => state.contractingType)
 
-  const { mymode } = useSelector((state) => state.mode);
-  const isDark = mymode === "dark";
+  const { mymode } = useSelector((state) => state.mode)
+  const isDark = mymode === "dark"
 
   // Validation schema
   const validationSchema = Yup.object().shape({
@@ -48,7 +48,7 @@ function CreateContractingType() {
       .integer(t("validation.integerOnly"))
       .required(t("contractingTypes.form.validation.maxHoursRequired")),
     isActive: Yup.boolean(),
-  });
+  })
 
   // Initial form values
   const initialValues = {
@@ -57,14 +57,14 @@ function CreateContractingType() {
     allowOvertimeHours: false,
     maxHoursPerWeek: 168,
     isActive: true,
-  };
+  }
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      await dispatch(createContractingType(values)).unwrap();
+      await dispatch(createContractingType(values)).unwrap()
 
       // Success handling
-      resetForm();
+      resetForm()
       toast.success(t("contractingTypes.success.created"), {
         position: "top-right",
         autoClose: 3000,
@@ -72,10 +72,10 @@ function CreateContractingType() {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-      });
-      navigate("/admin-panel/contracting-types");
+      })
+      navigate("/admin-panel/contracting-types")
     } catch (error) {
-      console.error("ContractingType creation error:", error);
+      console.error("ContractingType creation error:", error)
 
       Swal.fire({
         title: t("contractingTypes.error.title"),
@@ -92,11 +92,11 @@ function CreateContractingType() {
         confirmButtonColor: "#ef4444",
         background: isDark ? "#374151" : "#ffffff",
         color: isDark ? "#ffffff" : "#111827",
-      });
+      })
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
-  };
+  }
 
   return (
     <div
@@ -346,7 +346,7 @@ function CreateContractingType() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default CreateContractingType;
+export default CreateContractingType

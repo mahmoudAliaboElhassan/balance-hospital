@@ -1,28 +1,28 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import { useTranslation } from "react-i18next";
+import React, { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { Formik, Form, Field, ErrorMessage } from "formik"
+import * as Yup from "yup"
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
+import { useTranslation } from "react-i18next"
 import {
   updateManagerPermission,
   getDepartmentById,
-} from "../../../state/act/actDepartment";
-import { useNavigate, useParams } from "react-router-dom";
-import LoadingGetData from "../../../components/LoadingGetData";
-import { ArrowLeft, User, Building2, Calendar, Shield } from "lucide-react";
+} from "../../../state/act/actDepartment"
+import { useNavigate, useParams } from "react-router-dom"
+import LoadingGetData from "../../../components/LoadingGetData"
+import { ArrowLeft, User, Building2, Calendar, Shield } from "lucide-react"
 
 function EditManagerPermission() {
-  const { t, i18n } = useTranslation();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { depId: id } = useParams();
-  const currentLang = i18n.language;
-  const isRTL = currentLang === "ar";
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { depId: id } = useParams()
+  const currentLang = i18n.language
+  const isRTL = currentLang === "ar"
 
-  const { mymode } = useSelector((state) => state.mode);
-  const isDark = mymode === "dark";
+  const { mymode } = useSelector((state) => state.mode)
+  const isDark = mymode === "dark"
 
   // Redux selectors
   const {
@@ -30,14 +30,14 @@ function EditManagerPermission() {
     loadingGetSingleDepartment,
     singleDepartmentError,
     loadingUpdateManagerPermission,
-  } = useSelector((state) => state.department);
+  } = useSelector((state) => state.department)
 
   // Load department data
   useEffect(() => {
     if (id) {
-      dispatch(getDepartmentById(id));
+      dispatch(getDepartmentById(id))
     }
-  }, [dispatch, id]);
+  }, [dispatch, id])
 
   // Validation schema for manager permissions
   const validationSchema = Yup.object({
@@ -46,7 +46,7 @@ function EditManagerPermission() {
     canViewDepartmentReports: Yup.boolean(),
     canManageSchedules: Yup.boolean(),
     canManageStaff: Yup.boolean(),
-  });
+  })
 
   // Initial values based on current manager permissions
   const getInitialValues = () => {
@@ -57,7 +57,7 @@ function EditManagerPermission() {
         canViewDepartmentReports: false,
         canManageSchedules: false,
         canManageStaff: false,
-      };
+      }
     }
 
     return {
@@ -68,8 +68,8 @@ function EditManagerPermission() {
       canManageSchedules:
         selectedDepartment.manager.canManageSchedules || false,
       canManageStaff: selectedDepartment.manager.canManageStaff || false,
-    };
-  };
+    }
+  }
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
@@ -78,7 +78,7 @@ function EditManagerPermission() {
           id: id,
           data: values,
         })
-      ).unwrap();
+      ).unwrap()
 
       toast.success(
         t("managerPermissions.success.updated") ||
@@ -91,11 +91,11 @@ function EditManagerPermission() {
           pauseOnHover: true,
           draggable: true,
         }
-      );
+      )
 
-      navigate(`/admin-panel/department/${id}`);
+      navigate(`/admin-panel/department/${id}`)
     } catch (error) {
-      console.error("Manager permissions update error:", error);
+      console.error("Manager permissions update error:", error)
 
       Swal.fire({
         title: t("managerPermissions.error.title") || "Error",
@@ -112,11 +112,11 @@ function EditManagerPermission() {
         confirmButtonColor: "#ef4444",
         background: isDark ? "#2d2d2d" : "#ffffff",
         color: isDark ? "#f0f0f0" : "#111827",
-      });
+      })
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
-  };
+  }
 
   // Loading state
   if (loadingGetSingleDepartment) {
@@ -124,7 +124,7 @@ function EditManagerPermission() {
       <LoadingGetData
         text={t("gettingData.departmentData") || "Loading department data..."}
       />
-    );
+    )
   }
 
   // Error state
@@ -184,7 +184,7 @@ function EditManagerPermission() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   // No department found
@@ -233,7 +233,7 @@ function EditManagerPermission() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   // No manager assigned
@@ -290,7 +290,7 @@ function EditManagerPermission() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -679,7 +679,7 @@ function EditManagerPermission() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default EditManagerPermission;
+export default EditManagerPermission

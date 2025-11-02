@@ -7,14 +7,8 @@ import * as Yup from "yup"
 import { toast } from "react-toastify"
 import {
   ArrowLeft,
-  Plus,
-  Trash2,
   Info,
-  Calendar,
-  Users,
-  Clock,
   Settings,
-  Building,
   AlertCircle,
   CheckCircle,
   Save,

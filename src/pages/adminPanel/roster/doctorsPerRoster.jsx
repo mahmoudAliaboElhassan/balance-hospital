@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { getDoctorsPerRoster } from "../../../state/act/actRosterManagement";
+import React, { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useParams } from "react-router-dom"
+import { useTranslation } from "react-i18next"
+import { getDoctorsPerRoster } from "../../../state/act/actRosterManagement"
 import {
   selectDoctorsPerRoster,
   selectIsFetching,
   selectErrors,
-} from "../../../state/slices/roster";
-import CollapsibleDoctorCard from "./CollapsibleDoctorCard";
+} from "../../../state/slices/roster"
+import CollapsibleDoctorCard from "./CollapsibleDoctorCard"
 import {
   Users,
   Clock,
   Building,
-  FileText,
   AlertCircle,
   Loader2,
   Filter,
@@ -21,45 +20,45 @@ import {
   Stethoscope,
   GraduationCap,
   Award,
-} from "lucide-react";
-import LoadingGetData from "../../../components/LoadingGetData";
+} from "lucide-react"
+import LoadingGetData from "../../../components/LoadingGetData"
 
 function DoctorsPerRoster() {
-  const { id } = useParams();
-  const dispatch = useDispatch();
-  const { t, i18n } = useTranslation();
-  const { mymode } = useSelector((state) => state.mode);
+  const { id } = useParams()
+  const dispatch = useDispatch()
+  const { t, i18n } = useTranslation()
+  const { mymode } = useSelector((state) => state.mode)
 
-  const doctorsData = useSelector(selectDoctorsPerRoster);
-  const isLoading = useSelector(selectIsFetching);
-  const errors = useSelector(selectErrors);
+  const doctorsData = useSelector(selectDoctorsPerRoster)
+  const isLoading = useSelector(selectIsFetching)
+  const errors = useSelector(selectErrors)
 
-  const [selectedFilter, setSelectedFilter] = useState("all");
+  const [selectedFilter, setSelectedFilter] = useState("all")
 
-  const isRTL = i18n.language === "ar";
-  const isDark = mymode === "dark";
+  const isRTL = i18n.language === "ar"
+  const isDark = mymode === "dark"
 
   useEffect(() => {
     if (id) {
-      dispatch(getDoctorsPerRoster({ rosterId: id }));
+      dispatch(getDoctorsPerRoster({ rosterId: id }))
     }
-  }, [dispatch, id]);
+  }, [dispatch, id])
 
   // Filter doctors based on specialty
   const filteredDoctors = React.useMemo(() => {
     if (!doctorsData || selectedFilter === "all") {
-      return doctorsData || [];
+      return doctorsData || []
     }
 
     return doctorsData.filter((doctor) => {
-      const specialty = doctor.specialtyEn?.toLowerCase() || "";
-      return specialty.includes(selectedFilter.toLowerCase());
-    });
-  }, [doctorsData, selectedFilter]);
+      const specialty = doctor.specialtyEn?.toLowerCase() || ""
+      return specialty.includes(selectedFilter.toLowerCase())
+    })
+  }, [doctorsData, selectedFilter])
 
   // Calculate filter counts
   const filterCounts = React.useMemo(() => {
-    if (!doctorsData) return {};
+    if (!doctorsData) return {}
 
     return {
       all: doctorsData.length,
@@ -72,12 +71,12 @@ function DoctorsPerRoster() {
       specialist: doctorsData.filter((doctor) =>
         doctor.specialtyEn?.toLowerCase().includes("specialist")
       ).length,
-    };
-  }, [doctorsData]);
+    }
+  }, [doctorsData])
 
   // Calculate summary statistics based on filtered data
   const summaryStats = React.useMemo(() => {
-    if (!filteredDoctors || filteredDoctors.length === 0) return null;
+    if (!filteredDoctors || filteredDoctors.length === 0) return null
 
     return filteredDoctors.reduce(
       (acc, doctor) => ({
@@ -108,8 +107,8 @@ function DoctorsPerRoster() {
         totalNoShow: 0,
         totalLate: 0,
       }
-    );
-  }, [filteredDoctors]);
+    )
+  }, [filteredDoctors])
 
   const filterOptions = [
     {
@@ -140,7 +139,7 @@ function DoctorsPerRoster() {
       color: "orange",
       count: filterCounts.specialist || 0,
     },
-  ];
+  ]
 
   const getColorClasses = (color, isActive) => {
     const colors = {
@@ -180,16 +179,16 @@ function DoctorsPerRoster() {
           : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50",
         icon: isDark ? "text-orange-300" : "text-orange-400",
       },
-    };
+    }
 
     return {
       card: isActive ? colors[color].active : colors[color].inactive,
       icon: isActive ? "text-white" : colors[color].icon,
-    };
-  };
+    }
+  }
 
   if (isLoading) {
-    return <LoadingGetData text={t("gettingData.loadingDoctors")} />;
+    return <LoadingGetData text={t("gettingData.loadingDoctors")} />
   }
 
   if (errors.general) {
@@ -206,7 +205,7 @@ function DoctorsPerRoster() {
           </p>
         </div>
       </div>
-    );
+    )
   }
 
   if (!doctorsData || doctorsData.length === 0) {
@@ -225,7 +224,7 @@ function DoctorsPerRoster() {
           </p>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -419,9 +418,9 @@ function DoctorsPerRoster() {
       {/* Filter Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {filterOptions.map((option) => {
-          const isActive = selectedFilter === option.key;
-          const colorClasses = getColorClasses(option.color, isActive);
-          const IconComponent = option.icon;
+          const isActive = selectedFilter === option.key
+          const colorClasses = getColorClasses(option.color, isActive)
+          const IconComponent = option.icon
 
           return (
             <button
@@ -447,7 +446,7 @@ function DoctorsPerRoster() {
                 </span>
               </div>
             </button>
-          );
+          )
         })}
       </div>
       {/* Doctors List */}
@@ -508,7 +507,7 @@ function DoctorsPerRoster() {
         )}
       </div>
     </div>
-  );
+  )
 }
 
-export default DoctorsPerRoster;
+export default DoctorsPerRoster

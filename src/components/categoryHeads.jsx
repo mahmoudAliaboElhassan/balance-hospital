@@ -17,7 +17,7 @@ import LoadingGetData from "./LoadingGetData"
 import { useTranslation } from "react-i18next"
 import i18next from "i18next"
 import { useNavigate, useParams } from "react-router-dom"
-import RemoveCategoryHeadModal from "./RemoveCategoryHead"
+import RemoveCategoryHeadModal from "./modals/RemoveCategoryHead"
 import { formatDate } from "../utils/formtDate"
 
 const CategoryHeadsManagement = ({

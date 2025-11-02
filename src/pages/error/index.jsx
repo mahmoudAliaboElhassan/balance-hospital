@@ -1,9 +1,8 @@
-import React from "react";
-import { useRouteError } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { useTranslation } from "react-i18next";
-import { changeMode } from "../../state/slices/mode";
-import Mode from "../../components/mode";
+import { useRouteError } from "react-router-dom"
+import { useSelector, useDispatch } from "react-redux"
+import { useTranslation } from "react-i18next"
+import { changeMode } from "../../state/slices/mode"
+import Mode from "../../components/Header/mode"
 
 // Theme Toggle Component (Mode)
 const SunIcon = ({ className }) => (
@@ -29,7 +28,7 @@ const SunIcon = ({ className }) => (
     <path d="m6.34 17.66-1.41 1.41" />
     <path d="m19.07 4.93-1.41 1.41" />
   </svg>
-);
+)
 
 const MoonIcon = ({ className }) => (
   <svg
@@ -46,11 +45,11 @@ const MoonIcon = ({ className }) => (
   >
     <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
   </svg>
-);
+)
 
 const ModeToggle = ({ currentTheme }) => {
-  const { mymode } = useSelector((state) => state.mode);
-  const dispatch = useDispatch();
+  const { mymode } = useSelector((state) => state.mode)
+  const dispatch = useDispatch()
 
   return (
     <button
@@ -76,28 +75,28 @@ const ModeToggle = ({ currentTheme }) => {
         <MoonIcon className="h-5 w-5" />
       )}
     </button>
-  );
-};
+  )
+}
 
 const ErrorPage = () => {
-  const error = useRouteError();
-  const { mymode } = useSelector((state) => state.mode);
-  const { t, i18n } = useTranslation();
+  const error = useRouteError()
+  const { mymode } = useSelector((state) => state.mode)
+  const { t, i18n } = useTranslation()
 
-  console.error("Error caught by ErrorPage:", error);
-  console.error("Error type:", typeof error);
+  console.error("Error caught by ErrorPage:", error)
+  console.error("Error type:", typeof error)
   console.error(
     "Error properties:",
     error ? Object.keys(error) : "No error object"
-  );
+  )
 
   // Handle case where error might be null or undefined
   if (!error) {
-    console.warn("No error object found, defaulting to 404");
+    console.warn("No error object found, defaulting to 404")
   }
 
   // Get current language direction
-  const isRTL = i18n.language === "ar";
+  const isRTL = i18n.language === "ar"
 
   // Determine error type from the route error
   const getErrorType = () => {
@@ -106,67 +105,67 @@ const ErrorPage = () => {
     //   return "404";
     // }
 
-    let status = null;
+    let status = null
 
     // Try to extract status from different possible error structures
     if (error?.status) {
-      status = error.status;
+      status = error.status
     } else if (error?.response?.status) {
-      status = error.response.status;
+      status = error.response.status
     } else if (error instanceof Response) {
-      status = error.status;
+      status = error.status
     } else if (error instanceof Error) {
       // Try to extract status from error message
-      const statusMatch = error.message.match(/(\d{3})/);
+      const statusMatch = error.message.match(/(\d{3})/)
       if (statusMatch) {
-        status = parseInt(statusMatch[1]);
+        status = parseInt(statusMatch[1])
       }
     }
 
     // Convert status to string and handle special cases
     if (status) {
-      return status.toString();
+      return status.toString()
     }
 
     // Check for specific error types in message
     if (error?.message) {
-      const message = error.message.toLowerCase();
+      const message = error.message.toLowerCase()
       if (
         message.includes("network") ||
         message.includes("connection") ||
         message.includes("fetch")
       ) {
-        return "network";
+        return "network"
       }
       if (
         message.includes("maintenance") ||
         message.includes("service unavailable")
       ) {
-        return "maintenance";
+        return "maintenance"
       }
       if (
         message.includes("unauthorized") ||
         message.includes("not authorized")
       ) {
-        return "401";
+        return "401"
       }
       if (message.includes("forbidden") || message.includes("access denied")) {
-        return "403";
+        return "403"
       }
       if (message.includes("server error") || message.includes("internal")) {
-        return "500";
+        return "500"
       }
     }
 
     // Check for route-specific errors
     if (typeof error === "string" && error.includes("404")) {
-      return "404";
+      return "404"
     }
 
     // Default to 404 for unknown errors
-  };
+  }
 
-  const errorType = getErrorType();
+  const errorType = getErrorType()
 
   // Define color schemes for light and dark modes
   const colorSchemes = {
@@ -196,9 +195,9 @@ const ErrorPage = () => {
       headerBg: "#0f172a",
       footerBg: "#020617",
     },
-  };
+  }
 
-  const currentTheme = colorSchemes[mymode] || colorSchemes.light;
+  const currentTheme = colorSchemes[mymode] || colorSchemes.light
 
   // Error configurations for different types
   const errorConfigs = {
@@ -256,49 +255,49 @@ const ErrorPage = () => {
       icon: "maintenance",
       color: "#06b6d4",
     },
-  };
+  }
 
-  const currentError = errorConfigs[errorType] || errorConfigs["404"];
+  const currentError = errorConfigs[errorType] || errorConfigs["404"]
 
   // Extract title and message from error object with better fallbacks
   const getErrorTitle = () => {
     if (!error) {
-      return currentError.title;
+      return currentError.title
     }
     if (error?.statusText && error.statusText !== "Unknown") {
-      return error.statusText;
+      return error.statusText
     }
     if (error?.data?.title) {
-      return error.data.title;
+      return error.data.title
     }
     if (error?.name && error.name !== "Error") {
-      return error.name;
+      return error.name
     }
-    return currentError.title;
-  };
+    return currentError.title
+  }
 
   const getErrorMessage = () => {
     if (!error) {
-      return currentError.message;
+      return currentError.message
     }
     if (error?.data?.message) {
-      return error.data.message;
+      return error.data.message
     }
     if (
       error?.message &&
       !error.message.includes("Error:") &&
       error.message.length > 10
     ) {
-      return error.message;
+      return error.message
     }
     if (error?.data?.error) {
-      return error.data.error;
+      return error.data.error
     }
-    return currentError.message;
-  };
+    return currentError.message
+  }
 
-  const title = getErrorTitle();
-  const message = getErrorMessage();
+  const title = getErrorTitle()
+  const message = getErrorMessage()
 
   // SVG Icons
   const SvgIcons = {
@@ -630,20 +629,20 @@ const ErrorPage = () => {
         <rect x="70" y="138" width="8" height="4" fill={currentError.color} />
       </svg>
     ),
-  };
+  }
 
   const handleRetry = () => {
-    window.location.reload();
-  };
+    window.location.reload()
+  }
 
   const handleGoHome = () => {
-    window.location.href = "/";
-  };
+    window.location.href = "/"
+  }
 
   const handleGoBack = () => {
-    window.history.back();
+    window.history.back()
     // window.location.reload();
-  };
+  }
 
   return (
     <div className="error-page">
@@ -989,7 +988,7 @@ const ErrorPage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ErrorPage;
+export default ErrorPage

@@ -1,43 +1,41 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import { useTranslation } from "react-i18next";
-import { createScientificDegree } from "../../../state/act/actScientificDegree";
-import { useNavigate, Link } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Save, X } from "lucide-react";
-import UseFormValidation from "../../../hooks/use-form-validation";
-import UseInitialValues from "../../../hooks/use-initial-values";
+import { useDispatch, useSelector } from "react-redux"
+import { Formik, Form, Field, ErrorMessage } from "formik"
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
+import { useTranslation } from "react-i18next"
+import { createScientificDegree } from "../../../state/act/actScientificDegree"
+import { useNavigate, Link } from "react-router-dom"
+import { ArrowLeft, ArrowRight, Save, X } from "lucide-react"
+import UseFormValidation from "../../../hooks/use-form-validation"
+import UseInitialValues from "../../../hooks/use-initial-values"
 
 function CreateScientificDegree() {
-  const { t, i18n } = useTranslation();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const currentLang = i18n.language;
-  const isRTL = currentLang === "ar";
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const currentLang = i18n.language
+  const isRTL = currentLang === "ar"
 
   const {
     loadingCreateScientificDegree,
     createError,
     createSuccess,
     createMessage,
-  } = useSelector((state) => state.scientificDegree);
+  } = useSelector((state) => state.scientificDegree)
 
-  const { mymode } = useSelector((state) => state.mode);
-  const isDark = mymode === "dark";
+  const { mymode } = useSelector((state) => state.mode)
+  const isDark = mymode === "dark"
 
   // Validation schema
-  const { VALIDATION_SCHEMA_ADD_SCIENTIFIC_DEGREE } = UseFormValidation();
+  const { VALIDATION_SCHEMA_ADD_SCIENTIFIC_DEGREE } = UseFormValidation()
   // Initial form values
-  const { INITIAL_VALUES_ADD_SCIENTIFIC_DEGREE } = UseInitialValues();
+  const { INITIAL_VALUES_ADD_SCIENTIFIC_DEGREE } = UseInitialValues()
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      await dispatch(createScientificDegree(values)).unwrap();
+      await dispatch(createScientificDegree(values)).unwrap()
 
       // Success handling
-      resetForm();
+      resetForm()
       toast.success(t("scientificDegrees.success.created"), {
         position: "top-right",
         autoClose: 3000,
@@ -45,10 +43,10 @@ function CreateScientificDegree() {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-      });
-      navigate("/admin-panel/scientific-degrees");
+      })
+      navigate("/admin-panel/scientific-degrees")
     } catch (error) {
-      console.error("Scientific Degree creation error:", error);
+      console.error("Scientific Degree creation error:", error)
 
       Swal.fire({
         title: t("scientificDegrees.error.title"),
@@ -63,11 +61,11 @@ function CreateScientificDegree() {
         icon: "error",
         confirmButtonText: t("common.ok"),
         confirmButtonColor: "#3085d6",
-      });
+      })
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
-  };
+  }
 
   return (
     <div
@@ -314,7 +312,7 @@ function CreateScientificDegree() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default CreateScientificDegree;
+export default CreateScientificDegree

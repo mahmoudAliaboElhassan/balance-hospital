@@ -58,7 +58,7 @@ import {
   ArrowRight,
 } from "lucide-react"
 import { getRosterByCategory } from "../../../state/act/actRosterManagement"
-import ModalUpdateRosterStatus from "../../../components/ModalUpdateRosterStatus"
+import ModalUpdateRosterStatus from "../../../components/modals/ModalUpdateRosterStatus"
 import "../../../styles/general.css"
 import { toast } from "react-toastify"
 import Swal from "sweetalert2"

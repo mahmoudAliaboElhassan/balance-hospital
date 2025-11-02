@@ -25,7 +25,6 @@ import {
   CheckCircle,
   User,
   FileText,
-  Eye,
   Briefcase,
   Timer,
   UserCheck,
@@ -35,8 +34,8 @@ import {
   Activity,
   Ban,
 } from "lucide-react"
-import ApproveRequestModal from "../../../components/ApprovalRequest"
-import RejectRequestModal from "../../../components/RejectRequest"
+import ApproveRequestModal from "../../../components/modals/ApprovalRequest"
+import RejectRequestModal from "../../../components/modals/RejectRequest"
 import { formatDate } from "../../../utils/formtDate"
 
 function ManageDoctors() {
