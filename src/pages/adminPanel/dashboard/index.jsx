@@ -909,7 +909,13 @@ const Dashboard = () => {
                         (type) => (
                           <div
                             key={type.id}
-                            className={`p-4 rounded-lg border ${
+                            onClick={() => {
+                              window.scrollTo({ top: 0 })
+                              navigate(
+                                `/admin-panel/contracting-types/${type.id}`
+                              )
+                            }}
+                            className={`p-4 rounded-lg border cursor-pointer ${
                               isDark
                                 ? "bg-gray-700 border-gray-600"
                                 : "bg-gray-50 border-gray-200"
