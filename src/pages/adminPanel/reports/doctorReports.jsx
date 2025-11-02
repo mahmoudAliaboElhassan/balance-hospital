@@ -466,6 +466,192 @@ function DoctorReports() {
             </div>
           </div>
         </div>
+        {/* Roles Summary - NEW SECTION */}
+        {report.rolesSummary && (
+          <div
+            className={`${
+              isDark ? "bg-gray-800" : "bg-white"
+            } rounded-2xl shadow-xl p-8 mb-8`}
+          >
+            <h2
+              className={`text-2xl font-bold ${
+                isDark ? "text-white" : "text-gray-900"
+              } mb-6 flex items-center gap-3`}
+            >
+              <Award
+                className={`w-6 h-6 ${
+                  isDark ? "text-purple-400" : "text-purple-600"
+                }`}
+              />
+              {t("doctorReport.roles.title") || "Roles & Permissions"}
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div
+                className={`p-6 rounded-xl ${
+                  isDark ? "bg-gray-700" : "bg-gray-50"
+                }`}
+              >
+                <h3
+                  className={`text-sm font-medium mb-2 ${
+                    isDark ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  {t("doctorReport.roles.currentRole") || "Current Role"}
+                </h3>
+                <p
+                  className={`text-2xl font-bold ${
+                    isDark ? "text-white" : "text-gray-900"
+                  }`}
+                >
+                  {currentLang === "en"
+                    ? report.rolesSummary.currentRole
+                    : report.rolesSummary.currentRoleNameAr}
+                </p>
+                <p
+                  className={`text-sm mt-2 ${
+                    isDark ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  {t("contractingTypes.filters.fromDate") || "Since"}:{" "}
+                  {formatDate(report.rolesSummary.currentSince)}
+                </p>
+              </div>
+
+              <div
+                className={`p-6 rounded-xl ${
+                  isDark ? "bg-gray-700" : "bg-gray-50"
+                }`}
+              >
+                <h3
+                  className={`text-sm font-medium mb-2 ${
+                    isDark ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  {t("doctorReport.roles.context") || "Context"}
+                </h3>
+                <p
+                  className={`text-lg font-semibold ${
+                    isDark ? "text-white" : "text-gray-900"
+                  }`}
+                >
+                  {report.rolesSummary.currentContextText}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Roles History - NEW SECTION */}
+        {report.rolesHistory && report.rolesHistory.length > 0 && (
+          <div
+            className={`${
+              isDark ? "bg-gray-800" : "bg-white"
+            } rounded-2xl shadow-xl p-8 mb-8`}
+          >
+            <h2
+              className={`text-2xl font-bold ${
+                isDark ? "text-white" : "text-gray-900"
+              } mb-6`}
+            >
+              {t("managementRoles.tabs.history") || "Role History"}
+            </h2>
+
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr
+                    className={`border-b ${
+                      isDark ? "border-gray-700" : "border-gray-200"
+                    }`}
+                  >
+                    <th
+                      className={`text-${
+                        isRTL ? "right" : "left"
+                      } p-4 font-semibold ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
+                    >
+                      {t("managementRoles.table.role") || "Role"}
+                    </th>
+                    <th
+                      className={`text-${
+                        isRTL ? "right" : "left"
+                      } p-4 font-semibold ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
+                    >
+                      {t("doctorReport.roles.assignedAt") || "Assigned At"}
+                    </th>
+                    <th
+                      className={`text-${
+                        isRTL ? "right" : "left"
+                      } p-4 font-semibold ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
+                    >
+                      {t("roster.workingHours.assignedBy") || "Assigned By"}
+                    </th>
+                    <th
+                      className={`text-${
+                        isRTL ? "right" : "left"
+                      } p-4 font-semibold ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
+                    >
+                      {t("categories.filters.status") || "Status"}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {report.rolesHistory.map((role) => (
+                    <tr
+                      key={role.id}
+                      className={`border-b ${
+                        isDark ? "border-gray-700" : "border-gray-200"
+                      }`}
+                    >
+                      <td
+                        className={`p-4 ${
+                          isDark ? "text-gray-300" : "text-gray-700"
+                        }`}
+                      >
+                        {currentLang === "en" ? role.role : role.roleNameAr}
+                      </td>
+                      <td
+                        className={`p-4 ${
+                          isDark ? "text-gray-300" : "text-gray-700"
+                        }`}
+                      >
+                        {formatDate(role.assignedAt)}
+                      </td>
+                      <td
+                        className={`p-4 ${
+                          isDark ? "text-gray-300" : "text-gray-700"
+                        }`}
+                      >
+                        {role.assignedByName}
+                      </td>
+                      <td className="p-4">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            role.isActive
+                              ? "bg-green-100 text-green-800"
+                              : "bg-gray-100 text-gray-800"
+                          }`}
+                        >
+                          {role.isActive
+                            ? t("common.active") || "Active"
+                            : t("common.inactive") || "Inactive"}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

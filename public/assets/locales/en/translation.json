@@ -3261,6 +3261,12 @@
       "department": "Department",
       "reason": "Reason",
       "createdAt": "Created At"
+    },
+    "roles": {
+      "title": "Roles",
+      "currentRole": "Current Role",
+      "context": "Role Context",
+      "assignedAt": "Assigned At"
     }
   },
   "leaves": {

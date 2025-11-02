@@ -3255,6 +3255,12 @@
       "department": "المكان",
       "reason": "السبب",
       "createdAt": "تاريخ الإنشاء"
+    },
+    "roles": {
+      "title": "الأدوار",
+      "currentRole": "الدور الحالي",
+      "context": "سياق الدور",
+      "assignedAt": "تاريخ التعيين"
     }
   },
   "leaves": {
