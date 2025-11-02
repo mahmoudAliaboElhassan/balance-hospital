@@ -893,6 +893,72 @@ const Dashboard = () => {
                   />
                 </div>
 
+                {/* Top Degrees by Users Section */}
+                {dashboardData.configurationSummary.topDegreesByUsers?.length >
+                  0 && (
+                  <div className="mt-6">
+                    <h3
+                      className={`text-lg font-semibold mb-4 ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
+                    >
+                      {t("adminPanel.scientificDegrees") || "Top Degrees"}
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {dashboardData.configurationSummary.topDegreesByUsers.map(
+                        (degree) => (
+                          <div
+                            key={degree.id}
+                            onClick={() => {
+                              window.scrollTo({ top: 0 })
+                              navigate(
+                                `/admin-panel/scientific-degrees/${degree.id}`
+                              )
+                            }}
+                            className={`p-4 rounded-lg border cursor-pointer ${
+                              isDark
+                                ? "bg-gray-700 border-gray-600"
+                                : "bg-gray-50 border-gray-200"
+                            }`}
+                          >
+                            <div className="flex items-start justify-between mb-3">
+                              <div className="flex-1">
+                                <p
+                                  className={`font-medium text-sm mb-1 ${
+                                    isDark ? "text-white" : "text-gray-900"
+                                  }`}
+                                >
+                                  {i18next.language === "ar"
+                                    ? degree.nameArabic
+                                    : degree.nameEnglish}
+                                </p>
+                              </div>
+                            </div>
+                            <div>
+                              <p
+                                className={`text-2xl font-bold ${
+                                  isDark ? "text-purple-400" : "text-purple-600"
+                                }`}
+                              >
+                                {degree.usersCount}
+                              </p>
+                              <p
+                                className={`text-xs ${
+                                  isDark ? "text-gray-400" : "text-gray-600"
+                                }`}
+                              >
+                                {t("dashboard.sections.configuration.users") ||
+                                  "Users"}
+                              </p>
+                            </div>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Contracting Types Section */}
                 {dashboardData.configurationSummary.contractingTypes?.length >
                   0 && (
                   <div className="mt-6">
@@ -989,9 +1055,141 @@ const Dashboard = () => {
                                     isDark ? "text-gray-400" : "text-gray-600"
                                   }`}
                                 >
+                                  {t("users.maxHoursPerWeek") ||
+                                    "Max Hours/Week"}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Shift Types Section */}
+                {dashboardData.configurationSummary.shiftTypes?.length > 0 && (
+                  <div className="mt-6">
+                    <h3
+                      className={`text-lg font-semibold mb-4 ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
+                    >
+                      {t("adminPanel.shiftHours") || "Shift Types"}
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {dashboardData.configurationSummary.shiftTypes.map(
+                        (shift) => (
+                          <div
+                            key={shift.id}
+                            onClick={() => {
+                              window.scrollTo({ top: 0 })
+                              navigate(
+                                `/admin-panel/shift-hours-types/${shift.id}`
+                              )
+                            }}
+                            className={`p-4 rounded-lg border cursor-pointer ${
+                              isDark
+                                ? "bg-gray-700 border-gray-600"
+                                : "bg-gray-50 border-gray-200"
+                            }`}
+                          >
+                            <div className="flex items-start justify-between mb-3">
+                              <div className="flex-1">
+                                <p
+                                  className={`font-medium text-sm mb-1 ${
+                                    isDark ? "text-white" : "text-gray-900"
+                                  }`}
+                                >
+                                  {i18next.language === "ar"
+                                    ? shift.nameArabic
+                                    : shift.nameEnglish}
+                                </p>
+                                <div className="flex items-center gap-2">
+                                  <span
+                                    className={`text-xs px-2 py-1 rounded ${
+                                      shift.period === "Morning"
+                                        ? isDark
+                                          ? "bg-yellow-900/30 text-yellow-400"
+                                          : "bg-yellow-100 text-yellow-700"
+                                        : shift.period === "Evening"
+                                        ? isDark
+                                          ? "bg-orange-900/30 text-orange-400"
+                                          : "bg-orange-100 text-orange-700"
+                                        : shift.period === "Night"
+                                        ? isDark
+                                          ? "bg-indigo-900/30 text-indigo-400"
+                                          : "bg-indigo-100 text-indigo-700"
+                                        : isDark
+                                        ? "bg-blue-900/30 text-blue-400"
+                                        : "bg-blue-100 text-blue-700"
+                                    }`}
+                                  >
+                                    {shift.period === "Morning"
+                                      ? t(
+                                          "shiftHourTypeForm.periods.morning"
+                                        ) || "Morning"
+                                      : shift.period === "Evening"
+                                      ? t(
+                                          "shiftHourTypeForm.periods.evening"
+                                        ) || "Evening"
+                                      : shift.period === "Night"
+                                      ? t("shiftHourTypeForm.periods.night") ||
+                                        "Night"
+                                      : t("shiftHourTypeForm.periods.allDay") ||
+                                        "All Day"}
+                                  </span>
+                                  {shift.isOvertime && (
+                                    <span
+                                      className={`text-xs px-2 py-1 rounded ${
+                                        isDark
+                                          ? "bg-red-900/30 text-red-400"
+                                          : "bg-red-100 text-red-700"
+                                      }`}
+                                    >
+                                      {t(
+                                        "dashboard.sections.configuration.overtime"
+                                      ) || "Overtime"}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                              <div>
+                                <p
+                                  className={`text-2xl font-bold ${
+                                    isDark ? "text-green-400" : "text-green-600"
+                                  }`}
+                                >
+                                  {shift.usageToday}
+                                </p>
+                                <p
+                                  className={`text-xs ${
+                                    isDark ? "text-gray-400" : "text-gray-600"
+                                  }`}
+                                >
                                   {t(
                                     "dashboard.sections.configuration.usageToday"
                                   ) || "Usage Today"}
+                                </p>
+                              </div>
+                              <div>
+                                <p
+                                  className={`text-2xl font-bold ${
+                                    isDark ? "text-cyan-400" : "text-cyan-600"
+                                  }`}
+                                >
+                                  {shift.totalTime}h
+                                </p>
+                                <p
+                                  className={`text-xs ${
+                                    isDark ? "text-gray-400" : "text-gray-600"
+                                  }`}
+                                >
+                                  {t(
+                                    "dashboard.sections.configuration.duration"
+                                  ) || "Duration"}
                                 </p>
                               </div>
                             </div>
