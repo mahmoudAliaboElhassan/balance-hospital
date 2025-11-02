@@ -1,48 +1,48 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import { useTranslation } from "react-i18next";
-import { createSubDepartment } from "../../../state/act/actSubDepartment";
-import { useNavigate } from "react-router-dom";
-import UseInitialValues from "../../../hooks/use-initial-values";
-import UseFormValidation from "../../../hooks/use-form-validation";
-import i18next from "i18next";
+import React, { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { Formik, Form, Field, ErrorMessage } from "formik"
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
+import { useTranslation } from "react-i18next"
+import { createSubDepartment } from "../../../state/act/actSubDepartment"
+import { useNavigate } from "react-router-dom"
+import UseInitialValues from "../../../hooks/use-initial-values"
+import UseFormValidation from "../../../hooks/use-form-validation"
+import i18next from "i18next"
 
 function CreateSubDepartmentSpecificDepartment() {
-  const { t, i18n } = useTranslation();
-  const dispatch = useDispatch();
-  const currentLang = i18n.language;
-  const isRTL = currentLang === "ar";
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+  const currentLang = i18n.language
+  const isRTL = currentLang === "ar"
 
   const {
     loadingCreateSubDepartment,
     createError,
     createSuccess,
     createMessage,
-  } = useSelector((state) => state.subDepartment);
+  } = useSelector((state) => state.subDepartment)
 
   // Validation schema with translations
-  const { VALIDATION_SCHEMA_ADD_SUBDEPARTMENT } = UseFormValidation();
-  const navigate = useNavigate();
+  const { VALIDATION_SCHEMA_ADD_SUBDEPARTMENT } = UseFormValidation()
+  const navigate = useNavigate()
 
   // Initial form values
-  const { INITIAL_VALUES_ADD_SUBDEPARTMENT } = UseInitialValues();
+  const { INITIAL_VALUES_ADD_SUBDEPARTMENT } = UseInitialValues()
 
   // Get departmentId from localStorage
-  const departmentId = localStorage.getItem("departmentId");
-  const currentLanguage = i18next.language;
+  const departmentId = localStorage.getItem("departmentId")
+  const currentLanguage = i18next.language
   const departmentName =
     currentLanguage === "en"
       ? localStorage.getItem("departmentEnglishName")
-      : localStorage.getItem("departmentArabicName");
+      : localStorage.getItem("departmentArabicName")
 
   // Enhanced initial values with departmentId from localStorage
   const enhancedInitialValues = {
     ...INITIAL_VALUES_ADD_SUBDEPARTMENT,
     departmentId: departmentId || "",
-  };
+  }
 
   const handleSubmit = async (
     values,
@@ -52,13 +52,13 @@ function CreateSubDepartmentSpecificDepartment() {
     const submissionValues = {
       ...values,
       departmentId: departmentId || values.departmentId,
-    };
+    }
 
     dispatch(createSubDepartment(submissionValues))
       .unwrap()
       .then(() => {
         // Success handling
-        resetForm();
+        resetForm()
         toast.success(t("subDepartmentForm.success.created"), {
           position: "top-right",
           autoClose: 3000,
@@ -66,11 +66,11 @@ function CreateSubDepartmentSpecificDepartment() {
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
-        });
-        navigate("/admin-panel/sub-departments");
+        })
+        navigate("/admin-panel/sub-departments")
       })
       .catch((error) => {
-        console.error("SubDepartment creation error:", error);
+        console.error("SubDepartment creation error:", error)
 
         Swal.fire({
           title: t("subDepartmentForm.error.title"),
@@ -85,24 +85,24 @@ function CreateSubDepartmentSpecificDepartment() {
           confirmButtonColor: "#ef4444",
           background: "#ffffff",
           color: "#111827",
-        });
+        })
       })
       .finally(() => {
-        setSubmitting(false);
-      });
-  };
+        setSubmitting(false)
+      })
+  }
 
   // Check if departmentId exists in localStorage
   useEffect(() => {
     if (!departmentId) {
-      console.warn("No departmentId found in localStorage");
+      console.warn("No departmentId found in localStorage")
       // Optionally show a warning or redirect
       toast.warning(t("subDepartmentForm.warning.noDepartmentSelected"), {
         position: "top-right",
         autoClose: 5000,
-      });
+      })
     }
-  }, [departmentId, t]);
+  }, [departmentId, t])
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
@@ -293,7 +293,7 @@ function CreateSubDepartmentSpecificDepartment() {
                 type="button"
                 className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 onClick={() => {
-                  window.history.back();
+                  window.history.back()
                 }}
               >
                 {t("subDepartmentForm.buttons.cancel")}
@@ -343,7 +343,7 @@ function CreateSubDepartmentSpecificDepartment() {
         )}
       </Formik>
     </div>
-  );
+  )
 }
 
-export default CreateSubDepartmentSpecificDepartment;
+export default CreateSubDepartmentSpecificDepartment

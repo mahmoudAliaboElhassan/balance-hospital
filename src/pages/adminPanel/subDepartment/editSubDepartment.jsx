@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useTranslation } from "react-i18next";
-import { useNavigate, Link, useParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Save, X } from "lucide-react";
+import React, { useState, useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useTranslation } from "react-i18next"
+import { useNavigate, Link, useParams } from "react-router-dom"
+import { ArrowLeft, ArrowRight, Save, X } from "lucide-react"
 import {
   updateSubDepartment,
   getSubDepartmentById,
-} from "../../../state/act/actSubDepartment";
-import { getDepartments } from "../../../state/act/actDepartment";
+} from "../../../state/act/actSubDepartment"
+import { getDepartments } from "../../../state/act/actDepartment"
 import {
   clearUpdateSuccess,
   resetUpdateForm,
-} from "../../../state/slices/subDepartment";
-import LoadingGetData from "../../../components/LoadingGetData";
-import { toast } from "react-toastify";
+} from "../../../state/slices/subDepartment"
+import LoadingGetData from "../../../components/LoadingGetData"
+import { toast } from "react-toastify"
 
 function EditSubDepartment() {
-  const { t, i18n } = useTranslation();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { id } = useParams();
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { id } = useParams()
 
   const {
     loadingUpdateSubDepartment,
@@ -29,12 +29,12 @@ function EditSubDepartment() {
     selectedSubDepartment,
     loadingGetSingleSubDepartment,
     singleSubDepartmentError,
-  } = useSelector((state) => state.subDepartment);
-  const { departments } = useSelector((state) => state.department);
-  const { mymode } = useSelector((state) => state.mode);
+  } = useSelector((state) => state.subDepartment)
+  const { departments } = useSelector((state) => state.department)
+  const { mymode } = useSelector((state) => state.mode)
 
-  const isDark = mymode === "dark";
-  const isRTL = i18n.language === "ar";
+  const isDark = mymode === "dark"
+  const isRTL = i18n.language === "ar"
 
   // Form state
   const [formData, setFormData] = useState({
@@ -44,18 +44,18 @@ function EditSubDepartment() {
     departmentId: "",
     location: "",
     isActive: true,
-  });
+  })
 
-  const [formErrors, setFormErrors] = useState({});
+  const [formErrors, setFormErrors] = useState({})
 
   // Fetch data on component mount
   useEffect(() => {
     if (id) {
-      dispatch(getSubDepartmentById(id));
+      dispatch(getSubDepartmentById(id))
     }
-    dispatch(getDepartments({ pageSize: 100, isActive: true }));
-    dispatch(resetUpdateForm());
-  }, [dispatch, id]);
+    dispatch(getDepartments({ pageSize: 100, isActive: true }))
+    dispatch(resetUpdateForm())
+  }, [dispatch, id])
 
   // Update form data when subDepartment is loaded
   useEffect(() => {
@@ -67,77 +67,77 @@ function EditSubDepartment() {
         departmentId: selectedSubDepartment.departmentId || "",
         location: selectedSubDepartment.location || "",
         isActive: selectedSubDepartment.isActive,
-      });
+      })
     }
-  }, [selectedSubDepartment]);
+  }, [selectedSubDepartment])
 
   // Handle success
   useEffect(() => {
     if (updateSuccess) {
-      navigate("/admin-panel/sub-departments");
-      dispatch(clearUpdateSuccess());
+      navigate("/admin-panel/sub-departments")
+      dispatch(clearUpdateSuccess())
     }
-  }, [updateSuccess, navigate, dispatch]);
+  }, [updateSuccess, navigate, dispatch])
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, type, checked } = e.target
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
-    }));
+    }))
 
     // Clear error when user starts typing
     if (formErrors[name]) {
       setFormErrors((prev) => ({
         ...prev,
         [name]: "",
-      }));
+      }))
     }
-  };
+  }
 
   const validateForm = () => {
-    const errors = {};
+    const errors = {}
 
     if (!formData.nameArabic.trim()) {
-      errors.nameArabic = t("subDepartment.form.validation.nameArabicRequired");
+      errors.nameArabic = t("subDepartment.form.validation.nameArabicRequired")
     }
 
     if (!formData.nameEnglish.trim()) {
       errors.nameEnglish = t(
         "subDepartment.form.validation.nameEnglishRequired"
-      );
+      )
     }
 
     if (!formData.departmentId) {
       errors.departmentId = t(
         "subDepartment.form.validation.departmentRequired"
-      );
+      )
     }
 
     if (!formData.location.trim()) {
-      errors.location = t("subDepartment.form.validation.locationRequired");
+      errors.location = t("subDepartment.form.validation.locationRequired")
     }
 
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
+    setFormErrors(errors)
+    return Object.keys(errors).length === 0
+  }
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (validateForm()) {
       const submitData = {
         ...formData,
         departmentId: parseInt(formData.departmentId),
-      };
+      }
       dispatch(updateSubDepartment({ id, subDepartmentData: submitData }))
         .unwrap()
         .then(() => {
           toast.success(t("subDepartmentForm.success.updated"), {
             position: "top-right",
             autoClose: 3000,
-          });
-          navigate("/admin-panel/sub-departments");
+          })
+          navigate("/admin-panel/sub-departments")
         })
         .catch((error) => {
           Swal.fire({
@@ -148,15 +148,15 @@ function EditSubDepartment() {
                 : error?.messageAr || error?.message,
             icon: "error",
             confirmButtonText: t("common.ok"),
-          });
+          })
         })
-        .finally(() => setSubmitting(false));
+        .finally(() => setSubmitting(false))
     }
-  };
+  }
 
   // Loading state
   if (loadingGetSingleSubDepartment) {
-    return <LoadingGetData text={t("gettingData.subDepartmentData")} />;
+    return <LoadingGetData text={t("gettingData.subDepartmentData")} />
   }
 
   // Error state
@@ -186,7 +186,7 @@ function EditSubDepartment() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   // Not found state
@@ -210,7 +210,7 @@ function EditSubDepartment() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -538,7 +538,7 @@ function EditSubDepartment() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default EditSubDepartment;
+export default EditSubDepartment

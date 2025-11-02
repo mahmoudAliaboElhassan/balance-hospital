@@ -31,7 +31,7 @@ import {
   clearFilters,
 } from "../../../state/slices/subDepartment"
 import { Link } from "react-router-dom"
-import DeleteSubDepartmentModal from "../../../components/DeleteSubDepartmentModal"
+import DeleteSubDepartmentModal from "../../../components/modals/DeleteSubDepartmentModal"
 import { formatDate } from "../../../utils/formtDate"
 
 function SubDepartment() {
