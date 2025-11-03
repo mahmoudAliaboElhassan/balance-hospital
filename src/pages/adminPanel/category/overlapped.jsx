@@ -232,7 +232,7 @@ const LeavesWithOverlap = () => {
               }`}
             >
               {currentLang === "ar"
-                ? "هناك أطباء متعددون لديهم إجازات متداخلة في نفس النوبات والأقسام. يرجى مراجعة هذه الحالات."
+                ? "هناك أطباء متعددون لديهم إجازات متداخلة في نفس النوبات والأماكن. يرجى مراجعة هذه الحالات."
                 : "Multiple doctors have overlapping leaves for the same shifts and departments. Please review these cases."}
             </p>
           </div>
@@ -487,7 +487,7 @@ const LeavesWithOverlap = () => {
                                 isDark ? "text-gray-400" : "text-gray-600"
                               }`}
                             >
-                              {currentLang === "ar" ? "القسم" : "Department"}
+                              {currentLang === "ar" ? "المكان" : "Department"}
                             </span>
                             <span
                               className={
