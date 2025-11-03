@@ -156,6 +156,7 @@ const Leaves = () => {
   // Handle approve/reject actions
 
   const handleApproveRequest = async (requestId, status) => {
+    console.log("requestId", requestId)
     try {
       if (status !== 4) {
         await dispatch(reviewReview({ id: requestId })).unwrap()
@@ -206,6 +207,8 @@ const Leaves = () => {
   }
 
   const handleRejectRequest = async (requestId, status) => {
+    console.log("requestId", requestId)
+
     try {
       if (status !== 4) {
         await dispatch(reviewReview({ id: requestId })).unwrap()
@@ -349,7 +352,7 @@ const Leaves = () => {
         {(request.statusCode === 0 || request.statusCode === 4) && (
           <button
             onClick={() =>
-              handleApproveRequest(request.requestId, request.statusCode)
+              handleApproveRequest(request.leaveRequestId, request.statusCode)
             }
             disabled={isProcessing}
             className={`flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
@@ -370,7 +373,7 @@ const Leaves = () => {
         {(request.statusCode === 0 || request.statusCode === 4) && (
           <button
             onClick={() =>
-              handleRejectRequest(request.requestId, request.statusCode)
+              handleRejectRequest(request.leaveRequestId, request.statusCode)
             }
             disabled={isProcessing}
             className={`flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
