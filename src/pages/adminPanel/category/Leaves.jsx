@@ -31,6 +31,7 @@ import { toast } from "react-toastify"
 import i18next from "i18next"
 import { formatDate, formatDay } from "../../../utils/formtDate"
 import { reviewReview } from "../../../state/act/actLeaves"
+import LeavesWithOverlap from "./overlapped"
 
 const Leaves = () => {
   const dispatch = useDispatch()
@@ -610,48 +611,48 @@ const Leaves = () => {
         <>
           {/* Action Error Alert */}
           {/* {actionError && (
-            <div
-              className={`mb-6 rounded-lg p-4 ${
-                isDark
-                  ? "bg-red-900/20 border border-red-700"
-                  : "bg-red-50 border border-red-200"
-              }`}
-            >
-              <div className="flex items-start">
-                <AlertCircle
-                  className={`w-5 h-5 ${
-                    isDark ? "text-red-400" : "text-red-600"
-                  } ml-2 flex-shrink-0 mt-0.5`}
-                />
-                <div className="flex-1">
-                  <h4
-                    className={`font-medium ${
-                      isDark ? "text-red-300" : "text-red-800"
-                    }`}
+              <div
+                className={`mb-6 rounded-lg p-4 ${
+                  isDark
+                    ? "bg-red-900/20 border border-red-700"
+                    : "bg-red-50 border border-red-200"
+                }`}
+              >
+                <div className="flex items-start">
+                  <AlertCircle
+                    className={`w-5 h-5 ${
+                      isDark ? "text-red-400" : "text-red-600"
+                    } ml-2 flex-shrink-0 mt-0.5`}
+                  />
+                  <div className="flex-1">
+                    <h4
+                      className={`font-medium ${
+                        isDark ? "text-red-300" : "text-red-800"
+                      }`}
+                    >
+                      {t("leaves.errors.actionError")}
+                    </h4>
+                    <p
+                      className={`text-sm mt-1 ${
+                        isDark ? "text-red-400" : "text-red-700"
+                      }`}
+                    >
+                      {actionError.message}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => dispatch(clearActionError())}
+                    className={`${
+                      isDark
+                        ? "text-red-400 hover:text-red-300"
+                        : "text-red-600 hover:text-red-800"
+                    } ml-2`}
                   >
-                    {t("leaves.errors.actionError")}
-                  </h4>
-                  <p
-                    className={`text-sm mt-1 ${
-                      isDark ? "text-red-400" : "text-red-700"
-                    }`}
-                  >
-                    {actionError.message}
-                  </p>
+                    <X className="w-4 h-4" />
+                  </button>
                 </div>
-                <button
-                  onClick={() => dispatch(clearActionError())}
-                  className={`${
-                    isDark
-                      ? "text-red-400 hover:text-red-300"
-                      : "text-red-600 hover:text-red-800"
-                  } ml-2`}
-                >
-                  <X className="w-4 h-4" />
-                </button>
               </div>
-            </div>
-          )} */}
+            )} */}
 
           {/* Success Alert */}
           {lastAction && (
@@ -1066,6 +1067,7 @@ const Leaves = () => {
               </div>
             </>
           )}
+          <LeavesWithOverlap />
         </>
       )}
     </div>
