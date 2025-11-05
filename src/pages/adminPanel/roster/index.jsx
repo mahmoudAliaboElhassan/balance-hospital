@@ -370,7 +370,14 @@ function Roster() {
     >
       <div className="p-4 sm:p-6">
         <div className="max-w-7xl mx-auto">
-          {/* Header */}
+          {/* Header */} {/* Status Update Modal */}
+          {statusModalOpen && (
+            <ModalUpdateRosterStatus
+              setStatusModalOpen={setStatusModalOpen}
+              statusToUpdate={statusToUpdate}
+              setStatusToUpdate={setStatusToUpdate}
+            />
+          )}
           <div className="mb-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
               <h1
@@ -410,7 +417,6 @@ function Roster() {
               </div>
             )}
           </div>
-
           {/* Search and Filters */}
           <div
             className={`rounded-lg shadow-sm border mb-6 ${
@@ -640,7 +646,6 @@ function Roster() {
               )}
             </div>
           </div>
-
           {/* Mobile Cards View */}
           <div className={`md:hidden ${showMobileTable ? "hidden" : "block"}`}>
             {loading?.fetch ? (
@@ -682,7 +687,6 @@ function Roster() {
               ))
             )}
           </div>
-
           {/* // Desktop Table View */}
           <div
             className={`hidden md:block ${showMobileTable ? "md:hidden" : ""} ${
@@ -953,7 +957,6 @@ function Roster() {
               </table>
             </div>
           </div>
-
           {/*   Mobile Table View (when toggled) */}
           <div
             className={`md:hidden ${showMobileTable ? "block" : "hidden"} ${
@@ -1155,7 +1158,6 @@ function Roster() {
               </table>
             </div>
           </div>
-
           {/* Pagination */}
           {pagination && pagination.totalPages > 1 && (
             <div
@@ -1248,15 +1250,6 @@ function Roster() {
                 </div>
               </div>
             </div>
-          )}
-
-          {/* Status Update Modal */}
-          {statusModalOpen && (
-            <ModalUpdateRosterStatus
-              setStatusModalOpen={setStatusModalOpen}
-              statusToUpdate={statusToUpdate}
-              setStatusToUpdate={setStatusToUpdate}
-            />
           )}
           {openDeleteModal && (
             <ModalDeleteRoster

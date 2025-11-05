@@ -1863,7 +1863,7 @@
   "roster": {
     "title": "Roster Management",
     "departmentCalendar": "Department Calendar",
-
+    "statusWarning": "⚠️ Warning: Changing the status to a new one cannot be reverted to the previous status",
     "subtitle": "Manage hospital staff rosters and schedules",
     "noRosters": "No rosters found. Create your first roster to get started.",
     "createFirstRoster": "Create your first roster to start scheduling doctors and departments.",

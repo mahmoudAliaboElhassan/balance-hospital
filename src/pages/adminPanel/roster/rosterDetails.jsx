@@ -236,7 +236,14 @@ function RosterDetails() {
       dir={isRTL ? "rtl" : "ltr"}
     >
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
+        {/* Header */}{" "}
+        {statusModalOpen && (
+          <ModalUpdateRosterStatus
+            setStatusModalOpen={setStatusModalOpen}
+            statusToUpdate={statusToUpdate}
+            setStatusToUpdate={setStatusToUpdate}
+          />
+        )}
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
             {loginRoleResponseDto?.roleNameEn == "System Administrator" && (
@@ -379,7 +386,6 @@ function RosterDetails() {
             </div>
           </div>
         </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Information */}
           <div className="lg:col-span-2 space-y-6">
@@ -1229,13 +1235,6 @@ function RosterDetails() {
       </div>
 
       {/* Status Update Modal */}
-      {statusModalOpen && (
-        <ModalUpdateRosterStatus
-          setStatusModalOpen={setStatusModalOpen}
-          statusToUpdate={statusToUpdate}
-          setStatusToUpdate={setStatusToUpdate}
-        />
-      )}
     </div>
   )
 }

@@ -910,6 +910,13 @@ const SpecificCategory = () => {
           : "from-blue-50 via-indigo-50 to-purple-50"
       } p-6 ${isRTL ? "rtl" : "ltr"}`}
     >
+      {statusModalOpen && (
+        <ModalUpdateRosterStatus
+          setStatusModalOpen={setStatusModalOpen}
+          statusToUpdate={statusToUpdate}
+          setStatusToUpdate={setStatusToUpdate}
+        />
+      )}
       <div className="max-w-6xl mx-auto">
         {/* Approval Error Alert */}
         {approvalError && (
@@ -2291,7 +2298,7 @@ const SpecificCategory = () => {
           selectedCategory={selectedCategory}
           isDark={isDark}
           isRTL={isRTL}
-        />
+        />{" "}
         <div className="space-y-6">
           <div
             className={`${
@@ -2521,13 +2528,6 @@ const SpecificCategory = () => {
           </div>
         </div>
       </div>
-      {statusModalOpen && (
-        <ModalUpdateRosterStatus
-          setStatusModalOpen={setStatusModalOpen}
-          statusToUpdate={statusToUpdate}
-          setStatusToUpdate={setStatusToUpdate}
-        />
-      )}
     </div>
   )
 }

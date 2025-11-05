@@ -1870,6 +1870,8 @@
     "createFirstRoster": "أنشئ أول روستر لبدء جدولة الأطباء والأماكن.",
     "departments": "الاماكن",
     "departmentCalendar": "تقويم مكان",
+    "statusWarning": "⚠️ تحذير: تغيير الحالة إلى حالة جديدة لا يمكن التراجع عنه للحالة السابقة",
+
     "count": "روستر",
     "deleteReason": "سبب الحذف",
     "viewDoctorDetails": "عرض تفاصيل الطبيب",

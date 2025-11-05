@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useDispatch, useSelector } from "react-redux"
 import { X, AlertTriangle, User, Building2 } from "lucide-react"
@@ -18,7 +18,9 @@ const RemoveManagerModal = ({
   const { mymode } = useSelector((state) => state.mode)
   const [reason, setReason] = useState("")
   const [error, setError] = useState("")
-
+  useEffect(() => {
+    window.scrollTo({ top: 0 })
+  }, [])
   const isDark = mymode === "dark"
   const isRTL = i18n.language === "ar"
   const dispatch = useDispatch()
@@ -99,7 +101,8 @@ const RemoveManagerModal = ({
 
   return (
     <div
-      className="sticky inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+      className="sticky inset-0 bg-opacity-50 flex items-center justify-center p-4 z-50"
+      style={{ background: isDark ? "#0f172a" : "#ffffff", minHeight: "100vh" }}
       dir={isRTL ? "rtl" : "ltr"}
     >
       <div

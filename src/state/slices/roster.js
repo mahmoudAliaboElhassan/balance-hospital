@@ -857,10 +857,11 @@ const rosterManagementSlice = createSlice({
       .addCase(getRostersPaged.fulfilled, (state, action) => {
         state.loading.fetch = false
         state.rosterList = action.payload?.data.data || []
-
+        console.log("action.payload roser", action.payload.data)
         state.pagination = {
           totalCount: action.payload.data.totalCount,
           page: action.payload.data.page,
+          currentPage: action.payload.data.page,
           pageSize: action.payload.data.pageSize,
           totalPages: action.payload.data.totalPages,
           hasNextPage: action.payload.data.hasNextPage,

@@ -9,12 +9,14 @@ export default function TabsViewFancy({ isExpanded = false, click }) {
   const { adminPanelRoutes } = UseAdminPanel()
   const navigate = useNavigate()
   const location = useLocation()
+  const currentPath = location.pathname.split("/")[2]
 
   useEffect(() => {
-    // Set active tab based on current route
-    const currentRoute = adminPanelRoutes.find((route) =>
-      location.pathname.includes(route.path)
-    )
+    const currentRoute = adminPanelRoutes.find((route) => {
+      const routePath = route.path.split("/")[2]
+      return currentPath?.slice(0, 4) === routePath?.slice(0, 4)
+    })
+
     if (currentRoute) {
       setActiveTab(currentRoute.id)
     }
