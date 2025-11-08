@@ -54,7 +54,7 @@ const Leaves = () => {
   const currentLang = i18n.language || "ar"
 
   const [showLeaves, setShowLeaves] = useState(true)
-  const [localFilters, setLocalFilters] = useState({ status: "" })
+  const [localFilters, setLocalFilters] = useState({ status: "0" })
   const [expandedShifts, setExpandedShifts] = useState({})
 
   const toggleShiftDetails = (requestId) => {
@@ -327,7 +327,6 @@ const Leaves = () => {
 
   // Status filter options
   const statusFilterOptions = [
-    { value: "", label: t("leaves.filters.all") },
     { value: "0", label: t("leaves.filters.pending") },
     { value: "1", label: t("leaves.filters.approved") },
     { value: "2", label: t("leaves.filters.rejected") },
