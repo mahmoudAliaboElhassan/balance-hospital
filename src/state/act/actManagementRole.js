@@ -1,35 +1,35 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import axiosInstance from "../../utils/axiosInstance";
+import { createAsyncThunk } from "@reduxjs/toolkit"
+import axiosInstance from "../../utils/axiosInstance"
 
 // Get All Management Roles with Query Parameters
 export const getManagementRoles = createAsyncThunk(
   "managementRolesSlice/getManagementRoles",
   async (params = {}, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
       // Construct the URL with query parameters
-      const url = `/api/v1/management-roles/list`;
+      const url = `/api/v1/management-roles/list`
 
       const res = await axiosInstance.get(url, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      });
-      console.log("Management Roles fetched successfully:", res);
-      return res.data;
+      })
+      console.log("Management Roles fetched successfully:", res)
+      return res.data
     } catch (error) {
-      console.log("Error fetching management roles:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error fetching management roles:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 
 // Get Role Statistics
 export const getRoleStatistics = createAsyncThunk(
   "managementRolesSlice/getRoleStatistics",
   async (_, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
       const res = await axiosInstance.get(
@@ -39,21 +39,21 @@ export const getRoleStatistics = createAsyncThunk(
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
-      );
-      console.log("Role statistics fetched successfully:", res);
-      return res.data;
+      )
+      console.log("Role statistics fetched successfully:", res)
+      return res.data
     } catch (error) {
-      console.log("Error fetching role statistics:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error fetching role statistics:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 
 // Get Recent Changes
 export const getRecentChanges = createAsyncThunk(
   "managementRolesSlice/getRecentChanges",
   async (_, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
       const res = await axiosInstance.get(
@@ -63,20 +63,20 @@ export const getRecentChanges = createAsyncThunk(
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
-      );
-      console.log("Recent changes fetched successfully:", res);
-      return res.data;
+      )
+      console.log("Recent changes fetched successfully:", res)
+      return res.data
     } catch (error) {
-      console.log("Error fetching recent changes:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error fetching recent changes:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 
 export const getRolePermissions = createAsyncThunk(
   "managementRolesSlice/getRolePermissions",
   async (id, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
       const res = await axiosInstance.get(
@@ -86,64 +86,64 @@ export const getRolePermissions = createAsyncThunk(
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
-      );
-      console.log("Role permissions fetched successfully:", res);
-      return res.data;
+      )
+      console.log("Role permissions fetched successfully:", res)
+      return res.data
     } catch (error) {
-      console.log("Error fetching role permissions:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error fetching role permissions:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 
 export const getManagementRoleUsers = createAsyncThunk(
   "managementRolesSlice/getManagementRoleUsers",
   async ({ id, params = {} }, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
-      const queryParams = new URLSearchParams();
+      const queryParams = new URLSearchParams()
 
       // Add parameters if they exist
-      if (params.search) queryParams.append("search", params.search);
+      if (params.search) queryParams.append("search", params.search)
       if (params.isActive !== undefined)
-        queryParams.append("isActive", params.isActive);
-      if (params.page) queryParams.append("page", params.page);
-      if (params.pageSize) queryParams.append("pageSize", params.pageSize);
+        queryParams.append("isActive", params.isActive)
+      if (params.page) queryParams.append("page", params.page)
+      if (params.pageSize) queryParams.append("pageSize", params.pageSize)
       if (params.sortBy !== undefined)
-        queryParams.append("sortBy", params.sortBy);
+        queryParams.append("sortBy", params.sortBy)
       if (params.sortDirection !== undefined)
-        queryParams.append("sortDirection", params.sortDirection);
+        queryParams.append("sortDirection", params.sortDirection)
 
       // Construct the URL with query parameters
       const url = `/api/v1/management-roles/${id}/users${
         queryParams.toString() ? `?${queryParams.toString()}` : ""
-      }`;
+      }`
 
       const res = await axiosInstance.get(url, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      });
-      console.log("Role users fetched successfully:", res);
-      return res.data;
+      })
+      console.log("Role users fetched successfully:", res)
+      return res.data
     } catch (error) {
-      console.log("Error fetching role users:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error fetching role users:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 
 export const getManagementRoleHistory = createAsyncThunk(
   "managementRolesSlice/getManagementRoleHistory",
   async ({ id, params = {} }, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
-      const queryParams = new URLSearchParams();
+      const queryParams = new URLSearchParams()
 
-      if (params.page) queryParams.append("page", params.page);
-      if (params.pageSize) queryParams.append("pageSize", params.pageSize);
+      if (params.page) queryParams.append("page", params.page)
+      if (params.pageSize) queryParams.append("pageSize", params.pageSize)
       const res = await axiosInstance.get(
         `/api/v1/management-roles/${id}/assignment-history${
           queryParams.toString() ? `?${queryParams.toString()}` : ""
@@ -153,27 +153,27 @@ export const getManagementRoleHistory = createAsyncThunk(
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
-      );
-      console.log("Management Role History fetched successfully:", res);
-      return res.data;
+      )
+      console.log("Management Role History fetched successfully:", res)
+      return res.data
     } catch (error) {
-      console.log("Error fetching management role history:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error fetching management role history:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 // Add this to your actManagementRole.js file
 
 export const getUserAssignmentHistory = createAsyncThunk(
   "managementRolesSlice/getUserAssignmentHistory",
   async ({ userId, params = {} }, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI
 
     try {
-      const queryParams = new URLSearchParams();
+      const queryParams = new URLSearchParams()
 
-      if (params.page) queryParams.append("page", params.page);
-      if (params.pageSize) queryParams.append("pageSize", params.pageSize);
+      if (params.page) queryParams.append("page", params.page)
+      if (params.pageSize) queryParams.append("pageSize", params.pageSize)
 
       const res = await axiosInstance.get(
         `/api/v1/management-roles/user-history/${userId}${
@@ -184,15 +184,15 @@ export const getUserAssignmentHistory = createAsyncThunk(
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
-      );
-      console.log("User Assignment History fetched successfully:", res);
-      return res.data;
+      )
+      console.log("User Assignment History fetched successfully:", res)
+      return res.data
     } catch (error) {
-      console.log("Error fetching user assignment history:", error);
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("Error fetching user assignment history:", error)
+      return rejectWithValue(error.response?.data || error.message)
     }
   }
-);
+)
 // // Create Management Role
 // export const createManagementRole = createAsyncThunk(
 //   "managementRolesSlice/createManagementRole",

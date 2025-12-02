@@ -43,7 +43,7 @@ const ROUTE_PERMISSIONS = {
   "/admin-panel/schedules": "userCanManageSchedules",
 
   // Reports
-  "/admin-panel/reports": "userCanViewReports",
+  "/admin-panel/reports": "userCanManageCategory",
 }
 
 // Routes that require Admin role specifically
