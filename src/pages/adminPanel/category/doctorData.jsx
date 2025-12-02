@@ -178,11 +178,19 @@ function DoctorData() {
                 isDark ? "bg-blue-900/30" : "bg-blue-100"
               } rounded-full`}
             >
-              <User
-                className={`h-12 w-12 ${
-                  isDark ? "text-blue-400" : "text-blue-600"
-                }`}
-              />
+              {userData.userProfile ? (
+                <img
+                  src={userData.userProfile}
+                  alt="User Profile"
+                  className="h-12 w-12 rounded-full object-cover"
+                />
+              ) : (
+                <User
+                  className={`h-12 w-12 ${
+                    isDark ? "text-blue-400" : "text-blue-600"
+                  }`}
+                />
+              )}
             </div>
 
             {/* Basic Info */}

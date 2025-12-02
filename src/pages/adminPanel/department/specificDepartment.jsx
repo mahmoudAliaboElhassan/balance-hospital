@@ -372,7 +372,7 @@ function SpecificDepartment() {
                         "Department Manager") &&
                       t("common.now_manage_dep")}
                   </p>
-                  <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent pb-1">
                     {currentLang === "en" && ` ${t("common.public")}`}
 
                     {getDepartmentName()}
