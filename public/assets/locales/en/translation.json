@@ -418,7 +418,9 @@
     "assignManager": "Assign Manager",
     "noUsersMessage": "There are no users available to assign as a manager.",
     "noUsersTitle": "No Users Found",
-
+    "loading": {
+      "users": "Loading users..."
+    },
     "sections": {
       "manager": "Assign Department Manager",
 
@@ -3312,5 +3314,9 @@
       "approved": "Leave request has been approved successfully",
       "rejected": "Leave request has been rejected successfully"
     }
+  },
+  "pagination": {
+    "showing": "Showing",
+    "of": "of"
   }
 }

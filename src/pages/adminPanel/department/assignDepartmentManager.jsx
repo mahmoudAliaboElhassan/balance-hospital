@@ -10,7 +10,15 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { getUserSummaries } from "../../../state/slices/user"
 import { getDepartmentById } from "../../../state/act/actDepartment"
 import LoadingGetData from "../../../components/LoadingGetData"
-import { Search, User, ArrowLeft, Building, ArrowRight } from "lucide-react"
+import {
+  Search,
+  User,
+  ArrowLeft,
+  Building,
+  ArrowRight,
+  ChevronRight,
+  ChevronLeft,
+} from "lucide-react"
 import UseFormValidation from "../../../hooks/use-form-validation"
 import UseInitialValues from "../../../hooks/use-initial-values"
 import {
@@ -35,6 +43,8 @@ function AssignDepartmentManager() {
   const [userSearchTerm, setUserSearchTerm] = useState("")
   const [showUserDropdown, setShowUserDropdown] = useState(false)
   const [selectedUser, setSelectedUser] = useState(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const pageSize = 100
 
   const { mymode } = useSelector((state) => state.mode)
   const isDark = mymode === "dark"
@@ -53,10 +63,9 @@ function AssignDepartmentManager() {
     loadingGetSingleCategory,
   } = useSelector((state) => state.category)
 
-  console.log("selectedCategory", selectedCategory)
-
   const {
     users,
+    pagination,
     loading: usersLoading,
     error: usersError,
   } = useSelector((state) => state.users)
@@ -71,7 +80,7 @@ function AssignDepartmentManager() {
     if (id) {
       if (type == "department") {
         dispatch(getDepartmentById(id))
-        dispatch(doctorForAssignment({}))
+        dispatch(getUserSummaries({ page: currentPage, pageSize }))
       } else {
         dispatch(getCategoryById({ categoryId: id }))
         dispatch(
@@ -81,31 +90,31 @@ function AssignDepartmentManager() {
         )
       }
     }
-    // dispatch(
-    //   getUserSummaries({
-    //     // page: 1,
-    //     // pageSize: 50,
-    //     isActive: true,
-    //     isApproved: true,
-    //     isEmailVerified: true,
-    //   })
-    // );
-  }, [dispatch, id])
+  }, [dispatch, id, currentPage, type])
 
   // Handle user search with debouncing
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (type === "department") {
-        dispatch(doctorForAssignment({ search: userSearchTerm }))
+        dispatch(
+          getUserSummaries({
+            search: userSearchTerm,
+            page: currentPage,
+            pageSize,
+          })
+        )
       } else {
         dispatch(
-          doctorForAssignment({ search: userSearchTerm, categoryId: id })
+          doctorForAssignment({
+            search: userSearchTerm,
+            categoryId: id,
+          })
         )
       }
     }, 300)
 
     return () => clearTimeout(delayDebounceFn)
-  }, [userSearchTerm, dispatch])
+  }, [userSearchTerm, dispatch, currentPage, type, id])
 
   // Handle click outside dropdown
   useEffect(() => {
@@ -126,6 +135,7 @@ function AssignDepartmentManager() {
     const value = e.target.value
     setUserSearchTerm(value)
     setShowUserDropdown(true)
+    setCurrentPage(1) // Reset to first page on new search
 
     if (!value) {
       setSelectedUser(null)
@@ -137,11 +147,20 @@ function AssignDepartmentManager() {
   const handleUserSelect = (user, setFieldValue) => {
     setSelectedUser(user)
     setUserSearchTerm(`${user.nameEnglish} (${user.mobile})`)
-    setFieldValue("UserId", user.userId)
+    if (type == "department") {
+      setFieldValue("UserId", user.id)
+    } else setFieldValue("UserId", user.userId)
     setShowUserDropdown(false)
   }
 
-  // Filter users based on search
+  // Handle page change
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= pagination.totalPages) {
+      setCurrentPage(newPage)
+    }
+  }
+
+  // Filter users based on search (client-side filtering for already loaded data)
   const filteredUsers =
     users?.filter((user) => {
       if (!userSearchTerm) return true
@@ -263,7 +282,7 @@ function AssignDepartmentManager() {
                   <ArrowLeft size={20} />
                 ) : (
                   <ArrowRight size={20} />
-                )}{" "}
+                )}
               </button>
               <h1
                 className={`text-2xl sm:text-3xl font-bold ${
@@ -276,7 +295,6 @@ function AssignDepartmentManager() {
             </div>
 
             {/* Department Info */}
-
             <div
               className={`p-4 rounded-lg border ${
                 isDark
@@ -405,7 +423,7 @@ function AssignDepartmentManager() {
                             </div>
 
                             {/* Loading indicator */}
-                            {usersLoading.list?.list && (
+                            {usersLoading.list && (
                               <div
                                 className={`absolute top-2.5 ${
                                   isRTL ? "left-3" : "right-3"
@@ -443,344 +461,251 @@ function AssignDepartmentManager() {
                           {/* User Dropdown */}
                           {showUserDropdown && (
                             <div
-                              className={`absolute z-20 w-full mt-1 border rounded-md shadow-lg max-h-60 overflow-auto ${
+                              className={`absolute z-20 w-full mt-1 border rounded-md shadow-lg ${
                                 isDark
                                   ? "bg-gray-700 border-gray-600"
                                   : "bg-white border-gray-300"
                               }`}
                             >
-                              {usersLoading.list?.list ? (
-                                <div
-                                  className={`p-4 text-center ${
-                                    isDark ? "text-gray-400" : "text-gray-500"
-                                  }`}
-                                >
-                                  <svg
-                                    className="animate-spin mx-auto h-6 w-6 text-gray-400"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <circle
-                                      className="opacity-25"
-                                      cx="12"
-                                      cy="12"
-                                      r="10"
-                                      stroke="currentColor"
-                                      strokeWidth="4"
-                                    ></circle>
-                                    <path
-                                      className="opacity-75"
-                                      fill="currentColor"
-                                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                    ></path>
-                                  </svg>
-                                  <p className="mt-2">
-                                    {t("departmentForm.loading.users") ||
-                                      "Loading users..."}
-                                  </p>
-                                </div>
-                              ) : filteredUsers.length > 0 ? (
-                                filteredUsers.map((user) => (
+                              <div className="max-h-60 overflow-auto">
+                                {usersLoading.list ? (
                                   <div
-                                    key={user.id}
-                                    onClick={() =>
-                                      handleUserSelect(user, setFieldValue)
-                                    }
-                                    className={`p-3 cursor-pointer border-b last:border-b-0 transition-colors ${
-                                      isDark
-                                        ? "hover:bg-gray-600 border-gray-600"
-                                        : "hover:bg-gray-50 border-gray-100"
+                                    className={`p-4 text-center ${
+                                      isDark ? "text-gray-400" : "text-gray-500"
                                     }`}
                                   >
-                                    <div className="flex items-center gap-3">
-                                      <div
-                                        className={`p-1.5 rounded-full ${
-                                          isDark ? "bg-gray-600" : "bg-gray-100"
-                                        }`}
-                                      >
-                                        <User
-                                          size={14}
-                                          className={
-                                            isDark
-                                              ? "text-gray-400"
-                                              : "text-gray-500"
-                                          }
-                                        />
-                                      </div>
-                                      <div>
-                                        {/* Main Name */}
+                                    <svg
+                                      className="animate-spin mx-auto h-6 w-6 text-gray-400"
+                                      fill="none"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <circle
+                                        className="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        strokeWidth="4"
+                                      ></circle>
+                                      <path
+                                        className="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                      ></path>
+                                    </svg>
+                                    <p className="mt-2">
+                                      {t("departmentForm.loading.users") ||
+                                        "Loading users..."}
+                                    </p>
+                                  </div>
+                                ) : filteredUsers.length > 0 ? (
+                                  filteredUsers.map((user) => (
+                                    <div
+                                      key={user.id}
+                                      onClick={() =>
+                                        handleUserSelect(user, setFieldValue)
+                                      }
+                                      className={`p-3 cursor-pointer border-b last:border-b-0 transition-colors ${
+                                        isDark
+                                          ? "hover:bg-gray-600 border-gray-600"
+                                          : "hover:bg-gray-50 border-gray-100"
+                                      }`}
+                                    >
+                                      <div className="flex items-center gap-3">
                                         <div
-                                          className={`text-sm font-medium ${
+                                          className={`p-1.5 rounded-full ${
                                             isDark
-                                              ? "text-white"
-                                              : "text-gray-900"
+                                              ? "bg-gray-600"
+                                              : "bg-gray-100"
                                           }`}
                                         >
-                                          {user.nameEnglish}
-                                          {user.nameArabic && (
-                                            <span
-                                              className={`text-xs font-normal ${
-                                                isDark
-                                                  ? "text-gray-400"
-                                                  : "text-gray-500"
-                                              } ml-2`}
-                                            >
-                                              ({user.nameArabic})
-                                            </span>
-                                          )}
+                                          <User
+                                            size={14}
+                                            className={
+                                              isDark
+                                                ? "text-gray-400"
+                                                : "text-gray-500"
+                                            }
+                                          />
                                         </div>
-
-                                        {/* Contact & Status Info */}
-                                        <div
-                                          className={`text-xs mt-1 space-y-1 ${
-                                            isDark
-                                              ? "text-gray-400"
-                                              : "text-gray-500"
-                                          }`}
-                                        >
-                                          <div className="flex items-center gap-2">
-                                            <span>{user.mobile}</span>
-                                            <span>•</span>
-                                            <span>{user.email}</span>
+                                        <div>
+                                          <div
+                                            className={`text-sm font-medium ${
+                                              isDark
+                                                ? "text-white"
+                                                : "text-gray-900"
+                                            }`}
+                                          >
+                                            {user.nameEnglish}
+                                            {user.nameArabic && (
+                                              <span
+                                                className={`text-xs font-normal ${
+                                                  isDark
+                                                    ? "text-gray-400"
+                                                    : "text-gray-500"
+                                                } ml-2`}
+                                              >
+                                                ({user.nameArabic})
+                                              </span>
+                                            )}
                                           </div>
-
-                                          {/* Professional Info */}
-                                          <div className="flex items-center gap-2">
+                                          <div
+                                            className={`text-xs mt-1 space-y-1 ${
+                                              isDark
+                                                ? "text-gray-400"
+                                                : "text-gray-500"
+                                            }`}
+                                          >
+                                            <div className="flex items-center gap-2">
+                                              <span>{user.mobile}</span>
+                                              <span>•</span>
+                                              <span>{user.email}</span>
+                                            </div>
                                             {user.scientificDegree && (
-                                              <>
+                                              <div className="flex items-center gap-2">
                                                 <span>
                                                   {user.scientificDegree}
                                                 </span>
                                                 <span>•</span>
-                                              </>
-                                            )}
-                                            <span>{user.contractingType}</span>
-                                          </div>
-
-                                          {/* Experience & Status */}
-                                          <div className="flex items-center gap-2">
-                                            <span>
-                                              {user.experienceYears}{" "}
-                                              {t("user.yearsExperience") ||
-                                                "years exp"}
-                                            </span>
-
-                                            {/* Status Badges */}
-                                            {user.isCurrentHead && (
-                                              <>
-                                                <span>•</span>
-                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
-                                                  {t("user.currentHead") ||
-                                                    "Current Head"}
+                                                <span>
+                                                  {user.contractingType}
                                                 </span>
-                                              </>
+                                              </div>
                                             )}
-
-                                            {user.isManagerInOtherCategory && (
-                                              <>
-                                                <span>•</span>
-                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
-                                                  {t("user.managerElsewhere") ||
-                                                    "Manager in Other Category"}
-                                                </span>
-                                              </>
-                                            )}
-
-                                            {!user.isActive && (
-                                              <>
-                                                <span>•</span>
-                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">
-                                                  {t("user.inactive") ||
-                                                    "Inactive"}
-                                                </span>
-                                              </>
-                                            )}
+                                            <div className="flex items-center gap-2">
+                                              <span>
+                                                {user.experienceYears}{" "}
+                                                {t("user.yearsExperience") ||
+                                                  "years exp"}
+                                              </span>
+                                              {user.isCurrentHead && (
+                                                <>
+                                                  <span>•</span>
+                                                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+                                                    {t("user.currentHead") ||
+                                                      "Current Head"}
+                                                  </span>
+                                                </>
+                                              )}
+                                              {user.isManagerInOtherCategory && (
+                                                <>
+                                                  <span>•</span>
+                                                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
+                                                    {t(
+                                                      "user.managerElsewhere"
+                                                    ) ||
+                                                      "Manager in Other Category"}
+                                                  </span>
+                                                </>
+                                              )}
+                                              {!user.isActive && (
+                                                <>
+                                                  <span>•</span>
+                                                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">
+                                                    {t("user.inactive") ||
+                                                      "Inactive"}
+                                                  </span>
+                                                </>
+                                              )}
+                                            </div>
                                           </div>
                                         </div>
                                       </div>
                                     </div>
+                                  ))
+                                ) : (
+                                  <div
+                                    className={`p-4 text-center ${
+                                      isDark ? "text-gray-400" : "text-gray-500"
+                                    }`}
+                                  >
+                                    {userSearchTerm
+                                      ? t("assignUserRole.noResults") ||
+                                        "No users found matching your search"
+                                      : t("assignUserRole.noUsers") ||
+                                        "No users available"}
                                   </div>
-                                ))
-                              ) : (
-                                <div
-                                  className={`p-4 text-center ${
-                                    isDark ? "text-gray-400" : "text-gray-500"
-                                  }`}
-                                >
-                                  {userSearchTerm
-                                    ? t("assignUserRole.noResults") ||
-                                      "No users found matching your search"
-                                    : t("assignUserRole.noUsers") ||
-                                      "No users available"}
-                                </div>
-                              )}
+                                )}
+                              </div>
+
+                              {/* Pagination for department type */}
+                              {type === "department" &&
+                                pagination.totalPages > 1 && (
+                                  <div
+                                    className={`flex items-center justify-between px-4 py-3 border-t ${
+                                      isDark
+                                        ? "border-gray-600"
+                                        : "border-gray-200"
+                                    }`}
+                                  >
+                                    <div
+                                      className={`text-sm ${
+                                        isDark
+                                          ? "text-gray-400"
+                                          : "text-gray-600"
+                                      }`}
+                                    >
+                                      {t("pagination.showing") || "Showing"}{" "}
+                                      {(currentPage - 1) * pageSize + 1} -{" "}
+                                      {Math.min(
+                                        currentPage * pageSize,
+                                        pagination.totalCount
+                                      )}{" "}
+                                      {t("pagination.of") || "of"}{" "}
+                                      {pagination.totalCount}
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          handlePageChange(currentPage - 1)
+                                        }
+                                        disabled={currentPage == 1}
+                                        className={`p-1 rounded ${
+                                          currentPage != 1
+                                            ? isDark
+                                              ? "hover:bg-gray-600 text-gray-300"
+                                              : "hover:bg-gray-100 text-gray-700"
+                                            : "opacity-50 cursor-not-allowed text-gray-400"
+                                        }`}
+                                      >
+                                        <ChevronLeft size={16} />
+                                      </button>
+                                      <span
+                                        className={`text-sm ${
+                                          isDark
+                                            ? "text-gray-300"
+                                            : "text-gray-700"
+                                        }`}
+                                      >
+                                        {currentPage} / {pagination.totalPages}
+                                      </span>
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          handlePageChange(currentPage + 1)
+                                        }
+                                        disabled={
+                                          currentPage == pagination.totalPages
+                                        }
+                                        className={`p-1 rounded ${
+                                          currentPage != pagination.totalPages
+                                            ? isDark
+                                              ? "hover:bg-gray-600 text-gray-300"
+                                              : "hover:bg-gray-100 text-gray-700"
+                                            : "opacity-50 cursor-not-allowed text-gray-400"
+                                        }`}
+                                      >
+                                        <ChevronRight size={16} />
+                                      </button>
+                                    </div>
+                                  </div>
+                                )}
                             </div>
                           )}
                         </div>
                       </div>
-
-                      {/* Start Date */}
-                      {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                          <label
-                            htmlFor="startDate"
-                            className={`block text-sm font-medium mb-2 ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            }`}
-                          >
-                            {t("departmentForm.fields.startDate") ||
-                              "Start Date"}{" "}
-                            <span className="text-red-500">*</span>
-                          </label>
-                          <Field
-                            type="date"
-                            id="startDate"
-                            name="startDate"
-                            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                              isDark
-                                ? "bg-gray-700 border-gray-600 text-white"
-                                : "bg-white border-gray-300 text-gray-900"
-                            } ${
-                              errors.startDate && touched.startDate
-                                ? "border-red-500 bg-red-50 dark:bg-red-900/20"
-                                : ""
-                            }`}
-                          />
-                          <ErrorMessage
-                            name="startDate"
-                            component="div"
-                            className="mt-1 text-sm text-red-600"
-                          />
-                        </div>
-                      </div> */}
                     </div>
-
-                    {/* Permissions Section */}
-                    {/* <div className="space-y-4">
-                      <h3
-                        className={`text-lg font-semibold border-b pb-2 ${
-                          isDark
-                            ? "text-white border-gray-600"
-                            : "text-gray-900 border-gray-200"
-                        }`}
-                      >
-                        {t("departmentForm.sections.permissions") ||
-                          "Manager Permissions"}
-                      </h3>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div
-                          className={`flex items-center ${
-                            isRTL ? "flex-row-reverse" : ""
-                          }`}
-                        >
-                          <Field
-                            type="checkbox"
-                            id="canViewDepartment"
-                            name="canViewDepartment"
-                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                          />
-                          <label
-                            htmlFor="canViewDepartment"
-                            className={`text-sm ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            } ${isRTL ? "mr-2" : "ml-2"}`}
-                          >
-                            {t("departmentForm.fields.canViewDepartment") ||
-                              "Can View Department"}
-                          </label>
-                        </div>
-
-                        <div
-                          className={`flex items-center ${
-                            isRTL ? "flex-row-reverse" : ""
-                          }`}
-                        >
-                          <Field
-                            type="checkbox"
-                            id="canEditDepartment"
-                            name="canEditDepartment"
-                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                          />
-                          <label
-                            htmlFor="canEditDepartment"
-                            className={`text-sm ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            } ${isRTL ? "mr-2" : "ml-2"}`}
-                          >
-                            {t("departmentForm.fields.canEditDepartment") ||
-                              "Can Edit Department"}
-                          </label>
-                        </div>
-
-                        <div
-                          className={`flex items-center ${
-                            isRTL ? "flex-row-reverse" : ""
-                          }`}
-                        >
-                          <Field
-                            type="checkbox"
-                            id="canViewDepartmentReports"
-                            name="canViewDepartmentReports"
-                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                          />
-                          <label
-                            htmlFor="canViewDepartmentReports"
-                            className={`text-sm ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            } ${isRTL ? "mr-2" : "ml-2"}`}
-                          >
-                            {t(
-                              "departmentForm.fields.canViewDepartmentReports"
-                            ) || "Can View Department Reports"}
-                          </label>
-                        </div>
-
-                        <div
-                          className={`flex items-center ${
-                            isRTL ? "flex-row-reverse" : ""
-                          }`}
-                        >
-                          <Field
-                            type="checkbox"
-                            id="canManageSchedules"
-                            name="canManageSchedules"
-                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                          />
-                          <label
-                            htmlFor="canManageSchedules"
-                            className={`text-sm ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            } ${isRTL ? "mr-2" : "ml-2"}`}
-                          >
-                            {t("departmentForm.fields.canManageSchedules") ||
-                              "Can Manage Schedules"}
-                          </label>
-                        </div>
-
-                        <div
-                          className={`flex items-center ${
-                            isRTL ? "flex-row-reverse" : ""
-                          }`}
-                        >
-                          <Field
-                            type="checkbox"
-                            id="canManageStaff"
-                            name="canManageStaff"
-                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                          />
-                          <label
-                            htmlFor="canManageStaff"
-                            className={`text-sm ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            } ${isRTL ? "mr-2" : "ml-2"}`}
-                          >
-                            {t("departmentForm.fields.canManageStaff") ||
-                              "Can Manage Staff"}
-                          </label>
-                        </div>
-                      </div>
-                    </div> */}
 
                     {/* Notes Section */}
                     <div>
@@ -827,70 +752,51 @@ function AssignDepartmentManager() {
                       </p>
                     </div>
 
-                    {/* Submit Buttons */}
-                    <div
-                      className={`flex justify-end space-x-3 pt-6 border-t ${
-                        isDark ? "border-gray-600" : "border-gray-200"
-                      } ${isRTL ? "flex-row-reverse space-x-reverse" : ""}`}
-                    >
-                      <button
-                        type="button"
-                        className={`px-6 py-2 border rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer transition-colors ${
-                          isDark
-                            ? "border-gray-600 text-gray-300 bg-gray-700 hover:bg-gray-600"
-                            : "border-gray-300 text-gray-700 bg-white hover:bg-gray-50"
-                        }`}
-                        onClick={() => navigate(-1)}
-                      >
-                        {t("departmentForm.buttons.cancel") || "Cancel"}
-                      </button>
-                      <button
-                        type="submit"
-                        disabled={
-                          isSubmitting ||
-                          loadingAssignManager ||
-                          loadingAssignCategoryHead
-                        }
-                        className={`px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer transition-colors ${
-                          isSubmitting ||
-                          loadingAssignManager ||
-                          loadingAssignCategoryHead
-                            ? "bg-gray-400 cursor-not-allowed"
-                            : "bg-blue-600 hover:bg-blue-700"
-                        }`}
-                      >
-                        {isSubmitting ||
+                    <button
+                      type="submit"
+                      disabled={
+                        isSubmitting ||
                         loadingAssignManager ||
-                        loadingAssignCategoryHead ? (
-                          <div className="flex items-center">
-                            <svg
-                              className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                            >
-                              <circle
-                                className="opacity-25"
-                                cx="12"
-                                cy="12"
-                                r="10"
-                                stroke="currentColor"
-                                strokeWidth="4"
-                              ></circle>
-                              <path
-                                className="opacity-75"
-                                fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                              ></path>
-                            </svg>
-                            {t("department.actions.assigning") ||
-                              "Assigning..."}
-                          </div>
-                        ) : (
-                          t("department.actions.assign") || "Assign Manager"
-                        )}
-                      </button>
-                    </div>
+                        loadingAssignCategoryHead
+                      }
+                      className={`px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer transition-colors ${
+                        isSubmitting ||
+                        loadingAssignManager ||
+                        loadingAssignCategoryHead
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-blue-600 hover:bg-blue-700"
+                      }`}
+                    >
+                      {isSubmitting ||
+                      loadingAssignManager ||
+                      loadingAssignCategoryHead ? (
+                        <div className="flex items-center">
+                          <svg
+                            className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                          {t("department.actions.assigning") || "Assigning..."}
+                        </div>
+                      ) : (
+                        t("department.actions.assign") || "Assign Manager"
+                      )}
+                    </button>
                   </Form>
                 )}
               </Formik>

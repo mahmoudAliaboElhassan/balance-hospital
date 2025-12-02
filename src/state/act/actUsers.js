@@ -8,7 +8,7 @@ export const getUserSummaries = createAsyncThunk(
     const { rejectWithValue } = thunkAPI
 
     try {
-      const { page = 1, pageSize = 10, categoryId, searchTerm = "" } = params
+      const { page = 1, pageSize = 1000, categoryId, searchTerm = "" } = params
 
       // Build query params object
       const queryParams = {
