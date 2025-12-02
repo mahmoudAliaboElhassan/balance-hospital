@@ -5,7 +5,7 @@
     "email": "Email",
     "emailPlaceholder": "name@example.com",
     "password": "Password",
-    "passwordPlaceholder": "Create a password",
+    "passwordPlaceholder": "Write a password",
     "button": "Login",
     "forgetPassword": "Forget Password",
     "success": "Logged in successfully!",
