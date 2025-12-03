@@ -514,7 +514,7 @@
 
     "monthlyStats": {
       "title": "Monthly Performance",
-      "error": "Failed to load monthly statistics",
+      "error": "Only Department manager can see this part",
       "noData": "No monthly data available",
       "completion": "Completion",
       "categories": "Categories",

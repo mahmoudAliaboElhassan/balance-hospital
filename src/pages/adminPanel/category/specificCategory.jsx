@@ -1515,22 +1515,27 @@ const SpecificCategory = () => {
                     </div>
 
                     {/* Unlink Button */}
-                    <button
-                      onClick={() => handleUnlinkDepartment(department.id)}
-                      disabled={
-                        loadingUnlinkDepartment && unlinkDepId === department.id
-                      }
-                      className="inline-flex items-center gap-2 px-3 py-1 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                      title={t("department.actions.unlink")}
-                    >
-                      {loadingUnlinkDepartment &&
-                      unlinkDepId === department.id ? (
-                        <RefreshCw size={14} className="animate-spin" />
-                      ) : (
-                        <X size={14} />
-                      )}
-                      {t("department.actions.unlink")}
-                    </button>
+
+                    {loginRoleResponseDto.roleNameEn ==
+                      "System Administrator" && (
+                      <button
+                        onClick={() => handleUnlinkDepartment(department.id)}
+                        disabled={
+                          loadingUnlinkDepartment &&
+                          unlinkDepId === department.id
+                        }
+                        className="inline-flex items-center gap-2 px-3 py-1 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        title={t("department.actions.unlink")}
+                      >
+                        {loadingUnlinkDepartment &&
+                        unlinkDepId === department.id ? (
+                          <RefreshCw size={14} className="animate-spin" />
+                        ) : (
+                          <X size={14} />
+                        )}
+                        {t("department.actions.unlink")}
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
