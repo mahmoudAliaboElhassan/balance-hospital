@@ -2759,7 +2759,6 @@
     "selected": "محدد",
     "markAsRead": "تحديد كمقروء",
     "markAllAsRead": "تحديد الكل كمقروء",
-    "delete": "حذف",
     "deleteSelected": "حذف المحدد",
     "confirmDelete": "هل أنت متأكد من حذف هذا الإشعار؟",
     "confirmBulkDelete": "هل أنت متأكد من حذف الإشعارات المحددة؟",
