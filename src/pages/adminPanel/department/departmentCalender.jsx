@@ -6,6 +6,9 @@ import { getDepartmentRosterCalender } from "../../../state/act/actDepartment" /
 import { formatDate } from "../../../utils/formtDate"
 import CollapsibleDateCardForDepartment from "./collapsingDateForDepartment"
 import LoadingGetData from "../../../components/LoadingGetData"
+import * as ExcelJS from "exceljs"
+import { Download } from "lucide-react"
+import i18next from "i18next"
 
 function DepartmentCalender() {
   const { rosterId, depId: id } = useParams()
@@ -229,7 +232,457 @@ function DepartmentCalender() {
 
   console.log("day list", daysList)
 
+  const currentLang = i18n.language
   const stats = departmentRosterData?.[0]?.stats
+
+  const exportToExcel = async () => {
+    const workbook = new ExcelJS.Workbook()
+    const worksheet = workbook.addWorksheet(
+      currentLang === "ar" ? "جدول العمل" : "Working Hours"
+    )
+
+    const currentYear = new Date().getFullYear()
+    const rosterTitle = departmentRosterData?.[0]?.rosterTitle || "Roster"
+
+    // Get all unique shifts and contracting types
+    const shiftsMap = new Map()
+    const allDates = new Set()
+
+    daysList.forEach((dayData) => {
+      allDates.add(dayData.date)
+      dayData.shifts.forEach((shift) => {
+        if (!shiftsMap.has(shift.shiftNameEn)) {
+          shiftsMap.set(shift.shiftNameEn, {
+            nameEn: shift.shiftNameEn,
+            nameAr: shift.shiftNameAr,
+            contractingTypes: new Set(),
+          })
+        }
+        const shiftData = shiftsMap.get(shift.shiftNameEn)
+        shiftData.contractingTypes.add(
+          currentLang === "ar"
+            ? shift.contractingTypeNameAr
+            : shift.contractingTypeNameEn
+        )
+      })
+    })
+
+    const sortedDates = Array.from(allDates).sort()
+    const shifts = Array.from(shiftsMap.values())
+
+    // Calculate total columns
+    let totalCols = 2 // Date + Day
+    shifts.forEach((shift) => {
+      totalCols += shift.contractingTypes.size
+    })
+
+    // Row 1: Year header
+    let yearRow = worksheet.getRow(1)
+    yearRow.height = 30
+    worksheet.mergeCells(1, 1, 1, totalCols)
+    const yearCell = worksheet.getCell(1, 1)
+    yearCell.value = currentYear.toString()
+    yearCell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "FF1E40AF" },
+    }
+    yearCell.font = {
+      bold: true,
+      size: 16,
+      color: { argb: "FFFFFFFF" },
+      name: "Arial",
+    }
+    yearCell.alignment = { horizontal: "center", vertical: "middle" }
+    yearCell.border = {
+      top: { style: "thick", color: { argb: "FF1E3A8A" } },
+      bottom: { style: "thick", color: { argb: "FF1E3A8A" } },
+      left: { style: "thick", color: { argb: "FF1E3A8A" } },
+      right: { style: "thick", color: { argb: "FF1E3A8A" } },
+    }
+    yearCell.protection = { locked: false }
+
+    // Row 2: Department name
+    let deptRow = worksheet.getRow(2)
+    deptRow.height = 30
+    worksheet.mergeCells(2, 1, 2, totalCols)
+    const deptCell = worksheet.getCell(2, 1)
+    deptCell.value = departmentName
+    deptCell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "FF2563EB" },
+    }
+    deptCell.font = {
+      bold: true,
+      size: 13,
+      color: { argb: "FFFFFFFF" },
+      name: "Arial",
+    }
+    deptCell.alignment = { horizontal: "center", vertical: "middle" }
+    deptCell.border = {
+      top: { style: "medium", color: { argb: "FF1E40AF" } },
+      bottom: { style: "medium", color: { argb: "FF1E40AF" } },
+      left: { style: "medium", color: { argb: "FF1E40AF" } },
+      right: { style: "medium", color: { argb: "FF1E40AF" } },
+    }
+    deptCell.protection = { locked: false }
+
+    // Row 3: Shift names
+    let currentCol = 1
+    let shiftRow = worksheet.getRow(3)
+    shiftRow.height = 30
+
+    // Date column (merge rows 3-5)
+    worksheet.mergeCells(3, 1, 5, 1)
+    const dateHeaderCell = worksheet.getCell(3, 1)
+    dateHeaderCell.value = currentLang === "ar" ? "التاريخ" : "Date"
+    dateHeaderCell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "FF60A5FA" },
+    }
+    dateHeaderCell.font = {
+      bold: true,
+      size: 11,
+      color: { argb: "FFFFFFFF" },
+      name: "Arial",
+    }
+    dateHeaderCell.alignment = { horizontal: "center", vertical: "middle" }
+    dateHeaderCell.border = {
+      top: { style: "medium", color: { argb: "FF2563EB" } },
+      bottom: { style: "medium", color: { argb: "FF2563EB" } },
+      left: { style: "medium", color: { argb: "FF2563EB" } },
+      right: { style: "medium", color: { argb: "FF2563EB" } },
+    }
+    dateHeaderCell.protection = { locked: false }
+
+    // Day column (merge rows 3-5)
+    worksheet.mergeCells(3, 2, 5, 2)
+    const dayHeaderCell = worksheet.getCell(3, 2)
+    dayHeaderCell.value = currentLang === "ar" ? "اليوم" : "Day"
+    dayHeaderCell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "FF60A5FA" },
+    }
+    dayHeaderCell.font = {
+      bold: true,
+      size: 11,
+      color: { argb: "FFFFFFFF" },
+      name: "Arial",
+    }
+    dayHeaderCell.alignment = { horizontal: "center", vertical: "middle" }
+    dayHeaderCell.border = {
+      top: { style: "medium", color: { argb: "FF2563EB" } },
+      bottom: { style: "medium", color: { argb: "FF2563EB" } },
+      left: { style: "medium", color: { argb: "FF2563EB" } },
+      right: { style: "medium", color: { argb: "FF2563EB" } },
+    }
+    dayHeaderCell.protection = { locked: false }
+
+    currentCol = 3
+
+    // Shift headers
+    shifts.forEach((shift) => {
+      const shiftStartCol = currentCol
+      const shiftEndCol = currentCol + shift.contractingTypes.size - 1
+
+      worksheet.mergeCells(3, shiftStartCol, 3, shiftEndCol)
+      const shiftCell = worksheet.getCell(3, shiftStartCol)
+      shiftCell.value = currentLang === "ar" ? shift.nameAr : shift.nameEn
+      shiftCell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF60A5FA" },
+      }
+      shiftCell.font = {
+        bold: true,
+        size: 11,
+        color: { argb: "FFFFFFFF" },
+        name: "Arial",
+      }
+      shiftCell.alignment = { horizontal: "center", vertical: "middle" }
+      shiftCell.border = {
+        top: { style: "medium", color: { argb: "FF2563EB" } },
+        bottom: { style: "medium", color: { argb: "FF2563EB" } },
+        left: { style: "medium", color: { argb: "FF2563EB" } },
+        right: { style: "medium", color: { argb: "FF2563EB" } },
+      }
+      shiftCell.protection = { locked: false }
+
+      currentCol += shift.contractingTypes.size
+    })
+
+    // Row 4: Contracting type headers
+    currentCol = 3
+    let ctRow = worksheet.getRow(4)
+    ctRow.height = 30
+
+    shifts.forEach((shift) => {
+      const types = Array.from(shift.contractingTypes)
+      types.forEach((typeName) => {
+        const cell = worksheet.getCell(4, currentCol)
+        cell.value = typeName
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FF93C5FD" },
+        }
+        cell.font = {
+          bold: true,
+          size: 10,
+          color: { argb: "FF1E3A8A" },
+          name: "Arial",
+        }
+        cell.alignment = { horizontal: "center", vertical: "middle" }
+        cell.border = {
+          top: { style: "thin", color: { argb: "FF60A5FA" } },
+          bottom: { style: "thin", color: { argb: "FF60A5FA" } },
+          left: { style: "thin", color: { argb: "FF60A5FA" } },
+          right: { style: "thin", color: { argb: "FF60A5FA" } },
+        }
+        cell.protection = { locked: false }
+        currentCol++
+      })
+    })
+
+    // Row 5: Sub-headers (Count)
+    currentCol = 3
+    let subHeaderRow = worksheet.getRow(5)
+    subHeaderRow.height = 25
+
+    shifts.forEach((shift) => {
+      shift.contractingTypes.forEach(() => {
+        const cell = worksheet.getCell(5, currentCol)
+        cell.value = currentLang === "ar" ? "العدد" : "Count"
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFD1D5DB" },
+        }
+        cell.font = {
+          bold: true,
+          size: 10,
+          color: { argb: "FF1F2937" },
+          name: "Arial",
+        }
+        cell.alignment = { horizontal: "center", vertical: "middle" }
+        cell.border = {
+          top: { style: "thin", color: { argb: "FF9CA3AF" } },
+          bottom: { style: "medium", color: { argb: "FF6B7280" } },
+          left: { style: "thin", color: { argb: "FF9CA3AF" } },
+          right: { style: "thin", color: { argb: "FF9CA3AF" } },
+        }
+        cell.protection = { locked: false }
+        currentCol++
+      })
+    })
+
+    // Data rows
+    let currentRow = 6
+    sortedDates.forEach((date) => {
+      const dayData = daysList.find((d) => d.date === date)
+
+      if (dayData) {
+        const countRow = worksheet.getRow(currentRow)
+        const doctorsRow = worksheet.getRow(currentRow + 1)
+        countRow.height = 22
+        doctorsRow.height = 40
+
+        // Date cell (merged)
+        worksheet.mergeCells(currentRow, 1, currentRow + 1, 1)
+        const dateCell = worksheet.getCell(currentRow, 1)
+        const formattedDate = new Date(date).toLocaleDateString(
+          currentLang === "ar" ? "ar-EG" : "en-US",
+          { month: "short", day: "numeric" }
+        )
+        dateCell.value = formattedDate
+        dateCell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFE5E7EB" },
+        }
+        dateCell.font = {
+          bold: true,
+          size: 10,
+          color: { argb: "FF111827" },
+          name: "Arial",
+        }
+        dateCell.alignment = { horizontal: "center", vertical: "middle" }
+        dateCell.border = {
+          top: { style: "thin", color: { argb: "FF9CA3AF" } },
+          bottom: { style: "thin", color: { argb: "FF9CA3AF" } },
+          left: { style: "medium", color: { argb: "FF9CA3AF" } },
+          right: { style: "medium", color: { argb: "FF9CA3AF" } },
+        }
+        dateCell.protection = { locked: false }
+
+        // Day cell (merged)
+        worksheet.mergeCells(currentRow, 2, currentRow + 1, 2)
+        const dayCell = worksheet.getCell(currentRow, 2)
+        dayCell.value =
+          currentLang === "ar"
+            ? dayData.dayOfWeekNameAr
+            : dayData.dayOfWeekNameEn
+        dayCell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFE5E7EB" },
+        }
+        dayCell.font = {
+          bold: true,
+          size: 10,
+          color: { argb: "FF111827" },
+          name: "Arial",
+        }
+        dayCell.alignment = { horizontal: "center", vertical: "middle" }
+        dayCell.border = {
+          top: { style: "thin", color: { argb: "FF9CA3AF" } },
+          bottom: { style: "thin", color: { argb: "FF9CA3AF" } },
+          left: { style: "medium", color: { argb: "FF9CA3AF" } },
+          right: { style: "medium", color: { argb: "FF9CA3AF" } },
+        }
+        dayCell.protection = { locked: false }
+
+        currentCol = 3
+
+        // For each shift
+        shifts.forEach((shiftInfo) => {
+          const types = Array.from(shiftInfo.contractingTypes)
+
+          types.forEach((typeName) => {
+            const shiftData = dayData.shifts.find((s) => {
+              const shiftName =
+                currentLang === "ar" ? s.shiftNameAr : s.shiftNameEn
+              const ctName =
+                currentLang === "ar"
+                  ? s.contractingTypeNameAr
+                  : s.contractingTypeNameEn
+              return (
+                shiftName ===
+                  (currentLang === "ar"
+                    ? shiftInfo.nameAr
+                    : shiftInfo.nameEn) && ctName === typeName
+              )
+            })
+
+            if (shiftData) {
+              const assigned = shiftData.assignedDoctors
+              const required = shiftData.requiredDoctors
+              const doctors = shiftData.doctors || []
+
+              // Count cell
+              const countCell = worksheet.getCell(currentRow, currentCol)
+              countCell.value = `${assigned}/${required}`
+              countCell.fill = {
+                type: "pattern",
+                pattern: "solid",
+                fgColor: { argb: "FFF3F4F6" },
+              }
+              countCell.font = {
+                size: 10,
+                color: { argb: "FF111827" },
+                name: "Arial",
+              }
+              countCell.alignment = {
+                horizontal: "center",
+                vertical: "middle",
+              }
+              countCell.border = {
+                top: { style: "thin", color: { argb: "FFD1D5DB" } },
+                bottom: { style: "thin", color: { argb: "FFD1D5DB" } },
+                left: { style: "thin", color: { argb: "FFD1D5DB" } },
+                right: { style: "thin", color: { argb: "FFD1D5DB" } },
+              }
+              countCell.protection = { locked: false }
+
+              // Doctors cell
+              const doctorNames = doctors
+                .map((doctor) =>
+                  currentLang === "ar"
+                    ? doctor.doctorNameAr
+                    : doctor.doctorNameEn
+                )
+                .join(currentLang === "ar" ? " - " : " - ")
+
+              const doctorsCell = worksheet.getCell(currentRow + 1, currentCol)
+              doctorsCell.value = doctorNames || ""
+              doctorsCell.fill = {
+                type: "pattern",
+                pattern: "solid",
+                fgColor: { argb: "FFFFFFFF" },
+              }
+              doctorsCell.font = {
+                size: 9,
+                color: { argb: "FF374151" },
+                name: "Arial",
+              }
+              doctorsCell.alignment = {
+                horizontal: "left",
+                vertical: "middle",
+                wrapText: true,
+                indent: 1,
+              }
+              doctorsCell.border = {
+                top: { style: "thin", color: { argb: "FFE5E7EB" } },
+                bottom: { style: "thin", color: { argb: "FFD1D5DB" } },
+                left: { style: "thin", color: { argb: "FFE5E7EB" } },
+                right: { style: "thin", color: { argb: "FFE5E7EB" } },
+              }
+              doctorsCell.protection = { locked: false }
+            } else {
+              const countCell = worksheet.getCell(currentRow, currentCol)
+              countCell.value = ""
+              countCell.protection = { locked: false }
+              const doctorsCell = worksheet.getCell(currentRow + 1, currentCol)
+              doctorsCell.value = ""
+              doctorsCell.protection = { locked: false }
+            }
+            currentCol++
+          })
+        })
+
+        currentRow += 2
+      }
+    })
+
+    // Set column widths
+    worksheet.getColumn(1).width = 12 // Date
+    worksheet.getColumn(2).width = 12 // Day
+    for (let i = 3; i <= totalCols; i++) {
+      worksheet.getColumn(i).width = 25
+    }
+
+    // Protect worksheet with full formatting permissions
+    await worksheet.protect("", {
+      selectLockedCells: true,
+      selectUnlockedCells: true,
+      formatCells: true,
+      formatColumns: true,
+      formatRows: true,
+      insertRows: true,
+      insertColumns: true,
+      deleteRows: true,
+      deleteColumns: true,
+      sort: true,
+      autoFilter: true,
+      pivotTables: true,
+      insertHyperlinks: true,
+    })
+
+    // Generate file
+    const buffer = await workbook.xlsx.writeBuffer()
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    })
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = `${departmentName}_${rosterTitle}.xlsx`
+    link.click()
+    window.URL.revokeObjectURL(url)
+  }
 
   return (
     <div
@@ -238,19 +691,39 @@ function DepartmentCalender() {
       <div className="container mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <h1
-            className={`text-2xl font-bold mb-2 ${
-              isDark ? "text-white" : "text-gray-900"
-            }`}
-          >
-            {t("roster.departmentCalendar")} {departmentName}
-          </h1>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1
+                className={`text-2xl font-bold mb-2 ${
+                  isDark ? "text-white" : "text-gray-900"
+                }`}
+              >
+                {t("roster.departmentCalendar")} {departmentName}
+              </h1>
 
-          <p
-            className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}
-          >
-            {departmentRosterData[0].rosterTitle}
-          </p>
+              <p
+                className={`text-sm ${
+                  isDark ? "text-gray-400" : "text-gray-600"
+                }`}
+              >
+                {departmentRosterData[0].rosterTitle}
+              </p>
+            </div>
+
+            {/* Download Button */}
+            <button
+              onClick={exportToExcel}
+              disabled={daysList.length === 0}
+              className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-colors ${
+                daysList.length === 0
+                  ? "bg-gray-400 cursor-not-allowed text-white"
+                  : "bg-green-600 hover:bg-green-700 text-white"
+              }`}
+            >
+              <Download size={16} />
+              {currentLang === "ar" ? "تحميل Excel" : "Download Excel"}
+            </button>
+          </div>
         </div>
 
         {/* Stats Section */}
