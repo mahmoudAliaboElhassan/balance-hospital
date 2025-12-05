@@ -307,7 +307,7 @@ function DepartmentCalender() {
     deptRow.height = 30
     worksheet.mergeCells(2, 1, 2, totalCols)
     const deptCell = worksheet.getCell(2, 1)
-    deptCell.value = departmentName
+    deptCell.value = `${departmentName} - ${rosterTitle}`
     deptCell.fill = {
       type: "pattern",
       pattern: "solid",
