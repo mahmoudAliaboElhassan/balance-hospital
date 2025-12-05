@@ -124,7 +124,7 @@ function DepartmentMonth() {
 
     // Row 3: Totals Data
     const totalsHeaders = [
-      currentLang === "ar" ? "إجماليالروسترات" : "Total Rosters",
+      currentLang === "ar" ? " إجماليالروسترات" : "Total Rosters",
       currentLang === "ar" ? "إجمالي الشفتات" : "Total Shifts",
       currentLang === "ar" ? "الأطباء المطلوبون" : "Required Doctors",
       currentLang === "ar" ? "الأطباء المعينون" : "Assigned Doctors",
