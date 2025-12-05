@@ -20,6 +20,9 @@ function Reports() {
   const navigate = useNavigate()
   const { t, i18n } = useTranslation()
 
+  const [doctorPage, setDoctorPage] = useState(1)
+  const doctorPageSize = 100
+
   // Redux state
   const { contractingTypes, loadingGetContractingTypes } = useSelector(
     (state) => state.contractingType
@@ -34,7 +37,11 @@ function Reports() {
 
   console.log("contracting", contracting)
 
-  const { users, loading } = useSelector((state) => state.users)
+  const {
+    users,
+    loading,
+    pagination: usersPagination,
+  } = useSelector((state) => state.users)
 
   const { departments, loadingGetDepartments } = useSelector(
     (state) => state.department
@@ -83,7 +90,7 @@ function Reports() {
     dispatch(
       getUserSummaries({
         page: 1,
-        pageSize: 1000,
+        pageSize: doctorPageSize,
         categoryId: filters.categoryId,
       })
     )
@@ -103,12 +110,22 @@ function Reports() {
       dispatch(
         getUserSummaries({
           page: 1,
-          pageSize: 1000,
+          pageSize: doctorPageSize,
           categoryId: filters.categoryId,
         })
       )
     }
   }, [dispatch, filters.categoryId])
+
+  useEffect(() => {
+    dispatch(
+      getUserSummaries({
+        page: doctorPage,
+        pageSize: doctorPageSize,
+        categoryId: filters.categoryId,
+      })
+    )
+  }, [dispatch, doctorPage])
 
   // Fetch reports when filters change
   useEffect(() => {
@@ -125,6 +142,10 @@ function Reports() {
     }
   }, [dispatch, filters])
 
+  const handleDoctorPageChange = (newPage) => {
+    setDoctorPage(newPage)
+  }
+
   // Handle filter changes
   const handleFilterChange = (name, value) => {
     setFilters((prev) => ({
@@ -134,6 +155,9 @@ function Reports() {
       // Reset dependent filters when category changes
       ...(name === "categoryId" && { departmentId: null, doctorId: null }),
     }))
+    if (name === "categoryId") {
+      setDoctorPage(1)
+    }
   }
 
   // Handle pagination
@@ -171,7 +195,7 @@ function Reports() {
     loadingGetContractingTypes ||
     loadingContract ||
     loadingGetDepartments ||
-    loading?.list ||
+    // loading?.list ||
     loadingGetCategories
   ) {
     return <LoadingGetData text={t("gettingData.wait-data")} />
@@ -393,6 +417,7 @@ function Reports() {
             </div>
 
             {/* Doctor Filter */}
+            {/* Doctor Filter with Pagination */}
             <div>
               <label
                 className={`block text-sm font-medium ${
@@ -400,7 +425,13 @@ function Reports() {
                 } mb-2`}
               >
                 {t("reports.doctor") || "Doctor"}
+                {loading?.list && (
+                  <span className="ml-2 text-xs text-blue-500">
+                    {t("gettingData.loadingDoctors") || "Loading..."}
+                  </span>
+                )}
               </label>
+
               <select
                 value={filters.doctorId || ""}
                 onChange={(e) =>
@@ -409,23 +440,78 @@ function Reports() {
                     e.target.value ? parseInt(e.target.value) : null
                   )
                 }
+                disabled={loading?.list}
                 className={`w-full px-4 py-2 rounded-lg border ${
                   isDark
                     ? "bg-gray-700 border-gray-600 text-white"
                     : "bg-white border-gray-300 text-gray-900"
-                } focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                } focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  loading?.list ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
                 <option value="">
                   {t("reports.allDoctors") || "All Doctors"}
                 </option>
-                {users?.map((request) => (
-                  <option key={request.id} value={request.id}>
+                {users?.map((doctor) => (
+                  <option key={doctor.id} value={doctor.id}>
                     {currentLang === "ar"
-                      ? request.nameArabic
-                      : request.nameEnglish}
+                      ? doctor.nameArabic
+                      : doctor.nameEnglish}
                   </option>
                 ))}
               </select>
+
+              {/* Pagination Controls for Doctors */}
+              {usersPagination.totalPages > 1 && (
+                <div className="flex items-center justify-between mt-2">
+                  <button
+                    onClick={() => handleDoctorPageChange(doctorPage - 1)}
+                    disabled={doctorPage == 1 || loading?.list}
+                    className={`px-3 py-1 text-xs rounded ${
+                      isDark
+                        ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    } disabled:opacity-50 disabled:cursor-not-allowed transition-colors`}
+                  >
+                    {t("categories.pagination.previous") || "Previous"}
+                  </button>
+
+                  <span
+                    className={`text-xs ${
+                      isDark ? "text-gray-400" : "text-gray-600"
+                    }`}
+                  >
+                    {t("pagination.showing") || "Page"} {doctorPage}{" "}
+                    {t("pagination.of") || "of"} {usersPagination.totalPages}
+                  </span>
+
+                  <button
+                    onClick={() => handleDoctorPageChange(doctorPage + 1)}
+                    disabled={
+                      usersPagination.totalPages == doctorPage || loading?.list
+                    }
+                    className={`px-3 py-1 text-xs rounded ${
+                      isDark
+                        ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    } disabled:opacity-50 disabled:cursor-not-allowed transition-colors`}
+                  >
+                    {t("categories.pagination.next") || "Next"}
+                  </button>
+                </div>
+              )}
+
+              {/* Show total count */}
+              {usersPagination.totalCount > 0 && (
+                <p
+                  className={`text-xs mt-1 ${
+                    isDark ? "text-gray-500" : "text-gray-500"
+                  }`}
+                >
+                  {t("roster.totalDoctors") || "Total"}:{" "}
+                  {usersPagination.totalCount}
+                </p>
+              )}
             </div>
 
             {/* Scientific Degree Filter */}
