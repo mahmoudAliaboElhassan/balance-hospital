@@ -953,6 +953,7 @@
     "filters": "Filters",
     "refresh": "Refresh",
     "startDate": "Start Date",
+    "reset": "Entire Month",
     "backToHome": "Back to Home",
     "warnings": "Warnings",
     "public": "General ",
@@ -3010,6 +3011,7 @@
     "title": "Monthly Reports",
     "subtitle": "View and manage monthly attendance reports",
     "filters": "Filters",
+    "applyDateRange": "Apply date range",
     "export": {
       "title": "Export Report",
       "exporting": "Exporting...",
@@ -3023,6 +3025,10 @@
     "year": "Year",
     "department": "Department",
     "doctor": "Doctor",
+    "dateRangeError": "End day must be greater than or equal to start day",
+    "dateRangeInvalid": "Days must be between 1 and {{day}}",
+    "showingDays": "Showing days",
+
     "scientificDegree": "Scientific Degree",
     "contractingType": "Contracting Type",
     "allDepartments": "All Departments",

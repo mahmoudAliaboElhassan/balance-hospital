@@ -77,6 +77,85 @@ function Reports() {
     pageSize: 20,
   })
 
+  // Reset function
+  const resetDateRange = () => {
+    const maxDay = daysInCurrentMonth
+    setDateRange({
+      startDay: 1,
+      endDay: maxDay,
+    })
+    setAppliedDateRange({
+      startDay: 1,
+      endDay: maxDay,
+    })
+
+    setDateRangeError("")
+  }
+
+  // Date range state
+  const [dateRange, setDateRange] = useState({
+    startDay: 1,
+    endDay: 31,
+  })
+
+  const [appliedDateRange, setAppliedDateRange] = useState({
+    startDay: 1,
+    endDay: 31,
+  })
+
+  const [dateRangeError, setDateRangeError] = useState("")
+  const getDaysInMonth = (month, year) => {
+    return new Date(year, month, 0).getDate()
+  }
+
+  const daysInCurrentMonth = getDaysInMonth(filters.month, filters.year)
+
+  const startDateFormatted = `${filters.year}-${filters.month}-${appliedDateRange.startDay}`
+  const endDateFormatted = `${filters.year}-${filters.month}-${appliedDateRange.endDay}`
+
+  useEffect(() => {
+    const maxDay = daysInCurrentMonth
+    setDateRange({
+      startDay: 1,
+      endDay: maxDay,
+    })
+    setAppliedDateRange({
+      startDay: 1,
+      endDay: maxDay,
+    })
+    setDateRangeError("")
+  }, [filters.month, filters.year])
+
+  const handleDateRangeChange = (name, value) => {
+    setDateRange((prev) => ({
+      ...prev,
+      [name]: parseInt(value),
+    }))
+    setDateRangeError("")
+  }
+
+  // Apply date range
+  const applyDateRange = () => {
+    if (dateRange.endDay < dateRange.startDay) {
+      setDateRangeError(
+        t("reports.dateRangeError") ||
+          "End day must be greater than or equal to start day"
+      )
+      return
+    }
+
+    if (dateRange.startDay < 1 || dateRange.endDay > daysInCurrentMonth) {
+      setDateRangeError(
+        t("reports.dateRangeInvalid", { day: daysInCurrentMonth }) ||
+          `Days must be between 1 and ${daysInCurrentMonth}`
+      )
+      return
+    }
+
+    setDateRangeError("")
+    setAppliedDateRange(dateRange)
+  }
+
   // UI state
   const isRTL = i18n.language === "ar"
   const currentLang = i18n.language || "ar"
@@ -580,6 +659,142 @@ function Reports() {
               </select>
             </div>
           </div>
+
+          <div className="flex flex-col mt-6 p-6 rounded-xl sm:flex-row items-stretch sm:items-end gap-4">
+            {/* Start Day */}
+            <div className="flex-1">
+              <label
+                className={`block text-sm font-medium ${
+                  isDark ? "text-gray-300" : "text-gray-700"
+                } mb-2`}
+              >
+                {t("common.startDate") || "Start Day"}
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  min="1"
+                  max={daysInCurrentMonth}
+                  value={dateRange.startDay}
+                  onChange={(e) =>
+                    handleDateRangeChange("startDay", e.target.value)
+                  }
+                  className={`w-full px-4 py-2.5 rounded-lg border-2 ${
+                    isDark
+                      ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                      : "bg-white border-gray-300 text-gray-900 placeholder-gray-500"
+                  } focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all`}
+                />
+              </div>
+            </div>
+
+            {/* Separator Arrow */}
+            <div className="hidden sm:flex items-center justify-center pb-2">
+              <svg
+                className={`w-6 h-6 ${
+                  isDark ? "text-gray-600" : "text-gray-400"
+                }`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 5l7 7-7 7M5 5l7 7-7 7"
+                />
+              </svg>
+            </div>
+
+            {/* End Day */}
+            <div className="flex-1">
+              <label
+                className={`block text-sm font-medium ${
+                  isDark ? "text-gray-300" : "text-gray-700"
+                } mb-2`}
+              >
+                {t("common.endDate") || "End Day"}
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  min="1"
+                  max={daysInCurrentMonth}
+                  value={dateRange.endDay}
+                  onChange={(e) =>
+                    handleDateRangeChange("endDay", e.target.value)
+                  }
+                  className={`w-full px-4 py-2.5 rounded-lg border-2 ${
+                    isDark
+                      ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                      : "bg-white border-gray-300 text-gray-900 placeholder-gray-500"
+                  } focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all`}
+                />
+              </div>
+            </div>
+
+            {/* Apply Button */}
+            <div className="flex-1 sm:flex-initial">
+              <button
+                onClick={applyDateRange}
+                className={`w-full sm:w-auto px-6 py-2.5 rounded-lg font-semibold transition-all transform hover:scale-105 active:scale-95 shadow-lg ${
+                  isDark
+                    ? "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-blue-900/50"
+                    : "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-blue-500/30"
+                } focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none`}
+              >
+                <span className="flex items-center justify-center gap-2">
+                  <Filter className="w-4 h-4" />
+                  {t("reports.applyDateRange") || "Apply"}
+                </span>
+              </button>
+            </div>
+          </div>
+
+          {dateRangeError && (
+            <div className="mt-4 p-3 bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-800 rounded-lg">
+              <p className="text-red-700 dark:text-red-400 text-sm">
+                {dateRangeError}
+              </p>
+            </div>
+          )}
+
+          {/* Applied Date Range Info */}
+          {(appliedDateRange.startDay !== 1 ||
+            appliedDateRange.endDay !== daysInCurrentMonth) && (
+            <div className="mt-4 flex items-center gap-3 p-3 bg-blue-100 dark:bg-blue-900/20 border border-blue-400 dark:border-blue-800 rounded-lg">
+              <p className="text-blue-700 dark:text-blue-400 text-sm">
+                {t("reports.showingDays") || "Showing days"}:{" "}
+                {appliedDateRange.startDay} - {appliedDateRange.endDay}
+              </p>
+              <button
+                onClick={resetDateRange}
+                className={`w-full sm:w-auto px-6 py-2.5 rounded-lg font-semibold transition-all transform hover:scale-105 active:scale-95 ${
+                  isDark
+                    ? "bg-gray-700 hover:bg-gray-600 text-gray-300 border-2 border-gray-600"
+                    : "bg-white hover:bg-gray-50 text-gray-700 border-2 border-gray-300"
+                } focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none`}
+              >
+                <span className="flex items-center justify-center gap-2">
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                    />
+                  </svg>
+                  {t("common.reset") || "Reset"}
+                </span>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Reports Content */}
@@ -720,7 +935,7 @@ function Reports() {
                       isDark ? "text-green-400" : "text-green-600"
                     }`}
                   >
-                    {reports.startDate}
+                    {startDateFormatted}
                   </p>
                 </div>
                 <div
@@ -740,7 +955,7 @@ function Reports() {
                       isDark ? "text-orange-400" : "text-orange-600"
                     }`}
                   >
-                    {reports.endDate}
+                    {endDateFormatted}
                   </p>
                 </div>
               </div>
@@ -808,19 +1023,25 @@ function Reports() {
                       </th>
 
                       {/* Daily shift columns (1-31) */}
-                      {Array.from({ length: 31 }, (_, i) => i + 1).map(
-                        (day) => (
-                          <th
-                            key={day}
-                            className={`px-2 py-4 text-center text-xs font-medium ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            } uppercase tracking-wider whitespace-nowrap`}
-                            style={{ minWidth: "80px" }}
-                          >
-                            {t("reports.table.day") || "Day"} {day}
-                          </th>
-                        )
-                      )}
+                      {Array.from(
+                        {
+                          length:
+                            appliedDateRange.endDay -
+                            appliedDateRange.startDay +
+                            1,
+                        },
+                        (_, i) => appliedDateRange.startDay + i
+                      ).map((day) => (
+                        <th
+                          key={day}
+                          className={`px-2 py-4 text-center text-xs font-medium ${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          } uppercase tracking-wider whitespace-nowrap`}
+                          style={{ minWidth: "80px" }}
+                        >
+                          {t("reports.table.day") || "Day"} {day}
+                        </th>
+                      ))}
 
                       {/* Actions Header */}
                       <th
@@ -951,48 +1172,54 @@ function Reports() {
                           </td>
 
                           {/* Daily shift columns (1-31) */}
-                          {Array.from({ length: 31 }, (_, i) => i + 1).map(
-                            (day) => {
-                              const shift = shiftMap[day]
-                              return (
-                                <td
-                                  key={day}
-                                  className={`px-2 py-4 text-center text-xs whitespace-nowrap ${
-                                    isDark ? "text-gray-300" : "text-gray-900"
-                                  }`}
-                                  style={{ minWidth: "80px" }}
-                                  title={
-                                    shift
-                                      ? currentLang === "ar"
+                          {Array.from(
+                            {
+                              length:
+                                appliedDateRange.endDay -
+                                appliedDateRange.startDay +
+                                1,
+                            },
+                            (_, i) => appliedDateRange.startDay + i
+                          ).map((day) => {
+                            const shift = shiftMap[day]
+                            return (
+                              <td
+                                key={day}
+                                className={`px-2 py-4 text-center text-xs whitespace-nowrap ${
+                                  isDark ? "text-gray-300" : "text-gray-900"
+                                }`}
+                                style={{ minWidth: "80px" }}
+                                title={
+                                  shift
+                                    ? currentLang === "ar"
+                                      ? shift.departmentAr
+                                      : shift.departmentEn
+                                    : ""
+                                }
+                              >
+                                {shift ? (
+                                  <div className="flex flex-col items-center gap-1">
+                                    <span className="font-semibold text-sm">
+                                      {shift.code}
+                                    </span>
+                                    <span
+                                      className={`text-[10px] ${
+                                        isDark
+                                          ? "text-gray-400"
+                                          : "text-gray-500"
+                                      }`}
+                                    >
+                                      {currentLang === "ar"
                                         ? shift.departmentAr
-                                        : shift.departmentEn
-                                      : ""
-                                  }
-                                >
-                                  {shift ? (
-                                    <div className="flex flex-col items-center gap-1">
-                                      <span className="font-semibold text-sm">
-                                        {shift.code}
-                                      </span>
-                                      <span
-                                        className={`text-[10px] ${
-                                          isDark
-                                            ? "text-gray-400"
-                                            : "text-gray-500"
-                                        }`}
-                                      >
-                                        {currentLang === "ar"
-                                          ? shift.departmentAr
-                                          : shift.departmentEn}
-                                      </span>
-                                    </div>
-                                  ) : (
-                                    <span className="text-gray-400">-</span>
-                                  )}
-                                </td>
-                              )
-                            }
-                          )}
+                                        : shift.departmentEn}
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <span className="text-gray-400">-</span>
+                                )}
+                              </td>
+                            )
+                          })}
 
                           {/* Actions Column - Sticky on right */}
                           <td
