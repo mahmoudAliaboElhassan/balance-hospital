@@ -124,7 +124,7 @@ function DepartmentMonth() {
 
     // Row 3: Totals Data
     const totalsHeaders = [
-      currentLang === "ar" ? "إجمالي الالروسترات" : "Total Rosters",
+      currentLang === "ar" ? "إجماليالروسترات" : "Total Rosters",
       currentLang === "ar" ? "إجمالي الشفتات" : "Total Shifts",
       currentLang === "ar" ? "الأطباء المطلوبون" : "Required Doctors",
       currentLang === "ar" ? "الأطباء المعينون" : "Assigned Doctors",
@@ -235,10 +235,10 @@ function DepartmentMonth() {
       currentLang === "ar" ? "المعين" : "Assigned",
       currentLang === "ar" ? "الحد الأقصى" : "Max",
       currentLang === "ar" ? "الإكتمال %" : "Completion %",
-      currentLang === "ar" ? "عنوان الوردية" : "Roster Title",
+      currentLang === "ar" ? "عنوان الروستر" : "Roster Title",
       currentLang === "ar" ? "الحالة" : "Status",
       currentLang === "ar" ? "النقص" : "Shortfall",
-      currentLang === "ar" ? "إكتمال الوردية %" : "Roster Completion %",
+      currentLang === "ar" ? "إكتمال الروستر %" : "Roster Completion %",
     ]
 
     categoryHeaders.forEach((header, idx) => {
