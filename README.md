@@ -217,6 +217,80 @@ This allows scalable growth: more departments, more managers, more policies.
 
 ---
 
+# Who Can Do What (Responsibilities)
+
+### Admin (System Administrator)
+
+✅ Full access to the entire system:
+
+- Manage all categories, departments, degrees, shift hours, rosters, users, roles/permissions
+- View and manage all reports across all categories/departments
+- Full notifications and auditing visibility
+
+---
+
+### Category Manager
+
+✅ Manages **everything inside their assigned category**:
+
+- Manage rosters for that category:
+  - create new rosters
+  - manage roster status
+  - manage roster data and operations
+- Handle doctors related to the category:
+  - approve/reject doctor status for the category
+- Leaves management for that category:
+  - view leave requests
+  - approve/reject doctor leaves
+- Reports (category scope):
+  - view category reports
+  - export reports to Excel
+- Departments:
+  - view departments linked to that category
+
+> Category Manager access is limited to their category scope, not the whole hospital.
+
+---
+
+### Department Manager
+
+✅ Manages **their department only**:
+
+- View roster data for **only that department** across all months
+- Select which category the department belongs to **in that specific month** (when applicable)
+- View department calendar:
+  - doctor schedule
+  - shifts / working hours
+- Download department schedule data as **Excel**
+- Manage department GeoFences (if enabled):
+  - view and manage department geofences
+
+> Department Manager does not manage other departments or categories outside their department.
+
+---
+
+### Hybrid (Multi-Role User)
+
+✅ Can act as Category Manager and/or Department Manager depending on preference.
+
+- After login, hybrid users can choose the mode they want to operate as:
+  - **Act as Category Manager**
+  - **Act as Department Manager**
+
+This keeps workflows clean and prevents mixing responsibilities accidentally.
+
+---
+
+### Doctor
+
+✅ Minimal access (lowest access level):
+
+- Only sees their own schedule / assignments / status
+- Receives notifications about approvals/rejections and schedule updates
+- The main system focus is on **managers**, while doctors primarily use the **mobile application** for day-to-day interaction
+
+---
+
 ## Access Control (Guarded Pages)
 
 The UI is protected so users only see and access what matches their role and permissions:
